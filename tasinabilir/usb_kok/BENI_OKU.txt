@@ -10,7 +10,8 @@ kitapları, kendi notlarını, resimlerini koyarsın.
 
 AÇMAK
 - Mac: "Heybe_Mac.command" dosyasına çift tıkla.
-  İlk kez açarken Mac sorarsa: dosyaya sağ tıkla → Aç.
+  İlk kez açarken Mac engellerse: Sistem Ayarları → Gizlilik ve Güvenlik →
+  "Yine de Aç" (eski macOS: dosyaya sağ tıkla → Aç).
 - Windows (10 ya da 11, 64 bit): "Heybe_Windows.bat" dosyasına çift tıkla.
   Windows uyarı verirse: "Ek bilgi" → "Yine de çalıştır".
 - Linux (x86_64 ya da Raspberry Pi gibi ARM, 64 bit): belleğin klasöründe bir terminal aç ve yaz: sh Heybe_Linux.sh
@@ -19,6 +20,11 @@ AÇMAK
   Yanında ✓ olan dilde bellekte kitap ya da dosya var. Ekran yazıları
   çoğu dilde makine çevirisidir, henüz denenmedi. Kitaplık hemen hazırdır.
   Soruları cevaplayan Heybe belleğin hızına göre 1–2 dakikada açılır.
+- İLK KURULUM: Heybe'yi GitHub'dan indirdiysen modeller pakette gelmez.
+  Sayfa söyler: "Kitaplık ve ayarlar" → "İlk kurulum" → Gemma koşullarını
+  kabul et → "Modelleri indir" (yaklaşık 5 GB, internet bir kez gerekir).
+  İndirme kesilirse yeniden bas, kaldığı yerden sürer. Bitince Heybe
+  kendiliğinden açılır.
   Çevirmen yalnız gerekince, "Başka dillerdeki kaynaklara da bak"
   işaretliyse arkada açılır ve birkaç dakika sonra katılır.
 - ACİL KART: açılışın ilk saniyesinde görünür. İçinde ülkelerin acil

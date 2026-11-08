@@ -11,10 +11,15 @@ knihami, poznámkami a obrázky, které chcete.
 
 SPUŠTĚNÍ
 - Mac: dvakrát klikněte na "Heybe_Mac.command".
-  Když ho Mac poprvé zablokuje: pravé tlačítko na souboru → Otevřít.
+  Když ho Mac poprvé zablokuje: Nastavení systému → Soukromí a zabezpečení →
+  „Přesto otevřít“ (starší macOS: pravé tlačítko na souboru → Otevřít).
 - Windows (10 nebo 11, 64 bit): dvakrát klikněte na "Heybe_Windows.bat".
 - Linux (x86_64 nebo 64bitový ARM jako Raspberry Pi): otevřete terminál ve složce disku a napište: sh Heybe_Linux.sh
   (Na Linuxu zatím nevyzkoušeno.)
+- PRVNÍ INSTALACE: pokud jste Heybe stáhli z GitHubu, modely v balíčku nejsou.
+  Stránka vám řekne: „Knihovna a nastavení“ → „První instalace“ → souhlas
+  s podmínkami Gemma → „Stáhnout modely“ (asi 5 GB, internet jen jednou).
+  Když se stahování přeruší, klikněte znovu: pokračuje tam, kde skončilo.
   Při varování: "Další informace" → "Přesto spustit".
 - V prohlížeči se otevře Heybe. Nejdřív vyberte jazyk: všech 49 jazyků je
   uvedeno rovnocenně. ✓ u jazyka znamená, že na disku jsou knihy nebo

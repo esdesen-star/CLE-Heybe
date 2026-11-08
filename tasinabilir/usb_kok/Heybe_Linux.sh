@@ -56,15 +56,21 @@ done
 echo "kütüphane hazır: $(( $(date +%s) - BASLA )) sn"
 xdg-open "http://127.0.0.1:8888/" >/dev/null 2>&1 || echo "Tarayıcıda şu adresi aç: http://127.0.0.1:8888/"
 
-sh "$LLAMA" --server --host 127.0.0.1 --port 8081 --no-webui -m "$KOK/model/embeddinggemma-300M-Q8_0.gguf" \
-  --embedding -c 8192 -b 2048 -ub 2048 >"$G/heybe_anlam.log" 2>&1 &
-ANLAM=$!
-hazir_bekle http://127.0.0.1:8081 "$ANLAM" anlam
+# İlk kurulum (08.11, Özet §66): GitHub paketi modelsiz gelir. Model yoksa açılmaz; sayfa "Kitaplık ve ayarlar"da
+# indirmeyi önerir, yardımcı program inen modelleri kendisi açar.
+if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$KOK/model/gemma3-4b.gguf" ]; then
+  sh "$LLAMA" --server --host 127.0.0.1 --port 8081 --no-webui -m "$KOK/model/embeddinggemma-300M-Q8_0.gguf" \
+    --embedding -c 8192 -b 2048 -ub 2048 >"$G/heybe_anlam.log" 2>&1 &
+  ANLAM=$!
+  hazir_bekle http://127.0.0.1:8081 "$ANLAM" anlam
 
-sh "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
-  -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
-SOHBET=$!
-hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+  sh "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
+    -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
+  SOHBET=$!
+  hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+else
+  echo "Modeller henüz kurulmadı. Sayfada: Kitaplık ve ayarlar → İlk kurulum (internet bir kez gerekir)."
+fi
 
 # Çevirmen (TranslateGemma) başlatıcıda açılmaz: gerekince yardımcı program açar ve kapanırken kapatır (Özet §36).
 

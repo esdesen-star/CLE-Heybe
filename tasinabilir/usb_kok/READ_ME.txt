@@ -11,11 +11,16 @@ space with the books, notes and pictures you want.
 
 STARTING
 - Mac: double-click "Heybe_Mac.command".
-  If the Mac blocks it the first time: right-click the file → Open.
+  If the Mac blocks it the first time: System Settings → Privacy & Security →
+  "Open Anyway" (older macOS: right-click the file → Open).
 - Windows (10 or 11, 64-bit): double-click "Heybe_Windows.bat".
   If Windows warns you: "More info" → "Run anyway".
 - Linux (x86_64, or 64-bit ARM such as Raspberry Pi): open a terminal in the drive's folder and type: sh Heybe_Linux.sh
   (Not tested on Linux yet — if you try it, please tell us how it went.)
+- FIRST SETUP: if you downloaded Heybe from GitHub, the models are not in the
+  package. The page tells you: "Library & settings" → "First setup" → accept
+  the Gemma terms → "Download the models" (about 5 GB, internet needed once).
+  If the download is cut, click again: it continues where it stopped.
 - Heybe opens in your browser. First pick your language: all 49 languages
   are listed equally. A ✓ next to a language means the stick has books or
   files in it. Screen texts are machine translated in most languages, not

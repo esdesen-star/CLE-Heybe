@@ -8,7 +8,24 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.13).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.14).
+
+## Download and install
+
+No programming needed. You need internet once, for the first setup; after that Heybe works offline.
+
+1. **Download** `CLE-Heybe-0.14.0.zip` (about 305 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+   - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
+2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
+3. **Start Heybe** from inside the folder:
+   - **Mac:** double-click `Heybe_Mac.command`. The first time, macOS blocks it: open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. (Older macOS: right-click the file → Open.)
+   - **Windows 10/11:** double-click `Heybe_Windows.bat`. If Windows warns you: **More info → Run anyway**.
+   - **Linux** (x86_64, or 64-bit ARM such as Raspberry Pi 4/5): open a terminal in the folder and type `sh Heybe_Linux.sh`.
+4. A page opens in your browser. The first time it says the models are not installed: open **Library & settings → First setup**, read and accept the Gemma terms, and click **Download the models** (about 5 GB). If the download is cut, click again — it continues where it stopped. When it finishes, Heybe starts by itself.
+5. On the same page, add books: a ready-made list (for example *First aid and survival*, about 1.2 GB) or your own PDF and text files.
+6. Done. From now on Heybe works without internet. To close it, press Enter (Mac, Linux) or any key (Windows) in its window.
+
+**Space and memory:** core 0.5 GB + models 5 GB + your books. About 8 GB of RAM is recommended (estimate, not measured yet). Windows, Intel Mac and Linux are **not tested yet** — please tell us how it went in an issue.
 
 ## Runs on
 
@@ -33,7 +50,7 @@ If you try one, please report it in an issue — that is the help we need most. 
   - **weak pool:** if even the best paragraph is far from the question, no answer is written.
 
   If a checker trips, the answer is not shown; the user reads the sources instead.
-- **The library belongs to the user.** The stick carries only the core (programs, page, models). Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
+- **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
 - **Personal data stays on the stick.** "This answer is wrong" reports and the emergency card stay on the stick and are never sent anywhere.
 
 **Components:** a small helper program written in Go (`tasinabilir/yardimci/`) · the [Kiwix](https://kiwix.org) book server · three models run with [llamafile](https://github.com/Mozilla-Ocho/llamafile) (chat: Gemma 3 4B · semantic search: EmbeddingGemma · translation: TranslateGemma) · a page and a "companion" that run in the browser (`tasinabilir/usb_kok/heybe/`).
@@ -107,7 +124,24 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.13).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.14).
+
+## İndir ve kur
+
+Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
+
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.14.0.zip` dosyasını (yaklaşık 305 MB).
+   - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
+2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
+3. **Heybe'yi başlat** (klasörün içinden):
+   - **Mac:** `Heybe_Mac.command` dosyasına çift tıkla. İlk seferde macOS engeller: **Sistem Ayarları → Gizlilik ve Güvenlik**'i aç, aşağı in ve **Yine de Aç**'a bas. (Eski macOS: dosyaya sağ tıkla → Aç.)
+   - **Windows 10/11:** `Heybe_Windows.bat` dosyasına çift tıkla. Windows uyarırsa: **Ek bilgi → Yine de çalıştır**.
+   - **Linux** (x86_64 ya da Raspberry Pi 4/5 gibi 64 bit ARM): klasörde bir terminal aç ve `sh Heybe_Linux.sh` yaz.
+4. Tarayıcıda bir sayfa açılır. İlk seferde modellerin kurulmadığını söyler: **Kitaplık ve ayarlar → İlk kurulum**'u aç, Gemma koşullarını okuyup kabul et ve **Modelleri indir**'e bas (yaklaşık 5 GB). İndirme kesilirse yeniden bas — kaldığı yerden sürer. Bitince Heybe kendiliğinden açılır.
+5. Aynı sayfada kitap ekle: hazır bir liste (örneğin *İlk yardım ve hayatta kalma*, yaklaşık 1,2 GB) ya da kendi PDF ve metin dosyaların.
+6. Bitti. Bundan sonra Heybe internetsiz çalışır. Kapatmak için penceresinde Enter'a (Mac, Linux) ya da bir tuşa (Windows) bas.
+
+**Yer ve bellek:** çekirdek 0,5 GB + modeller 5 GB + kitapların. Yaklaşık 8 GB RAM önerilir (tahmin, henüz ölçülmedi). Windows, Intel Mac ve Linux **henüz denenmedi** — nasıl gittiğini bir iş kartına yaz.
 
 ## Çalıştığı sistemler
 
@@ -132,7 +166,7 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
   - **zayıf havuz:** en iyi paragraf bile soruya çok uzaksa cevap yazılmaz.
 
   Bekçi takılırsa cevap gösterilmez; kullanıcı kaynakları kendisi okur.
-- **Kitaplık kullanıcınındır.** Bellekte yalnız çekirdek (program, sayfa, modeller) gelir. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
+- **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
 - **Kişisel veri bellekte kalır.** "Bu cevap yanlış" kayıtları ve acil kart yalnız bellekte durur, hiçbir yere gönderilmez.
 
 **Bileşenler:** Go ile yazılmış küçük bir yardımcı program (`tasinabilir/yardimci/`) · [Kiwix](https://kiwix.org) kitap sunucusu · [llamafile](https://github.com/Mozilla-Ocho/llamafile) ile üç model (sohbet: Gemma 3 4B · anlam araması: EmbeddingGemma · çeviri: TranslateGemma) · tarayıcıda çalışan sayfa ve "arkadaş" (`tasinabilir/usb_kok/heybe/`).

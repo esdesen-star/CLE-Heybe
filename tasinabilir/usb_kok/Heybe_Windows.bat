@@ -32,6 +32,10 @@ goto kutuphane
 echo Kutuphane hazir.
 start "" "http://127.0.0.1:8888/"
 
+rem Ilk kurulum (08.11, Ozet 66): GitHub paketi modelsiz gelir. Model yoksa acilmaz; sayfa "Kitaplik ve ayarlar"da
+rem indirmeyi onerir, yardimci program inen modelleri kendisi acar.
+if not exist "%KOK%model\embeddinggemma-300M-Q8_0.gguf" goto modelsiz
+if not exist "%KOK%model\gemma3-4b.gguf" goto modelsiz
 start "Heybe Anlam" /min "%LLAMA%" --server --host 127.0.0.1 --port 8081 --no-webui -m "%KOK%model\embeddinggemma-300M-Q8_0.gguf" --embedding -c 8192 -b 2048 -ub 2048
 set SAY=0
 :anlam
@@ -45,6 +49,10 @@ echo Anlam modeli hazir.
 
 start "Heybe Sohbet" /min "%LLAMA%" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "%KOK%model\gemma3-4b.gguf" -c 8192
 echo Sohbet modeli aciliyor; sayfa hazir olunca kendisi haber verir.
+goto modeller_tamam
+:modelsiz
+echo Modeller henuz kurulmadi. Sayfada: Kitaplik ve ayarlar - Ilk kurulum (internet bir kez gerekir).
+:modeller_tamam
 rem Cevirmen (TranslateGemma) burada acilmaz: sayfada "baska dillerdeki kaynaklara da bak" seciliyse yardimci program
 rem gerekince acar (06.11, Ozet 36). Kapanista taskkill llamafile.exe cevirmeni de kapatir.
 echo.

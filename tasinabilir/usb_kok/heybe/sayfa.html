@@ -142,6 +142,8 @@
     </form>
     <label class="kopruSecim" id="kopruSatir" hidden><input type="checkbox" id="kopruAc"> <span data-m="kopruSecim"></span> <span id="kopruDurum"></span></label>
     <p class="durum" id="durum" role="status" aria-live="polite"><span class="dm"></span><span class="nokta" aria-hidden="true"><i></i><i></i><i></i></span><span class="sure"></span></p>
+    <!-- ilk kurulum (08.11, Özet §66): modeller yoksa ana ekranda yol gösterir -->
+    <p id="kurulumNotu" hidden><button type="button" id="kurulumBag" data-m="kurulumAc"></button></p>
     <div class="acilYer" id="acilYerAna"></div>
 
     <section class="kart" id="cevapKart" hidden>
@@ -179,6 +181,16 @@
     <h1 data-m="kitaplik"></h1>
     <p class="alt" id="diskBilgi"></p>
     <p class="not" id="fatNotu" hidden data-m="fat"></p>
+
+    <!-- İlk kurulum (08.11, Özet §66 — Ercan: "asıl en önemli amacımız normal bir kullanıcı bunu indirip kurabilmesi"):
+         GitHub paketi modelsiz gelir; Gemma koşullarını kullanıcı kendisi kabul eder (K19), yardımcı program indirir -->
+    <section class="kart" id="modelKart" hidden>
+      <h2 data-m="kurulumBaslik"></h2>
+      <p class="aciklama" id="kurulumAciklama"></p>
+      <ul class="liste" id="modelListesi"></ul>
+      <label class="kopruSecim"><input type="checkbox" id="kurulumKabul" aria-labelledby="kurulumKosul"> <span id="kurulumKosul"></span></label>
+      <p><button type="button" id="kurulumIndir"></button> <span class="durum" id="kurulumDurum" role="status" aria-live="polite"></span></p>
+    </section>
 
     <!-- Kitaplık kılavuzu çekirdeğin içinde (Ercan 06.11, Özet §34) -->
     <details class="kart kilavuz" id="kilavuzKart"><summary data-m="kilavuzBaslik"></summary><div id="kilavuzMetin"></div></details>
@@ -331,6 +343,22 @@
       acilisHazir: 'Heybe hazır ✓',
       acilisAdim: { kutuphane: 'Kitaplık', anlam: 'Arama', sohbet: 'Dil modeli' },
       acilisUzun: 'Açılış uzun sürüyor. Bellek yavaş olabilir; Heybe penceresindeki iletilere bak.',
+      kurulumBaslik: 'İlk kurulum: Heybe\'nin modelleri',
+      kurulumAciklama: (b) => `Heybe'nin arayan, düşünen ve çeviren parçaları (üç model, ${b}) bu pakette gelmez. İnternet varken bir kez indirilir; sonra Heybe internetsiz çalışır. İndirme kesilirse kaldığı yerden sürer.`,
+      kurulumAnlam: 'Arama modeli (EmbeddingGemma)',
+      kurulumSohbet: 'Dil modeli (Gemma 3 4B)',
+      kurulumCevirmen: 'Çevirmen (TranslateGemma)',
+      kurulumKosul: 'Bunlar Google\'ın Gemma modelleri. Kullanım koşullarını okudum ve kabul ediyorum:',
+      kurulumKosulBag: 'Gemma kullanım koşulları',
+      kurulumIndir: (b) => `Modelleri indir (${b})`,
+      kurulumKabulEt: 'Önce koşulları kabul ettiğini işaretle.',
+      kurulumIniyor: 'İniyor… Heybe açık kaldıkça indirme sürer.',
+      kurulumBitti: 'Modeller indi ve doğrulandı. Arama ve dil modeli açılıyor; birkaç dakika içinde Heybe hazır olur.',
+      kurulumHazir: 'hazır',
+      kurulumEksik: 'eksik',
+      kurulumGerek: 'Heybe\'nin modelleri henüz kurulmadı. İnternet varken bir kez indirilir.',
+      kurulumGerekKisa: 'Modeller henüz kurulmadı — "Kitaplık ve ayarlar"dan kur',
+      kurulumAc: 'Kurulumu aç',
       acilisDiliBaslik: 'Açılış dili',
       acilisDiliAciklama: 'Heybe açılınca ilk ekran bu dilde görünür. Standart: English. Seçim bu bellekte saklanır; bellek başka bilgisayara takılsa da geçerlidir.',
       acilisDiliStandart: 'English (standart)',
@@ -504,6 +532,22 @@
       acilisHazir: 'Heybe is ready ✓',
       acilisAdim: { kutuphane: 'Library', anlam: 'Search', sohbet: 'Language model' },
       acilisUzun: 'Starting is taking long. The USB drive may be slow; check the messages in the Heybe window.',
+      kurulumBaslik: 'First setup: Heybe\'s models',
+      kurulumAciklama: (b) => `The parts of Heybe that search, think and translate (three models, ${b}) do not come in this package. They are downloaded once while you have internet; after that Heybe works offline. If the download is cut, it continues where it stopped.`,
+      kurulumAnlam: 'Search model (EmbeddingGemma)',
+      kurulumSohbet: 'Language model (Gemma 3 4B)',
+      kurulumCevirmen: 'Translator (TranslateGemma)',
+      kurulumKosul: 'These are Google\'s Gemma models. I have read and accept the terms of use:',
+      kurulumKosulBag: 'Gemma terms of use',
+      kurulumIndir: (b) => `Download the models (${b})`,
+      kurulumKabulEt: 'First tick that you accept the terms.',
+      kurulumIniyor: 'Downloading… The download continues as long as Heybe stays open.',
+      kurulumBitti: 'The models are downloaded and checked. Search and the language model are starting; Heybe will be ready in a few minutes.',
+      kurulumHazir: 'ready',
+      kurulumEksik: 'missing',
+      kurulumGerek: 'Heybe\'s models are not installed yet. They are downloaded once while you have internet.',
+      kurulumGerekKisa: 'Models not installed yet — set them up in "Library & settings"',
+      kurulumAc: 'Open setup',
       acilisDiliBaslik: 'Opening language',
       acilisDiliAciklama: 'When Heybe opens, the first screen appears in this language. Standard: English. The choice is stored on this USB drive, so it applies on any computer.',
       acilisDiliStandart: 'English (standard)',
@@ -675,6 +719,22 @@
       acilisHazir: 'Heybe je připraven ✓',
       acilisAdim: { kutuphane: 'Knihovna', anlam: 'Vyhledávání', sohbet: 'Jazykový model' },
       acilisUzun: 'Spouštění trvá dlouho. Disk může být pomalý; podívejte se na zprávy v okně Heybe.',
+      kurulumBaslik: 'První instalace: modely Heybe',
+      kurulumAciklama: (b) => `Části Heybe, které vyhledávají, přemýšlejí a překládají (tři modely, ${b}), nejsou v tomto balíčku. Stáhnou se jednou, když máte internet; potom Heybe funguje bez internetu. Když se stahování přeruší, pokračuje tam, kde skončilo.`,
+      kurulumAnlam: 'Vyhledávací model (EmbeddingGemma)',
+      kurulumSohbet: 'Jazykový model (Gemma 3 4B)',
+      kurulumCevirmen: 'Překladač (TranslateGemma)',
+      kurulumKosul: 'Jsou to modely Gemma od Googlu. Přečetl(a) jsem podmínky použití a souhlasím s nimi:',
+      kurulumKosulBag: 'Podmínky použití Gemma',
+      kurulumIndir: (b) => `Stáhnout modely (${b})`,
+      kurulumKabulEt: 'Nejdřív zaškrtněte, že s podmínkami souhlasíte.',
+      kurulumIniyor: 'Stahuje se… Stahování pokračuje, dokud je Heybe otevřená.',
+      kurulumBitti: 'Modely jsou stažené a ověřené. Vyhledávání a jazykový model se spouštějí; Heybe bude za pár minut připravená.',
+      kurulumHazir: 'připraveno',
+      kurulumEksik: 'chybí',
+      kurulumGerek: 'Modely Heybe ještě nejsou nainstalované. Stáhnou se jednou, když máte internet.',
+      kurulumGerekKisa: 'Modely ještě nejsou nainstalované — nainstalujte je v „Knihovna a nastavení“',
+      kurulumAc: 'Otevřít instalaci',
       acilisDiliBaslik: 'Jazyk při spuštění',
       acilisDiliAciklama: 'Po spuštění Heybe se první obrazovka zobrazí v tomto jazyce. Výchozí: English. Volba se uloží na tento disk, platí tedy na každém počítači.',
       acilisDiliStandart: 'English (výchozí)',
@@ -1057,7 +1117,7 @@
 
   // ---- açılış göstergesi (07.11 gece, Ercan'ın isteği): hangi parça hazır, ne kadar zaman geçti; bitince "hazır" ----
   // Dil ekranında da görünür. Ana ekrandaki "hazırlanıyor" satırına da aynı adımlar eklenir.
-  const acilis = { bas: Date.now(), kutuphane: false, anlam: false, sohbet: false };
+  const acilis = { bas: Date.now(), kutuphane: false, anlam: false, sohbet: false, modelEksik: false, modelSon: 0 };
   const acilisBitti = () => acilis.anlam && acilis.sohbet;
   function acilisAdimlari(m) {
     const a = m.acilisAdim || METIN.en.acilisAdim;
@@ -1066,10 +1126,10 @@
   function acilisYaz() {
     const m = METIN[dil] || METIN[ekranDili()] || METIN.en, d = $('acilisDurum');
     const sn = Math.floor((Date.now() - acilis.bas) / 1000);
-    d.className = 'durum' + (acilisBitti() ? ' hazir' : ' calisiyor');
-    d.querySelector('.dm').textContent = acilisBitti() ? m.acilisHazir
+    d.className = 'durum' + (acilisBitti() ? ' hazir' : acilis.modelEksik ? '' : ' calisiyor');
+    d.querySelector('.dm').textContent = acilisBitti() ? m.acilisHazir : acilis.modelEksik ? m.kurulumGerekKisa
       : `${m.acilisHazirlaniyor} — ${acilisAdimlari(m)}${sn > 360 ? ' · ' + m.acilisUzun : ''}`;
-    d.querySelector('.sure').textContent = acilisBitti() || sn < 1 ? '' : `⏱ ${sn}`;
+    d.querySelector('.sure').textContent = acilisBitti() || acilis.modelEksik || sn < 1 ? '' : `⏱ ${sn}`;
   }
   const acilisSayac = setInterval(() => { acilisYaz(); if (acilisBitti()) clearInterval(acilisSayac); }, 1000);
 
@@ -1077,8 +1137,11 @@
     if (!acilis.kutuphane) { try { await H.kitaplik(); acilis.kutuphane = true; } catch (e) { /* kütüphane açılıyor */ } }
     if (!acilis.anlam) acilis.anlam = await hazirMi(H.AYAR.gomme);
     if (!acilis.sohbet) acilis.sohbet = await hazirMi(H.AYAR.sohbet);
+    if (!acilisBitti() && Date.now() - acilis.modelSon > 5000) { acilis.modelSon = Date.now(); await modelleriYenile(); }
     acilisYaz();
-    if (dil && !acilisBitti() && durumAnahtari === 'hazirlaniyor') durumYaz('hazirlaniyor', ` (${acilisAdimlari(METIN[dil])})`);
+    if (dil && !acilisBitti() && ['hazirlaniyor', 'kurulumGerek'].includes(durumAnahtari)) {
+      if (acilis.modelEksik) durumYaz('kurulumGerek'); else durumYaz('hazirlaniyor', ` (${acilisAdimlari(METIN[dil])})`);
+    }
     if (acilisBitti()) {
       $('soru').disabled = false; $('sor').disabled = false;
       modellerHazir = true;
@@ -1344,6 +1407,7 @@
 
   async function kitaplikYenile() {
     acilisDiliKur();
+    modelleriYenile();
     const m = METIN[dil];
     try {
       disk = await (await fetch(`${API}/durum`, { cache: 'no-store' })).json();
@@ -1554,6 +1618,55 @@
     $('yanlisIndirSatir').hidden = !kayitlar.length;
   }
 
+  // ---- ilk kurulum: modeller (08.11, Özet §66) ----
+  // Yardımcı program eksik modelleri sırayla indirir, sağlamasını denetler ve inen anlam ve sohbet modelini kendisi açar.
+  let modelIzle = null, kurulumBasladi = false;
+  const MODEL_ADI = { anlam: 'kurulumAnlam', sohbet: 'kurulumSohbet', cevirmen: 'kurulumCevirmen' };
+  async function modelleriYenile() {
+    clearTimeout(modelIzle);
+    const m = METIN[dil] || METIN[ekranDili()] || METIN.en;
+    let d;
+    try { d = await (await fetch(`${API}/modeller`, { cache: 'no-store' })).json(); } catch (e) { return; }
+    const eksik = (d.modeller || []).filter((x) => !x.var);
+    acilis.modelEksik = eksik.length > 0;
+    $('kurulumNotu').hidden = !acilis.modelEksik;
+    $('modelKart').hidden = !acilis.modelEksik && !d.iniyor && !kurulumBasladi;
+    if ($('modelKart').hidden) return;
+    $('kurulumAciklama').textContent = m.kurulumAciklama(boyutYaz(d.eksikBoyut || 0));
+    $('kurulumKosul').innerHTML = `${yazi(m.kurulumKosul)} <a href="${yazi(d.kosullar)}" target="_blank" rel="noopener">${yazi(m.kurulumKosulBag)}</a>`;
+    const ml = $('modelListesi');
+    ml.innerHTML = '';
+    for (const x of d.modeller || []) {
+      const yuzde = x.boyut ? Math.floor((100 * x.inen) / x.boyut) : 0;
+      let alt = `${boyutYaz(x.boyut)} · ${x.var ? '✓ ' + yazi(m.kurulumHazir) : yazi((x.durum && m.durumlar[x.durum]) || m.kurulumEksik)}`;
+      if (!x.var && x.durum === 'iniyor') alt += ` · ${boyutYaz(x.inen)} (%${yuzde})${x.hiz ? ' · ' + boyutYaz(x.hiz) + '/s' : ''}`;
+      if (!x.var && x.hata) alt += `<br><span class="dur">${yazi(x.hata)}</span>`;
+      const li = satir(yazi(m[MODEL_ADI[x.ne]] || x.dosya), alt, []);
+      if (!x.var && x.durum === 'iniyor' && x.boyut) {
+        const p = document.createElement('progress');
+        p.max = 100; p.value = yuzde;
+        li.appendChild(p);
+      }
+      ml.appendChild(li);
+    }
+    const b = $('kurulumIndir');
+    b.textContent = m.kurulumIndir(boyutYaz(d.eksikBoyut || 0));
+    b.hidden = eksik.length === 0;
+    b.disabled = !!d.iniyor;
+    $('kurulumDurum').textContent = d.iniyor ? m.kurulumIniyor
+      : eksik.length === 0 ? (acilisBitti() ? m.acilisHazir : m.kurulumBitti) : $('kurulumDurum').textContent;
+    if (d.iniyor) modelIzle = setTimeout(modelleriYenile, 1500);
+  }
+  $('kurulumIndir').addEventListener('click', async () => {
+    const m = METIN[dil] || METIN[ekranDili()] || METIN.en;
+    if (!$('kurulumKabul').checked) { $('kurulumDurum').textContent = m.kurulumKabulEt; return; }
+    kurulumBasladi = true;
+    $('kurulumDurum').textContent = '';
+    try { await api('modeller', { kabul: true }); } catch (e) { $('kurulumDurum').textContent = m.hata + e.message; }
+    modelleriYenile();
+  });
+  $('kurulumBag').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('kitaplikEkrani'); kitaplikYenile(); });
+
   // ---- indirmeler ----
 
   let izleyici = null;
@@ -1564,6 +1677,7 @@
     const m = METIN[dil];
     let liste = [];
     try { liste = await (await fetch(`${API}/indirmeler`, { cache: 'no-store' })).json(); } catch (e) { return; }
+    liste = liste.filter((i) => !/\.gguf$/i.test(i.ad));   // modeller kendi kartında (ilk kurulum)
     $('indirmeKart').hidden = liste.length === 0;
     const il = $('indirmeListesi');
     il.innerHTML = '';

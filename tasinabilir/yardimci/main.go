@@ -120,6 +120,7 @@ func main() {
 	mux.Handle("/gomme/", vekil(*gommePort, "/gomme"))
 	mux.Handle("/cevirmen/", vekil(*cevirmenPort, "/cevirmen"))
 	cevirmen.port = *cevirmenPort
+	sohbetPortu, gommePortu = *sohbetPort, *gommePort // ilk kurulumda inen modeller bu kapılarda açılır (model.go)
 	kapanistaCevirmeniKapat()
 	mux.Handle("/benim/", http.StripPrefix("/benim/", dosyaSun(benimDir, true)))
 	mux.Handle("/heybe/", http.StripPrefix("/heybe/", dosyaSun(filepath.Join(kok, "heybe"), false)))
@@ -140,6 +141,7 @@ func main() {
 	mux.HandleFunc("/api/baglanti-dosya", apiBaglantiDosya) // bağlantıdan PDF, metin, resim: sayfanın dosya formuna gelir
 	mux.HandleFunc("/api/yanlis", apiYanlis)                // "bu cevap yanlış" kayıtları (Ö18, 07.11): bellekte kalır
 	mux.HandleFunc("/api/ayar", apiAyar)                    // açılış dili (07.11 gece): bellekte, bilgisayardan bağımsız
+	mux.HandleFunc("/api/modeller", apiModeller)            // ilk kurulum (08.11): eksik modelleri indirir ve açar
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -356,7 +358,8 @@ func apiDurum(w http.ResponseWriter, r *http.Request) {
 		}
 		cevap["kitaplar"] = liste
 	}
-	cevap["disKaynak"] = disKaynakOku() // Kiwix dışı kitaplar: dosya → {adres, imzali}
+	cevap["disKaynak"] = disKaynakOku()        // Kiwix dışı kitaplar: dosya → {adres, imzali}
+	cevap["modelEksik"] = len(eksikModeller()) // ilk kurulum (08.11): sayfa kurulum kartını gösterir
 	jsonYaz(w, 200, cevap)
 }
 
@@ -397,19 +400,20 @@ func apiKatalog(w http.ResponseWriter, r *http.Request) {
 // ---- indirme ----
 
 type indirme struct {
-	Ad       string  `json:"ad"`
-	Boyut    int64   `json:"boyut"`
-	Inen     int64   `json:"inen"`
-	Durum    string  `json:"durum"` // hazirlaniyor · iniyor · dogrulaniyor · ekleniyor · bitti · durdu · hata
-	Hata     string  `json:"hata,omitempty"`
-	Hiz      float64 `json:"hiz"` // bayt/sn
-	iptal    context.CancelFunc
-	meta4    string
-	kilit    sync.Mutex
-	sil      bool   // vazgeçildi: yarım dosya da silinsin
-	eski     string // güncelleme: yenisi doğrulanıp eklenince kaldırılacak eski kitap dosyası (Ö11)
-	dis      bool   // Kiwix dışı bağlantı (Ercan 07.11): kitaplıkta ve cevapta "Kiwix dışı" diye görünür
-	dogrudan bool   // .zim'in kendisine bağlantı: metalink ve imza yok
+	Ad        string  `json:"ad"`
+	Boyut     int64   `json:"boyut"`
+	Inen      int64   `json:"inen"`
+	Durum     string  `json:"durum"` // hazirlaniyor · iniyor · dogrulaniyor · ekleniyor · bitti · durdu · hata
+	Hata      string  `json:"hata,omitempty"`
+	Hiz       float64 `json:"hiz"` // bayt/sn
+	iptal     context.CancelFunc
+	meta4     string
+	kilit     sync.Mutex
+	sil       bool   // vazgeçildi: yarım dosya da silinsin
+	eski      string // güncelleme: yenisi doğrulanıp eklenince kaldırılacak eski kitap dosyası (Ö11)
+	dis       bool   // Kiwix dışı bağlantı (Ercan 07.11): kitaplıkta ve cevapta "Kiwix dışı" diye görünür
+	dogrudan  bool   // .zim'in kendisine bağlantı: metalink ve imza yok
+	parcaYolu string // model indirmesi (08.11, model.go): yarım dosya kütüphanede değil model klasöründe
 }
 
 var (
@@ -544,7 +548,11 @@ func apiIptal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if istek.Sil && i.Durum == "durdu" { // zaten durmuş: yarım dosyayı sil
-		os.Remove(filepath.Join(kutuphaneDir, i.Ad+".part"))
+		parca := filepath.Join(kutuphaneDir, i.Ad+".part")
+		if i.parcaYolu != "" {
+			parca = i.parcaYolu
+		}
+		os.Remove(parca)
 		i.yaz(func(i *indirme) { i.Inen = 0 })
 	}
 	i.yaz(func(i *indirme) { i.sil = istek.Sil })

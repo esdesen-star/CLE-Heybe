@@ -6,6 +6,8 @@
 # günlükler bilgisayarın geçici klasörüne gider. (06.11.2026 — Özet §27)
 KOK="$(cd "$(dirname "$0")" && pwd)"
 cd "$KOK" || exit 1
+# GitHub'dan indirilen paket karantinalı gelir: bu başlatıcıya izin verildiyse içindeki programlar da açılabilsin (08.11)
+xattr -dr com.apple.quarantine "$KOK" 2>/dev/null
 G="${TMPDIR:-/tmp}"
 if [ "$(uname -m)" = "arm64" ]; then P="$KOK/program/macos-arm64"; else P="$KOK/program/macos-x86_64"; fi
 LLAMA="$KOK/program/llamafile.exe"
@@ -42,15 +44,21 @@ done
 echo "kütüphane hazır: $(( $(date +%s) - BASLA )) sn"
 open "http://127.0.0.1:8888/"
 
-"$LLAMA" --server --host 127.0.0.1 --port 8081 --no-webui -m "$KOK/model/embeddinggemma-300M-Q8_0.gguf" \
-  --embedding -c 8192 -b 2048 -ub 2048 >"$G/heybe_anlam.log" 2>&1 &
-ANLAM=$!
-hazir_bekle http://127.0.0.1:8081 "$ANLAM" anlam
+# İlk kurulum (08.11, Özet §66): GitHub paketi modelsiz gelir. Model yoksa açılmaz; sayfa "Kitaplık ve ayarlar"da
+# indirmeyi önerir, yardımcı program inen modelleri kendisi açar.
+if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$KOK/model/gemma3-4b.gguf" ]; then
+  "$LLAMA" --server --host 127.0.0.1 --port 8081 --no-webui -m "$KOK/model/embeddinggemma-300M-Q8_0.gguf" \
+    --embedding -c 8192 -b 2048 -ub 2048 >"$G/heybe_anlam.log" 2>&1 &
+  ANLAM=$!
+  hazir_bekle http://127.0.0.1:8081 "$ANLAM" anlam
 
-"$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
-  -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
-SOHBET=$!
-hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+  "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
+    -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
+  SOHBET=$!
+  hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+else
+  echo "Modeller henüz kurulmadı. Sayfada: Kitaplık ve ayarlar → İlk kurulum (internet bir kez gerekir)."
+fi
 
 # Çevirmen (TranslateGemma) başlatıcıda açılmaz: sayfada "başka dillerdeki kaynaklara da bak" seçiliyse yardımcı
 # program gerekince açar ve kapanırken kapatır (06.11, Ercan'ın fikri — Özet §36). Açılış ~90 sn kısalır.

@@ -105,6 +105,7 @@ func kapanistaCevirmeniKapat() {
 	go func() {
 		<-s
 		cevirmenKapat()
+		modelSurecleriniKapat() // ilk kurulumda açılan modeller (model.go)
 		os.Exit(0)
 	}()
 }
