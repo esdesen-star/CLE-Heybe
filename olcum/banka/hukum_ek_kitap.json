@@ -1,0 +1,15 @@
+{
+ "Z13": ["doğru", "EK KİTAP: yağmur suyu ancak işlemden geçince içilir, kaynatmak mikrobu öldürür, işlenmezse sağlık sorunu (Appropedia)"],
+ "X11": ["doğru", "EK KİTAP: yavaşça geri çekil, ısrar ederse gürültü yap ve büyük görün, yaklaşırsa yerinde dur, sakin ol, ayı spreyi (Outdoors SE)"],
+ "X12": ["doğru", "EK KİTAP: fener ya da düdükle üç kısa, üç uzun, üç kısa (Outdoors SE)"],
+ "X13": ["doğru", "EK KİTAP: PASS — pimi çek, alevin dibine yönelt, sık, süpür"],
+ "X16": ["yanlış", "EK KİTAP: 'yakıtın yetiyorsa motorla ısın', 'motora kaynar su dök' — kaynaktaki 'ara ara havalandır, karbonmonoksit zehirlenmesi' uyarısını model ATLADI; egzoz kontrolü yok (sınırda tehlikeli)"],
+ "W01": ["kısmen", "EK KİTAP: 'derin yarada dikiş önerilir', dikiş türleri — bastırma ve ölçütler (kenar ayrık, kanama durmuyor) yok"],
+ "W03": ["kısmen", "EK KİTAP: buz değil soğuk kompres, antihistamin, acil tıbbi yardım doğru; 'Sawyer pompasıyla zehri çek' önerilmez"],
+ "W04": ["kısmen", "EK KİTAP (yaban köpekleri sorusundan): koşma, sertçe bağır, saldırırsa karşılık ver — doğru çekirdek; 'yüzün dönük geri çekil' yok, gaur satırı alakasız"],
+ "W08": ["doğru", "EK KİTAP: kayak ve batonları bırak, yüzeyde kalmaya çalış, yüzünün önünde hava boşluğu aç, sakin kal (çeviri 'çığ'ı 'kar pusulası' yazdı)"],
+ "W13": ["yanlış", "EK KİTAP: 'ŞİMŞEK ÇARPANA ASLA DOKUNMAYIN' — kaynak Ready.gov'un YANLIŞ İNANIŞLAR listesiydi, model efsaneyi öğüt sandı; ikinci satır 'elektrik yükü yok, hemen müdahale' — çelişkili, yardımı geciktirebilir (tuzak)"],
+ "W17": ["yanlış", "EK KİTAP: alevsiz ısıtıcı torbası, ocak çakmağı onarımı — alakasız"],
+ "W23": ["kısmen", "EK KİTAP: yanık bakımı (giysiyi çıkar, 10–15 dk soğuk su, kabarcığı patlatma, 911) doğru ama önce 'dur, yere yat, yuvarlan' ile söndürme yok (0.12.0'da vardı)"],
+ "W27": ["doğru", "EK KİTAP: akıntıya karşı yüzme, kıyıya paralel yüz, olmazsa bekle ve yardım iste, can yeleği (Wikivoyage su güvenliği)"]
+}

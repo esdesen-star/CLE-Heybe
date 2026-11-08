@@ -1,0 +1,96 @@
+CLE Heybe — lisanslar · licences · licence
+==========================================
+
+TÜRKÇE
+Bu bellekteki parçalar kendi lisanslarıyla gelir:
+- Gemma 3 4B, EmbeddingGemma 300M ve TranslateGemma 4B (Google): Gemma Kullanım Koşulları.
+  Kullanım kısıtları her kullanıcı için geçerlidir. Bkz. NOTICE.txt,
+  Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
+- llamafile 0.10.6 (Mozilla): Apache 2.0; içindeki llama.cpp: MIT.
+- kiwix-serve ve kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
+  Kaynak kodu: https://github.com/kiwix/kiwix-tools
+- pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Vikipedi içeriği: CC BY-SA 4.0, yazarları Vikipedi katkıcıları.
+  Çevrim dışı paket: Kiwix / openZIM. Heybe sınav kitapları da Vikipedi'den
+  alınmıştır (CC BY-SA 4.0).
+- Heybe'nin kendi kodu (sayfa, Heybe arkadaşı, yardımcı program): CLE —
+  Can · LM · Ercan. Açık kaynaktır: Apache 2.0 lisansıyla özgürce kopyalanır,
+  değiştirilir ve dağıtılır (CLE_Heybe_Apache-2.0.txt).
+
+SORUMLULUK
+- Geliştirici yalnız çekirdeği sunar: Heybe (sayfa, Heybe arkadaşı,
+  yardımcı program) ve çevirmen. Çekirdeği, içindeki her parçanın kendi
+  lisansına uyarak (yukarıdaki liste) kopyalayıp başkalarına verebilirsin.
+- Kitaplık kullanıcınındır. Belleğe indirdiğin, kopyaladığın ya da
+  eklediğin her kitabın ve dosyanın sorumluluğu sana aittir. Bunları
+  başkalarına kopyalarsan, o içeriklerin lisansına ve telif kurallarına
+  uymak da senin sorumluluğundadır.
+- Heybe garanti vermez; cevapları yanlış ya da eksik olabilir. Sağlık,
+  hukuk ya da güvenlik kararlarında bir uzmana danış. Acil durumda
+  bulunduğun ülkenin acil numarasını ara. Örnekler: Türkiye ve Avrupa
+  Birliği 112 · Norveç ambulans 113 (polis 112) · Birleşik Krallık 999 ·
+  ABD ve Kanada 911 · Avustralya 000 · Hindistan 112 · Çin ambulans 120.
+  Kendi bölgenin numarasını Heybe'ye kendi notun olarak ekleyebilirsin.
+
+ENGLISH
+The parts on this stick come with their own licences:
+- Gemma 3 4B, EmbeddingGemma 300M and TranslateGemma 4B (Google): Gemma Terms of Use.
+  The use restrictions apply to every user. See NOTICE.txt,
+  Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
+- llamafile 0.10.6 (Mozilla): Apache 2.0; the included llama.cpp: MIT.
+- kiwix-serve and kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
+  Source code: https://github.com/kiwix/kiwix-tools
+- pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Wikipedia content: CC BY-SA 4.0, by the Wikipedia contributors.
+  Offline package: Kiwix / openZIM. The Heybe test books are taken from
+  Wikipedia too (CC BY-SA 4.0).
+- Heybe's own code (page, Heybe friend, helper program): CLE —
+  Can · LM · Ercan. Open source under the Apache License 2.0: free to copy,
+  change and share (CLE_Heybe_Apache-2.0.txt).
+
+RESPONSIBILITY
+- The developers provide only the core: Heybe (page, Heybe friend, helper
+  program) and the translator. You may copy the core and give it to others,
+  following the licence of each part (list above).
+- The library belongs to the user. You are responsible for every book and
+  file you download, copy or add to the stick. If you copy them to others,
+  following the licence and copyright rules of that content is also your
+  responsibility.
+- Heybe comes with no warranty; its answers can be wrong or incomplete.
+  For health, legal or safety decisions, ask an expert. In an emergency,
+  call the emergency number of the country you are in. Examples: Türkiye
+  and the European Union 112 · Norway ambulance 113 (police 112) · United
+  Kingdom 999 · USA and Canada 911 · Australia 000 · India 112 · China
+  ambulance 120. You can add your own area's number to Heybe as your own note.
+
+ČESKY
+Části na tomto disku mají vlastní licence:
+- Gemma 3 4B, EmbeddingGemma 300M a TranslateGemma 4B (Google): Gemma Terms of Use.
+  Omezení použití platí pro každého uživatele. Viz NOTICE.txt,
+  Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
+- llamafile 0.10.6 (Mozilla): Apache 2.0; obsažený llama.cpp: MIT.
+- kiwix-serve a kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
+  Zdrojový kód: https://github.com/kiwix/kiwix-tools
+- pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Obsah Wikipedie: CC BY-SA 4.0, autoři: přispěvatelé Wikipedie.
+  Offline balíček: Kiwix / openZIM. Zkušební knihy Heybe jsou také
+  z Wikipedie (CC BY-SA 4.0).
+- Vlastní kód Heybe (stránka, pomocník Heybe, pomocný program): CLE —
+  Can · LM · Ercan. Je otevřený pod licencí Apache 2.0: lze jej volně
+  kopírovat, měnit a šířit (CLE_Heybe_Apache-2.0.txt).
+
+ODPOVĚDNOST
+- Vývojáři poskytují jen jádro: Heybe (stránka, pomocník Heybe, pomocný
+  program) a překladač. Jádro můžete kopírovat a předávat dalším, pokud
+  dodržíte licenci každé jeho části (seznam výše).
+- Knihovna patří uživateli. Za každou knihu a každý soubor, který na disk
+  stáhnete, zkopírujete nebo přidáte, odpovídáte vy. Když je zkopírujete
+  dalším, dodržení licence a autorských práv tohoto obsahu je také vaší
+  odpovědností.
+- Heybe neposkytuje žádnou záruku; jeho odpovědi mohou být chybné nebo
+  neúplné. Při rozhodnutích o zdraví, právu nebo bezpečnosti se poraďte
+  s odborníkem. V nouzi volejte tísňové číslo země, kde jste. Příklady:
+  Česko a Evropská unie 112 (záchranka také 155) · Turecko 112 · Norsko
+  záchranka 113 (policie 112) · Spojené království 999 · USA a Kanada 911 ·
+  Austrálie 000 · Indie 112 · Čína záchranka 120. Číslo svého okolí si
+  můžete do Heybe přidat jako vlastní poznámku.

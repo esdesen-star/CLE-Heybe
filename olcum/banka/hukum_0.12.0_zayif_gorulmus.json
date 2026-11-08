@@ -1,0 +1,8 @@
+{
+ "K3b": ["kısmen", "Zayıf Türkçe havuz (0,425) → köprü: uygun giysi, titremenin biyolojisi; ıslak giysiyi çıkar, yavaş ısıt, ovma yok — eksik"],
+ "K9b": ["durdu", "otomatik: ikinci göz. İçerik yanlış: tuzlu gargara / burun yıkama tarifleri, ORS'nin şekerli ev tarifi yok"],
+ "Y16": ["yanlış", "Zayıf havuz (0,429) → köprü: 'duman görüşü engeller', 'ekipler yaralıyı uzaklaştırır' — yere yakın çık, kapıyı yokla yok; ama Heimlich (0.9.0) gitti, zararsız"],
+ "Z21": ["doğru", "Zayıf havuz (0,407) → köprü: haftada 2–3 porsiyon az metil cıvalı balık; köpek balığı, kral uskumru, palamut sınırlı (Nutrition and pregnancy)"],
+ "X11": ["bilgi yok", "Zayıf havuz (0,402) → köprü: 'ayı ile karşılaşmada bilgi bulunmamaktadır' (sabit cümle değil ama dürüst); arı sokması öğüdü gitti"],
+ "Z24": ["bilgi yok", "KONTROL: zayıf havuz (0,432) → iki deneme de bilgi yok; film karakteri adı gitti"]
+}

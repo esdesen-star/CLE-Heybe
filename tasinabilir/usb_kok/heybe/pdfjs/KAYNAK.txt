@@ -1,0 +1,4 @@
+pdf.js (pdfjs-dist 4.10.38) — Mozilla, Apache-2.0 lisansı (LICENSE.txt).
+Kaynak: https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-4.10.38.tgz
+Bütünlük: sha512-/Y3fcFrXEAsMjJXeL9J8+ZG9U01LbuWaYypvDW2ycW1jL269L3js3DVBjDJ0Up9Np1uqDXsDrRihHANhZOlwdQ==
+Heybe bunu yalnız kullanıcının yüklediği PDF dosyasından metin çıkarmak için kullanır (tarayıcıda, internetsiz).

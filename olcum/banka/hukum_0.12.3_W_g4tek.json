@@ -1,0 +1,5 @@
+{
+ "W04": ["yanlış", "Gemma 4 E2B tek model (§58): kurtta kuduz bilgisi; ne yapılacağı (koşma, büyük görün, yavaşça geri çekil) yok"],
+ "W23": ["yanlış", "Gemma 4 E2B tek model (§58): yangına dayanıklı giysi anlatılıyor; dur-yat-yuvarlan ve örtüyle boğmak yok (büyük Heybe bunu doğru vermişti)"],
+ "W30": ["kısmen", "Gemma 4 E2B tek model (§58): Norveççeyi kendisi çevirdi; uyluğun ön-dış yanına kas içi, 5–15 dakikada tekrar; 113 ve kalemin kullanımı yok"]
+}

@@ -1,0 +1,72 @@
+CLE Heybe — çevrim dışı bilgi heybesi
+=====================================
+English: READ_ME.txt   ·   Česky: PRECTI_SI.txt
+49 dilde kısa başlangıç: START_ALL_LANGUAGES.txt
+
+HEYBE NEDİR
+Heybe bir bilgisayar gibidir. Bellekte iki şey hazır gelir: soruları
+cevaplayan Heybe ve çevirmen. Gerisi senin: belleğin boş yerine istediğin
+kitapları, kendi notlarını, resimlerini koyarsın.
+
+AÇMAK
+- Mac: "Heybe_Mac.command" dosyasına çift tıkla.
+  İlk kez açarken Mac sorarsa: dosyaya sağ tıkla → Aç.
+- Windows (10 ya da 11, 64 bit): "Heybe_Windows.bat" dosyasına çift tıkla.
+  Windows uyarı verirse: "Ek bilgi" → "Yine de çalıştır".
+- Linux (x86_64 ya da Raspberry Pi gibi ARM, 64 bit): belleğin klasöründe bir terminal aç ve yaz: sh Heybe_Linux.sh
+  (Linux için henüz denenmedi — denersen sonucu bize yaz.)
+- Tarayıcıda Heybe açılır. Önce dilini seç: 49 dil eşit sırayla dizilir.
+  Yanında ✓ olan dilde bellekte kitap ya da dosya var. Ekran yazıları
+  çoğu dilde makine çevirisidir, henüz denenmedi. Kitaplık hemen hazırdır.
+  Soruları cevaplayan Heybe belleğin hızına göre 1–2 dakikada açılır.
+  Çevirmen yalnız gerekince, "Başka dillerdeki kaynaklara da bak"
+  işaretliyse arkada açılır ve birkaç dakika sonra katılır.
+- ACİL KART: açılışın ilk saniyesinde görünür. İçinde ülkelerin acil
+  numaraları ve senin kendi kartın var. Kartına toplanma yerini,
+  ilaçlarını, alerjilerini, yakınlarının numaralarını yaz ("Acil
+  kartımı yaz"). Kart bu bellekte kalır, internete gitmez.
+- Kapatmak için siyah pencerede Enter'a / bir tuşa bas. Pencereyi çarpıyla
+  kapatma. Belleği çekmeden önce bilgisayarda "çıkar" de.
+
+HEYBE'YE SOR
+- Heybe yalnız bellekteki kaynaklardan cevap verir, kaynakları da
+  gösterir. Kaynakta yoksa "bilmiyorum" der.
+- Önce senin dilindeki kitaplarda arar. Orada yoksa bellekteki başka
+  dillerdeki kitaplara ve dosyalara bakar, cevabı senin diline çevirir.
+  O zaman kaynağın yanında "çevrildi" yazar; özgün cevabı da açıp
+  okuyabilirsin. Çeviri hata yapabilir: önemli bilgide kaynağa bak.
+- Cevaptaki sayıları kaynakla karşılaştırır. Kaynakta olmayan bir sayı
+  görürse, ya da çeviri sorunun konusunu kaybederse, cevabı durdurur ve
+  kaynakları gösterir.
+- Bir cevap yanlış ya da eksikse altındaki "Bu cevap yanlış ya da eksik"
+  düğmesine bas, istersen doğrusunu yaz. Kayıt yalnız bu bellekte kalır,
+  hiçbir yere gönderilmez; Kitaplık sayfasında görürsün, indirip Heybe'yi
+  geliştirenlere verebilirsin. Yeni sürümde bu sorular yeniden sorulur.
+
+KİTAPLIK — boş yer senin
+- Açılış sayfasındaki "Kitaplık ve ayarlar" düğmesi. Sayfanın başında bir
+  kılavuz var. Kitabı olmayan bir dil seçersen Heybe o dil için hazır
+  ücretsiz kitap listesi önerir; tek tıkla iner.
+- "Kitap listem": istediğin kitapların adını yaz ya da hazır listelerden
+  ekle. "Kendiliğinden" seçiliyse Heybe internet buldukça eksikleri
+  indirir, yeni sürümleri getirir (yenisi doğrulanınca eskisi kaldırılır).
+- Her kitabın yanında sağlık işareti: aranabiliyor mu, okunuyor mu.
+- "Bağlantıdan ekle": başka sitedeki .zim kitabı ya da PDF, metin, resim.
+  Kiwix dışından gelen kitap "Kiwix dışı" diye işaretlenir.
+- "Kitaplık" bölümünden internet varken her dilde kitap indirebilirsin.
+  Bir kitabı tek dilde indirmen yeter; Heybe gerekirse çevirir. İnen her
+  kitap eksiksiz ve bozulmadan geldi mi diye denetlenir.
+- Kendi PDF, metin, resim ve videolarını ekleyebilirsin. Örneğin
+  bölgendeki toplanma alanları, ailenin ilaç listesi, kendi notların.
+  Bunlar bellekte kalır, internete gitmez. Heybe onlardan da cevap
+  verir ve cevapta "Senin dosyan" diye gösterir.
+- Resim ve videoya kısa bir açıklama yaz: Heybe onları açıklamadan bulur.
+- Taranmış PDF'lerin (sayfası resim olan) yazısını henüz okuyamıyor.
+- "kutuphane" klasörüne kendin bir .zim kitabı kopyalarsan Heybe onu da görür.
+- Bellekteki "Heybe sınav kitabı" adlı üç küçük kitap (Türkçe, Çekçe,
+  Çince) köprüyü denemek içindir; istersen Kitaplık'tan kaldırabilirsin.
+
+Lisanslar ve sorumluluk: LISANSLAR klasörü. Kitaplığın ve dosyalarının
+sorumluluğu sende; Heybe garanti vermez.
+
+CLE — Can · LM · Ercan

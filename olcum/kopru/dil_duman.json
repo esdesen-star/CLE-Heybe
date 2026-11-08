@@ -1,0 +1,51 @@
+[
+ {
+  "no": 1,
+  "dil": "de",
+  "soru": "Was ist die Hauptstadt der Türkei?",
+  "beklenen": "Ankara",
+  "kaynak": "tr"
+ },
+ {
+  "no": 2,
+  "dil": "ar",
+  "soru": "ما هي عاصمة تركيا؟",
+  "beklenen": "أنقرة (Ankara)",
+  "kaynak": "tr"
+ },
+ {
+  "no": 3,
+  "dil": "ja",
+  "soru": "トルコの首都はどこですか？",
+  "beklenen": "アンカラ (Ankara)",
+  "kaynak": "tr"
+ },
+ {
+  "no": 4,
+  "dil": "sw",
+  "soru": "Mji mkuu wa Uturuki ni upi?",
+  "beklenen": "Ankara",
+  "kaynak": "tr"
+ },
+ {
+  "no": 5,
+  "dil": "no",
+  "soru": "Hva er hovedstaden i Tsjekkia?",
+  "beklenen": "Praha / Praha",
+  "kaynak": "cs"
+ },
+ {
+  "no": 6,
+  "dil": "hi",
+  "soru": "चेक गणराज्य की राजधानी क्या है?",
+  "beklenen": "प्राग (Prag)",
+  "kaynak": "cs"
+ },
+ {
+  "no": 7,
+  "dil": "es",
+  "soru": "¿Cuál es la ciudad más poblada de Turquía?",
+  "beklenen": "Estambul",
+  "kaynak": "tr"
+ }
+]

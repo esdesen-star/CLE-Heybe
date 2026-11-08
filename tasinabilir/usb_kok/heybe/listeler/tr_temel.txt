@@ -1,0 +1,4 @@
+# CLE Heybe hazır listesi — Türkçe temel (~640 MB) · 07.11.2026
+# Liste yalnız kitap adı taşır; kitabı her kullanıcı Kiwix kataloğundan kendisi indirir.
+wikipedia_tr_top_nopic   # Vikipedi'nin en iyi Türkçe makaleleri, resimsiz (620 MB)
+wikibooks_tr_all_nopic   # Vikikitap: Türkçe ders ve el kitapları, resimsiz (17 MB)

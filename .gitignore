@@ -1,0 +1,14 @@
+# CLE Heybe — yayına girmeyenler (modeller, kitaplar, derlenmiş programlar, ölçüm çıktıları)
+*.gguf
+*.zim
+*.part
+*.meta4
+tasinabilir/indirilen/
+tasinabilir/kiwix/
+tasinabilir/usb_kok/program/
+tasinabilir/usb_kok/heybe/index.html
+tasinabilir/usb_kok/kutuphane/
+tasinabilir/usb_kok/heybe/benim/
+olcum/kaynak/
+olcum/.venv/
+.DS_Store

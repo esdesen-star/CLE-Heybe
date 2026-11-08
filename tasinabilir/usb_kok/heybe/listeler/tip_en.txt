@@ -1,0 +1,4 @@
+# CLE Heybe ready list — Medicine, English (~3.4 GB) · 07.11.2026
+# A list carries only book names; every user downloads the books from the Kiwix catalog themselves.
+mdwiki_en_all_maxi          # WikiProject Medicine encyclopedia, with pictures (2.3 GB)
+wikipedia_en_medicine_nopic # Wikipedia medicine articles, no pictures (1.0 GB)

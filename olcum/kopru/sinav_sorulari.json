@@ -1,0 +1,86 @@
+[
+ {
+  "no": 1,
+  "dil": "cs",
+  "soru": "Které je nejlidnatější město Turecka?",
+  "beklenen": "İstanbul",
+  "kaynak": "tr"
+ },
+ {
+  "no": 2,
+  "dil": "cs",
+  "soru": "Kolik obyvatel má Istanbul?",
+  "beklenen": "15,7 milyonu aşan nüfus",
+  "kaynak": "tr"
+ },
+ {
+  "no": 3,
+  "dil": "cs",
+  "soru": "Jaké je hlavní město Turecka?",
+  "beklenen": "Ankara",
+  "kaynak": "tr"
+ },
+ {
+  "no": 4,
+  "dil": "tr",
+  "soru": "Çekya'nın başkenti ve en büyük şehri neresidir?",
+  "beklenen": "Prag (Praha)",
+  "kaynak": "cs"
+ },
+ {
+  "no": 5,
+  "dil": "tr",
+  "soru": "Çekya'nın ikinci büyük şehri hangisidir?",
+  "beklenen": "Brno",
+  "kaynak": "cs"
+ },
+ {
+  "no": 6,
+  "dil": "tr",
+  "soru": "Prag'da kaç kişi yaşıyor?",
+  "beklenen": "yaklaşık 1,4 milyon",
+  "kaynak": "cs"
+ },
+ {
+  "no": 7,
+  "dil": "tr",
+  "soru": "Çin'in 2025 yılındaki dış ticaret fazlası ne kadardı?",
+  "beklenen": "rekor, bir trilyon doları aşan fazla",
+  "kaynak": "zh"
+ },
+ {
+  "no": 8,
+  "dil": "tr",
+  "soru": "Çin'de 2000 yılında kişi başına düşen gelir ne kadardı?",
+  "beklenen": "959 dolar (GSYİH 1,2 trilyon dolar)",
+  "kaynak": "zh"
+ },
+ {
+  "no": 9,
+  "dil": "en",
+  "soru": "What is the second largest city in the Czech Republic?",
+  "beklenen": "Brno",
+  "kaynak": "cs"
+ },
+ {
+  "no": 10,
+  "dil": "cs",
+  "soru": "Jaký byl obchodní přebytek Číny v roce 2025?",
+  "beklenen": "rekordní přebytek přes bilion dolarů",
+  "kaynak": "zh"
+ },
+ {
+  "no": 11,
+  "dil": "tr",
+  "soru": "İzmir nüfus bakımından Türkiye'nin kaçıncı büyük şehridir?",
+  "beklenen": "üçüncü (kendi dilinde, köprüsüz)",
+  "kaynak": "tr"
+ },
+ {
+  "no": 12,
+  "dil": "tr",
+  "soru": "Çekya'nın 2025 yılındaki ekonomik büyüme oranı nedir?",
+  "beklenen": "bilinmiyor — hiçbir kitapta yok, bilmiyorum demeli",
+  "kaynak": "-"
+ }
+]

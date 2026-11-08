@@ -1,0 +1,3 @@
+# CLE Heybe ferdig liste — Norsk grunnlag (~600 MB) · 07.11.2026
+# En liste har bare boknavn; hver bruker laster ned bøkene fra Kiwix-katalogen selv.
+wikipedia_nb_top_nopic      # De beste artiklene i norsk (bokmål) Wikipedia, uten bilder (596 MB)

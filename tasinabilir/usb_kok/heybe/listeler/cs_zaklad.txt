@@ -1,0 +1,4 @@
+# CLE Heybe hotový seznam — Česky základ (~920 MB) · 07.11.2026
+# Seznam nese jen názvy knih; každý uživatel si knihy stáhne z katalogu Kiwix sám.
+wikipedia_cs_top_nopic      # Nejlepší články české Wikipedie, bez obrázků (607 MB)
+wikiskripta_cs_all_maxi     # WikiSkripta: lékařská a zdravotnická skripta (317 MB)

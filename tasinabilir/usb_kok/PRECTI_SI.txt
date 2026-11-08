@@ -1,0 +1,76 @@
+CLE Heybe — offline batoh znalostí
+==================================
+("Heybe" je turecky sedlová brašna.)
+Türkçe: BENI_OKU.txt   ·   English: READ_ME.txt
+Jak spustit, ve 49 jazycích: START_ALL_LANGUAGES.txt
+
+CO JE HEYBE
+Heybe je jako počítač. Na disku jsou připravené dvě věci: Heybe, který
+odpovídá na otázky, a překladač. Zbytek je váš: volné místo zaplníte
+knihami, poznámkami a obrázky, které chcete.
+
+SPUŠTĚNÍ
+- Mac: dvakrát klikněte na "Heybe_Mac.command".
+  Když ho Mac poprvé zablokuje: pravé tlačítko na souboru → Otevřít.
+- Windows (10 nebo 11, 64 bit): dvakrát klikněte na "Heybe_Windows.bat".
+- Linux (x86_64 nebo 64bitový ARM jako Raspberry Pi): otevřete terminál ve složce disku a napište: sh Heybe_Linux.sh
+  (Na Linuxu zatím nevyzkoušeno.)
+  Při varování: "Další informace" → "Přesto spustit".
+- V prohlížeči se otevře Heybe. Nejdřív vyberte jazyk: všech 49 jazyků je
+  uvedeno rovnocenně. ✓ u jazyka znamená, že na disku jsou knihy nebo
+  soubory v tomto jazyce. Texty na obrazovce jsou ve většině jazyků
+  strojově přeložené, zatím nevyzkoušené. Knihovna je hned připravena.
+  Heybe, který odpovídá na otázky, se spustí za 1–2 minuty podle disku.
+  Překladač se spustí jen v případě potřeby (když je zaškrtnuto
+  "Hledat i ve zdrojích v jiných jazycích") a připojí se o pár minut později.
+- NOUZOVÁ KARTA: zobrazí se hned v první sekundě. Obsahuje tísňová čísla
+  několika zemí a vaši vlastní kartu. Napište si na ni místo setkání, své
+  léky, alergie a telefonní čísla blízkých ("Napsat nouzovou kartu"). Karta zůstává
+  na tomto disku a nikdy nejde na internet.
+- Pro ukončení stiskněte Enter / libovolnou klávesu v černém okně. Okno
+  nezavírejte křížkem. Před vytažením disk v počítači bezpečně odeberte.
+
+ZEPTEJTE SE HEYBE
+- Heybe odpovídá jen ze zdrojů na tomto disku a ukáže je.
+  Když to zdroje neříkají, řekne, že neví.
+- Nejdřív hledá v knihách ve vašem jazyce. Když tam odpověď není, podívá
+  se do knih a souborů v jiných jazycích na disku a odpověď přeloží do
+  vašeho jazyka. U zdroje pak stojí "odpověď přeložena" a můžete si otevřít
+  původní odpověď. Překlad může chybovat: u důležitých informací se
+  podívejte do zdroje.
+- Čísla v odpovědi porovná se zdroji. Když uvidí číslo, které ve zdrojích
+  není, nebo když překlad ztratí téma otázky, odpověď zastaví a ukáže zdroje.
+- Je-li odpověď špatná nebo neúplná, klikněte pod ní na „Tato odpověď je
+  špatná nebo neúplná“ a případně napište, jak je to správně. Záznam zůstane
+  jen na tomto disku a nikam se neodesílá; najdete ho na stránce Knihovna,
+  můžete ho stáhnout a předat lidem, kteří Heybe vyvíjejí. V další verzi se
+  tyto otázky položí znovu.
+
+KNIHOVNA — volné místo je vaše
+- Tlačítko „Knihovna a nastavení“ na úvodní stránce. Nahoře na té stránce
+  je průvodce. Když zvolíte jazyk bez knih, Heybe nabídne hotový seznam
+  volných knih; stáhne se jedním kliknutím.
+- „Můj seznam knih“: napište názvy knih nebo přidejte hotový seznam. Je-li
+  zaškrtnuto „automaticky“, Heybe při připojení stáhne chybějící knihy
+  a přinese nové verze (stará se odstraní po ověření nové).
+- U každé knihy je značka stavu: dá se prohledávat, dá se číst.
+- „Přidat z odkazu“: kniha .zim z jiného webu nebo PDF, text, obrázek.
+  Kniha mimo Kiwix se označí „mimo Kiwix“.
+- V části "Knihovna" můžete při připojení k internetu stahovat knihy
+  v jakémkoli jazyce. Každou knihu stačí mít v jednom jazyce; Heybe ji
+  podle potřeby přeloží. U každé stažené knihy se ověří, že dorazila celá.
+- Můžete přidávat vlastní PDF, texty, obrázky a videa — třeba
+  shromaždiště ve vašem okolí, seznam léků vaší rodiny nebo vlastní
+  poznámky. Zůstanou na disku a na internet nejdou. Heybe z nich také
+  odpovídá a označí je jako "Váš soubor".
+- K obrázku a videu napište krátký popis: Heybe je najde podle popisu.
+- Naskenované PDF (stránky jsou jen obrázky) zatím přečíst neumí.
+- Když sami zkopírujete knihu .zim do složky "kutuphane" (knihovna),
+  Heybe ji také najde.
+- Tři malé "zkušební knihy Heybe" (turecká, česká, čínská) slouží
+  k vyzkoušení jazykového mostu; v části "Knihovna" je můžete odebrat.
+
+Licence a odpovědnost: složka LISANSLAR. Za knihovnu a soubory odpovídáte
+vy; Heybe neposkytuje žádnou záruku.
+
+CLE — Can · LM · Ercan

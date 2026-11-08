@@ -1,0 +1,12 @@
+CLE Heybe
+Copyright 2026 CLE Heybe contributors (Ercan · Can · LM)
+Licensed under the Apache License, Version 2.0 — see CLE_Heybe_Apache-2.0.txt.
+
+Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms
+
+This stick contains these Gemma models, unmodified:
+- Gemma 3 4B (model/gemma3-4b.gguf, quantized GGUF)
+- EmbeddingGemma 300M (model/embeddinggemma-300M-Q8_0.gguf)
+- TranslateGemma 4B (model/translategemma-4b.gguf, quantized GGUF by mradermacher)
+The use restrictions of the Gemma Prohibited Use Policy apply to every user:
+see Gemma_Terms_of_Use.txt and Gemma_Prohibited_Use_Policy.txt in this folder.

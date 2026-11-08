@@ -1,0 +1,299 @@
+CLE Heybe — START · BAŞLA · START
+Full guides: READ_ME.txt (English) · BENI_OKU.txt (Türkçe) · PRECTI_SI.txt (Čeština).
+Below: how to start Heybe in 49 languages. Most are machine translated and not checked yet.
+(When the page is open, Heybe and its guide are in your language.)
+Linux (all languages): open a terminal in this folder and type  sh Heybe_Linux.sh   (not tested yet)
+
+=== English (en) ===
+- CLE Heybe — offline knowledge bag. It works without internet.
+- To start: on a Mac double-click Heybe_Mac.command, on Windows double-click Heybe_Windows.bat.
+- A page opens in the browser. Choose your language and wait until it says "Heybe is ready ✓" (1–3 minutes).
+- Heybe answers only from the books on this USB drive and shows its sources. It is not a doctor: in an emergency, call your local emergency number.
+
+=== Türkçe (tr) ===
+- CLE Heybe — çevrim dışı bilgi heybesi. İnternetsiz çalışır.
+- Başlatmak için: Mac'te Heybe_Mac.command dosyasına, Windows'ta Heybe_Windows.bat dosyasına çift tıkla.
+- Tarayıcıda bir sayfa açılır. Dilini seç ve "Heybe is ready ✓" yazısını bekle (1–3 dakika).
+- Heybe yalnız bu bellekteki kitaplardan cevap verir ve kaynaklarını gösterir. Doktor değildir: acil durumda bulunduğun yerin acil numarasını ara.
+
+=== Čeština (cs) ===
+- CLE Heybe — offline zásoba vědomostí. Funguje bez internetu.
+- Spuštění: na Macu dvakrát klikněte na Heybe_Mac.command, ve Windows na Heybe_Windows.bat.
+- V prohlížeči se otevře stránka. Vyberte jazyk a počkejte, až se objeví "Heybe is ready ✓" (1–3 minuty).
+- Heybe odpovídá jen z knih na tomto disku a ukazuje zdroje. Není to lékař: v naléhavém případě volejte místní tísňové číslo.
+
+=== Català (ca) · machine translation ===
+- CLE Heybe: una "bústia" de coneixement per a l'ús offline. Funciona sense connexió a internet.
+- Per començar: a un Mac, feu doble clic a Heybe_Mac.command, i a Windows, feu doble clic a Heybe_Windows.bat.
+- S'obre una pàgina al navegador. Seleccioneu el vostre idioma i espereu que apareixi el missatge "Heybe is ready ✓" (entre 1 i 3 minuts).
+- Heybe respon només amb la informació que es troba als llibres que hi ha a aquesta unitat USB i mostra les seves fonts. No és un metge: en cas d'emergència, truqueu al número d'emergència local.
+
+=== Dansk (da) · machine translation ===
+- CLE Heybe — en offline videnbank. Den fungerer uden internetforbindelse.
+- For at starte: på en Mac, dobbeltklik på Heybe_Mac.command, på Windows, dobbeltklik på Heybe_Windows.bat.
+- En side åbner i browseren. Vælg dit sprog og vent, indtil den viser "Heybe is ready ✓" (1–3 minutter).
+- Heybe svarer kun ud fra de bøger, der er på denne USB-nøgle, og viser sine kilder. Det er ikke en læge: i en nødsituation, ring til dit lokale alarmnummer.
+
+=== Deutsch (de) · machine translation ===
+- CLE Heybe – ein Offline-Wissensspeicher. Er funktioniert ohne Internetverbindung.
+- Um zu beginnen: Auf einem Mac doppelklicken Sie auf Heybe_Mac.command, auf einem Windows-Computer doppelklicken Sie auf Heybe_Windows.bat.
+- Eine Seite wird im Browser geöffnet. Wählen Sie Ihre Sprache und warten Sie, bis die Meldung ""Heybe is ready ✓"" angezeigt wird (1–3 Minuten).
+- Heybe beantwortet nur Fragen, die in den Büchern auf diesem USB-Stick enthalten sind, und nennt seine Quellen. Es ist kein Arzt: im Notfall wählen Sie die Nummer Ihres lokalen Notrufzentrums.
+
+=== Eesti (et) · machine translation ===
+- CLE Heybe — offline teadmiste püss. See töötab ilma interneti kasutamata.
+- Alustamiseks: Mac-il vajutage kaks korda Heybe_Mac.command, Windows-il vajutage kaks korda Heybe_Windows.bat.
+- Brauseris avaneb uus leht. Valige oma keel ja oodake, kuni leht ütleb "Heybe is ready ✓" (1–3 minut).
+- Heybe vastab ainult andmetele, mis on säilunud selles USB-mälupuldis, ning näitab oma allikaid. See ei ole arst: hädakatse puhul helistage oma kohaliku hädaabinumbrile.
+
+=== Español (es) · machine translation ===
+- CLE Heybe: una herramienta de almacenamiento de conocimientos sin conexión. Funciona sin necesidad de conexión a internet.
+- Para comenzar: en un Mac, haz doble clic en Heybe_Mac.command, en Windows, haz doble clic en Heybe_Windows.bat.
+- Se abre una página en el navegador. Elija su idioma y espere hasta que aparezca el mensaje "Heybe is ready ✓" (1-3 minutos).
+- Heybe solo responde preguntas basándose en la información contenida en los libros de este dispositivo USB y muestra sus fuentes. No es un médico: en caso de emergencia, llame a su número de emergencia local.
+
+=== Filipino (fil) · machine translation ===
+- CLE Heybe — isang paraan upang makakuha ng kaalaman kahit walang internet.
+- Para simulan: sa Mac, i-double click ang Heybe_Mac.command, at sa Windows, i-double click ang Heybe_Windows.bat.
+- Bubukas ang isang pahina sa browser. Piliin ang iyong wika at hintayin hanggang lumabas ang mensahe na "Heybe is ready ✓" (1–3 minuto).
+- Ang Heybe ay sumasagot lamang mula sa mga aklat na nasa USB drive na ito at ipinapakita ang pinagmulan ng impormasyon. Hindi ito doktor: sa isang emergency, tumawag sa iyong lokal na numero ng emergency.
+
+=== Français (fr) · machine translation ===
+- CLE Heybe : une bibliothèque de connaissances hors ligne. Elle fonctionne sans connexion Internet.
+- Pour commencer : sur un Mac, double-cliquez sur Heybe_Mac.command, sur Windows, double-cliquez sur Heybe_Windows.bat.
+- Une page s'ouvre dans le navigateur. Choisissez votre langue et attendez que l'écran affiche "Heybe is ready ✓" (environ 1 à 3 minutes).
+- Heybe ne fournit que des informations issues des livres présents sur cette clé USB et indique ses sources. Il ne s'agit pas d'un médecin : en cas d'urgence, veuillez contacter le numéro d'urgence local.
+
+=== Hrvatski (hr) · machine translation ===
+- CLE Heybe – digitalno skladište znanja. Radi bez interneta.
+- Za početak: na Macu dvostruki klik na Heybe_Mac.command, na Windows-u dvostruki klik na Heybe_Windows.bat.
+- U pregledniku se otvara nova stranica. Odaberite svoj jezik i čekajte dok se ne pojavi poruka "Heybe is ready ✓" (oko 1–3 minuta).
+- Heybe odgovara samo na pitanja koja se nalaze u knjigama na ovom USB disku i pokazuje svoje izvore. Nije liječnik: u slučaju hitne situacije, nazovite lokalni broj za hitne slučajeve.
+
+=== Indonesia (id) · machine translation ===
+- CLE Heybe — sebuah "tas pengetahuan" yang dapat digunakan secara offline. Aplikasi ini berfungsi tanpa memerlukan koneksi internet.
+- Untuk memulai: di Mac, klik dua kali Heybe_Mac.command, di Windows, klik dua kali Heybe_Windows.bat.
+- Sebuah halaman terbuka di browser. Pilih bahasa yang Anda inginkan, lalu tunggu hingga muncul tulisan "Heybe is ready ✓" (sekitar 1–3 menit).
+- Heybe hanya memberikan jawaban berdasarkan buku-buku yang terdapat pada drive USB ini dan menunjukkan sumber informasinya. Ini bukanlah seorang dokter: dalam keadaan darurat, hubungi nomor darurat setempat.
+
+=== Íslenska (is) · machine translation ===
+- CLE Heybe – vörubæ fyrir þekkni, án net.
+- Til að byrja: á Mac, þurft þú að tvöföld klikka á Heybe_Mac.command, á Windows, þurft þú að tvöföld klikka á Heybe_Windows.bat.
+- Einn hlið opnast í vefbrautinni. Veldu tungumálið og bíðu þar til það segir "Heybe is ready ✓" (1–3 mín).
+- Heybe svarar aðeins úr bókum á þessu USB-laufi og sýnir upp fjármóta. Það er ekki læknir: í ógn, hringdu í loka númerið í þínu svæði.
+
+=== Italiano (it) · machine translation ===
+- CLE Heybe: una "borsa" di conoscenze offline. Funziona senza connessione internet.
+- Per iniziare: su un Mac, fare doppio clic su Heybe_Mac.command, su Windows, fare doppio clic su Heybe_Windows.bat.
+- Si apre una pagina nel browser. Seleziona la tua lingua e attendi che appaia il messaggio "Heybe is ready ✓" (circa 1-3 minuti).
+- Heybe risponde solo alle domande basate sui libri contenuti su questa chiavetta USB e indica le fonti utilizzate. Non è un medico: in caso di emergenza, chiamare il numero di emergenza locale.
+
+=== Kiswahili (sw) · machine translation ===
+- CLE Heybe — kit ambao una maarifa, na hutumia bila kupata mtandao.
+- Kuanza: kwenye Mac, bonyeza mara mbili Heybe_Mac.command, kwenye Windows, bonyeza mara mbili Heybe_Windows.bat.
+- Kifurushi kimefunguliwa kwenye programu. Chagua lugha yako na subiri hadi itoe "Heybe is ready ✓" (dakika 1–3).
+- Heybe anajibu maswali pekee kutoka kwenye vitabu kwenye diski hii ya USB na inaonyesha vyanzo vyake. Si daktari: katika dharura, piga namba ya dharura ya eneo lako.
+
+=== Latviešu (lv) · machine translation ===
+- CLE Heybe – offline zināšanu krājums. Tas darbojas bez internetam.
+- Sākot: Mac datorā divreiz noklikšķiniet uz Heybe_Mac.command, Windows datorā divreiz noklikšķiniet uz Heybe_Windows.bat.
+- Izveidojas jauna lapas atvēršana pārlūkprogrammā. Izvēlieties savu valodu un gaidiet, līdz parādās teksts "Heybe is ready ✓" (no 1 līdz 3 minūtēm).
+- Heybe atbild tikai uz jautājumiem, kas atrodas šajā USB atmiņas ierīcē, un norāda savas avotus. Tas nav ārsts: ārkārtas situācijās zvaniet savam vietējajam nākamo palīdzības numuram.
+
+=== Lietuvių (lt) · machine translation ===
+- „CLE Heybe“ – informacijos turinio šaltinis, veikiantis be interneto.
+- Norėdami pradėti: Mac kompiuteryje dvigubai spustelėkite Heybe_Mac.command, Windows kompiuteryje dvigubai spustelėkite Heybe_Windows.bat.
+- Į naršyklę atsidaro nauja pusė. Pasirinkite savo kalbą ir palaukite, kol pasirodys tekstas ""Heybe is ready ✓"" (1–3 minutės).
+- „Heybe“ atsakoma tik į klausimus, pateiktus šio USB disko knygose, ir pateikia savo šaltinius. Tai nėra gydytojas: netikėtoje situacijoje, skambinkite į savo vietos avarinį numerį.
+
+=== Magyar (hu) · machine translation ===
+- CLE Heybe – offline tudásforrás. Működik anélkül, hogy internetkapcsolat lenne szükség.
+- Elindulás: Mac-en kettős kattintással Heybe_Mac.command, Windows-on kettős kattintással Heybe_Windows.bat.
+- A böngészőben megnyílik egy oldal. Válassza ki a kívánt nyelvet, majd várjon, amíg az "Heybe is ready ✓" (1–3 perc) üzenetet megjeleníti.
+- A Heybe csak a ebben az USB-kulcson található könyvek alapján ad választ, és feltünteti a forrásait. Ez nem orvos: sürgősségi helyzetben hívja a helyi mentőszolgálatot.
+
+=== Nederlands (nl) · machine translation ===
+- CLE Heybe – een offline kennisbank. Het werkt zonder internetverbinding.
+- Om te beginnen: op een Mac dubbelklik op Heybe_Mac.command, op Windows dubbelklik op Heybe_Windows.bat.
+- Een pagina opent in de browser. Kies uw taal en wacht tot het bericht verschijnt: "Heybe is ready ✓" (ongeveer 1-3 minuten).
+- Heybe geeft alleen antwoorden op basis van de informatie in deze USB-stick en geeft aan waar de informatie vandaan komt. Het is geen dokter: in geval van nood, bel het lokale noodnummer.
+
+=== Norsk (no) · machine translation ===
+- CLE Heybe – en offline kunnskapsbank. Den fungerer uten internett.
+- For å starte: på en Mac, dobbeltklikk på Heybe_Mac.command, på Windows, dobbeltklikk på Heybe_Windows.bat.
+- En side åpnes i nettleseren. Velg ønsket språk og vent til den viser "Heybe is ready ✓" (1–3 minutter).
+- Heybe svarer kun basert på informasjonen i bøkene på denne USB-enheten, og viser sine kilder. Det er ikke en lege: i en nødsituasjon, ring ditt lokale nødnummer.
+
+=== Polski (pl) · machine translation ===
+- CLE Heybe – osobisty zasób wiedzy, działający bez połączenia z internetem.
+- Aby rozpocząć: na komputerze Mac, dwukrotnie kliknij Heybe_Mac.command, a na komputerze Windows, dwukrotnie kliknij Heybe_Windows.bat.
+- Na przeglądarce otwiera się strona. Wybierz język i poczekaj, aż pojawi się komunikat "Heybe is ready ✓" (około 1–3 minut).
+- Heybe odpowiada tylko na pytania, na które znajdują odpowiedzi w książkach znajdujących się na tym dysku USB, a także podaje źródła. Nie jest to lekarz: w sytuacji kryzysowej, należy zadzwonić na lokalny numer alarmowy.
+
+=== Português (pt) · machine translation ===
+- CLE Heybe — uma ferramenta de conhecimento offline. Funciona sem a necessidade de conexão com a internet.
+- Para iniciar: no Mac, clique duas vezes em Heybe_Mac.command, no Windows, clique duas vezes em Heybe_Windows.bat.
+- Uma página é aberta no navegador. Escolha o seu idioma e aguarde até que apareça a mensagem "Heybe is ready ✓" (1–3 minutos).
+- O Heybe responde apenas com base nas informações contidas nos livros presentes neste pen drive e indica suas fontes. Não é um médico: em caso de emergência, ligue para o número de emergência local.
+
+=== Română (ro) · machine translation ===
+- CLE Heybe – o resursă de informații offline. Funcționează fără a necesita o conexiune la internet.
+- Pentru a începe: pe un Mac, faceți dublu clic pe Heybe_Mac.command, pe Windows, faceți dublu clic pe Heybe_Windows.bat.
+- Se deschide o pagină în browser. Alegeți limba dorită și așteptați până când apare mesajul "Heybe is ready ✓" (1–3 minute).
+- Heybe răspunde doar pe baza informațiilor din cărțile de pe acest stick USB și indică sursele. Nu este un medic: în caz de urgență, sunați la numărul de urgență local.
+
+=== Slovenčina (sk) · machine translation ===
+- CLE Heybe – offline zdroj informácií. Funguje bez internetového pripojenia.
+- Na začiatok: na Mac kliknite dvakrát na Heybe_Mac.command, na Windows kliknite dvakrát na Heybe_Windows.bat.
+- V prehliadači sa otvorí stránka. Vyberte si jazyk a počkajte, kým sa zobrazí "Heybe is ready ✓" (1–3 minúty).
+- Heybe odpovedá len na otázky, ktoré nájdete v knižách na tomto USB disku a uvádza zdroje. Nie je to lekár: v prípade núdze zavolejte na miestny núdzový telefón.
+
+=== Slovenščina (sl) · machine translation ===
+- CLE Heybe – digital knjižna predloga. Deluje brez internetne povezave.
+- Za začetek: na Macu dvakrat kliknite Heybe_Mac.command, na Windowsu dvakrat kliknite Heybe_Windows.bat.
+- Se odpre nova stran v brskalniku. Izberite svoj jezik in počakajte, dokler ne piše "Heybe is ready ✓" (1–3 minute).
+- Heybe odgovarja samo na vprašanja, ki so navedena v knjigah na tem USB pogonu in navaja svoje vire. Ni zdravnik: v nujnih primerih pokličite lokalni nujni telefon.
+
+=== Suomi (fi) · machine translation ===
+- CLE Heybe — offline-tietovarasto. Toimii ilman internet-yhteyttä.
+- Aloittamiseksi: Mac-tietokoneella kaksoisklikkaa Heybe_Mac.command, Windows-tietokoneella kaksoisklikkaa Heybe_Windows.bat.
+- Selainissa avautuu uusi sivu. Valitse haluamasi kieli ja odota, kunnes se näyttää "Heybe is ready ✓" (noin 1–3 minuuttia).
+- Heybe vastaa vain annetuista kirjoista USB-tikulla ja näyttää lähteet. Se ei ole lääkäri: hätätilanteessa soita paikalliseen hätänumeroon.
+
+=== Svenska (sv) · machine translation ===
+- CLE Heybe – en offline kunskapsbank. Den fungerar utan internetanslutning.
+- För att komma igång: på en Mac, dubbelklicka på Heybe_Mac.command, på Windows, dubbelklicka på Heybe_Windows.bat.
+- En sida öppnas i webbläsaren. Välj ditt språk och vänta tills den visar "Heybe is ready ✓" (1–3 minuter).
+- Heybe svarar enbart utifrån informationen i böckerna på denna USB-enhet och visar sina källor. Det är inte en läkare: vid en nödsituation, ring din lokala nödnummer.
+
+=== Tiếng Việt (vi) · machine translation ===
+- CLE Heybe – kho kiến thức ngoại tuyến. Ứng dụng này hoạt động mà không cần kết nối internet.
+- Để bắt đầu: trên Mac, nhấp đúp vào Heybe_Mac.command, trên Windows, nhấp đúp vào Heybe_Windows.bat.
+- Một trang web mở ra trong trình duyệt. Chọn ngôn ngữ bạn muốn và chờ cho đến khi trang hiển thị "Heybe is ready ✓" (khoảng 1-3 phút).
+- Heybe chỉ trả lời các câu hỏi dựa trên các tài liệu trên ổ USB này và cung cấp nguồn tham khảo. Đây không phải là bác sĩ: trong trường hợp khẩn cấp, hãy gọi số điện thoại khẩn cấp của địa phương.
+
+=== Ελληνικά (el) · machine translation ===
+- CLE Heybe — ένας "ψηφιακός θησαυρός" γνώσεων. Λειτουργεί χωρίς σύνδεση στο διαδίκτυο.
+- Για να ξεκινήσετε: Στα Mac, κάντε διπλό κλικ στο Heybe_Mac.command, στα Windows, κάντε διπλό κλικ στο Heybe_Windows.bat.
+- Μια σελίδα ανοίγει στο πρόγραμμα περιήγησης. Επιλέξτε τη γλώσσα σας και περιμένετε μέχρι να εμφανιστεί το μήνυμα "Heybe is ready ✓" (1–3 λεπτά).
+- Το Heybe απαντά μόνο με βάση τις πληροφορίες που υπάρχουν στα βιβλία που βρίσκονται σε αυτό το USB, και αναφέρει τις πηγές του. Δεν είναι γιατρός: σε περίπτωση έκτακτης ανάγκης, καλέστε τον τοπικό αριθμό έκτακτης ανάγκης.
+
+=== Български (bg) · machine translation ===
+- CLE Heybe – цифрово съкровище на знания. Работи без интернет.
+- За да започнете: на Mac, два пъти кликнете върху Heybe_Mac.command, на Windows, два пъти кликнете върху Heybe_Windows.bat.
+- В браузъра се отваря страница. Изберете езика и изчакайте, докато се появи съобщението "Heybe is ready ✓" (около 1–3 минути).
+- Heybe отговаря само на въпроси, базирани на информацията в книгите, съхранени на този USB носител, и посочва източниците си. Това не е лекар: в случай на спешна нужда, обадете се на местния номер за спешна помощ.
+
+=== Русский (ru) · machine translation ===
+- CLE Heybe — это автономный источник знаний. Он работает без подключения к интернету.
+- Для начала: на Mac дважды щелкните Heybe_Mac.command, на Windows дважды щелкните Heybe_Windows.bat.
+- В браузере открывается страница. Выберите нужный язык и подождите, пока на экране появится "Heybe is ready ✓" (1–3 минуты).
+- Heybe отвечает только на вопросы, основанные на информации из книг, содержащихся на этом USB-накопителе, и указывает источники. Он не является врачом: в случае экстренной ситуации обращайтесь по номеру вашей местной службы экстренной помощи.
+
+=== Српски (sr) · machine translation ===
+- CLE Heybe – база знања доступна и ван интернета. Ради без интернет конекције.
+- За почетак: на Мац-у двократно кликните на Heybe_Mac.command, а на Windows-у двократно кликните на Heybe_Windows.bat.
+- У прегледачу се отвара страница. Изаберите свој језик и чекајте док се не појави порука "Heybe is ready ✓" (1–3 минуте).
+- Heybe одговара само на питања из књига на овом USB диску и наводи своје изворе. Није лекар: у случају хитне ситуације, назовите број служби за хитну помоћ у вашем граду.
+
+=== Українська (uk) · machine translation ===
+- CLE Heybe — офлайн-ресурс для навчання. Він працює без підключення до Інтернету.
+- Щоб розпочати: на Mac двічі клацніть на Heybe_Mac.command, на Windows двічі клацніть на Heybe_Windows.bat.
+- У браузері відкривається сторінка. Виберіть потрібну мову та зачекайте, поки з'явиться повідомлення "Heybe is ready ✓" (1–3 хвилини).
+- Heybe відповідає лише на запитання, які містяться в книгах на цьому USB-на диску, і вказує джерела інформації. Він не є лікарем: у надзвичайних ситуаціях звертайтеся до місцевого екстреного номеру.
+
+=== עברית (he) · machine translation ===
+- CLE Heybe – תיק ידע לא מקוון. הוא פועל ללא חיבור לאינטרנט.
+- כדי להתחיל: במחשב Mac, לחצו פעמיים על Heybe_Mac.command, במחשב Windows, לחצו פעמיים על Heybe_Windows.bat.
+- דף נפתח בדפדפן. בחרו את השפה הרצויה והמתינו עד שיופיע המסך עם "Heybe is ready ✓" (1–3 דקות).
+- הייב עונה רק על שאלות מתוך הספרים המופיעים בכונן ה-USB הזה ומציין את מקורות המידע. הוא אינו רופא: במקרה חירום, התקשר למספר החירום המקומי.
+
+=== اردو (ur) · machine translation ===
+- CLE ہیبی - ایک آفلاین دانش کا ذخیرہ۔ یہ انٹرنیٹ کے بغیر کام کرتا ہے۔
+- شروع کرنے کے لیے: مک (Mac) پر، Heybe_Mac.command پر دو بار کلک کریں، اور ویندوز (Windows) پر، Heybe_Windows.bat پر دو بار کلک کریں۔
+- براؤزر میں ایک صفحہ کھلتا ہے۔ اپنی زبان کا انتخاب کریں اور انتظار کریں جب تک کہ یہ "Heybe is ready ✓" (1-3 منٹ) دکھائے۔
+- ہیبی صرف اس یو ایس بی ڈرائی میں موجود کتابوں سے جوابات دیتا ہے اور اپنے ذرائع بھی ظاہر کرتا ہے۔ یہ کوئی ڈاکٹر نہیں ہے: کسی اور صورت میں، اپنے مقامی ایمرجنسی نمبر پر رابطہ کریں۔
+
+=== العربية (ar) · machine translation ===
+- CLE Heybe: حقيبة معرفية غير متصلة بالإنترنت. تعمل بدون الحاجة إلى الاتصال بالإنترنت.
+- للبدء: على جهاز ماك، انقر نقرًا مزدوجًا على Heybe_Mac.command. على نظام التشغيل ويندوز، انقر نقرًا مزدوجًا على Heybe_Windows.bat.
+- يفتح صفحة في المتصفح. اختر لغتك وانتظر حتى تظهر الرسالة "Heybe is ready ✓" (من دقيقة إلى 3 دقائق).
+- يستجيب Heybe فقط للإجابات الموجودة في الكتب الموجودة على هذا القرص الصلب، ويذكر مصادرها. إنه ليس طبيبًا: في حالة الطوارئ، اتصل برقم الطوارئ المحلي.
+
+=== فارسی (fa) · machine translation ===
+- CLE Heybe: یک کیف اطلاعات آفلاین. این برنامه بدون نیاز به اینترنت کار می‌کند.
+- برای شروع: در مک، با دوبار کلیک کردن روی Heybe_Mac.command، و در ویندوز، با دوبار کلیک کردن روی Heybe_Windows.bat.
+- یک صفحه در مرورگر باز می‌شود. زبان مورد نظر خود را انتخاب کنید و منتظر بمانید تا صفحه پیغام ""Heybe is ready ✓"" را نشان دهد (حدود ۱ تا ۳ دقیقه).
+- Heybe فقط اطلاعات را از کتاب‌های موجود در این فلش USB ارائه می‌دهد و منابع خود را نیز نشان می‌دهد. این یک پزشک نیست: در مواقع اضطراری، با شماره تلفن اورژانس محلی تماس بگیرید.
+
+=== मराठी (mr) · machine translation ===
+- सीएलई हेबे - ऑफलाइन ज्ञान साठवण. हे इंटरनेटशिवाय काम करते.
+- सुरू करण्यासाठी: मॅकवर Heybe_Mac.command वर डबल-क्लिक करा, विंडोजवर Heybe_Windows.bat वर डबल-क्लिक करा.
+- ब्राउझरमध्ये एक पृष्ठ उघडते. तुमची भाषा निवडा आणि ' "Heybe is ready ✓" ' असे दिसेपर्यंत प्रतीक्षा करा (1-3 मिनिटे).
+- हेआयबी (Heybe) फक्त या यूएसबी ड्राइव्हवरील पुस्तकांमधूनच उत्तरे देते आणि त्याचे स्रोत देखील दर्शवते. हे वैद्यकीय सल्लागार नाही: कोणत्याही आपत्कालीन परिस्थितीत, तुमच्या स्थानिक आपत्कालीन क्रमांकावर संपर्क साधा.
+
+=== हिन्दी (hi) · machine translation ===
+- CLE हेबे - एक ऑफलाइन ज्ञान भंडार। यह इंटरनेट के बिना काम करता है।
+- शुरू करने के लिए: मैक पर, Heybe_Mac.command पर डबल-क्लिक करें, विंडोज पर, Heybe_Windows.bat पर डबल-क्लिक करें।
+- ब्राउज़र में एक पृष्ठ खुलता है। अपनी भाषा का चयन करें और जब यह "Heybe is ready ✓" (1–3 मिनट) दिखाएगा, तो प्रतीक्षा करें।
+- हेयबी केवल इस यूएसबी ड्राइव पर मौजूद पुस्तकों से ही उत्तर देता है और अपने स्रोतों को भी दिखाता है। यह एक डॉक्टर नहीं है: आपातकाल की स्थिति में, अपने स्थानीय आपातकालीन नंबर पर कॉल करें।
+
+=== বাংলা (bn) · machine translation ===
+- সিএলই হেবি — একটি অফলাইন জ্ঞান ভাণ্ডার। এটি ইন্টারনেট সংযোগ ছাড়াই কাজ করে।
+- শুরু করার জন্য: ম্যাক-এ Heybe_Mac.command এ ডাবল ক্লিক করুন, উইন্ডোজ-এ Heybe_Windows.bat এ ডাবল ক্লিক করুন।
+- ব্রাউজারে একটি পেজ খুলবে। আপনার পছন্দের ভাষা নির্বাচন করুন এবং যতক্ষণ না এটি ""Heybe is ready ✓"" (১-৩ মিনিট) দেখায়, ততক্ষণ অপেক্ষা করুন।
+- এই ইউএসবি ড্রাইভের মধ্যে থাকা বই থেকে প্রাপ্ত তথ্যই হেইবি প্রদান করে এবং এর উৎস উল্লেখ করে। এটি কোনো ডাক্তার নয়: জরুরি অবস্থায়, আপনার স্থানীয় জরুরি নম্বরে যোগাযোগ করুন।
+
+=== ગુજરાતી (gu) · machine translation ===
+- સીએ હાયબી — ઑફલાઇન જ્ઞાનનું ભંડાર. આ ઇન્ટરનેટ વગર પણ કામ કરે છે.
+- શરૂ કરવા માટે: Mac પર, Heybe_Mac.command પર ડબલ-ક્લિક કરો, અને Windows પર, Heybe_Windows.bat પર ડબલ-ક્લિક કરો.
+- બ્રાઉઝરમાં એક પેજ ખુલે છે. તમારી ભાષા પસંદ કરો અને જ્યાં સુધી તે "Heybe is ready ✓" (1–3 મિનિટ) દર્શાવે ત્યાં સુધી રાહ જુઓ.
+- આ USB ડ્રાઇવ પરના પુસ્તકોમાંથી જ માહિતી આપે છે અને તેના સ્ત્રોતો પણ દર્શાવે છે. આ કોઈ ડોક્ટર નથી: જ્યારે કોઈ તાત્કાલિક પરિસ્થિતિ હોય, ત્યારે તમારા સ્થાનિક ઇમરજન્સી નંબર પર કૉલ કરો.
+
+=== தமிழ் (ta) · machine translation ===
+- CLE ஹேய்பே - இணையம் இல்லாமலேயே பயன்படுத்தக்கூடிய அறிவுத் தளம்.
+- தொடங்குவதற்கு: மேக்-இல் Heybe_Mac.command-ஐ இரட்டிப்பா கிளிக் செய்யவும், விண்டோஸ்-இல் Heybe_Windows.bat-ஐ இரட்டிப்பா கிளிக் செய்யவும்.
+- ஒரு புதிய பக்கம் உலாவியில் திறக்கிறது. உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுத்து, அது "Heybe is ready ✓" என்று காட்டப்படும் வரை காத்திருக்கவும் (1–3 நிமிடங்கள்).
+- ஹைபி, இந்த யூ.எஸ்.பி டிரைவில் உள்ள புத்தகங்களிலிருந்து மட்டுமே பதிலளிக்கிறது, மேலும் அதன் ஆதாரங்களையும் காட்டுகிறது. இது ஒரு மருத்துவர் அல்ல: அவசர நிலையில், உங்கள் உள்ளூர் அவசர உதவி எண்ணை அழைக்கவும்.
+
+=== తెలుగు (te) · machine translation ===
+- సీఎల్ ఈహేబీ — ఆఫ్‌లైన్‌లో పనిచేసే జ్ఞాన నిధి. ఇది ఇంటర్నెట్ లేకుండా పనిచేస్తుంది.
+- ప్రారంభించడానికి: Mac లో, Heybe_Mac.command పై డబుల్ క్లిక్ చేయండి, Windows లో, Heybe_Windows.bat పై డబుల్ క్లిక్ చేయండి.
+- బ్రౌజర్‌లో ఒక పేజీ తెరుచుకుంటుంది. మీ భాషను ఎంచుకోండి మరియు అది "Heybe is ready ✓" అని చెప్పే వరకు వేచి ఉండండి (1–3 నిమిషాలు).
+- హైబీ, ఈ USB డ్రైవ్‌లోని పుస్తకాల నుండి మాత్రమే సమాధానాలను అందిస్తుంది మరియు దాని మూలాలను చూపిస్తుంది. ఇది వైద్యుడు కాదు: అత్యవసర పరిస్థితుల్లో, మీ స్థానిక అత్యవసర నంబర్‌కు కాల్ చేయండి.
+
+=== ಕನ್ನಡ (kn) · machine translation ===
+- ಕ್ಲೆ ಹೀಬೆ — ಆನ್‌ಲೈನ್ ಇಲ್ಲದೆಯೇ ಮಾಹಿತಿ ಸಂಗ್ರಹಿಸುವ ಸಾಧನ. ಇದು ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲದೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ.
+- ಪ್ರಾರಂಭಿಸಲು: Mac ನಲ್ಲಿ Heybe_Mac.command ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿ, ವಿಂಡೋಸ್ ನಲ್ಲಿ Heybe_Windows.bat ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿ.
+- A page opens in the browser. Choose your language and wait until it says "Heybe is ready ✓" (1–3 minutes).
+- Heybe answers only from the books on this USB drive and shows its sources. It is not a doctor: in an emergency, call your local emergency number.
+
+=== മലയാളം (ml) · machine translation ===
+- CLE ഹെയ്‌ബ് - ഒരു ഓഫ്‌ലൈൻ പഠന ഉപകരണമാണ്. ഇതിന് ഇന്റർനെറ്റ് ആവശ്യമില്ല.
+- To start: on a Mac double-click Heybe_Mac.command, on Windows double-click Heybe_Windows.bat.
+- ബ്രൗസറില്‍ ഒരു പേജ് തുറക്കുന്നു. നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക, കൂടാതെ ""Heybe is ready ✓"" എന്ന് കാണുന്നതുവരെ കാത്തിരിക്കുക (1–3 മിനിറ്റ്).
+- Heybe answers only from the books on this USB drive and shows its sources. It is not a doctor: in an emergency, call your local emergency number.
+
+=== ไทย (th) · machine translation ===
+- CLE Heybe — แหล่งความรู้แบบออฟไลน์ ทำงานได้โดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต
+- ในการเริ่มต้น: บนเครื่อง Mac ให้ดับเบิลคลิกที่ Heybe_Mac.command และบน Windows ให้ดับเบิลคลิกที่ Heybe_Windows.bat
+- หน้าเว็บเปิดขึ้นมา เลือกภาษาที่คุณต้องการ แล้วรอจนกว่าหน้าเว็บจะแสดงข้อความ ""Heybe is ready ✓"" (ใช้เวลาประมาณ 1–3 นาที)
+- Heybe ให้ข้อมูลจากหนังสือที่อยู่ใน USB drive นี้เท่านั้น และแสดงแหล่งที่มาของข้อมูล หากมีเหตุฉุกเฉิน ให้โทรไปยังเบอร์ฉุกเฉินในพื้นที่ของคุณ
+
+=== 한국어 (ko) · machine translation ===
+- CLE Heybe — 오프라인 지식 저장소. 인터넷 연결 없이 사용 가능.
+- 시작하려면: Mac에서는 Heybe_Mac.command을 두 번 클릭하고, Windows에서는 Heybe_Windows.bat을 두 번 클릭하세요.
+- 브라우저에서 페이지가 열립니다. 원하는 언어를 선택하고, "Heybe is ready ✓" (1~3분)라고 표시될 때까지 기다리세요.
+- Heybe는 이 USB 드라이브에 있는 책들에서만 답변을 제공하며, 답변의 출처를 명시합니다. Heybe는 의사가 아니므로, 긴급 상황에서는 지역 응급 연락처로 전화하십시오.
+
+=== 中文 (zh) · machine translation ===
+- CLE Heybe：离线知识库。它可以在没有互联网的情况下使用。
+- 开始：在Mac上双击 Heybe_Mac.command，在Windows上双击 Heybe_Windows.bat。
+- 浏览器中打开一个页面。选择您想要的语言，然后等待页面显示“"Heybe is ready ✓"”（可能需要1-3分钟）。
+- Heybe 仅从这根 USB 驱动上的书籍中提供信息，并注明其来源。它不是医生：在紧急情况下，请拨打您当地的紧急求助电话。
+
+=== 日本語 (ja) · machine translation ===
+- CLE Heybe — オフラインで利用できる知識データベース。インターネット接続は不要です。
+- 開始するには：Macの場合はHeybe_Mac.commandをダブルクリック、Windowsの場合はHeybe_Windows.batをダブルクリック。
+- ブラウザでページが開きます。ご希望の言語を選択し、"Heybe is ready ✓" と表示されるまで待ちます（1～3分）。
+- Heybeは、このUSBドライブに保存されている書籍からの情報のみに基づいて回答し、その情報源を明示します。Heybeは医師ではありません。緊急時には、お住まいの地域の緊急連絡先に電話してください。

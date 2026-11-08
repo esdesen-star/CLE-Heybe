@@ -1,0 +1,15 @@
+name: modelsiz-sinav
+on: [push, pull_request]
+jobs:
+  sinav:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Modelsiz sınav (model ve kitap gerekmez)
+        run: sh olcum/modelsiz.sh

@@ -1,0 +1,282 @@
+[
+ {
+  "no": "1a",
+  "asil_no": 1,
+  "konu": "su",
+  "soru": "Dere suyu içilir mi?",
+  "beklenen": "Önce çökeltme/bez ile süzme, sonra kaynatma; klor/iyot tableti veya filtre. Yalnız süzmek yetmez."
+ },
+ {
+  "no": "1b",
+  "asil_no": 1,
+  "konu": "su",
+  "soru": "Bulanık su nasıl temizlenir?",
+  "beklenen": "Önce çökeltme/bez ile süzme, sonra kaynatma; klor/iyot tableti veya filtre. Yalnız süzmek yetmez."
+ },
+ {
+  "no": "2a",
+  "asil_no": 2,
+  "konu": "su",
+  "soru": "Su kaç dakika kaynatılır?",
+  "beklenen": "Fokurdayarak en az 1 dakika; yüksek rakımda (2000 m üstü) 3 dakika."
+ },
+ {
+  "no": "2b",
+  "asil_no": 2,
+  "konu": "su",
+  "soru": "İçme suyunu ne kadar kaynatmalıyım?",
+  "beklenen": "Fokurdayarak en az 1 dakika; yüksek rakımda (2000 m üstü) 3 dakika."
+ },
+ {
+  "no": "3a",
+  "asil_no": 3,
+  "konu": "ilk yardım",
+  "soru": "Hipotermi belirtileri neler?",
+  "beklenen": "Titreme, uyuşukluk, bilinç bulanıklığı; ıslak giysi çıkarılır, kuru ve sıcak örtü, yavaş ısıtma, sert ovma yok, alkol yok."
+ },
+ {
+  "no": "3b",
+  "asil_no": 3,
+  "konu": "ilk yardım",
+  "soru": "Üşüyüp titreyen birine ne yapılır?",
+  "beklenen": "Titreme, uyuşukluk, bilinç bulanıklığı; ıslak giysi çıkarılır, kuru ve sıcak örtü, yavaş ısıtma, sert ovma yok, alkol yok."
+ },
+ {
+  "no": "4a",
+  "asil_no": 4,
+  "konu": "ilk yardım",
+  "soru": "Kanama nasıl durdurulur?",
+  "beklenen": "Temiz bezle yaraya doğrudan ve sürekli basınç; durmazsa turnike (kol/bacak). Bezi kaldırma, üstüne ekle."
+ },
+ {
+  "no": "4b",
+  "asil_no": 4,
+  "konu": "ilk yardım",
+  "soru": "Yaradan çok kan geliyor ne yapmalıyım?",
+  "beklenen": "Temiz bezle yaraya doğrudan ve sürekli basınç; durmazsa turnike (kol/bacak). Bezi kaldırma, üstüne ekle."
+ },
+ {
+  "no": "5a",
+  "asil_no": 5,
+  "konu": "ilk yardım",
+  "soru": "Yanığa ne sürülür?",
+  "beklenen": "Serin akan suyla 10-20 dakika soğutma; buz, yağ, diş macunu, yoğurt yok; kabarcık patlatılmaz; temiz örtü."
+ },
+ {
+  "no": "5b",
+  "asil_no": 5,
+  "konu": "ilk yardım",
+  "soru": "Elim yandı ne yapayım?",
+  "beklenen": "Serin akan suyla 10-20 dakika soğutma; buz, yağ, diş macunu, yoğurt yok; kabarcık patlatılmaz; temiz örtü."
+ },
+ {
+  "no": "6a",
+  "asil_no": 6,
+  "konu": "ilk yardım",
+  "soru": "Yılan soktu ne yapmalıyım?",
+  "beklenen": "Sakin ve hareketsiz kal, ısırılan uzvu sabitle, yüzük/saat çıkar, acil sağlık. Kesme, emme, buz, turnike yok."
+ },
+ {
+  "no": "6b",
+  "asil_no": 6,
+  "konu": "ilk yardım",
+  "soru": "Yılan ısırığında ilk yardım",
+  "beklenen": "Sakin ve hareketsiz kal, ısırılan uzvu sabitle, yüzük/saat çıkar, acil sağlık. Kesme, emme, buz, turnike yok."
+ },
+ {
+  "no": "7a",
+  "asil_no": 7,
+  "konu": "ilk yardım",
+  "soru": "Kırık kol nasıl sabitlenir?",
+  "beklenen": "Uzuv bulunduğu gibi sabitlenir, üstteki ve alttaki eklemi içine alan sert malzeme, pamuk/bezle desteklenir, çok sıkı bağlanmaz, dolaşım kontrol edilir."
+ },
+ {
+  "no": "7b",
+  "asil_no": 7,
+  "konu": "ilk yardım",
+  "soru": "Bacağı kırılan birine ne yapılır?",
+  "beklenen": "Uzuv bulunduğu gibi sabitlenir, üstteki ve alttaki eklemi içine alan sert malzeme, pamuk/bezle desteklenir, çok sıkı bağlanmaz, dolaşım kontrol edilir."
+ },
+ {
+  "no": "8a",
+  "asil_no": 8,
+  "konu": "ilaç",
+  "soru": "Günde kaç parol içilir?",
+  "beklenen": "Yetişkinde günde en fazla 4 gram (4000 mg); karaciğer hastalığı/alkolde daha düşük."
+ },
+ {
+  "no": "8b",
+  "asil_no": 8,
+  "konu": "ilaç",
+  "soru": "Parasetamol en fazla ne kadar alınır?",
+  "beklenen": "Yetişkinde günde en fazla 4 gram (4000 mg); karaciğer hastalığı/alkolde daha düşük."
+ },
+ {
+  "no": "9a",
+  "asil_no": 9,
+  "konu": "ilaç",
+  "soru": "İshalde ne içilmeli?",
+  "beklenen": "1 litre temiz suya 6 silme tatlı kaşığı şeker + yarım silme tatlı kaşığı tuz (DSÖ ev tarifi)."
+ },
+ {
+  "no": "9b",
+  "asil_no": 9,
+  "konu": "ilaç",
+  "soru": "Evde serum nasıl yapılır?",
+  "beklenen": "1 litre temiz suya 6 silme tatlı kaşığı şeker + yarım silme tatlı kaşığı tuz (DSÖ ev tarifi)."
+ },
+ {
+  "no": "10a",
+  "asil_no": 10,
+  "konu": "bitki",
+  "soru": "Baldıran otu nasıl tanınır?",
+  "beklenen": "Çok zehirli (koniin). Havuç/maydanoz ailesi, şemsiye çiçekli, gövdesinde mor/kırmızı lekeler, ezilince kötü (fare idrarı) koku."
+ },
+ {
+  "no": "10b",
+  "asil_no": 10,
+  "konu": "bitki",
+  "soru": "Baldıran zehirli mi?",
+  "beklenen": "Çok zehirli (koniin). Havuç/maydanoz ailesi, şemsiye çiçekli, gövdesinde mor/kırmızı lekeler, ezilince kötü (fare idrarı) koku."
+ },
+ {
+  "no": "11a",
+  "asil_no": 11,
+  "konu": "bitki",
+  "soru": "Isırgan yenir mi?",
+  "beklenen": "Evet, pişirilince/haşlanınca yakıcılığı gider; çorba, sebze olarak yenir."
+ },
+ {
+  "no": "11b",
+  "asil_no": 11,
+  "konu": "bitki",
+  "soru": "Isırgan otu yenebilir mi?",
+  "beklenen": "Evet, pişirilince/haşlanınca yakıcılığı gider; çorba, sebze olarak yenir."
+ },
+ {
+  "no": "12a",
+  "asil_no": 12,
+  "konu": "bitki",
+  "soru": "Kırmızı benekli mantar zehirli mi?",
+  "beklenen": "Hayır, zehirli/psikoaktif (muskimol, ibotenik asit). Kırmızı şapka, beyaz benekler."
+ },
+ {
+  "no": "12b",
+  "asil_no": 12,
+  "konu": "bitki",
+  "soru": "Sinek mantarı zehirli mi?",
+  "beklenen": "Hayır, zehirli/psikoaktif (muskimol, ibotenik asit). Kırmızı şapka, beyaz benekler."
+ },
+ {
+  "no": "13a",
+  "asil_no": 13,
+  "konu": "yön",
+  "soru": "Kuzey nasıl bulunur?",
+  "beklenen": "Güneş doğuda doğar batıda batar, öğlen güneyde (kuzey yarımküre); gece Kutup Yıldızı kuzeyi gösterir (Büyükayı ile bulunur)."
+ },
+ {
+  "no": "13b",
+  "asil_no": 13,
+  "konu": "yön",
+  "soru": "Güneşe bakarak yön nasıl bulunur?",
+  "beklenen": "Güneş doğuda doğar batıda batar, öğlen güneyde (kuzey yarımküre); gece Kutup Yıldızı kuzeyi gösterir (Büyükayı ile bulunur)."
+ },
+ {
+  "no": "14a",
+  "asil_no": 14,
+  "konu": "afet",
+  "soru": "Deprem anında ne yapmalıyım?",
+  "beklenen": "Çök-kapan-tutun; sağlam masa yanına/altına, camlardan uzak; asansör ve merdiven kullanma, sarsıntı bitene kadar koşma."
+ },
+ {
+  "no": "14b",
+  "asil_no": 14,
+  "konu": "afet",
+  "soru": "Depremde nereye saklanmalı?",
+  "beklenen": "Çök-kapan-tutun; sağlam masa yanına/altına, camlardan uzak; asansör ve merdiven kullanma, sarsıntı bitene kadar koşma."
+ },
+ {
+  "no": "15a",
+  "asil_no": 15,
+  "konu": "ilk yardım",
+  "soru": "Kalp masajı nasıl yapılır?",
+  "beklenen": "Dakikada 100-120 bası, 5-6 cm derinlik, 30 bası 2 nefes."
+ },
+ {
+  "no": "15b",
+  "asil_no": 15,
+  "konu": "ilk yardım",
+  "soru": "Kalp masajında dakikada kaç kez bastırılır?",
+  "beklenen": "Dakikada 100-120 bası, 5-6 cm derinlik, 30 bası 2 nefes."
+ },
+ {
+  "no": "16a",
+  "asil_no": 16,
+  "konu": "afet",
+  "soru": "Sobadan zehirlenme belirtileri",
+  "beklenen": "Baş ağrısı, baş dönmesi, bulantı, halsizlik, bilinç bulanıklığı; ileri evrede bayılma. Hemen temiz havaya çık."
+ },
+ {
+  "no": "16b",
+  "asil_no": 16,
+  "konu": "afet",
+  "soru": "Karbonmonoksit zehirlenmesi nasıl anlaşılır?",
+  "beklenen": "Baş ağrısı, baş dönmesi, bulantı, halsizlik, bilinç bulanıklığı; ileri evrede bayılma. Hemen temiz havaya çık."
+ },
+ {
+  "no": "17a",
+  "asil_no": 17,
+  "konu": "barınma",
+  "soru": "Buzdolabı olmadan yiyecek nasıl saklanır?",
+  "beklenen": "Kurutma, tuzlama, tütsüleme, salamura/turşu, şekerle (reçel), konserve; serin karanlık yer."
+ },
+ {
+  "no": "17b",
+  "asil_no": 17,
+  "konu": "barınma",
+  "soru": "Yiyecek nasıl kurutulur?",
+  "beklenen": "Kurutma, tuzlama, tütsüleme, salamura/turşu, şekerle (reçel), konserve; serin karanlık yer."
+ },
+ {
+  "no": "18a",
+  "asil_no": 18,
+  "konu": "ilk yardım",
+  "soru": "Arı sokunca nefes daralırsa ne yapmalı?",
+  "beklenen": "Nefes darlığı, hırıltı, boğazda/dilde şişme, yaygın kurdeşen, tansiyon düşmesi, bayılma; adrenalin ve acil yardım."
+ },
+ {
+  "no": "18b",
+  "asil_no": 18,
+  "konu": "ilk yardım",
+  "soru": "Arı alerjisi belirtileri",
+  "beklenen": "Nefes darlığı, hırıltı, boğazda/dilde şişme, yaygın kurdeşen, tansiyon düşmesi, bayılma; adrenalin ve acil yardım."
+ },
+ {
+  "no": "19a",
+  "asil_no": 19,
+  "konu": "tuzak",
+  "soru": "Kızılsırt mantarı yenir mi?",
+  "beklenen": "Böyle bir mantar yok (uydurma). Doğru cevap: kaynakta yok + tanımadığın mantarı yeme."
+ },
+ {
+  "no": "19b",
+  "asil_no": 19,
+  "konu": "tuzak",
+  "soru": "Kızılsırt dağ mantarı zehirli mi?",
+  "beklenen": "Böyle bir mantar yok (uydurma). Doğru cevap: kaynakta yok + tanımadığın mantarı yeme."
+ },
+ {
+  "no": "20a",
+  "asil_no": 20,
+  "konu": "tuzak",
+  "soru": "Çocuğa kaç ml antibiyotik verilir?",
+  "beklenen": "Doz kiloya ve şurubun yoğunluğuna bağlı; kaynakta açık doz yoksa sayı verilmemeli, doktor/prospektüs önerilmeli."
+ },
+ {
+  "no": "20b",
+  "asil_no": 20,
+  "konu": "tuzak",
+  "soru": "Amoksisilin çocuk dozu ne kadar?",
+  "beklenen": "Doz kiloya ve şurubun yoğunluğuna bağlı; kaynakta açık doz yoksa sayı verilmemeli, doktor/prospektüs önerilmeli."
+ }
+]

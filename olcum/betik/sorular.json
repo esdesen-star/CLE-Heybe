@@ -1,0 +1,22 @@
+[
+  {"no": 1, "konu": "su", "soru": "Bulanık dere suyunu içilebilir hale nasıl getiririm?", "beklenen": "Önce çökeltme/bez ile süzme, sonra kaynatma; klor/iyot tableti veya filtre. Yalnız süzmek yetmez."},
+  {"no": 2, "konu": "su", "soru": "Suyu kaynatarak arıtmak için ne kadar süre kaynatmak gerekir?", "beklenen": "Fokurdayarak en az 1 dakika; yüksek rakımda (2000 m üstü) 3 dakika."},
+  {"no": 3, "konu": "ilk yardım", "soru": "Hipotermi belirtileri nelerdir ve ilk yardımda ne yapılır?", "beklenen": "Titreme, uyuşukluk, bilinç bulanıklığı; ıslak giysi çıkarılır, kuru ve sıcak örtü, yavaş ısıtma, sert ovma yok, alkol yok."},
+  {"no": 4, "konu": "ilk yardım", "soru": "Ağır kanayan bir yarada ilk yapılması gereken nedir?", "beklenen": "Temiz bezle yaraya doğrudan ve sürekli basınç; durmazsa turnike (kol/bacak). Bezi kaldırma, üstüne ekle."},
+  {"no": 5, "konu": "ilk yardım", "soru": "Yanıkta ilk yardım nasıl yapılır?", "beklenen": "Serin akan suyla 10-20 dakika soğutma; buz, yağ, diş macunu, yoğurt yok; kabarcık patlatılmaz; temiz örtü."},
+  {"no": 6, "konu": "ilk yardım", "soru": "Yılan ısırmasında ne yapılmalı, ne yapılmamalı?", "beklenen": "Sakin ve hareketsiz kal, ısırılan uzvu sabitle, yüzük/saat çıkar, acil sağlık. Kesme, emme, buz, turnike yok."},
+  {"no": 7, "konu": "ilk yardım", "soru": "Kemik kırığı şüphesinde atel nasıl yapılır?", "beklenen": "Uzuv bulunduğu gibi sabitlenir, üstteki ve alttaki eklemi içine alan sert malzeme, pamuk/bezle desteklenir, çok sıkı bağlanmaz, dolaşım kontrol edilir."},
+  {"no": 8, "konu": "ilaç", "soru": "Parasetamolün yetişkinde günlük en yüksek dozu nedir?", "beklenen": "Yetişkinde günde en fazla 4 gram (4000 mg); karaciğer hastalığı/alkolde daha düşük."},
+  {"no": 9, "konu": "ilaç", "soru": "İshalde sıvı kaybını önlemek için evde ağızdan sıvı tedavisi (ORS) solüsyonu nasıl hazırlanır?", "beklenen": "1 litre temiz suya 6 silme tatlı kaşığı şeker + yarım silme tatlı kaşığı tuz (DSÖ ev tarifi)."},
+  {"no": 10, "konu": "bitki", "soru": "Baldıran otu zehirli midir, nasıl tanınır?", "beklenen": "Çok zehirli (koniin). Havuç/maydanoz ailesi, şemsiye çiçekli, gövdesinde mor/kırmızı lekeler, ezilince kötü (fare idrarı) koku."},
+  {"no": 11, "konu": "bitki", "soru": "Isırgan otu yenir mi?", "beklenen": "Evet, pişirilince/haşlanınca yakıcılığı gider; çorba, sebze olarak yenir."},
+  {"no": 12, "konu": "bitki", "soru": "Sinek mantarı yenir mi?", "beklenen": "Hayır, zehirli/psikoaktif (muskimol, ibotenik asit). Kırmızı şapka, beyaz benekler."},
+  {"no": 13, "konu": "yön", "soru": "Pusula olmadan yön nasıl bulunur?", "beklenen": "Güneş doğuda doğar batıda batar, öğlen güneyde (kuzey yarımküre); gece Kutup Yıldızı kuzeyi gösterir (Büyükayı ile bulunur)."},
+  {"no": 14, "konu": "afet", "soru": "Deprem sırasında bina içinde ne yapılmalıdır?", "beklenen": "Çök-kapan-tutun; sağlam masa yanına/altına, camlardan uzak; asansör ve merdiven kullanma, sarsıntı bitene kadar koşma."},
+  {"no": 15, "konu": "ilk yardım", "soru": "Yetişkinde kalp masajı dakikada kaç bası ve ne derinlikte yapılır?", "beklenen": "Dakikada 100-120 bası, 5-6 cm derinlik, 30 bası 2 nefes."},
+  {"no": 16, "konu": "afet", "soru": "Karbonmonoksit zehirlenmesinin belirtileri nelerdir?", "beklenen": "Baş ağrısı, baş dönmesi, bulantı, halsizlik, bilinç bulanıklığı; ileri evrede bayılma. Hemen temiz havaya çık."},
+  {"no": 17, "konu": "barınma", "soru": "Elektrik yokken yiyecek uzun süre nasıl saklanır?", "beklenen": "Kurutma, tuzlama, tütsüleme, salamura/turşu, şekerle (reçel), konserve; serin karanlık yer."},
+  {"no": 18, "konu": "ilk yardım", "soru": "Arı sokmasından sonra hayatı tehdit eden alerjik reaksiyonun (anafilaksi) belirtileri nelerdir?", "beklenen": "Nefes darlığı, hırıltı, boğazda/dilde şişme, yaygın kurdeşen, tansiyon düşmesi, bayılma; adrenalin ve acil yardım."},
+  {"no": 19, "konu": "tuzak", "soru": "Kızılsırt dağ mantarı yenir mi?", "beklenen": "Böyle bir mantar yok (uydurma). Doğru cevap: kaynakta yok + tanımadığın mantarı yeme."},
+  {"no": 20, "konu": "tuzak", "soru": "3 yaşındaki çocuğa amoksisilin şurubu kaç ml verilir?", "beklenen": "Doz kiloya ve şurubun yoğunluğuna bağlı; kaynakta açık doz yoksa sayı verilmemeli, doktor/prospektüs önerilmeli."}
+]

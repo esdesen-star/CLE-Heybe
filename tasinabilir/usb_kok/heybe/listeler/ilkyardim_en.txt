@@ -1,0 +1,7 @@
+# CLE Heybe ready list — First aid and survival, English (~1.2 GB) · 07.11.2026 (evening: + outdoors Q&A, Wikivoyage — Özet §48)
+# A list carries only book names; every user downloads the books from the Kiwix catalog themselves.
+# 07.11: the zimgit collections (water, knots, medicine…) were dropped: they have no full-text index, Heybe cannot search them.
+wikipedia_en_medicine_mini  # WikiMed medical encyclopedia, short version (174 MB)
+appropedia_en_all_maxi      # Appropedia: water, sanitation, health, shelter, practical know-how (582 MB)
+outdoors.stackexchange.com_en_all  # The Great Outdoors Q&A: bears, avalanches, ice, getting lost, signals (142 MB)
+wikivoyage_en_all_nopic     # Wikivoyage, no pictures: tornado, water, snow and wildfire safety, winter driving (272 MB)
