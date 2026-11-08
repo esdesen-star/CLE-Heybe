@@ -2,6 +2,10 @@
 
 **An offline knowledge bag** · *İnternetsiz bilgi heybesi* — [Türkçe aşağıda](#turkce)
 
+### ⬇️ [Download Heybe — latest version](https://github.com/esdesen-star/CLE-Heybe/releases/latest) · [Heybe'yi indir — son sürüm](https://github.com/esdesen-star/CLE-Heybe/releases/latest)
+
+*Ready to use, no programming: download, unzip, double-click. Steps: [Download and install](#download-and-install) · Adımlar: [İndir ve kur](#turkce)*
+
 Heybe ("saddlebag" in Turkish) is a knowledge system that fits on a USB stick and works without internet or mains power. **You choose what goes into its library:** books, guides, PDF and text files. A small AI runs on the computer's own processor and answers **by reading that library, not from its own memory**. It shows the source of every answer and says "I don't know" when the library doesn't say. In our tests we use open-licensed Kiwix books (Wikipedia, a medical encyclopedia, outdoor and disaster guides) — only as examples.
 
 Heybe is a multilingual translator: it reads whichever language has the richest free sources and translates the answer into the asker's language at question time. Books are not pre-translated. The interface speaks 49 languages.
@@ -117,6 +121,8 @@ Organisations, associations and volunteers may set Heybe up on their own USB dri
 # Türkçe
 
 **İnternetsiz bilgi heybesi** · *An offline knowledge bag*
+
+### ⬇️ [Heybe'yi indir — son sürüm](https://github.com/esdesen-star/CLE-Heybe/releases/latest)
 
 Heybe, bir USB belleğe sığan, internet ve şebeke olmadan çalışan bir bilgi sistemidir. **Kitaplığına ne yükleneceğini sen seçersin:** kitap, rehber, PDF ve metin dosyaları. Bilgisayarın kendi işlemcisinde çalışan küçük bir yapay zekâ, **kendi hafızasından değil, o kitaplıktan okuyarak** cevap verir. Her cevabın kaynağını gösterir. Kaynaklarda yoksa "bilmiyorum" der. Denemelerimizde açık lisanslı Kiwix kitapları (Vikipedi, tıp ansiklopedisi, doğa ve afet rehberleri) kullanıyoruz — yalnız örnek olarak.
 
