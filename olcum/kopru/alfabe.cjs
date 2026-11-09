@@ -1,10 +1,11 @@
 // Alfabe karışması ölçüsü (07.11.2026, Özet §43): çevirmen kimi dilde başka dilin kelimesini bırakıyor —
 // Sırpçada Kiril + Latin ("Одговори koje ste označili"), Malayalamda İspanyolca ve Rusça ("പുസ്തകoteca", "аллергии"),
 // Kannadada "ಪoli" (polis). Kural tek yerde: çevirici (arayuz_cevir.cjs) ve denetçi (arayuz_denetle.cjs) bunu kullanır.
-const BETIKLER = ['Latin', 'Cyrillic', 'Greek', 'Arabic', 'Hebrew', 'Devanagari', 'Bengali', 'Gujarati', 'Kannada', 'Malayalam',
-  'Tamil', 'Telugu', 'Thai', 'Han', 'Hiragana', 'Katakana', 'Hangul'].map((b) => [b, new RegExp(`\\p{Script=${b}}`, 'u')]);
+// Tablo arkadas.js'te (BETIK — 09.11, Özet §86): cevaptaki yazı sistemi bekçisi de aynısını kullanır, kural tek yerde.
+const { BETIK } = require('../../tasinabilir/usb_kok/heybe/arkadas.js');
+const BETIKLER = BETIK.liste;
 // birlikte yazılan alfabeler (Japonca üçünü, Korece Hangul + Han'ı karıştırır; bu hata değil)
-const AILE = { Hiragana: 'ja', Katakana: 'ja', Han: 'ja', Hangul: 'ko' };
+const AILE = BETIK.aile;
 // yabancı ad (q/w/x/y), kısaltma, dosya adı yanında olmayan ama bilerek İngilizce kalan kelimeler
 const TEKNIK = new Set(['zim', 'kutuphane', 'wikipedia', 'en', 'medicine', 'nopic', 'back', 'forward', 'hot', 'cold', 'drive', 'library', 'u']);
 
@@ -19,9 +20,7 @@ function anaBetik(metin) {
 }
 
 // her dilin ana alfabesi (tabloda yoksa Latin)
-const ANA = { ar: 'Arabic', fa: 'Arabic', ur: 'Arabic', he: 'Hebrew', bg: 'Cyrillic', ru: 'Cyrillic', uk: 'Cyrillic', sr: 'Cyrillic',
-  el: 'Greek', hi: 'Devanagari', mr: 'Devanagari', bn: 'Bengali', gu: 'Gujarati', kn: 'Kannada', ml: 'Malayalam', ta: 'Tamil',
-  te: 'Telugu', th: 'Thai', ja: 'ja', zh: 'ja', ko: 'Hangul' };
+const ANA = BETIK.ana;
 const dilBetigi = (dil) => ANA[dil] || 'Latin';
 const latinTeknik = (k) => /[qwxy]/i.test(k) || /^[A-Z]/.test(k) || TEKNIK.has(k.toLowerCase());
 

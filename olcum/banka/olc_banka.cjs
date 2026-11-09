@@ -6,18 +6,22 @@
 const fs = require('fs');
 const path = require('path');
 const B = require('./banka.cjs');
-const H = require('../../tasinabilir/usb_kok/heybe/arkadas.js');
+// HEYBE_ARKADAS + SURUM: başka bir sürümün arkadas.js'i aynı sorularla (09.11, §86: 0.18.0 ↔ 0.19.0, G seti)
+const H = require(process.env.HEYBE_ARKADAS ? path.resolve(process.env.HEYBE_ARKADAS) : '../../tasinabilir/usb_kok/heybe/arkadas.js');
 H.AYAR.kutuphane = process.env.KUTUPHANE || 'http://127.0.0.1:18888';
 H.AYAR.sohbet = process.env.SOHBET || 'http://127.0.0.1:18080';
 H.AYAR.gomme = process.env.GOMME || 'http://127.0.0.1:18081';
 H.AYAR.cevirmen = process.env.KOPRU === '0' ? '' : (process.env.CEVIRMEN || 'http://127.0.0.1:18082');
-if (process.env.ZAYIF === '0') H.AYAR.zayifHavuz = {};   // §47 karşılaştırma: zayıf havuz eşiği kapalı
+if (process.env.ZAYIF === '0') H.AYAR.zayifHavuz = {};
+// §86: KUCUK=5000 küçük kitap araması · SORGU=ikisi (varsayılanlar kapalı — ölçüm için)
+if (process.env.KUCUK && H.AYAR.kucukKitap) H.AYAR.kucukKitap.sinir = +process.env.KUCUK;
+const SORGU = process.env.SORGU || '';   // §47 karşılaştırma: zayıf havuz eşiği kapalı
 // §58 kardeş modeller: KALIP=sablon (Gemma 3 dışı model kendi şablonuyla) · TEKMODEL=1 (çevirmen yok, köprüde soruyu
 // ve cevabı sohbet modeli çevirir — hafif kardeşin tek model düzeni)
 if (process.env.KALIP) H.AYAR.kalip = process.env.KALIP;
 const TEK = process.env.TEKMODEL === '1';
 if (TEK) H.AYAR.cevirmen = '';
-const SURUM = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'tasinabilir', 'usb_kok', 'heybe', 'surum.json'), 'utf8')).surum;
+const SURUM = process.env.SURUM || JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'tasinabilir', 'usb_kok', 'heybe', 'surum.json'), 'utf8')).surum;
 const SEC = (process.env.SET || 'Y').split(',').filter(Boolean);
 const secili = B.sorular().filter((q) => SEC.includes(q.set) || SEC.includes(q.kimlik));
 const etiket = (process.env.AD || SEC.join('')).replace(/[^\w-]/g, '');
@@ -31,7 +35,7 @@ const cikti = path.join(__dirname, '..', 'sonuc', `banka_${SURUM}_${etiket}${pro
   for (const q of secili) {
     let r;
     try {
-      r = await H.sor(q.soru, () => {}, q.dil, H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek' } : (TEK ? { yedekDiller: 'hepsi' } : {}));
+      r = await H.sor(q.soru, () => {}, q.dil, H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek', ...(SORGU ? { sorgu: SORGU } : {}) } : (TEK ? { yedekDiller: 'hepsi' } : {}));
     } catch (e) {
       console.log(`${q.kimlik} HATA ${e.message}`);
       continue;
@@ -41,8 +45,12 @@ const cikti = path.join(__dirname, '..', 'sonuc', `banka_${SURUM}_${etiket}${pro
     if (!onceki && r.durdur) {   // durmuş cevabın hükmü kendiliğinden "durdu" (içerik kullanıcıya gösterilmez)
       onceki = { iz: izi, hukum: 'durdu', not: `otomatik: ${r.eksik.join('; ').slice(0, 120)}`, surum: SURUM, sonuc: 'durdu',
         cevap: B.sade(r.cevap).slice(0, 160), tarih: new Date().toISOString().slice(0, 10) };
+      // 09.11 (§86): dosya yazmadan hemen önce yeniden okunur — başta okunan kopya, ölçüm sürerken notla.cjs ile yazılan
+      // insan hükümlerini eziyordu (0.18.0 ve 0.19.0 G ölçümleri arka arkaya koşarken 0.19.0'ın 8 hükmü silindi)
+      const taze = B.notlar();
+      (taze[q.kimlik] = taze[q.kimlik] || []).push(onceki);
+      B.notlariYaz(taze);
       (n[q.kimlik] = n[q.kimlik] || []).push(onceki);
-      B.notlariYaz(n);
     }
     if (onceki) gecen++; else yeni++;
     const kayit = { kimlik: q.kimlik, surum: SURUM, dil: q.dil, soru: q.soru, beklenen: q.beklenen, tuzak: q.tuzak,

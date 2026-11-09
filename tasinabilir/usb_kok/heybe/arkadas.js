@@ -26,11 +26,21 @@
     // Ö26 (07.11, §47): kendi dilindeki en iyi paragrafın anlam puanı bunun altındaysa model yazmaz, "bilgi yok" (köprü açıksa
     // öbür dillerin kitaplarına bakılır). Yalnız ölçülen dil: görülmüş 112 Türkçe cevapta 0,45 altı doğru 0, kötü 4.
     zayifHavuz: { tr: 0.45 },
+    // 09.11 (§86): makale sayısı `sinir`dan az olan kitap küçüktür — tek kelimeyle de aranır; konu makalesinden `konu` paragraf.
+    // VARSAYILAN KAPALI (sinir 0). Ölçüm: aramayı görülmemiş G setinde de iyileştirdi (kaynak cümlesi 32 → 42/75, sorgu
+    // 'ikisi' ile birlikte), ama daha çok cevap durmadan geçti ve geçenlerin kötüsü arttı (G: yanlış/tehlikeli geçen 0 → 4).
+    // Bekçiler yeni cevap türlerini (çevirinin düşürdüğü kelime, yanlış bölüm) görene dek açılmaz. Ölçmek için: sinir 5000.
+    kucukKitap: { sinir: 0, konu: 5 },
   };
 
   const PARCA_SAYISI = 6;       // modele giden paragraf sayısı
   const PARCA_UZUNLUK = 900;    // her paragraf en çok bu kadar harf
   const MAKALE_BASINA = 3;      // bir makaleden en çok kaç paragraf
+  // 09.11 (F seti, §86): küçük kitap (kurumun kılavuzu gibi, her konu tek makale) — tek kelimeyle de aranır ve en iyi
+  // paragrafın makalesinden (konu makalesi) 5 paragraf gelebilir. Tanı: IFRC kitabında kaynağın asıl cümlelerinin
+  // 26/75'i adaydı ama "makale başına 3" sınırına takıldı; 10/75'in makalesi hiç aday olmadı ("bleeding" kelimesi soruda
+  // 8. sıradaydı, yalnız ilk 5 kelime ikili aranıyordu). Vikipedi gibi büyük kitapta ölçülmüş yol aynen kalır.
+  // sınırlar AYAR.kucukKitap'ta (ölçümde değiştirilebilsin)
   const ATLANAN_BOLUM = ['kaynakça', 'kaynaklar', 'dış bağlantılar', 'ayrıca bakınız', 'notlar', 'dipnotlar',
     'references', 'external links', 'see also', 'notes', 'further reading', 'bibliography',
     'reference', 'externí odkazy', 'související články', 'literatura', 'poznámky'];
@@ -197,10 +207,15 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
     // kayboluyordu ("Kût'ül-Amâre Kuşatması": 23 paragraf, 0 okundu). Artık her bölge kendi etiketiyle kapanır.
     const yigin = [];   // [{ tag, sayac }]
     const BOS_ETIKET = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+    // 09.11 (F seti, §86): kısa ama tam cümle ("Keep the injury still to reduce pain.", 37 harf — bir konunun ana eylemi)
+    // ve kısa liste maddeleri ("• Half a teaspoon of salt" — serum tarifi) atılıyordu. Artık madde her boyda alınır
+    // (birleşince 40 harfi geçmezse yine atılır), 15 harften uzun tam cümle ve listeye giriş ("Oral rehydration recipe:") tutulur.
     const bosalt = () => {
       if ((etiket === 'p' || etiket === 'li') && !atla) {
         const metin = bosluklariTopla(tampon.join(''));
-        if (metin.length > 40) parcalar.push([bolum, (etiket === 'li' ? '• ' : '') + metin]);
+        if (etiket === 'li' ? metin.length >= 3 : (metin.length > 40 || (metin.length >= 15 && /[.!?:]$/.test(metin)))) {
+          parcalar.push([bolum, (etiket === 'li' ? '• ' : '') + metin]);
+        }
       }
       tampon = []; etiket = null;
     };
@@ -261,18 +276,34 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
   }
 
   function liBirlestir(parcalar) {
-    // art arda gelen liste maddelerini tek paragrafta topla
-    const sonuc = [];
+    // art arda gelen liste maddelerini tek paragrafta topla; kısa giriş ("Tarif:") arkasından gelen listeyle birleşir.
+    // 40 harfi geçmeyen parça (tek kısa madde, listesiz giriş) atılır — eski eşik birleşmeden sonra uygulanır.
+    // 09.11 (§87): uzun bir paragrafın ":" ile biten son cümlesi listenin başına da yazılır (paragraf yerinde kalır).
+    // F10 (görülmüş): "The following actions are not effective and may even cause further harm:" + "• applying a cold
+    // compress" — liste girişinden ayrılınca olumsuzluğu kaybetti, model "Apply a cold compress" yazdı. Liste parçalara
+    // bölünürse her parça girişi taşır.
+    const kisaGiris = (m) => !m.startsWith('• ') && m.length <= 40 && /:$/.test(m);
+    const girisCumlesi = (m) => {
+      if (m.startsWith('• ') || m.length <= 40 || !/:$/.test(m)) return '';
+      const son = m.split(/(?<=[.!?])\s+/).pop();
+      return son.length <= 200 ? son : '';
+    };
+    const sonuc = [];   // [bölüm, metin, liste mi, giriş]
     for (const [bolum, metin] of parcalar) {
       const onceki = sonuc[sonuc.length - 1];
-      if (onceki && metin.startsWith('• ') && onceki[1].startsWith('• ') && onceki[0] === bolum &&
-          onceki[1].length < PARCA_UZUNLUK) {
+      const madde = metin.startsWith('• ');
+      if (onceki && madde && (onceki[2] || kisaGiris(onceki[1])) && onceki[0] === bolum && onceki[1].length < PARCA_UZUNLUK) {
+        if (!onceki[2]) onceki[3] = onceki[1];
         onceki[1] = onceki[1] + ' ' + metin;
+        onceki[2] = true;
+      } else if (onceki && madde && onceki[0] === bolum && (onceki[2] ? onceki[3] : girisCumlesi(onceki[1]))) {
+        const giris = onceki[2] ? onceki[3] : girisCumlesi(onceki[1]);
+        sonuc.push([bolum, giris + ' ' + metin, true, giris]);
       } else {
-        sonuc.push([bolum, metin]);
+        sonuc.push([bolum, metin, madde, '']);
       }
     }
-    return sonuc;
+    return sonuc.filter(([, m, liste]) => m.length > 40 || (!liste && !kisaGiris(m))).map(([b, m]) => [b, m]);
   }
 
   // ---- sunucularla konuşma ----
@@ -301,7 +332,8 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
         if (!yol) continue;
         const etiket = al('tags');
         kitaplar.push({ ad: decodeURIComponent(yol[1]), seri: al('name'), baslik: al('title'), dil: al('language'),
-          aranir: !/_ftindex:no/.test(etiket), resimli: /_pictures:yes/.test(etiket), videolu: /_videos:yes/.test(etiket) });
+          aranir: !/_ftindex:no/.test(etiket), resimli: /_pictures:yes/.test(etiket), videolu: /_videos:yes/.test(etiket),
+          makaleSayisi: parseInt(al('articleCount'), 10) || 0 });
       }
       return kitaplar;
     } catch (e) {
@@ -466,18 +498,30 @@ ANSWER: ${a}`;
         en: /poison\w*|swallow\w*|ingest\w*|overdos\w*|drank|\bate\b|tablets?|detergent|bleach/ },
       tr: /kustur\p{L}*|parma\p{L}*(\s+\p{L}+){0,2}\s+boğaz\p{L}*|tuzlu su içir/u,
       en: /induc\w* (vomit\w*|emesis)|make (\w+ ){0,2}(vomit|throw up)|ipecac/ },
+    // 09.11 (F15, 0.18.0 ve 0.19.0 ölçümleri, görülmüş, §86): lavabo açıcı yutan çocuğa susuzluk bölümünden "elma suyu",
+    // "ağızdan sıvı çözeltisi içmesini sağlayın" geldi. Yakıcı madde yutulunca sulandırılmaz (su, süt, aktif kömür ancak
+    // zehir danışma söylerse). "asit" tek başına alınmaz: asetilsalisilik asit bir ilaçtır.
+    { ad: 'yakıcı madde yutana sıvı içirmek', kod: 'yakici',
+      soru: { tr: /lavabo açıcı\p{L}*|çamaşır suyu|kostik|yakıcı|kezzap|tuz ruhu|kireç sökücü|fırın temizleyici\p{L}*|pas sökücü|akü asid\p{L}*|tuvalet temizleyici\p{L}*|(bulaşık|çamaşır) makinesi tablet\p{L}*|kapsül deterjan\p{L}*/u,
+        en: /drain (cleaner|opener)|bleach|caustic|corrosive|\blye\b|oven cleaner|rust remover|battery acid|hydrochloric|sulph?uric|muriatic|toilet cleaner|(dishwasher|washing machine) tablet|(detergent|laundry) pod/ },
+      tr: /(?<!\p{L})(su|suyu|süt|sütü|sıvı|ors|serum|içecek|ayran|yoğurt|aktif kömür|solüsyon\p{L}*)\s+(\p{L}+\s+){0,2}(ver|içir)\p{L}*|(su|süt|ors|serum|sıvı|solüsyon\p{L}*)\s+(\p{L}+\s+){0,2}içmesini sağla\p{L}*/u,
+      en: /(give|offer)\w* (\w+ ){0,4}(water|milk|fluids?|liquids?|oral rehydration|ors\b|drinks?|activated charcoal)|(drink|dilut)\w* (\w+ ){0,3}(water|milk|fluids?)/ },
     { ad: 'donmuş yeri ovmak ya da sıcakla ısıtmak', kod: 'donma',   // ılık suyla yavaş ısıtılır; ovulmaz, kar sürülmez, ateşe tutulmaz
       soru: { tr: /(?<!\p{L})don(ma|muş|du|u[kğ])\p{L}*|soğuk (ısırığı|yanığı)/u, en: /frost\w*|frozen/ },   // hipotermide sıcak içecek olağan
       tr: /(?<!\p{L})ov(un|unuz|ul\p{L}*|ala\p{L}*|mak|arak)(?!\p{L})|(?<!kalp\s)masaj|sıcak su\p{L}*|kaynar|ateş\p{L}*(\s+\p{L}+){0,2}\s+(yaklaştır|tut)\p{L}*|soba\p{L}*|alkol\p{L}*/u,
       en: /\brub\w*|(?<!(cardiac|heart)\s)massag\w*|hot water|direct heat|heater|alcohol/ },
     { ad: 'yanığa yağ, macun ya da buz', kod: 'yanik',   // yanık serin akan suyla soğutulur; kabarcık patlatılmaz
-      soru: { tr: /(?<!\p{L})(yanı[kğ]\p{L}*|yandı\p{L}*|yanmış\p{L}*|haşlan\p{L}*)/u, en: /\bburn\w*|scald\w*/ },
+      // 09.11 (F26, görülmüş, §86): "his skin was dry and burning" (sıcak çarpması) yanık sayıldı, kaynağın "boyna ve kasığa
+      // buz paketi"ni durdurdu → "burning" (yanma hissi, sıcak deri) yanık değildir; burn, burns, burned, burnt yanıktır
+      soru: { tr: /(?<!\p{L})(yanı[kğ]\p{L}*|yandı\p{L}*|yanmış\p{L}*|haşlan\p{L}*)/u, en: /\bburn(s|ed|t)?\b|scald\w*/ },
       tr: /tereya\p{L}*|diş macun\p{L}*|yoğurt\p{L}*|salça\p{L}*|yumurta\p{L}*|zeytinyağ\p{L}*|(?<!\p{L})yağ\p{L}*\s+sür\p{L}*|(?<!\p{L})buz(?!\p{L})|(?<!\p{L})buz(la|lu|u|a)(?!\p{L})|kolonya\p{L}*|kabarc\p{L}*(\s+\p{L}+){0,2}\s+(patlat|del)\p{L}*|su toplam\p{L}*(\s+\p{L}+){0,3}\s+(patlat|del)\p{L}*/u,
       en: /butter|toothpaste|\boil\b|grease|\bice\b|egg white|(pop|burst|break)\w* (the )?blisters?/ },
     { ad: 'yılan ısırığını kesmek, emmek ya da buzlamak', kod: 'yilan',
       soru: { tr: /yılan\p{L}*|engerek\p{L}*/u, en: /snake\w*|viper\w*|\badder/ },
-      tr: /(?<!\p{L})(em(erek|ip|ilmeli|ilir|mek|ilerek)|emme yöntem\p{L}*)(?!\p{L})|ağz\p{L}* ile (em|çek)|(yara|ısırı[kğ]|deri)\p{L}*(\s+\p{L}+){0,2}\s+kes\p{L}*|kesik at\p{L}*|çentik|(?<!\p{L})buz(?!\p{L})|(?<!\p{L})buz(la|lu|u|a)(?!\p{L})/u,
-      en: /\bsuck\w*|incision|cut (into|across|open)|\bice\b|electric shock/ },
+      tr: /(?<!\p{L})(em(erek|ip|ilmeli|ilir|mek|ilerek)|emme yöntem\p{L}*)(?!\p{L})|ağz\p{L}* ile (em|çek)|(yara|ısırı[kğ]|deri)\p{L}*(\s+\p{L}+){0,2}\s+kes\p{L}*|kesik at\p{L}*|çentik|(?<!\p{L})buz(?!\p{L})|(?<!\p{L})buz(la|lu|u|a)(?!\p{L})|soğuk (kompres|paket|uygula)\p{L}*/u,
+      // 09.11 (F10, 0.19.0 ölçümü, görülmüş, §86): model kaynağın "cold compress should not be applied"ını "Apply a cold
+      // compress" yazdı, Türkçesi geçti (tehlikeli) — soğuk kompres ve soğuk paket de buzlamaktır
+      en: /\bsuck\w*|incision|cut (into|across|open)|\bice\b|cold (compress|pack)|electric shock/ },
     { ad: 'nöbette ağza bir şey koymak ya da tutmak', kod: 'nobet',   // nöbette çevre güvenli yapılır, baş korunur, kişi tutulmaz
       soru: { tr: /nöbet\p{L}*|(?<!\p{L})sara(?!\p{L})|saralı|epilep\p{L}*|havale\p{L}*|kasıl\p{L}*/u, en: /seizure\w*|convuls\w*|epilep\w*|\bfits?\b/ },
       tr: /ağz\p{L}*(\s+\p{L}+){0,3}\s+(koy|sok|yerleştir|tıka)\p{L}*|dil\p{L}*\s+(\p{L}+\s+)?(tut|çek)\p{L}*|(kişiyi|hastayı|onu|kol\p{L}*|bacak\p{L}*)\s+(sıkıca|zorla)\s+tut\p{L}*|zaptet\p{L}*|soğan\p{L}*|kolonya\p{L}*/u,
@@ -504,6 +548,11 @@ ANSWER: ${a}`;
   // "X yerine Y" X'i önermez (07.11 X10: "chest thrusts instead of abdominal thrusts")
   const UYARI = { tr: /yanlış|zararlı|tehlikeli|önerilmez|sakınca\p{L}*|kaçın\p{L}*|yasak|asla|efsane|halk arasında|eskiden|(?<!\p{L})yerine(?!\p{L})/u,
     en: /wrong|harmful|dangerous|myth|outdated|no longer|discourag\w*|contraindicat\w*|never|should be avoided|old advice|instead of|rather than/ };
+  // olumsuz KOŞUL olumsuzluk sayılmaz ("ulaşılamıyorsa", "if the person cannot cough, …") — eylem bekçisi ve aktarma denetimi
+  const KOSULSUZ = {
+    tr: (m) => m.replace(/\p{L}*(m[ıiuü]yors[ae]|m[ae]zs[ae]|m[ae]d[ıi]ys[ae])(?!\p{L})|(?<!\p{L})(yoksa|değilse)(?!\p{L})/gu, ' '),
+    en: (m) => m.replace(/\b(if|when|unless)\b[^,;.]*?\b(not|cannot|unable|no)\b[^,;.]*[,;]|\b(if|when)\b[^,;.]*?n't\b[^,;.]*[,;]/g, ' '),
+  };
   function eylemDenetle(soru, cevap, dil) {
     if (dil !== 'tr' && dil !== 'en') return [];
     const kc = (m) => (dil === 'tr' ? kucuk(m) : m.toLowerCase());
@@ -512,9 +561,7 @@ ANSWER: ${a}`;
     // birim: cümle; "Yapılmaması gerekenler:" başlığının altındaki maddeler ve "Yapma: …" satırı uyarıdır, öneri değil
     // 08.11 (§58): olumsuz KOŞUL uyarı değildir — "yabancı maddeye ulaşılamıyorsa … diyafram yukarı doğru itilir" cümlesi
     // olumsuz sayılıp atlandı, boğulana karın basısı geçti (W15). Koşul eki sayılmadan önce silinir; asıl uyarı ("vermeyin") kalır.
-    const kosulsuz = (m) => (dil === 'tr'
-      ? m.replace(/\p{L}*(m[ıiuü]yors[ae]|m[ae]zs[ae]|m[ae]d[ıi]ys[ae])(?!\p{L})|(?<!\p{L})(yoksa|değilse)(?!\p{L})/gu, ' ')
-      : m.replace(/\b(if|when|unless)\b[^,;.]*?\b(not|cannot|unable|no)\b[^,;.]*[,;]|\b(if|when)\b[^,;.]*?n't\b[^,;.]*[,;]/g, ' '));
+    const kosulsuz = KOSULSUZ[dil];
     const uyaran = (m) => OLUMSUZ_SAY[dil](kosulsuz(m)) > 0 || UYARI[dil].test(m);
     const birimler = [];
     let uyaranBaslik = false;
@@ -537,6 +584,35 @@ ANSWER: ${a}`;
       if (bulunan) sorun.push(`eylem: ${k.ad}`);
     }
     return sorun;
+  }
+
+  // ---- Ö27 (09.11, Özet §86): yazı sistemi bekçisi — çeviri cevaba başka bir alfabenin kelimesini bırakabilir.
+  //      F09 (görülmüş): Türkçe cevapta "cımbız" yerine Çince "鑷子"; hiçbir bekçi görmedi, yanlış cevap geçti.
+  //      Latin her dilde serbest (ad, birim, kısaltma: EMS, mg); dilin kendi alfabesi ve Latin dışında harf varsa durur.
+  //      Tablosu bilinmeyen dilde denetlemez (yanlış alfabeyle bütün cevapları durdurmasın). Ekran çevirilerinin ölçüsü
+  //      (olcum/kopru/alfabe.cjs) aynı tabloyu kullanır — kural tek yerde. ----
+  const BETIK = {
+    liste: ['Latin', 'Cyrillic', 'Greek', 'Arabic', 'Hebrew', 'Devanagari', 'Bengali', 'Gurmukhi', 'Gujarati', 'Kannada',
+      'Malayalam', 'Tamil', 'Telugu', 'Thai', 'Han', 'Hiragana', 'Katakana', 'Hangul'].map((b) => [b, new RegExp(`\\p{Script=${b}}`, 'u')]),
+    aile: { Hiragana: 'ja', Katakana: 'ja', Han: 'ja', Hangul: 'ko' },   // birlikte yazılan alfabeler hata değil
+    ana: { ar: 'Arabic', fa: 'Arabic', ur: 'Arabic', he: 'Hebrew', bg: 'Cyrillic', ru: 'Cyrillic', uk: 'Cyrillic', sr: 'Cyrillic',
+      el: 'Greek', hi: 'Devanagari', mr: 'Devanagari', bn: 'Bengali', pa: 'Gurmukhi', gu: 'Gujarati', kn: 'Kannada', ml: 'Malayalam',
+      ta: 'Tamil', te: 'Telugu', th: 'Thai', ja: 'ja', zh: 'ja', ko: 'Hangul' },
+    latin: new Set(['tr', 'en', 'cs', 'ca', 'da', 'de', 'es', 'et', 'fi', 'fil', 'fr', 'hr', 'hu', 'id', 'is', 'it', 'lt', 'lv',
+      'nl', 'no', 'nb', 'nn', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv', 'sw', 'vi', 'zu', 'az', 'ku']),
+    ek: { ku: ['Arabic'], ja: ['Han', 'Hiragana', 'Katakana'], zh: ['Han', 'Hiragana', 'Katakana'], ko: ['Han'] },
+  };
+  function yaziDenetle(cevap, dil) {
+    const ana = BETIK.ana[dil] || (BETIK.latin.has(dil) ? 'Latin' : null);
+    if (!ana) return [];
+    const serbest = ['Latin', ...(ana === 'ja' ? [] : [ana]), ...(BETIK.ek[dil] || [])];
+    const izinli = new RegExp(`[${serbest.map((b) => `\\p{Script=${b}}`).join('')}]`, 'u');
+    const metin = String(cevap || '').replace(/[μµ](?=[gGlLmM])/g, '');   // mikrogram, mikrolitre
+    const yabanci = [];
+    for (const m of metin.matchAll(/\p{L}+/gu)) {
+      if ([...m[0]].some((h) => !izinli.test(h)) && !yabanci.includes(m[0])) yabanci.push(m[0]);
+    }
+    return yabanci.length ? [`yazı: ${yabanci.slice(0, 3).join(', ')}`] : [];
   }
 
   // ---- arama: adaylar geniş toplanır, sıralamayı anlam benzerliği yapar ----
@@ -581,6 +657,11 @@ ANSWER: ${a}`;
     }
     for (let i = 0; i < sorgular.length; i++) yollar.push(...await metinAra(sorgular[i], i === 0 ? 5 : 2, kitaplar));
     for (const k of kitaplar) if (D.hepAday && k.seri.startsWith('wikipedia_')) yollar.push({ kitap: k.ad, yol: D.hepAday });
+    // küçük kitap: her içerik kelimesi tek başına da aranır (en iyi 1 sonuç) — sona eklenir, büyük kitabın sırası değişmez
+    const kucukler = kitaplar.filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < AYAR.kucukKitap.sinir);
+    if (kucukler.length && !(D.genel && BOSLUKSUZ.test(soru))) {
+      for (const w of [...new Set(kelimeler)]) yollar.push(...await metinAra(w, 1, kucukler));
+    }
     return tekille(yollar, 20);
   }
 
@@ -625,18 +706,25 @@ ANSWER: ${a}`;
     }
     if (!ham.length) return [];
     const belgeler = ham.map(({ ad, bolum, metin }) => kes(`title: ${ad}${bolum ? ' — ' + bolum : ''} | text: ${kes(metin, 600)}`, 2000));
-    const [sorgu, ...vektorler] = await gom([`task: search result | query: ${sorguMetni}`, ...belgeler]);
-    const puanli = vektorler.map((v, i) => [v.reduce((t, x, j) => t + x * sorgu[j], 0), ham[i]])
+    // sorguMetni bir dizi olabilir (09.11, §86: özgün soru + çevirisi) — puan, sorguların benzerliklerinin ortalaması
+    const sorgular = Array.isArray(sorguMetni) ? sorguMetni : [sorguMetni];
+    const vek = await gom([...sorgular.map((q) => `task: search result | query: ${q}`), ...belgeler]);
+    const sorguV = vek.slice(0, sorgular.length), vektorler = vek.slice(sorgular.length);
+    const puanli = vektorler.map((v, i) => [sorguV.reduce((top, s) => top + v.reduce((t, x, j) => t + x * s[j], 0), 0) / sorguV.length, ham[i]])
       .sort((a, b) => b[0] - a[0]);
     if (AYAR.aramaGozlem) AYAR.aramaGozlem({ soru, dil, sorguMetni, puanli });   // yalnız ölçüm (olcum/kopru/arama_olc.cjs)
     const secilen = [], sayac = {}, gorulenMetin = new Set();
+    // konu makalesi: en iyi paragrafın makalesi; küçük kitaptaysa ondan AYAR.kucukKitap.konu paragraf gelebilir
+    const kucukKitap = new Set((await kitaplik()).filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < AYAR.kucukKitap.sinir).map((k) => k.ad));
+    const konu = puanli.length && puanli[0][1].kaynak === 'kiwix' && kucukKitap.has(puanli[0][1].kitap)
+      ? puanli[0][1].kitap + '|' + puanli[0][1].ad : null;
     for (const [puan, p] of puanli) {
       // 06.11: aynı paragraf iki kitapta (ya da iki kez) varsa bir kez gelir — §27 "Bowline ×2", §31 "Ankara ×3"
       const metinAnahtari = p.metin.replace(/\s+/g, ' ').slice(0, 300);
       if (gorulenMetin.has(metinAnahtari)) continue;
       gorulenMetin.add(metinAnahtari);
       const anahtar = p.kitap + '|' + p.ad;
-      if ((sayac[anahtar] || 0) < MAKALE_BASINA) {
+      if ((sayac[anahtar] || 0) < (anahtar === konu ? AYAR.kucukKitap.konu : MAKALE_BASINA)) {
         sayac[anahtar] = (sayac[anahtar] || 0) + 1;
         secilen.push({ makale: p.ad, bolum: p.bolum, metin: kes(p.metin, PARCA_UZUNLUK), puan: Math.round(puan * 1000) / 1000,
           yol: p.yol, kitap: p.kitap, kaynak: p.kaynak, tur: p.tur, ...(p.dil ? { dil: p.dil } : {}) });
@@ -853,6 +941,170 @@ ANSWER: ${a}`;
   }
   function cumleBirimleri(metin) {
     return cevapSatirlari(metin).join(' ').split(/(?<=[.!?。！？])\s+/).map((x) => x.trim()).filter(Boolean);
+  }
+
+  // ---- Ö28 (09.11, Özet §86): kip denetimi — çeviri kaynağın "düşünülebilir"ini "zorunlu" yapmasın.
+  //      F17 (görülmüş): "Consider having your spouse take … acetylsalicylic acid" → "… almasını sağlamalıdır" (kaynak
+  //      "düşünülebilir" diyor; tuzak "kesinleştirme"). Kayıtlı 129 köprü cevabında (en → tr) yalnız bu satıra alarm.
+  //      Yalnız güçlendirme yönü (seçimlik → zorunlu); ölçülen diller en → tr. Birim olumsuzluktaki gibi satır, tutmazsa cümle. ----
+  const KIP = {
+    en: { yumusak: /\b(consider\w*|may|might|could|can be|optional\w*|it is reasonable|if (possible|available|desired|willing))\b/i,
+      zorunlu: /\b(must|should|shall|always|needs? to|ha(ve|s) to|required|essential|mandatory)\b/i },
+    tr: { zorunlu: /(?<!\p{L})(mutlaka|kesinlikle|şart\p{L}*|zorunlu\p{L}*|gerek(ir|iyor|li|lidir|mektedir|ecek))(?!\p{L})|\p{L}+m[ae]l[ıi](d[ıi]r|s[ıi]n[ıi]z|s[ıi]n|y[ıi]z|d[ıi]rl[ae]r)?(?!\p{L})/u },
+  };
+  function kipDenetle(ozgun, kd, ceviri, dil) {
+    if (kd !== 'en' || dil !== 'tr') return [];
+    let a = cevapSatirlari(ozgun), b = cevapSatirlari(ceviri);
+    if (a.length !== b.length) { a = cumleBirimleri(ozgun); b = cumleBirimleri(ceviri); }
+    if (a.length !== b.length) return [];
+    const satir = [];
+    a.forEach((x, i) => {
+      if (KIP.en.yumusak.test(x) && !KIP.en.zorunlu.test(x) && KIP.tr.zorunlu.test(kucuk(b[i]))) satir.push(i + 1);
+    });
+    return satir.length ? [`kip: ${satir.join(', ')}. satır`] : [];
+  }
+
+  // ---- Ö29 (09.11, Özet §87): aktarma denetimi — modelin yazdığı (çeviriden ÖNCEKİ) cevabın her satırı, gösterdiği kaynak
+  //      paragrafına karşı: kaynakta olumsuz olan eylem cevapta olumluysa (ya da tersi) durur. Olumsuzluk denetçisi çeviriyi
+  //      özgüne karşı sayar; bu, özgünü kaynağa karşı. F10 (0.19.0a, görülmüş): kaynak "The following actions are not
+  //      effective…: • applying a cold compress", model "Apply a cold compress [1, 2]." yazdı; çeviri sadıktı, hiçbir bekçi
+  //      görmedi. Birim: kaynakta cümle; listede her madde, giriş cümlesinin olumsuzluğunu taşır. Ölçülen dil: en. ----
+  const AKTARMA_DURAK = new Set(['that', 'this', 'with', 'from', 'have', 'they', 'them', 'thei', 'your', 'what', 'when',
+    'then', 'than', 'also', 'into', 'only', 'more', 'most', 'some', 'such', 'very', 'been', 'were', 'will', 'shou', 'coul',
+    'woul', 'must', 'need', 'pers', 'peop', 'firs', 'prov', 'help', 'make', 'sure', 'even', 'each', 'othe', 'afte', 'befo',
+    'abou', 'unti', 'whil', 'here', 'ther', 'base', 'sour', 'foll', 'acti', 'step',
+    // üç harfliler ("rub", "ice", "cut" içerik kelimesidir; bunlar değil)
+    'the', 'and', 'for', 'are', 'not', 'can', 'you', 'his', 'her', 'its', 'may', 'any', 'all', 'but', 'has', 'had', 'was',
+    'who', 'how', 'why', 'our', 'out', 'off', 'own', 'too', 'yes', 'via', 'per', 'one', 'two', 'etc', 'him', 'she', 'did']);
+  const aktarmaKokleri = (m) => [...new Set((m.toLowerCase().match(/[a-z]{3,}/g) || []).map((w) => w.slice(0, 4))
+    .filter((k) => !AKTARMA_DURAK.has(k)))];
+  // Olumsuzluğun KAPSAMI: "not/never/no/avoid/do not" sözcüğü eşleşen içerik kelimesinin en çok 5 kelime önünde, aynı yan
+  // cümlede (virgül, noktalı virgül, iki nokta, parantez araya girmeden) ve bir koşulun (if/when/unless) içinde olmadan
+  // durmalı. "Access EMS if the person cannot walk" eylemi olumsuzlamaz; "A cold compress should not be applied" olumsuzlar
+  // (olumsuzluk edilgen fiilin hemen önünde: kelime SONRA da 3 kelime içinde olabilir). Listede giriş cümlesi olumsuzsa
+  // ("The following actions are not effective…:") her madde olumsuzdur.
+  const OLUMSUZ_SOZ = /^(not|never|no|none|nor|neither|cannot|can't|don't|doesn't|didn't|won't|shouldn't|mustn't|avoid|avoids|avoiding|without)$/;
+  function kapsamliOlumsuz(metin, kokler) {
+    // metindeki her kökün olumsuzluk kapsamında olup olmadığı: Map(kök → true/false). Parantez içi (örnek, açıklama)
+    // atılır; virgül ve noktalı virgül yan cümleyi böler; iki nokta böler ama koşulu taşır ("access EMS if: > … may not be");
+    // bağlaç (whether, that, because…) olumsuzluğun kapsamını keser ("does not differ whether the sting is pinched").
+    const sonuc = new Map();
+    const temiz = String(metin).toLowerCase().replace(/[’']/g, "'").replace(/\([^)]*\)/g, ' ')
+      .replace(/\bno\s+(more|less|fewer|later|earlier|longer)\s+than\b/g, ' ').replace(/\bnot\s+only\b/g, ' ')
+      .replace(/\b(or\s+)?not\s+at\s+all\b/g, ' ');
+    for (const cumle of temiz.split(/(?<=[.!?])\s+/)) {
+      let kosul = false;
+      for (const yan of cumle.split(/([,;:])/)) {
+        if (yan === ',' || yan === ';') { kosul = false; continue; }
+        if (yan === ':') continue;   // koşul iki noktadan sonra da sürer
+        const k = yan.match(/[a-z']+/g) || [];
+        const olumsuzYer = [];
+        k.forEach((w, i) => {
+          if (/^(if|when|unless|whether)$/.test(w)) kosul = true;
+          if (!kosul && OLUMSUZ_SOZ.test(w)) olumsuzYer.push(i);
+        });
+        const kesik = (a, b) => k.slice(Math.min(a, b) + 1, Math.max(a, b)).some((w) => /^(whether|that|which|because|so|but|while|although|whereas|since|than|unless|if|when)$/.test(w));
+        k.forEach((w, i) => {
+          if (w.length < 3) return;
+          const kk = w.slice(0, 4);
+          if (!kokler.includes(kk)) return;
+          // önde en çok 5 kelime; arkada yalnız edilgen yasak: "a cold compress should not be applied" (not + be)
+          const kapsamda = olumsuzYer.some((j) => !kesik(i, j) &&
+            ((j < i && i - j <= 5) || (j > i && j - i <= 3 && /^(not|never)$/.test(k[j]) && k[j + 1] === 'be')));
+          sonuc.set(kk, (sonuc.get(kk) || false) || kapsamda);
+        });
+      }
+    }
+    return sonuc;
+  }
+  // yasak: koşulun (if/when/unless) dışında bir olumsuzluk sözcüğü — liste girişi için ("If the baby is not breathing
+  // normally:" koşuldur, yasak değil; "The following actions are not effective …:" yasaktır)
+  function yasakVar(metin) {
+    for (const yan of String(metin).toLowerCase().replace(/[’']/g, "'").replace(/\bno\s+(more|less|fewer|later|earlier|longer)\s+than\b/g, ' ')
+      .split(/[,;]|(?<=[.!?])\s+/)) {
+      let kosul = false;
+      for (const w of yan.match(/[a-z']+/g) || []) {
+        if (/^(if|when|unless|whether)$/.test(w)) kosul = true;
+        else if (!kosul && OLUMSUZ_SOZ.test(w)) return true;
+      }
+    }
+    return false;
+  }
+  function kaynakBirimleri(metin) {
+    const birimler = [];   // [metin, liste girişi olumsuz mu]
+    const [giris, ...maddeler] = String(metin || '').split(/\s*•\s+/);
+    const son = giris.split(/(?<=[.!?])\s+/).pop();
+    const girisOlumsuz = maddeler.length > 0 && /:\s*$/.test(giris) && yasakVar(son);
+    for (const c of giris.split(/(?<=[.!?])\s+/)) if (c.trim()) birimler.push([c, false]);
+    for (const md of maddeler) for (const c of md.split(/(?<=[.!?])\s+/)) if (c.trim()) birimler.push([c, girisOlumsuz]);
+    return birimler;
+  }
+  const AKTARMA_ESIK = { benzer: 0.6, ortak: 2 };
+  function aktarmaDenetle(ozgun, parcalar, kd) {
+    if (kd !== 'en' || !parcalar || !parcalar.length) return [];
+    const sorun = [];
+    let no = 0;
+    for (const ham of String(ozgun || '').split(/\r\n|\r|\n|\s\*\s/)) {
+      const atiflar = [...ham.matchAll(/\[([\d,\s]+)\]/g)].flatMap((m) => m[1].split(',').map((x) => +x.trim()).filter(Boolean));
+      const satir = ham.replace(/\[[\d,\s]+\]/g, ' ').replace(/^[\s*•\-–]+/, '').replace(/^\d+[.)]\s+/, '').trim();
+      if (!satir || /:\s*$/.test(satir)) continue;
+      no++;
+      if (!atiflar.length) continue;
+      const kokler = aktarmaKokleri(satir);
+      if (kokler.length < 2) continue;
+      // en iyi eşleşen kaynak birimi (en çok ortak kök); eşitlikte ilk
+      let en = null;
+      for (const n of new Set(atiflar)) {
+        const p = parcalar[n - 1];
+        if (!p) continue;
+        for (const [c, girisNeg] of kaynakBirimleri(p.metin)) {
+          const ck = new Set(aktarmaKokleri(c));
+          const ortak = kokler.filter((k) => ck.has(k));
+          if (ortak.length < AKTARMA_ESIK.ortak || ortak.length / kokler.length < AKTARMA_ESIK.benzer) continue;
+          if (!en || ortak.length > en.ortak.length) en = { c, girisNeg, ortak };
+        }
+      }
+      if (!en) continue;
+      const ks = kapsamliOlumsuz(en.c, en.ortak);
+      // olumsuzluk: ortak köklerin çoğu kapsamdaysa ("While blunt trauma does not present a risk …, penetrating head trauma
+      // does" — ortak köklerin azı olumsuz yan cümlede, cümle bütünüyle olumsuz değil)
+      // cevap tarafı tutucu: koşul dışında herhangi bir olumsuzluk varsa olumsuz sayılır ("Do not tell her to “stop” or
+      // “calm down”" — kapsam penceresi "calm down"a yetişmiyordu, boş alarm verdi)
+      const cogu = (m) => en.ortak.filter((k) => m.get(k)).length * 2 > en.ortak.length;
+      const kaynakNeg = en.girisNeg || cogu(ks);
+      const cevapNeg = yasakVar(satir.replace(/\([^)]*\)/g, ' '));
+      // yalnız tehlikeli yön: kaynak "yapma" derken cevap "yap" diyor. Ters yön (cevap olumsuzluk ekliyor) kayıtlı
+      // cevaplarda çoğu boş alarmdı ("Avoid using solvents" ↔ "Do not use gasoline"); ölçülmeden açılmaz.
+      if (kaynakNeg && !cevapNeg) sorun.push(`aktarma: ${no}. satır (kaynakta olumsuz)`);
+    }
+    return sorun;
+  }
+
+  // ---- Ö30 (09.11, Özet §87): çeviride düşen kelime — özgün cevaptaki yön ("left side"), kısıt ("only", "unless",
+  //      "except") ya da sorunun konusu ("tick") geri çeviride yoksa çeviri anlamı taşımamıştır. G10 (0.19.0a, görülmüş):
+  //      "placed on their left side" → "yan tarafına yatırılmalıdır" (soru tam "hangi tarafa" idi); G19: "tick" →
+  //      "tıkayıcı" → geri çeviride "remover". Geri çeviri eş anlamlı seçebilir ("up to 20 minutes" → "about 20 minutes",
+  //      "shivering" → "trembling") — bu yüzden yalnız eş anlamlısı olmayan sözler ve cevapta en az 4 kez geçen konu kökü.
+  //      Kayıtlı 219 köprü cevabının geri çevirisinde: yön/kısıt 7, konu 4 alarm. Ölçülen: en. ----
+  const UZUV = '(side|arm|leg|hand|eye|ear|foot|lung|shoulder|knee|hip|cheek|nostril)';
+  const DUSEN_KRITIK = [['left', new RegExp(`\\bleft\\s+${UZUV}`)], ['right', new RegExp(`\\bright\\s+${UZUV}`)],
+    ['only', /\bonly\b/], ['unless', /\bunless\b/], ['except', /\bexcept\b/]];
+  const DUSEN_KONU_EN_AZ = 4;
+  function dusenKelime(ozgun, geri, soruKd, kd) {
+    if (kd !== 'en' || !geri) return [];
+    const sade = (m) => String(m || '').toLowerCase().replace(/\[[\d,\s]+\]/g, ' ').replace(/[’']/g, "'");
+    const oz = sade(ozgun), ge = sade(geri);
+    const sorun = DUSEN_KRITIK.filter(([, re]) => re.test(oz) && !re.test(ge)).map(([ad]) => `çeviride düştü: ${ad}`);
+    // konu: soruda da geçen, cevapta en sık köklerden biri (en az DUSEN_KONU_EN_AZ kez) geri çeviride hiç yoksa
+    const soruK = new Set(aktarmaKokleri(soruKd || ''));
+    const say = {};
+    for (const w of oz.match(/[a-z]{3,}/g) || []) {
+      const k = w.slice(0, 4);
+      if (soruK.has(k) && !AKTARMA_DURAK.has(k)) say[k] = (say[k] || 0) + 1;
+    }
+    const geriK = new Set(aktarmaKokleri(ge));
+    for (const [k, n] of Object.entries(say)) if (n >= DUSEN_KONU_EN_AZ && !geriK.has(k)) sorun.push(`çeviride düştü: ${k}…`);
+    return sorun;
   }
 
   function olumsuzlukKarsilastir(ozgun, kd, ceviri, dil) {
@@ -1157,8 +1409,11 @@ ANSWER: ${a}`;
     } else {
       gruplar = await koprulu(soru, D, dil, diller, bildir);
       basliklar = gruplar.flatMap((g) => g.basliklar);
-      // anlam sıralamasının sorgusu: özgün soru (çok dilli model) ya da birinci kaynak dilindeki çeviri — ölçülür
-      const sorguMetni = secenek.sorgu === 'ceviri' ? (gruplar.find((g) => g.dil !== dil) || gruplar[0]).soru : soru;
+      // anlam sıralamasının sorgusu — varsayılan özgün soru (ölçülmüş yol). 09.11 (§86) seçenek 'ikisi': özgün soru + birinci
+      // kaynak dilindeki çevirisi birlikte (puan ortalaması); tanıda (F, IFRC) kaynak cümlesi 48 → 58/75. Küçük kitap
+      // aramasıyla birlikte ölçüldü, geçen kötü cevap arttı → varsayılan değil (bkz. AYAR.kucukKitap). secenek.sorgu: 'ceviri' · 'ikisi'
+      const ceviri = (gruplar.find((g) => g.dil !== dil) || gruplar[0]).soru;
+      const sorguMetni = secenek.sorgu === 'ceviri' ? ceviri : secenek.sorgu === 'ikisi' ? [soru, ceviri] : soru;
       parcalar = await kaynakBul(soru, basliklar, dil, gruplar, sorguMetni);
     }
     const aramaSn = (Date.now() - t0) / 1000;
@@ -1198,20 +1453,20 @@ ANSWER: ${a}`;
       // çeviri soruya karşı (terim). Bağlamda soru, kaynağın kendi dilindeki çevirisiyle okunur (yer adları için).
       const sorular = { [dil]: soru, [kd]: g.soru };
       for (const x of gruplar || []) sorular[x.dil] = x.soru;
-      const denetim = { ozgun: [...denetle(parcalar, ozgun, kd), ...baglamDenetle(g.soru, ozgun, kd, parcalar, sorular)],
+      const denetim = { ozgun: [...denetle(parcalar, ozgun, kd), ...baglamDenetle(g.soru, ozgun, kd, parcalar, sorular), ...aktarmaDenetle(ozgun, parcalar, kd)],
         ceviri: denetle([{ metin: ozgun, dil: kd }], cevap, dil), terim: terimDenetle(soru, cevap, dil),
-        olumsuzluk: [], gidisDonus: [] };
+        yazi: yaziDenetle(cevap, dil), kip: kipDenetle(ozgun, kd, cevap, dil), olumsuzluk: [], gidisDonus: [] };
       if (kd !== dil) {
         // Ö20: çeviri özgünün diline geri çevrilir (bir çeviri daha, ~2–4 sn); olumsuzluk, sayı ve yön orada da bakılır
         let geri = '';
         try { geri = await cevir(cevap, dil, kd); } catch (e) { /* çevirmen yoksa yalnız doğrudan denetimler */ }
         denetim.olumsuzluk = await olumsuzlukDenetle(ozgun, kd, cevap, dil, geri || null);
-        denetim.gidisDonus = gidisDonus(ozgun, kd, geri);
+        denetim.gidisDonus = [...gidisDonus(ozgun, kd, geri), ...dusenKelime(ozgun, geri, g.soru, kd)];
         denetim.geri = geri;
       }
       // Ö25: özgün cevap kaynağın dilindeki soruyla, çeviri kullanıcının sorusuyla (tr/en ise) eylem bekçisinden geçer
       denetim.eylem = [...new Set([...eylemDenetle(g.soru, ozgun, kd), ...(kd !== dil ? eylemDenetle(soru, cevap, dil) : [])])];
-      const eksik = [...new Set([...denetim.eylem, ...denetim.ozgun, ...denetim.ceviri, ...denetim.terim, ...denetim.olumsuzluk, ...denetim.gidisDonus])];
+      const eksik = [...new Set([...denetim.eylem, ...denetim.ozgun, ...denetim.ceviri, ...denetim.terim, ...denetim.yazi, ...denetim.kip, ...denetim.olumsuzluk, ...denetim.gidisDonus])];
       denetim.ikinciGoz = eksik.length ? [] : await ikinciGoz(soru, cevap);   // Ö22: durmuş cevaba sorulmaz
       eksik.push(...denetim.ikinciGoz);
       return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: false, kitapVar, gruplar,
@@ -1223,7 +1478,7 @@ ANSWER: ${a}`;
     const cevap = ya.metin;
     const sorular = { [dil]: soru };
     for (const x of gruplar || []) sorular[x.dil] = x.soru;
-    const eksik = [...(ya.yok ? [] : eylemDenetle(soru, cevap, dil)), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem
+    const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil)]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı
     if (!ya.yok && !eksik.length) eksik.push(...await ikinciGoz(soru, cevap));   // Ö22
     return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: ya.yok,
       kitapVar, arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
@@ -1233,7 +1488,7 @@ ANSWER: ${a}`;
   const Heybe = { AYAR, DIL, sor, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
     basliklariAyikla, kaynakMetni, cevir, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes };
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

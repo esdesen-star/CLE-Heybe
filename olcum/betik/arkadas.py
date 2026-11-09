@@ -105,24 +105,49 @@ class Paragrafci(HTMLParser):
             self.tampon.append(data)
 
     def _bosalt(self):
+        # 09.11 (F seti, §86 — arkadas.js ile aynı): kısa tam cümle ve kısa liste maddesi artık atılmıyor; madde her boyda
+        # alınır, 15 harften uzun tam cümle ve listeye giriş ("Tarif:") tutulur; 40 harf eşiği birleşmeden sonra (li_birlestir)
         if self.etiket in ("p", "li") and not self.atla:
             metin = " ".join("".join(self.tampon).split())
-            if len(metin) > 40:
+            if self.etiket == "li":
+                tut = len(metin) >= 3
+            else:
+                tut = len(metin) > 40 or (len(metin) >= 15 and metin[-1:] in ".!?:")
+            if tut:
                 onek = "• " if self.etiket == "li" else ""
                 self.parcalar.append((self.bolum, onek + metin))
         self.tampon, self.etiket = [], None
 
 
 def li_birlestir(parcalar):
-    """Art arda gelen liste maddelerini tek paragrafta topla."""
-    sonuc = []
+    """Art arda gelen liste maddelerini tek paragrafta topla; kısa giriş ("Tarif:") arkasından gelen listeyle birleşir.
+    40 harfi geçmeyen parça (tek kısa madde, listesiz giriş) atılır (arkadas.js liBirlestir ile aynı, 09.11).
+    09.11 (§87): uzun paragrafın ":" ile biten son cümlesi listenin başına da yazılır; liste bölünürse her parça taşır."""
+    def kisa_giris(m):
+        return not m.startswith("• ") and len(m) <= 40 and m.endswith(":")
+
+    def giris_cumlesi(m):
+        if m.startswith("• ") or len(m) <= 40 or not m.endswith(":"):
+            return ""
+        son = re.split(r"(?<=[.!?])\s+", m)[-1]
+        return son if len(son) <= 200 else ""
+
+    sonuc = []  # [bölüm, metin, liste mi, giriş]
     for bolum, metin in parcalar:
-        if sonuc and metin.startswith("• ") and sonuc[-1][1].startswith("• ") and sonuc[-1][0] == bolum \
-                and len(sonuc[-1][1]) < PARCA_UZUNLUK:
-            sonuc[-1] = (bolum, sonuc[-1][1] + " " + metin)
+        madde = metin.startswith("• ")
+        onceki = sonuc[-1] if sonuc else None
+        if onceki and madde and (onceki[2] or kisa_giris(onceki[1])) and onceki[0] == bolum \
+                and len(onceki[1]) < PARCA_UZUNLUK:
+            if not onceki[2]:
+                onceki[3] = onceki[1]
+            onceki[1] = onceki[1] + " " + metin
+            onceki[2] = True
+        elif onceki and madde and onceki[0] == bolum and (onceki[3] if onceki[2] else giris_cumlesi(onceki[1])):
+            giris = onceki[3] if onceki[2] else giris_cumlesi(onceki[1])
+            sonuc.append([bolum, giris + " " + metin, True, giris])
         else:
-            sonuc.append((bolum, metin))
-    return sonuc
+            sonuc.append([bolum, metin, madde, ""])
+    return [(b, m) for b, m, liste, _ in sonuc if len(m) > 40 or (not liste and not kisa_giris(m))]
 
 
 class Kutuphane:

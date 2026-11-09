@@ -12,13 +12,13 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.18).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.20).
 
 ## Download and install
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.18.0.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.20.0.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -51,7 +51,10 @@ If you try one, please report it in an issue — that is the help we need most. 
   - **negation and direction:** translation did not turn "don't" into "do" or "lukewarm" into "hot" (round-trip translation);
   - **second look:** the answer belongs to the situation that was asked about;
   - **actions:** a dangerous suggestion — tourniquet, abdominal thrusts, inducing vomiting — is only allowed when the question's situation allows it;
-  - **weak pool:** if even the best paragraph is far from the question, no answer is written.
+  - **weak pool:** if even the best paragraph is far from the question, no answer is written;
+  - **source transfer** *(0.20)*: an answer line that recommends what its cited source paragraph forbids (e.g. a list under "the following actions are not effective") is stopped;
+  - **dropped word** *(0.20)*: a side ("left side"), a limit ("only", "unless", "except") or the question's topic word lost in translation;
+  - **script and mood** *(0.19)*: letters from another alphabet in the answer; "may be considered" translated as "must".
 
   If a checker trips, the answer is not shown; the user reads the sources instead.
 - **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
@@ -84,8 +87,12 @@ For every release: the wrong and dangerous answers Heybe gave **without stopping
 | 0.10.0 | Z | 10 | 12 | 3 | 0 |
 | 0.11.0 | X (separate author, near-situation traps) | 5 | 13 | 3 | 1 (heatstroke's "give water" for a stroke question — closed in 0.11.1) |
 | 0.12.0 | W (separate author, "what should I do" traps) | 3 | 18 | 5 | 0 |
+| 0.18.0 | F (separate author, source fidelity: the library holds only the IFRC 2020 first aid guidelines) | 2 | 23 | 1 | 0 |
+| 0.19.0 | G (separate author, source fidelity) — first run, new search on (not released) | 3 | 20 | 3 | 1 (hot-water bottle for appendicitis) |
+| 0.19.0 | G — released setup: new search off, new guards (G had been seen once) | 3 | 23 | 0 | 0 |
+| 0.20.0 | H (separate author, source fidelity) — same questions on 0.18.0: 1 correct, 1 wrong passed | 1 (+3 partly) | 20 | 2 (off-topic) | 0 |
 
-The sets differ, so rows compare only roughly. Exam questions and graded notes with reasons are in `olcum/banka/`.
+The sets differ, so rows compare only roughly. Exam questions and graded notes with reasons are in `olcum/banka/`. The F, G and H sets quote short passages from the IFRC *International first aid, resuscitation, and education guidelines 2020* (IFRC Global First Aid Reference Centre), which allows non-commercial copies with the source acknowledged; these quotations are not covered by this repository's Apache 2.0 licence.
 
 ## Roadmap — for developers
 
@@ -138,13 +145,13 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.18).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.20).
 
 ## İndir ve kur
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.18.0.zip` dosyasını (yaklaşık 325 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.20.0.zip` dosyasını (yaklaşık 325 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -177,7 +184,10 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
   - **olumsuzluk ve yön:** çeviri "yapmayın"ı "yapın"a, "ılık"ı "sıcak"a çevirmiş mi (gidiş-dönüş çevirisiyle);
   - **ikinci göz:** cevap sorulan duruma mı ait;
   - **eylem:** turnike, karın basısı, kusturmak gibi tehlikeli bir öneri sorunun durumunda serbest mi;
-  - **zayıf havuz:** en iyi paragraf bile soruya çok uzaksa cevap yazılmaz.
+  - **zayıf havuz:** en iyi paragraf bile soruya çok uzaksa cevap yazılmaz;
+  - **aktarma** *(0.20)*: gösterdiği kaynak paragrafının yasakladığını öneren cevap satırı ("şu eylemler etkisizdir" listesindeki bir madde gibi) durur;
+  - **düşen kelime** *(0.20)*: yön ("sol yanına"), kısıt ("yalnız", "-medikçe", "hariç") ya da sorunun konusu çeviride kaybolmuş mu;
+  - **yazı ve kip** *(0.19)*: cevapta başka alfabeden harf; "düşünülebilir"in "zorunlu" diye çevrilmesi.
 
   Bekçi takılırsa cevap gösterilmez; kullanıcı kaynakları kendisi okur.
 - **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
@@ -210,8 +220,12 @@ Her sürümde, o sürümün sınavında Heybe'nin **durdurmadan verdiği** yanl�
 | 0.10.0 | Z | 10 | 12 | 3 | 0 |
 | 0.11.0 | X (başka yazar, yakın durum tuzakları) | 5 | 13 | 3 | 1 (inme sorusuna sıcak çarpmasının "su verin"i — 0.11.1'de kapandı) |
 | 0.12.0 | W (başka yazar, "ne yapmalı" tuzakları) | 3 | 18 | 5 | 0 |
+| 0.18.0 | F (başka yazar, kaynağa sadakat: kitaplıkta yalnız IFRC 2020 ilk yardım kılavuzu) | 2 | 23 | 1 | 0 |
+| 0.19.0 | G (başka yazar, kaynağa sadakat) — ilk ölçüm, yeni arama açık (yayımlanmadı) | 3 | 20 | 3 | 1 (apandisite sıcak su torbası) |
+| 0.19.0 | G — yayımlanan düzen: yeni arama kapalı, yeni bekçiler (G bir kez görülmüştü) | 3 | 23 | 0 | 0 |
+| 0.20.0 | H (başka yazar, kaynağa sadakat) — aynı sorularda 0.18.0: 1 doğru, 1 yanlış geçen | 1 (+3 kısmen) | 20 | 2 (konu dışı) | 0 |
 
-Setler birbirinden farklı olduğu için satırlar yaklaşık karşılaştırılır. Sınav soruları ve gerekçeli notlar `olcum/banka/` içinde.
+Setler birbirinden farklı olduğu için satırlar yaklaşık karşılaştırılır. Sınav soruları ve gerekçeli notlar `olcum/banka/` içinde. F, G ve H setleri IFRC *International first aid, resuscitation, and education guidelines 2020*'den (IFRC Global First Aid Reference Centre) kısa alıntılar içerir; kaynak belirtilerek ticari olmayan kopyaya izin verilir. Bu alıntılar deponun Apache 2.0 lisansına girmez.
 
 ## Yol haritası — geliştiriciler için
 

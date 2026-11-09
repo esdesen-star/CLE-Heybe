@@ -46,8 +46,18 @@ iste "paragraf okuyucu dişi" "$G/denetim" "paragraf okuyucu dişi: ([0-9]+)/\1"
 iste "bilgi yok dişi" "$G/denetim" "bilgi yok dişi: ([0-9]+)/\1"
 iste "eylem dişi" "$G/denetim" "eylem dişi: ([0-9]+)/\1"
 iste "kesme dişi" "$G/denetim" "kesme dişi: ([0-9]+)/\1"
+# 09.11 (§86): yazı sistemi bekçisi, kip denetimi, kısa maddeleri tutan paragraf okuyucu
+iste "yazı dişi" "$G/denetim" "yazı dişi: ([0-9]+)/\1"
+iste "kip dişi" "$G/denetim" "kip dişi: ([0-9]+)/\1"
+iste "kısa madde dişi" "$G/denetim" "kısa madde dişi: ([0-9]+)/\1"
+# 09.11 (§87): aktarma denetimi (cevap satırı ↔ kaynak paragrafı) ve listenin giriş cümlesini taşıması
+iste "aktarma dişi" "$G/denetim" "aktarma dişi: ([0-9]+)/\1"
+iste "liste girişi dişi" "$G/denetim" "liste girişi dişi: ([0-9]+)/\1"
+iste "düşen kelime dişi" "$G/denetim" "düşen kelime dişi: ([0-9]+)/\1"
 node olcum/kopru/eylem_bozma.cjs >"$G/bozma" 2>&1
 iste "eylem bozma denemesi" "$G/bozma" "([0-9]+) bozma, \1 yakalandı"
+node olcum/kopru/kaynak_bozma.cjs >"$G/kbozma" 2>&1
+iste "kaynak bozma denemesi (yeni kurallar)" "$G/kbozma" "kaynak bozma: ([0-9]+) bozma, \1 yakalandı$"
 node olcum/kopru/dis_kopru.cjs >"$G/kopru" 2>&1
 iste "köprü sayı dişi" "$G/kopru" "dişler: ([0-9]+)/\1 yakalandı"
 

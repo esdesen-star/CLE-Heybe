@@ -4,7 +4,8 @@
 // Kullanım: node olcum/kopru/dis_denetim.cjs [ayrinti]
 const fs = require('fs');
 const path = require('path');
-const H = require('../../tasinabilir/usb_kok/heybe/arkadas.js');
+// HEYBE_ARKADAS: bozma denemesi (olcum/kopru/kaynak_bozma.cjs) değiştirilmiş bir kopyayı verir
+const H = require(process.env.HEYBE_ARKADAS || '../../tasinabilir/usb_kok/heybe/arkadas.js');
 const SONUC = path.join(__dirname, '..', 'sonuc');
 const ayrinti = process.argv[2] === 'ayrinti';
 const oku = (f) => fs.readFileSync(path.join(SONUC, f), 'utf8').split('\n').filter((x) => x.trim()).map((x) => JSON.parse(x));
@@ -250,6 +251,20 @@ const EYLEM_ORNEK = [
   ['bilinçsize ya da inme geçirene ağızdan bir şey vermek', 'en', 'Can I give water to someone who may have had a stroke?', 'Water, or isotonic sports drinks, may be used.'],
   ['bilinçsize ya da inme geçirene ağızdan bir şey vermek', 'tr', 'İnme geçiren babama ne yapayım?', 'Bol su içirin.'],
   ['', 'en', 'What should I do for heat stroke?', 'Give them cool water to drink.'],
+  // 09.11 (F26, görülmüş): sıcak çarpmasında "derisi kuru ve yanıyor" yanık değil — kaynağın buz paketi önerisi serbest
+  ['', 'en', 'My father collapsed in the heat, his skin was dry and burning. What should we do?', 'Wet them with cold water and place ice packs on their neck and groin areas.'],
+  ['yanığa yağ, macun ya da buz', 'en', 'I burned my hand on the stove, what should I do?', 'Put ice on the burn.'],
+  ['yanığa yağ, macun ya da buz', 'en', 'Boiling water burnt my arm. What now?', 'Hold ice against the skin.'],
+  // 09.11 (F10 ve F15, 0.19.0 ölçümü, görülmüş): yılana soğuk kompres; yakıcı madde yutana sıvı (ilk ikisi kayıtlı cevaplardan)
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'tr', 'Tarlada yılan soktu ayağımdan! Bacağımı iple sıkıca bağlayıp yarayı bıçakla çizeyim mi?', '* Bacağınızı ip ile sıkıca bağlamayın [1].\n* Soğuk kompres uygulayın [1, 2].'],
+  ['yakıcı madde yutana sıvı içirmek', 'tr', '2 yaşındaki oğlum lavabo açıcıdan yudumlamış! Süt içirip kusturayım mı?', '* [2] Daha ciddi durumlarda, kişinin oral rehidrasyon solüsyonu içmesini sağlayın.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'en', 'A snake bit my leg, what should I do?', 'Apply a cold pack to slow the venom.'],
+  ['yakıcı madde yutana sıvı içirmek', 'en', 'My toddler swallowed drain cleaner. Should I give milk?', 'Give him a glass of milk to dilute it.'],
+  ['', 'tr', 'Yılan soktu, ne yapmamalıyım?', 'Soğuk kompres uygulamayın.'],
+  ['', 'tr', 'Çocuk lavabo açıcı içti, ne yapayım?', 'Süt ya da su içirmeyin; kusturmayın, 112\'yi arayın.'],
+  ['', 'tr', 'İshal olan çocuğa ne verilir?', 'Ağızdan sıvı çözeltisi içmesini sağlayın.'],
+  ['', 'tr', 'Annem asetilsalisilik asit tabletlerini yuttu, ne yapayım?', '112\'yi arayın ve kutuyu yanınızda tutun.'],
+  ['', 'en', 'My child swallowed bleach. What should I do?', 'Do not give water or milk unless the poison centre tells you to.'],
 ];
 let eDogru = 0;
 for (const [ad, dil, soru, cevap] of EYLEM_ORNEK) {
@@ -271,3 +286,125 @@ for (const [m, n] of KESME_ORNEK) {
   if (iyiBicim(k) && k.length <= n && m.startsWith(k)) kDogru++; else console.log(`  YANLIŞ: kes(${JSON.stringify(m)}, ${n}) → ${JSON.stringify(k)}`);
 }
 console.log(`— kesme dişi: ${kDogru}/${KESME_ORNEK.length} —`);
+
+// ---- 09.11 (F seti, §86): yazı sistemi bekçisi (Ö27) — cevapta dilin alfabesine yabancı harf ----
+// İlki F09'un kendi cümlesi (görülmüş): Türkçe cevapta Çince "鑷子" (cımbız). Latin her dilde serbest (EpiPen, EMS, mg).
+const YAZI_ORNEK = [
+  [true, 'tr', 'İlk yardım uzmanı, çok ince bir鑷子 veya tırnak kullanarak keneyi yakalayabilir.'],
+  [true, 'tr', 'Yarayı пинцет ile temizleyin.'],
+  [true, 'en', 'Use the 鑷子 to remove the tick.'],
+  [true, 'ru', 'Используйте 鑷子 осторожно.'],
+  [true, 'ja', 'ピンセットでтоже取り除きます。'],
+  [false, 'tr', 'EpiPen kalemini uyluğun dış yanına batırın; 0,15 mg, EMS (112) arayın.'],
+  [false, 'tr', 'Doz 50 μg/kg — kaynağa göre.'],
+  [false, 'ru', 'Позвоните в EMS и дайте 0,15 mg.'],
+  [false, 'ja', 'ピンセットでトゲを取り除き、EMSに連絡します。'],
+  [false, 'ko', '응급 상황에서는 119에 전화하고 安全을 확인하세요.'],
+  [false, 'xx', 'Bilinmeyen dilde denetlenmez: 鑷子.'],
+];
+let yzDogru = 0;
+for (const [beklenen, dil, metin] of YAZI_ORNEK) {
+  const r = H.yaziDenetle(metin, dil);
+  if ((r.length > 0) === beklenen) yzDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'durdur' : 'sessiz'}) | ${dil} ${metin}`);
+}
+console.log(`— yazı dişi: ${yzDogru}/${YAZI_ORNEK.length} —`);
+
+// ---- 09.11 (F seti, §86): kip denetimi (Ö28) — kaynağın "düşünülebilir"i çeviride "zorunlu" olmasın ----
+// İlki F17'nin kendi satırı (görülmüş); gerisi kurgu. Ters yön (zorunlu → seçimlik) bilerek denetlenmez (ölçülmedi).
+const KIP_ORNEK = [
+  [true, '* Consider having your spouse take an oral dose of 150–300 mg acetylsalicylic acid [1].', '* Eşinizin 150–300 mg asetilsalisilik asit almasını sağlamalıdır [1].'],
+  [true, '* Paracetamol may be given to the person with a fever.', '* Ateşi olan kişiye parasetamol verilmelidir.'],
+  [true, '* Consider applying a tourniquet if available.', '* Varsa mutlaka turnike uygulayın.'],
+  [true, '* Help the person to rest.\n* A second dose may be considered after 5 minutes.', '* Kişinin dinlenmesine yardım edin.\n* 5 dakika sonra ikinci doz gerekir.'],
+  [false, '* Consider applying a tourniquet if available.', '* Varsa turnike uygulamayı düşünebilirsiniz.'],
+  [false, '* Paracetamol may be given to the person with a fever.', '* Ateşi olan kişiye parasetamol verilebilir.'],
+  [false, '* You must access EMS immediately.', '* Hemen 112\'yi aramalısınız.'],
+  [false, '* Do not give aspirin to a child.', '* Çocuğa aspirin vermemelisiniz.'],
+  [false, '* Cool the burn with running water for at least 10 minutes.', '* Yanığı en az 10 dakika akan suyla soğutmalısınız.'],
+  // kaynak hem seçimlik hem zorunlu diyorsa ("may … must") zorunlu çeviri doğrudur (bozma denemesinin bulduğu dişsiz yer)
+  [false, '* If the person may have a spinal injury, you must not move them.', '* Omurga yaralanması olabilecek kişiyi hareket ettirmemelisiniz.'],
+];
+let kpDogru = 0;
+for (const [beklenen, ozgun, ceviri] of KIP_ORNEK) {
+  const r = H.kipDenetle(ozgun, 'en', ceviri, 'tr');
+  if ((r.length > 0) === beklenen) kpDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'durdur' : 'sessiz'}) | ${ceviri}`);
+}
+console.log(`— kip dişi: ${kpDogru}/${KIP_ORNEK.length} —`);
+
+// ---- 09.11 (F seti, §86): paragraf okuyucu kısa maddeleri ve kısa cümleyi tutar ----
+// Serum tarifi (F27) ve "Keep the injury still to reduce pain." (F11) kitapta vardı, okuyucu atıyordu.
+const KISA_ORNEK = [
+  ['<h3>NOTE</h3><p>Oral rehydration recipe:</p><ul><li>Half a teaspoon of salt</li><li>Six teaspoons sugar</li><li>One litre of drinking water</li></ul>',
+    [['NOTE', 'Oral rehydration recipe: • Half a teaspoon of salt • Six teaspoons sugar • One litre of drinking water']]],
+  ['<h2>Key action</h2><p>Keep the injury still to reduce pain.</p>', [['Key action', 'Keep the injury still to reduce pain.']]],
+  ['<ul><li>Ankara</li></ul><p>Kısa parça</p><p>Tarif:</p>', []],
+  ['<p>Belirtiler:</p><p>Bu paragraf kırk harften uzun olmalı ki okuyucu onu gerçek bir paragraf saysın.</p>',
+    [['', 'Bu paragraf kırk harften uzun olmalı ki okuyucu onu gerçek bir paragraf saysın.']]],
+  ['<ul><li>Do not restrain the person.</li><li>Place soft padding under the head.</li></ul>',
+    [['', '• Do not restrain the person. • Place soft padding under the head.']]],
+];
+let ksDogru = 0;
+for (const [html, beklenen] of KISA_ORNEK) {
+  const r = H.paragraflar(html);
+  if (JSON.stringify(r) === JSON.stringify(beklenen)) ksDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} | ${html.slice(0, 70)}`);
+}
+console.log(`— kısa madde dişi: ${ksDogru}/${KISA_ORNEK.length} —`);
+
+// ---- 09.11 (§87): aktarma denetimi (Ö29) — modelin İngilizce cevabı, gösterdiği kaynak paragrafına karşı ----
+// İlki F10'un kendi satırı ve kaynağı (görülmüş, 0.19.0a): olumsuz liste girişi altındaki madde cevapta olumlu.
+const AK_KAYNAK = (metin) => [{ makale: 'x', bolum: '', dil: 'en', metin }];
+const AKTARMA_ORNEK = [
+  [true, '* Apply a cold compress [1].', 'The following actions are not effective and may even cause further harm: • applying a tourniquet • sucking out the venom • applying a cold compress'],
+  [true, '* Apply a cold compress to the bite [1].', 'A cold compress should not be applied to a snakebite because this may cause the blood vessels to narrow.'],
+  [true, '* Give aspirin to the child for the fever [1].', 'Do not give aspirin to a child with a fever.'],
+  [false, '* Do not apply a cold compress [1].', 'The following actions are not effective and may even cause further harm: • applying a tourniquet • applying a cold compress'],
+  [false, '* Give up to five firm blows between the shoulder blades [1].', 'If the baby cannot cough or breathe, give up to five firm blows between their shoulder blades.'],
+  [false, '* Penetrating head trauma does present a risk of shock due to hemorrhage [1].', 'While blunt trauma to the head does not present a risk of shock due to hemorrhage, penetrating head trauma does.'],
+  [false, '* Give two to five initial rescue breaths [1].', 'If the baby or child’s breathing is abnormal (or they are not breathing): • Give two to five initial rescue breaths using a mouth-to-mouth-and-nose technique.'],
+  [false, '* Remove the stinger as quickly as possible [1].', 'The stinger should be removed as quickly as possible without regard to method: a study has shown the amount of venom delivered does not differ whether the sting is pinched or scraped off.'],
+  [false, '* Advise the person to keep as still as possible [1].', 'A person who is alert should be advised to keep as still as possible and may not require manual stabilisation.'],
+  [false, '* Apply a cold compress.', 'A cold compress should not be applied to a snakebite.'],
+  [false, '* Do not tell her to “stop” or “calm down” [1].', 'If they start to cry or shout, do not calm them down by telling them to “stop” or “calm down”.'],
+  [false, '* Gently support the person’s head to prevent movement of their neck and spine [1].', 'If necessary, (e.g., they are a child, are drunk, or do not follow to your instructions) gently support their head to help them to prevent movement of their neck and spine.'],
+  // bozma denemesinin bulduğu dişsiz yerler (§87): aynı yan cümlede koşul, bağlaç, parantez
+  [false, '* Keep talking to the person [1].', 'If you cannot reach the person keep talking to them.'],
+  [false, '* Cool the burns [1].', 'There is no evidence that cooling burns is harmful.'],
+  [false, '* Keep them warm and still [1].', '(Do not move them) keep them warm and still.'],
+];
+let akDogru = 0;
+for (const [beklenen, ozgun, kaynak] of AKTARMA_ORNEK) {
+  const r = H.aktarmaDenetle(ozgun, AK_KAYNAK(kaynak), 'en');
+  if ((r.length > 0) === beklenen) akDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'durdur' : 'sessiz'}) | ${ozgun}`);
+}
+console.log(`— aktarma dişi: ${akDogru}/${AKTARMA_ORNEK.length} —`);
+
+// liste girişi listeyle birlikte taşınır (§87) — paragraf okuyucu
+const GIRIS_ORNEK = [
+  ['<h3>CAUTION</h3><p>The following actions are not effective and may even cause further harm:</p><ul><li>applying a tourniquet</li><li>applying a cold compress</li></ul>',
+    [['CAUTION', 'The following actions are not effective and may even cause further harm:'], ['CAUTION', 'The following actions are not effective and may even cause further harm: • applying a tourniquet • applying a cold compress']]],
+];
+let gDogru = 0;
+for (const [html, beklenen] of GIRIS_ORNEK) {
+  const r = H.paragraflar(html);
+  if (JSON.stringify(r) === JSON.stringify(beklenen)) gDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)}`);
+}
+console.log(`— liste girişi dişi: ${gDogru}/${GIRIS_ORNEK.length} —`);
+
+// ---- 09.11 (§87): çeviride düşen kelime (Ö30) — özgün ↔ geri çeviri ----
+// İlk ikisi kayıtlı cevaplardan (G10, G19 — görülmüş, 0.19.0a): "left side" ve konu kelimesi "tick" geri çeviride yok.
+const DUSEN_ORNEK = [
+  [true, '* If the person is pregnant and unresponsive, they should be placed on their left side [1].', '* If the person is pregnant and unresponsive, they should be placed on their side [1].', 'My pregnant neighbour fainted. Which side should I put her on?'],
+  [true, '* Do not use gasoline to suffocate the tick [1].\n* Remove the tick quickly [2].\n* Grab the tick close to the skin [2].\n* Do not squeeze the tick [3].', '* Do not use gasoline as a remover [1].\n* Remove the remover quickly [2].\n* Grab the remover close to the skin [2].\n* Do not squeeze the remover [3].', 'I found a tick on my son. What should I do?'],
+  [true, '* Supplementary oxygen should only be given to a person who is breathing normally [2].', '* Supplementary oxygen should be given to a person who is breathing normally [2].', 'Should I give oxygen?'],
+  [true, '* Help the person to lie down unless they have difficulty breathing [1].', '* Help the person to lie down if they have difficulty breathing [1].', 'What should I do?'],
+  [false, '* Use sterile compresses to remove any dirt that is left in the wound [2].', '* Use sterile compresses to remove any remaining dirt in the wound [2].', 'My brother cut his leg.'],
+  [false, '* Apply ice or something cold for up to 20 minutes [1].', '* Apply ice or something cold for about 20 minutes [1].', 'My ankle is swollen.'],
+  [false, '* The person is shivering [1].\n* Shivering helps the body warm up [1].\n* If shivering stops, act fast [2].', '* The person is trembling [1].\n* Trembling helps the body warm up [1].\n* If trembling stops, act fast [2].', 'My neighbour is shivering after the flood.'],
+  [false, '* Place the person on their left side [1].', '* Lay the person on their left side [1].', 'Which side?'],
+];
+let dDogru = 0;
+for (const [beklenen, ozgun, geri, soru] of DUSEN_ORNEK) {
+  const r = H.dusenKelime(ozgun, geri, soru, 'en');
+  if ((r.length > 0) === beklenen) dDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'durdur' : 'sessiz'}) | ${ozgun.slice(0, 60)}`);
+}
+console.log(`— düşen kelime dişi: ${dDogru}/${DUSEN_ORNEK.length} —`);

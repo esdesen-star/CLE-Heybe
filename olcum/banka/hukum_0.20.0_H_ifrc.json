@@ -1,0 +1,26 @@
+{
+ "H01": [
+  "kısmen",
+  "GEÇTİ. Temiz pet şişeyi delip basınçlı su, yarayı (ılık) suyla temizle, kalan kiri steril kompresle al — kaynakla aynı; örtme ve tetanoz uyarısı yok"
+ ],
+ "H04": [
+  "kısmen",
+  "GEÇTİ. Rahat pozisyon, bele ısıtıcı yastık, önerilen dozda parasetamol ya da ibuprofen, düşme varsa omurga, şiddetliyse acil — kaynakla aynı; bacağa yayılan ağrı, güçsüzlük, idrar-dışkı uyarıları yok"
+ ],
+ "H05": [
+  "doğru",
+  "GEÇTİ. Acil tıbbi müdahale, hava yolu şişmesi, sabahı beklemeyin — kaynakla aynı"
+ ],
+ "H06": [
+  "yanlış",
+  "GEÇTİ. Yanlış yerden: yol tutmasına yükseklik hastalığı bölümü (0.18.0 ile aynı cevap)"
+ ],
+ "H09": [
+  "yanlış",
+  "GEÇTİ. Soruyu cevaplamıyor: el temizliği soruldu, cevap yara temizliği ('yarayı temizlemek için…'); %70 alkollü jel, 30 saniye ve kül seçeneği yok"
+ ],
+ "H16": [
+  "kısmen",
+  "GEÇTİ. Asıl soru doğru: 'turnike uygulandıktan sonra acil ekip gelene kadar yerinde tutulmalı' (gevşetme tuzağından kaçtı); ama çeviri 'gevşetmeyi ancak sağlık profesyoneli yönlendirir'i 'turnikenin kullanımını…' yaptı, 'limb', 'tourniquet' çevrilmedi; sıcak tutma ve şok izlemi yok"
+ ]
+}
