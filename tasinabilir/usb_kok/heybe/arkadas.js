@@ -586,6 +586,24 @@ ANSWER: ${a}`;
     return sorun;
   }
 
+  // ---- 09.11 (Özet §90): cevabın geldiği bölüm — cevaptaki kaynak numaralarından en çok atıf alan makaleler (eşitlikte
+  //      ilk anılan önce). Sayfa bunu cevabın üstüne yazar: konu dışı cevabı (yol tutmasına "Altitude sickness") makine
+  //      ayıramadı (§89: anlam benzerliği, başlık hakemi, başlık sırası) — okuyan bir bakışta görür. Bilgi eklemez. ----
+  function atifBolumleri(metin, parcalar) {
+    const say = new Map();
+    for (const m of String(metin || '').matchAll(/\[([\d,،，、\s]+)\]/g)) {
+      for (const x of m[1].split(/\s*[,،，、]\s*/)) {
+        const no = +x.trim(), p = (parcalar || [])[no - 1];
+        if (!p) continue;
+        const k = (p.kitap || '') + '|' + p.makale;
+        const o = say.get(k) || { makale: p.makale, kitap: p.kitap || '', dil: p.dil || '', kaynak: p.kaynak || '', sayi: 0, ilk: no };
+        o.sayi++;
+        say.set(k, o);
+      }
+    }
+    return [...say.values()].sort((a, b) => b.sayi - a.sayi || a.ilk - b.ilk);
+  }
+
   // ---- Ö27 (09.11, Özet §86): yazı sistemi bekçisi — çeviri cevaba başka bir alfabenin kelimesini bırakabilir.
   //      F09 (görülmüş): Türkçe cevapta "cımbız" yerine Çince "鑷子"; hiçbir bekçi görmedi, yanlış cevap geçti.
   //      Latin her dilde serbest (ad, birim, kısaltma: EMS, mg); dilin kendi alfabesi ve Latin dışında harf varsa durur.
@@ -1470,6 +1488,7 @@ ANSWER: ${a}`;
       denetim.ikinciGoz = eksik.length ? [] : await ikinciGoz(soru, cevap);   // Ö22: durmuş cevaba sorulmaz
       eksik.push(...denetim.ikinciGoz);
       return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: false, kitapVar, gruplar,
+        bolumler: atifBolumleri(ozgun, parcalar),
         ozgun: { dil: kd, cevap: ozgun, guvenli: denetim.ozgun.length === 0 && !denetim.ikinciGoz.length && !denetim.eylem.length }, denetim, ...sure() };
     }
     const yabanci = parcalar.some((p) => p.dil && p.dil !== dil);
@@ -1481,14 +1500,14 @@ ANSWER: ${a}`;
     const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil)]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı
     if (!ya.yok && !eksik.length) eksik.push(...await ikinciGoz(soru, cevap));   // Ö22
     return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: ya.yok,
-      kitapVar, arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
+      bolumler: ya.yok ? [] : atifBolumleri(cevap, parcalar), kitapVar, arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
       ...(gruplar ? { gruplar } : {}) };
   }
 
   const Heybe = { AYAR, DIL, sor, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
     basliklariAyikla, kaynakMetni, cevir, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime };
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

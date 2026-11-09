@@ -12,13 +12,13 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.20).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.20.1).
 
 ## Download and install
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.20.0.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.20.1.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -55,6 +55,8 @@ If you try one, please report it in an issue — that is the help we need most. 
   - **source transfer** *(0.20)*: an answer line that recommends what its cited source paragraph forbids (e.g. a list under "the following actions are not effective") is stopped;
   - **dropped word** *(0.20)*: a side ("left side"), a limit ("only", "unless", "except") or the question's topic word lost in translation;
   - **script and mood** *(0.19)*: letters from another alphabet in the answer; "may be considered" translated as "must".
+
+  Every shown answer starts with the chapter it came from *(0.20.1)* — "This answer comes from: Fractures, sprains and strains" — so an off-topic answer is easy to spot.
 
   If a checker trips, the answer is not shown; the user reads the sources instead.
 - **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
@@ -145,13 +147,13 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.20).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.20.1).
 
 ## İndir ve kur
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.20.0.zip` dosyasını (yaklaşık 325 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.20.1.zip` dosyasını (yaklaşık 325 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -188,6 +190,8 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
   - **aktarma** *(0.20)*: gösterdiği kaynak paragrafının yasakladığını öneren cevap satırı ("şu eylemler etkisizdir" listesindeki bir madde gibi) durur;
   - **düşen kelime** *(0.20)*: yön ("sol yanına"), kısıt ("yalnız", "-medikçe", "hariç") ya da sorunun konusu çeviride kaybolmuş mu;
   - **yazı ve kip** *(0.19)*: cevapta başka alfabeden harf; "düşünülebilir"in "zorunlu" diye çevrilmesi.
+
+  Gösterilen her cevabın başında geldiği bölüm yazar *(0.20.1)* — "Bu cevap şu bölümden: Kırıklar, burkulmalar ve zorlanmalar" — konu dışı cevap kolayca görülür.
 
   Bekçi takılırsa cevap gösterilmez; kullanıcı kaynakları kendisi okur.
 - **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.

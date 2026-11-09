@@ -35,6 +35,9 @@ const BOZMALAR = [
   ['düşen: konu kör', 'if (n >= DUSEN_KONU_EN_AZ && !geriK.has(k))', 'if (false)'],
   ['düşen: konu eşiği 1', 'const DUSEN_KONU_EN_AZ = 4;', 'const DUSEN_KONU_EN_AZ = 1;'],
   ['düşen: "left" fiil de sayılıyor', "new RegExp(`\\\\bleft\\\\s+${UZUV}`)", "/\\bleft\\b/"],
+  // §90: cevabın geldiği bölüm
+  ['bölüm: sıralanmıyor', 'return [...say.values()].sort((a, b) => b.sayi - a.sayi || a.ilk - b.ilk);', 'return [...say.values()];'],
+  ['bölüm: atıf sayılmıyor', '        o.sayi++;\n', ''],
   ['eylem: yanma hissi yine yanık', "en: /\\bburn(s|ed|t)?\\b|scald\\w*/", "en: /\\bburn\\w*|scald\\w*/"],
 ];
 const dislerTam = (cikti) => {

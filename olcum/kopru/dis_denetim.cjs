@@ -408,3 +408,19 @@ for (const [beklenen, ozgun, geri, soru] of DUSEN_ORNEK) {
   if ((r.length > 0) === beklenen) dDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'durdur' : 'sessiz'}) | ${ozgun.slice(0, 60)}`);
 }
 console.log(`— düşen kelime dişi: ${dDogru}/${DUSEN_ORNEK.length} —`);
+
+// ---- 09.11 (§90): cevabın geldiği bölüm — en çok atıf alan makale önce, eşitlikte küçük kaynak numarası ----
+const BP = [{ makale: 'Altitude sickness', dil: 'en', kitap: 'k' }, { makale: 'Motion sickness', dil: 'en', kitap: 'k' }, { makale: 'Altitude sickness', dil: 'en', kitap: 'k' }];
+const BOLUM_ORNEK = [
+  ['* a [2].\n* b [2].\n* c [1].', 'Motion sickness|Altitude sickness'],
+  ['* a [1, 3].\n* b [2].', 'Altitude sickness|Motion sickness'],
+  ['* a [3]. * b [2].', 'Motion sickness|Altitude sickness'],
+  ['Kaynaklarımda bu bilgi yok.', ''],
+  ['* a [9].', ''],
+];
+let boDogru = 0;
+for (const [metin, beklenen] of BOLUM_ORNEK) {
+  const r = H.atifBolumleri(metin, BP).map((x) => x.makale).join('|');
+  if (r === beklenen) boDogru++; else console.log(`  YANLIŞ: ${r} (beklenen ${beklenen}) | ${metin}`);
+}
+console.log(`— bölüm dişi: ${boDogru}/${BOLUM_ORNEK.length} —`);

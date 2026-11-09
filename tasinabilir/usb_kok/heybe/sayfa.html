@@ -55,6 +55,8 @@
   .kart h2 { margin: 0 0 8px; font-size: 18px; color: var(--vurgu); }
   .aciklama { color: var(--soluk); font-size: 15px; margin: 0 0 12px; }
   .cevap { white-space: pre-wrap; }
+  /* 09.11 (§90): cevabın geldiği bölüm — okuyan konu dışı cevabı bir bakışta görsün */
+  .bolumSatir { margin: 0 0 10px; padding: 6px 10px; border-left: 4px solid var(--vurgu); background: var(--zemin); font-weight: 600; }
   #ozgunKutu { margin-top: 14px; }
   .kaynakCeviri { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--vurgu); }
   .kaynakCeviri .ceviriNot { font-size: 13px; color: var(--soluk); margin-top: 4px; }
@@ -148,6 +150,7 @@
 
     <section class="kart" id="cevapKart" hidden>
       <h2 data-m="cevapBaslik"></h2>
+      <p class="bolumSatir" id="bolumSatir" dir="auto" hidden></p>
       <div class="cevap" id="cevap"></div>
       <details id="ozgunKutu" hidden><summary id="ozgunBaslik"></summary><div class="cevap" id="ozgunMetin"></div></details>
       <!-- "Bu cevap yanlış" (Ö18, 07.11): kayıt yalnız bu bellekte kalır -->
@@ -399,6 +402,11 @@
       ceviriSayiDur: (x) => `Çeviride bir sayı değişmiş görünüyor (${x}). Güvenlik için çeviriyi göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.`,
       yonDur: 'Çeviride bir yön ya da karşıt kelime değişmiş görünüyor ("geri" yerine "öne", "sıcak" yerine "soğuk" gibi). Güvenlik için çeviriyi göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.',
       durumDur: 'Bu cevap sorduğun duruma ait görünmüyor: başka bir kişi ya da olay için yazılmış olabilir. Güvenlik için göstermiyorum. Lütfen aşağıdaki kaynakları oku.',
+      // 09.11 (§90): 0.19–0.20 bekçilerinin kendi cümleleri (önceden "sayı" sanılıyordu)
+      yaziDur: 'Çeviride başka bir alfabenin harfleri kalmış; cevap güvenilir değil. Güvenlik için göstermiyorum. Lütfen aşağıdaki kaynakları oku.',
+      kipDur: 'Çeviri, kaynağın "düşünülebilir" dediği bir şeyi zorunlu gibi yazmış. Güvenlik için göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.',
+      aktarmaDur: 'Cevap, kaynağının yasakladığı bir şeyi öneriyor gibi görünüyor. Güvenlik için göstermiyorum. Lütfen aşağıdaki kaynakları oku.',
+      dusenDur: (a) => `Çeviride önemli bir kelime kaybolmuş görünüyor (${a}). Güvenlik için çeviriyi göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.`,
       eylemDur: (adlar) => `Bu cevapta, sorduğun durumda tehlikeli olabilecek bir öneri var: ${adlar}. Güvenlik için göstermiyorum. Aşağıdaki kaynaklarda da aynı öneri geçebilir, dikkatle oku. Acil bir durumdaysan yardım çağır.`,
       eylemAdlari: {   // Ö25 eylem bekçisi (07.11); anahtar arkadas.js EYLEM[].kod
         turnike: 'turnike ya da sıkı bağ (yalnız durmayan ağır kanamada ya da kopmada)',
@@ -465,6 +473,7 @@
       bitti: (sn) => `Bitti (${sn} sn).`,
       hata: 'Bir şey ters gitti: ',
       cevapBaslik: 'Cevap',
+      bolumKaynak: (a) => `Bu cevap şu bölümden: ${a}`,
       kaynakBaslik: 'Kaynaklar',
       durdur: (x) => `Bu cevapta kaynakta olmayan bir sayı var (${x}). Güvenlik için cevabı göstermiyorum. Lütfen aşağıdaki kaynakları oku.`,
       bilgiYok: 'Kaynaklarımda bu bilgi yok.',
@@ -588,6 +597,10 @@
       ceviriSayiDur: (x) => `A number seems to have changed in the translation (${x}). For safety I am not showing the translation. Please read the original answer and the sources.`,
       yonDur: 'A direction or opposite word seems to have changed in the translation (like "back" to "forward", "hot" to "cold"). For safety I am not showing the translation. Please read the original answer and the sources.',
       durumDur: 'This answer does not seem to fit the situation you asked about: it may have been written for another person or event. For safety I am not showing it. Please read the sources below.',
+      yaziDur: 'The translation left letters from another alphabet; the answer cannot be trusted. For safety I am not showing it. Please read the sources below.',
+      kipDur: 'The translation turned something the source says "may be considered" into a must. For safety I am not showing it. Please read the original answer and the sources.',
+      aktarmaDur: 'The answer seems to recommend something its source forbids. For safety I am not showing it. Please read the sources below.',
+      dusenDur: (a) => `An important word seems to have been lost in translation (${a}). For safety I am not showing the translation. Please read the original answer and the sources.`,
       eylemDur: (adlar) => `This answer contains advice that may be dangerous in the situation you asked about: ${adlar}. For safety I am not showing it. The sources below may give the same advice, so read them carefully. If this is an emergency, call for help.`,
       eylemAdlari: {
         turnike: 'a tourniquet or tight band (only for severe bleeding that will not stop, or an amputation)',
@@ -653,6 +666,7 @@
       bitti: (sn) => `Done (${sn} s).`,
       hata: 'Something went wrong: ',
       cevapBaslik: 'Answer',
+      bolumKaynak: (a) => `This answer comes from: ${a}`,
       kaynakBaslik: 'Sources',
       durdur: (x) => `This answer contains a number that is not in the sources (${x}). For safety I am not showing it. Please read the sources below.`,
       bilgiYok: 'My sources do not contain this information.',
@@ -776,6 +790,10 @@
       ceviriSayiDur: (x) => `V překladu se zřejmě změnilo číslo (${x}). Z bezpečnostních důvodů překlad nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.`,
       yonDur: 'V překladu se zřejmě změnil směr nebo opačné slovo (např. „dozadu“ místo „dopředu“, „horký“ místo „studený“). Z bezpečnostních důvodů překlad nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.',
       durumDur: 'Tato odpověď zřejmě neodpovídá situaci, na kterou se ptáte: mohla být napsána pro jinou osobu nebo událost. Z bezpečnostních důvodů ji neukazuji. Přečtěte si prosím zdroje níže.',
+      yaziDur: 'V překladu zůstala písmena jiné abecedy; odpověď není spolehlivá. Z bezpečnostních důvodů ji nezobrazuji. Přečtěte si prosím zdroje níže.',
+      kipDur: 'Překlad změnil něco, co zdroj uvádí jako „lze zvážit“, na povinnost. Z bezpečnostních důvodů odpověď nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.',
+      aktarmaDur: 'Odpověď zřejmě doporučuje něco, co její zdroj zakazuje. Z bezpečnostních důvodů ji nezobrazuji. Přečtěte si prosím zdroje níže.',
+      dusenDur: (a) => `Zdá se, že se při překladu ztratilo důležité slovo (${a}). Z bezpečnostních důvodů překlad nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.`,
       eylemDur: (adlar) => `Tato odpověď obsahuje radu, která může být ve vaší situaci nebezpečná: ${adlar}. Z bezpečnostních důvodů ji neukazuji. Stejná rada se může objevit i ve zdrojích níže, čtěte je proto pozorně. Pokud jde o naléhavý případ, zavolejte pomoc.`,
       eylemAdlari: {
         turnike: 'škrtidlo nebo pevné zaškrcení (jen při silném krvácení, které nelze zastavit, nebo při amputaci)',
@@ -841,6 +859,7 @@
       bitti: (sn) => `Hotovo (${sn} s).`,
       hata: 'Něco se pokazilo: ',
       cevapBaslik: 'Odpověď',
+      bolumKaynak: (a) => `Tato odpověď pochází z kapitoly: ${a}`,
       kaynakBaslik: 'Zdroje',
       durdur: (x) => `V této odpovědi je číslo, které ve zdrojích není (${x}). Z bezpečnostních důvodů odpověď nezobrazuji. Přečtěte si prosím zdroje níže.`,
       bilgiYok: 'Tuto informaci ve svých zdrojích nemám.',
@@ -1325,6 +1344,27 @@
     $('kaynakKart').hidden = parcalar.length === 0;
   }
 
+  // 09.11 (Özet §90): cevabın geldiği bölüm (en çok atıf alan en fazla iki makale) cevabın üstünde. Başka dildeki bölüm
+  // adı okuyanın diline çevrilir, özgün adı ayraçta kalır; çevirmen yoksa ya da çeviri boşsa özgün ad.
+  let bolumNo = 0;
+  async function bolumGoster(r) {
+    const el = $('bolumSatir'), no = ++bolumNo;
+    const b = (r.bolumler || []).slice(0, 2);
+    if (!b.length) { el.hidden = true; return; }
+    el.textContent = METIN[dil].bolumKaynak(b.map((x) => x.makale).join(' · '));
+    el.hidden = false;
+    if (!H.AYAR.cevirmen || !b.some((x) => x.dil && x.dil !== dil)) return;
+    const adlar = [];
+    for (const x of b) {
+      let c = '';
+      if (x.dil && x.dil !== dil) {
+        try { c = String(await H.cevir(x.makale, x.dil, dil, 40)).split(/\r?\n/)[0].replace(/^["'“”«»\s]+|["'“”«».\s]+$/g, ''); } catch (e) { /* özgün ad kalır */ }
+      }
+      adlar.push(c && c.toLowerCase() !== x.makale.toLowerCase() ? `${c} (${x.makale})` : x.makale);
+    }
+    if (no === bolumNo) el.textContent = METIN[dil].bolumKaynak(adlar.join(' · '));
+  }
+
   $('form').addEventListener('submit', async (o) => {
     o.preventDefault();
     const soru = $('soru').value.trim();
@@ -1333,7 +1373,7 @@
     // inmez — hızlı bilgisayarda kart birkaç saniyede kaybolurdu (06.11 sınavı).
     if (!acilElle) $('acilAc').open = false;
     $('soru').disabled = true; $('sor').disabled = true;
-    $('cevapKart').hidden = true; $('kaynakKart').hidden = true;
+    $('cevapKart').hidden = true; $('kaynakKart').hidden = true; $('bolumSatir').hidden = true;
     sonCevap = null; yanlisSifirla();
     try {
       // dil köprüsü: önce kendi dilinde; bilgi yoksa bellekteki öbür dillerde (çevirmen hazırsa)
@@ -1352,7 +1392,7 @@
       if (r.durdur) {
         // her durma sebebi kendi cümlesiyle (06.11 gece: olumsuzluk Ö12, bağlam Ö13)
         const m = METIN[dil], neden = [];
-        const sayilar = r.eksik.filter((x) => !/^(terim|olumsuzluk|bağlam|gidiş-dönüş|yön|durum|eylem):/.test(x)).map((x) => x.replace(/ \?$/, ''));
+        const sayilar = r.eksik.filter((x) => !/^(terim|olumsuzluk|bağlam|gidiş-dönüş|yön|durum|eylem|yazı|kip|aktarma|çeviride düştü):/.test(x)).map((x) => x.replace(/ \?$/, ''));
         // Ö25 eylem bekçisi (07.11): hangi öneri tehlikeli, okuyanın dilinde (makine çevirisi yoksa İngilizce)
         const eylem = r.eksik.filter((x) => x.startsWith('eylem:')).map((x) => (H.EYLEM.find((k) => `eylem: ${k.ad}` === x) || {}).kod).filter(Boolean);
         const eylemAdi = (k) => ((m.eylemAdlari || {})[k] || METIN.en.eylemAdlari[k]);
@@ -1365,6 +1405,11 @@
         if (ceviriSayi.length) neden.push(m.ceviriSayiDur(ceviriSayi.join(', ')));   // Ö20 gidiş-dönüş
         if (r.eksik.some((x) => x.startsWith('yön:'))) neden.push(m.yonDur);         // Ö15
         if (r.eksik.some((x) => x.startsWith('durum:'))) neden.push(m.durumDur);     // Ö22 ikinci göz (07.11)
+        if (r.eksik.some((x) => x.startsWith('yazı:'))) neden.push(m.yaziDur);       // Ö27 (09.11)
+        if (r.eksik.some((x) => x.startsWith('kip:'))) neden.push(m.kipDur);         // Ö28
+        if (r.eksik.some((x) => x.startsWith('aktarma:'))) neden.push(m.aktarmaDur); // Ö29
+        const dusen = r.eksik.filter((x) => x.startsWith('çeviride düştü:')).map((x) => x.replace(/^çeviride düştü: /, ''));
+        if (dusen.length) neden.push(m.dusenDur(dusen.join(', ')));                  // Ö30
         if (!neden.length) neden.push(m.terimDur);   // yalnız terim: çeviri sorunun konusunu kaybetmiş
         $('cevap').innerHTML = neden.map((x) => `<span class="dur">${yazi(x)}</span>`).join('<br><br>');
       } else if (r.bilgiYok) {
@@ -1374,6 +1419,7 @@
         // [1] ve [1, 3] gibi kaynak numaraları kaynak listesine bağlanır
         $('cevap').innerHTML = yazi(r.cevap).replace(/\[([\d,،，、\s]+)\]/g, (t, ic) => '[' +
           ic.split(/\s*[,،，、]\s*/).filter(Boolean).map((n) => `<a href="#k${n}">${n}</a>`).join(', ') + ']');
+        bolumGoster(r);
       }
       sonCevap = { soru, dil, r };   // "bu cevap yanlış" bu cevabı kaydeder (Ö18)
       durumYaz('bitti', r.toplam_sn);
