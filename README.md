@@ -12,13 +12,13 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.14).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.17).
 
 ## Download and install
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.14.0.zip` (about 305 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.17.0.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -57,7 +57,13 @@ If you try one, please report it in an issue — that is the help we need most. 
 - **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
 - **Personal data stays on the stick.** "This answer is wrong" reports and the emergency card stay on the stick and are never sent anywhere.
 
-**Components:** a small helper program written in Go (`tasinabilir/yardimci/`) · the [Kiwix](https://kiwix.org) book server · three models run with [llamafile](https://github.com/Mozilla-Ocho/llamafile) (chat: Gemma 3 4B · semantic search: EmbeddingGemma · translation: TranslateGemma) · a page and a "companion" that run in the browser (`tasinabilir/usb_kok/heybe/`).
+## Offline map and directions *(new in 0.15–0.17)*
+
+- **Map and directions without internet.** A map page shows OpenStreetMap and finds walking or driving routes (one-way streets, ferries) with turn-by-turn directions, plus "nearest hospital, assembly point, pharmacy, drinking water, shelter, aid distribution". **The route is computed by an algorithm on real map data, never guessed by the AI.** The map's date and the warning *"collapsed buildings and closed roads after a disaster are not on this map"* are always shown. Everything is served from the stick — no request leaves the computer.
+- **Download any region.** Country, region or the whole world (overview 560 MB · full detail about 139 GB, without directions). Heybe shows the sizes and the memory needed first, downloads only after you confirm, and continues where it left off. Map tiles are cut from the [Protomaps](https://protomaps.com) world map (our own Go code, checked tile by tile against Protomaps' tool: 15,211 of 15,211 identical); road data comes from [Geofabrik](https://download.geofabrik.de) extracts (checksum verified); directions are prepared on your own computer (Turkey: 46 s, about 3 GB of memory).
+- **The organisation's own points.** Civil protection, municipalities and aid organisations can add their lists of assembly points, drinking water, shelters… as **Excel, CSV, KML or GeoJSON**, from a file or a link. Every point shows the name of its list. Why: in our test the assembly points of Hatay — the province hit hardest by the 2023 earthquake — were missing from OpenStreetMap, and "nearest assembly point" pointed 181 km away. Now Heybe says "not found within reach" instead, and anyone can mark their own point (for example the assembly area they learned from the authorities).
+
+**Components:** a small helper program written in Go (`tasinabilir/yardimci/`) · the [Kiwix](https://kiwix.org) book server · three models run with [llamafile](https://github.com/Mozilla-Ocho/llamafile) (chat: Gemma 3 4B · semantic search: EmbeddingGemma · translation: TranslateGemma) · a page and a "companion" that run in the browser (`tasinabilir/usb_kok/heybe/`) · the map page with [MapLibre GL JS](https://maplibre.org), PMTiles and Protomaps basemaps, bundled (`heybe/harita.html`, `heybe/harita_kit/`).
 
 ## Model-free test suite
 
@@ -94,6 +100,7 @@ Where the measurements say work is needed:
 8. **Siblings: Heybe by the machine's strength.** Today Heybe opens three models and needs a few GB of memory. For weak machines: a **light sibling** with one small model, and a **reading mode** that opens no model at all (search, read, emergency card). Heybe checks the machine at start and chooses; the user can change it. Candidate models face the same exam: correct, stopped, wrong and dangerous passed, time, memory. Pass condition: zero dangerous answers passed.
 9. **Android and use over a network.** The no-install way: Heybe runs on one computer, and phones or TV boxes on the same Wi-Fi connect with their browser. The phone runs no model; one laptop is enough for a whole tent. A "share on network" switch comes off by default; personal records are not shared. Later: Heybe's own Android app.
 10. **Voice and blind users.** A screen-reader friendly page (the answer is read out when it arrives, every button reachable by keyboard) · offline "read aloud" with the computer's own voices (macOS has voices for 38 of the 49 languages) · an offline speech engine for languages without a voice · asking by voice (offline speech recognition). The goal: Heybe used not only with the eyes but with the ears too.
+11. **Maps.** Lower memory for preparing directions in large countries (Norway needs ~7 GB today) · cutting a region by its real border instead of a box · turn restrictions · the map page in all 49 languages · asking for a route in the chat ("how do I get to the hospital" — the algorithm computes, the model only describes).
 
 ## Contributing
 
@@ -130,13 +137,13 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.14).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.17).
 
 ## İndir ve kur
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.14.0.zip` dosyasını (yaklaşık 305 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.17.0.zip` dosyasını (yaklaşık 325 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -175,7 +182,13 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
 - **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
 - **Kişisel veri bellekte kalır.** "Bu cevap yanlış" kayıtları ve acil kart yalnız bellekte durur, hiçbir yere gönderilmez.
 
-**Bileşenler:** Go ile yazılmış küçük bir yardımcı program (`tasinabilir/yardimci/`) · [Kiwix](https://kiwix.org) kitap sunucusu · [llamafile](https://github.com/Mozilla-Ocho/llamafile) ile üç model (sohbet: Gemma 3 4B · anlam araması: EmbeddingGemma · çeviri: TranslateGemma) · tarayıcıda çalışan sayfa ve "arkadaş" (`tasinabilir/usb_kok/heybe/`).
+## İnternetsiz harita ve yol tarifi *(0.15–0.17'de yeni)*
+
+- **İnternetsiz harita ve yol tarifi.** Harita sayfası OpenStreetMap haritasını gösterir; yürüyerek ya da araçla rota bulur (tek yön, vapur) ve adım adım tarif verir; "en yakın hastane, toplanma alanı, eczane, içme suyu, barınak, yardım dağıtımı". **Rotayı gerçek harita verisi üzerinde bir algoritma hesaplar; yapay zekâ rota uydurmaz.** Haritanın tarihi ve *"afetten sonra yıkılan bina, kapanan yol haritada görünmez"* uyarısı her zaman görünür. Her şey bellekten gelir — bilgisayardan dışarı istek çıkmaz.
+- **İstediğin bölgeyi indir.** Ülke, bölge ya da bütün dünya (genel görünüm 560 MB · tam ayrıntı yaklaşık 139 GB, yol tarifi olmadan). Heybe önce boyutu ve gereken belleği söyler, onaylayınca indirir, yarıda kalırsa kaldığı yerden sürer. Harita görüntüsü [Protomaps](https://protomaps.com) dünya haritasından kesilir (kendi Go kodumuz; Protomaps'in aracıyla döşeme döşeme karşılaştırıldı: 15.211'in 15.211'i aynı); yol verisi [Geofabrik](https://download.geofabrik.de) özetlerinden (sağlaması denetlenir); yol tarifi kendi bilgisayarında hazırlanır (Türkiye: 46 sn, yaklaşık 3 GB bellek).
+- **Kurumun kendi noktaları.** AFAD, belediyeler ve yardım kuruluşları toplanma alanı, içme suyu, barınak listelerini **Excel, CSV, KML ya da GeoJSON** olarak, dosyadan ya da bağlantıdan ekleyebilir. Her nokta listesinin adıyla görünür. Neden: denememizde 2023 depreminin en çok vurduğu Hatay'ın toplanma alanları OpenStreetMap'te yoktu ve "en yakın toplanma alanı" 181 km öteyi gösterdi. Artık Heybe "yürünebilir uzaklıkta bulunamadı" der; herkes kendi noktasını da işaretleyebilir (örneğin yetkililerden öğrendiği toplanma alanını).
+
+**Bileşenler:** Go ile yazılmış küçük bir yardımcı program (`tasinabilir/yardimci/`) · [Kiwix](https://kiwix.org) kitap sunucusu · [llamafile](https://github.com/Mozilla-Ocho/llamafile) ile üç model (sohbet: Gemma 3 4B · anlam araması: EmbeddingGemma · çeviri: TranslateGemma) · tarayıcıda çalışan sayfa ve "arkadaş" (`tasinabilir/usb_kok/heybe/`) · harita sayfası: [MapLibre GL JS](https://maplibre.org), PMTiles ve Protomaps temel haritası, pakette (`heybe/harita.html`, `heybe/harita_kit/`).
 
 ## Modelsiz sınav
 
@@ -212,6 +225,7 @@ Setler birbirinden farklı olduğu için satırlar yaklaşık karşılaştırıl
 8. **Kardeşler: bilgisayarın gücüne göre Heybe.** Bugün Heybe üç model açıyor ve birkaç GB bellek istiyor. Zayıf makine için tek küçük modelle çalışan **hafif kardeş**, hiç model açmayan **okuma kipi** (arar, okutur, acil kart). Heybe açılışta bilgisayarın gücüne bakıp seçer; kullanıcı değiştirebilir. Aday modeller aynı sınavla ölçülür: doğru, durdu, geçen yanlış ve tehlikeli, süre, bellek. Geçme şartı: tehlikeli ama geçen sıfır.
 9. **Android ve ağdan kullanım.** Kurulumsuz yol: Heybe bir bilgisayarda açıktır, telefon ya da TV kutusu aynı Wi-Fi'dan tarayıcıyla bağlanır. Telefon model çalıştırmaz; bir dizüstü bütün bir çadıra yeter. "Ağda paylaş" anahtarı kapalı gelir, kişisel kayıtlar paylaşılmaz. Sonra Heybe'nin kendi Android uygulaması.
 10. **Ses ve görme engelliler.** Ekran okuyucuya uygun sayfa (cevap gelince okunsun, her düğmeye klavyeyle ulaşılsın) · bilgisayarın kendi sesiyle internetsiz "Sesli oku" (macOS'ta 49 dilin 38'inde ses var) · sesi olmayan diller için çevrim dışı ses motoru · sesle soru sormak (çevrim dışı konuşma tanıma). Amaç: Heybe yalnız gözle değil, kulakla da kullanılsın.
+11. **Harita.** Büyük ülkelerde yol tarifi hazırlığının belleğini düşürmek (Norveç bugün ~7 GB istiyor) · bölgeyi kutu yerine gerçek sınırıyla kesmek · dönüş yasakları · harita sayfasını 49 dile çevirmek · rotayı sohbetten sormak ("hastaneye nasıl giderim" — algoritma hesaplar, model yalnız anlatır).
 
 ## Katkı
 

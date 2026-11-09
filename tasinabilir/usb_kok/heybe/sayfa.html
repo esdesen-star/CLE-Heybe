@@ -168,6 +168,8 @@
 
     <div class="alt-bag">
       <a id="kitaplikBag" href="#" class="dugmeBag" data-m="kitaplikAyar"></a>
+      <!-- 09.11 (harita 8i): bellekte harita varsa görünür; harita sayfası ayrı (MapLibre ana sayfayı ağırlaştırmasın) -->
+      <a id="haritaBag" href="/heybe/harita.html" data-m="haritaBag" hidden></a>
       <a id="kutuphaneBag" href="/kiwix/" target="_blank" data-m="kutuphane"></a>
       <a id="dilDegistir" href="#" data-m="dilDegistir"></a>
     </div>
@@ -446,6 +448,7 @@
       dilTanindi: (a) => `Dil: ${a} olarak tanındı. Yanlışsa değiştir.`,
       oneriBak: 'Bu dil için önerilen kitaplara bak',
       kitaplikAyar: '📚 Kitaplık ve ayarlar',
+      haritaBag: '🗺️ Harita ve yol tarifi',
       ilkOneri: (a) => `Önerilen ücretsiz kitaplar: ${a}. Listeye ekle ve indir`,
       ilkOneriBasladi: 'Liste kaydedildi, indirme başladı. "Kitaplık ve ayarlar" bölümünden izleyebilirsin.',
       ilkOneriInternetYok: 'Şu an internet yok ya da indirme başlamadı. Liste kaydedildi; internet gelince "Kitaplık ve ayarlar" bölümünden indirebilirsin.',
@@ -633,6 +636,7 @@
       dilTanindi: (a) => `Language recognised as ${a}. Change it if this is wrong.`,
       oneriBak: 'See recommended books for this language',
       kitaplikAyar: '📚 Library and settings',
+      haritaBag: '🗺️ Map and directions',
       ilkOneri: (a) => `Recommended free books: ${a}. Add to list and download`,
       ilkOneriBasladi: 'List saved, download started. You can follow it under "Library and settings".',
       ilkOneriInternetYok: 'No internet right now, or the download did not start. The list is saved; when you are online you can download it under "Library and settings".',
@@ -820,6 +824,7 @@
       dilTanindi: (a) => `Jazyk rozpoznán jako ${a}. Pokud je to špatně, změňte ho.`,
       oneriBak: 'Zobrazit doporučené knihy pro tento jazyk',
       kitaplikAyar: '📚 Knihovna a nastavení',
+      haritaBag: '🗺️ Mapa a trasa',
       ilkOneri: (a) => `Doporučené knihy zdarma: ${a}. Přidat do seznamu a stáhnout`,
       ilkOneriBasladi: 'Seznam uložen, stahování začalo. Můžete ho sledovat v části „Knihovna a nastavení“.',
       ilkOneriInternetYok: 'Teď není internet nebo se stahování nespustilo. Seznam je uložen; až budete online, stáhnete ho v části „Knihovna a nastavení“.',
@@ -1106,6 +1111,9 @@
   }));
   $('dilDegistir').addEventListener('click', (o) => { o.preventDefault(); dilEkraniGoster(); });
   $('kitaplikBag').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('kitaplikEkrani'); kitaplikYenile(); });
+  // 09.11: harita bağlantısı yalnız harita varsa; sayfa seçili dille açılır
+  fetch('/api/harita', { cache: 'no-store' }).then((r) => r.json()).then((h) => { $('haritaBag').hidden = !h.var; }).catch(() => {});
+  $('haritaBag').addEventListener('click', () => { $('haritaBag').href = '/heybe/harita.html?dil=' + encodeURIComponent(dil || 'en'); });
   $('geri').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('anaEkran'); dilNotuGuncelle(); });
 
   // ---- soru ve cevap ----

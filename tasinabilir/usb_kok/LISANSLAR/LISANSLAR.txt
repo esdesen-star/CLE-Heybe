@@ -10,6 +10,10 @@ Bu bellekteki parçalar kendi lisanslarıyla gelir:
 - kiwix-serve ve kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
   Kaynak kodu: https://github.com/kiwix/kiwix-tools
 - pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Harita (heybe/harita_kit): MapLibre GL JS 6.15.0, pmtiles 4.5.0 ve
+  Protomaps basemaps 5.7.2: BSD-3; Noto Sans yazıları: SIL OFL 1.1;
+  simgeler: MIT (tangrams/icons). Harita verisi: © OpenStreetMap
+  katkıcıları, ODbL — ODbL_OpenStreetMap.txt.
 - Vikipedi içeriği: CC BY-SA 4.0, yazarları Vikipedi katkıcıları.
   Çevrim dışı paket: Kiwix / openZIM. Heybe sınav kitapları da Vikipedi'den
   alınmıştır (CC BY-SA 4.0).
@@ -41,6 +45,10 @@ The parts on this stick come with their own licences:
 - kiwix-serve and kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
   Source code: https://github.com/kiwix/kiwix-tools
 - pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Map (heybe/harita_kit): MapLibre GL JS 6.15.0, pmtiles 4.5.0 and
+  Protomaps basemaps 5.7.2: BSD-3; Noto Sans fonts: SIL OFL 1.1;
+  icons: MIT (tangrams/icons). Map data: © OpenStreetMap contributors,
+  ODbL — ODbL_OpenStreetMap.txt.
 - Wikipedia content: CC BY-SA 4.0, by the Wikipedia contributors.
   Offline package: Kiwix / openZIM. The Heybe test books are taken from
   Wikipedia too (CC BY-SA 4.0).
@@ -72,6 +80,10 @@ RESPONSIBILITY
 - kiwix-serve a kiwix-manage (kiwix-tools 3.8.2): GPL-3.0.
   Zdrojový kód: https://github.com/kiwix/kiwix-tools
 - pdf.js 4.10.38 (Mozilla): Apache 2.0 — heybe/pdfjs/LICENSE.txt.
+- Mapa (heybe/harita_kit): MapLibre GL JS 6.15.0, pmtiles 4.5.0 a
+  Protomaps basemaps 5.7.2: BSD-3; písma Noto Sans: SIL OFL 1.1;
+  ikony: MIT (tangrams/icons). Mapová data: © přispěvatelé
+  OpenStreetMap, ODbL — ODbL_OpenStreetMap.txt.
 - Obsah Wikipedie: CC BY-SA 4.0, autoři: přispěvatelé Wikipedie.
   Offline balíček: Kiwix / openZIM. Zkušební knihy Heybe jsou také
   z Wikipedie (CC BY-SA 4.0).

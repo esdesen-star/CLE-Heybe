@@ -1,0 +1,33 @@
+CLE Heybe — kurumun nokta listesi · organisation's point list · seznam bodů organizace
+====================================================================================
+
+TÜRKÇE
+Toplanma alanı, içme suyu, barınak, yardım dağıtımı gibi noktaların listesini
+"ek" klasörüne koyun (ya da Heybe'nin harita sayfasından "Kurumun listesi" ile ekleyin).
+- Biçim: Excel (.xlsx), CSV/TXT, KML/KMZ ya da GeoJSON.
+- Sütunlar: ad, tür, enlem, boylam. İsteğe bağlı: mahalle, ilçe, il, adres.
+  Sütun adları Türkçe ya da İngilizce olabilir (enlem/lat, boylam/lon, ad/name, tür/type).
+- Koordinatlar derece olmalı (ör. 36,2025 ve 36,1600). UTM gibi metre koordinatları okunmaz.
+- Tür yazılmazsa addan ("… toplanma alanı") ya da dosya adından anlaşılır.
+- Her nokta, haritada ve aramada listenin (dosyanın) adıyla görünür.
+- Liste bu bellekte kalır; internete gönderilmez. Doğruluğundan listeyi koyan kurum sorumludur.
+
+ENGLISH
+Put lists of points such as assembly points, drinking water, shelters and aid
+distribution into the "ek" folder (or add them on Heybe's map page under "Organisation's list").
+- Formats: Excel (.xlsx), CSV/TXT, KML/KMZ or GeoJSON.
+- Columns: name, type, latitude, longitude. Optional: neighbourhood, district, city, address.
+- Coordinates must be degrees (e.g. 36.2025 and 36.1600). Metre coordinates such as UTM are not read.
+- Without a type, it is taken from the name ("… assembly point") or the file name.
+- Every point shows the name of its list (file) on the map and in search.
+- The list stays on this drive and is never sent anywhere. The organisation that adds it is responsible for its accuracy.
+
+ČESKY
+Seznamy bodů jako shromaždiště, pitná voda, úkryty a výdej pomoci vložte do složky "ek"
+(nebo je přidejte na mapové stránce Heybe v části "Seznam organizace").
+- Formáty: Excel (.xlsx), CSV/TXT, KML/KMZ nebo GeoJSON.
+- Sloupce: název, typ, zeměpisná šířka, délka. Nepovinné: čtvrť, okres, město, adresa.
+- Souřadnice musí být ve stupních (např. 36,2025 a 36,1600). Metrické souřadnice jako UTM se nečtou.
+- Bez typu se typ odvodí z názvu („… shromaždiště“) nebo z názvu souboru.
+- Každý bod ukazuje na mapě i ve vyhledávání název svého seznamu (souboru).
+- Seznam zůstává na tomto disku a nikam se neposílá. Za jeho správnost odpovídá organizace, která ho přidala.

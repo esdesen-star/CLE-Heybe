@@ -26,6 +26,17 @@ tamam "node --check ($(ls tasinabilir/usb_kok/heybe/arkadas.js olcum/kopru/*.cjs
 # 08.11 (§59): başlatıcıların kabuk sözdizimi (Linux başlatıcısı burada denenemiyor; en azından sözdizimi)
 for f in tasinabilir/usb_kok/Heybe_Mac.command tasinabilir/usb_kok/Heybe_Linux.sh; do sh -n "$f" 2>>"$G/check" || olmadi "kabuk sözdizimi: $f"; done
 tamam "başlatıcıların kabuk sözdizimi"
+# 09.11 (harita 8i): harita sayfası internetsiz çalışmalı — betik, stil, yazı ve simge hep bellekten
+H=tasinabilir/usb_kok/heybe/harita.html
+if grep -n -E '(src|href)="https?://|https?://[^"'"'"' ]*\{(fontstack|z)\}|unpkg|jsdelivr|cdnjs|protomaps\.github\.io|api\.protomaps' "$H" >"$G/harita" 2>&1; then
+  olmadi "harita sayfası dışarıya bağlanıyor"; cat "$G/harita"
+else tamam "harita sayfası yalnız bellekten okuyor"; fi
+for f in maplibre-gl.mjs maplibre-gl-worker.mjs maplibre-gl.css pmtiles.js basemaps.js sprites/light.json "fonts/Noto Sans Regular/0-255.pbf"; do
+  [ -s "tasinabilir/usb_kok/heybe/harita_kit/$f" ] || olmadi "harita parçası eksik: $f"
+done
+tamam "harita parçaları yerinde"
+node -e "const s=require('fs').readFileSync('$H','utf8');const m=s.match(/<script type=\"module\">([\s\S]*?)<\/script>/);require('fs').writeFileSync(process.argv[1],m[1]);" "$G/harita.mjs" &&
+  node --check "$G/harita.mjs" 2>>"$G/check" && tamam "harita sayfasının betik sözdizimi" || olmadi "harita sayfasının betik sözdizimi"
 
 echo "— bekçilerin dişleri (kayıtlı cevaplarla) —"
 node olcum/kopru/dis_denetim.cjs >"$G/denetim" 2>&1

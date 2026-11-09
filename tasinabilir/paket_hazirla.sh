@@ -2,12 +2,12 @@
 # GitHub "Releases" için hazır paket (08.11.2026, Özet §66 — Ercan: "asıl en önemli amacımız normal bir kullanıcı bunu
 # indirip kurabilmesi"). Paket = belleğin çekirdeği, MODELSİZ ve KİTAPSIZ: beş sistemin programları, llamafile,
 # sayfa, başlatıcılar, beni oku dosyaları, lisanslar. Modelleri Heybe ilk açılışta kendisi indirir (model.go).
-# Kullanım: sh tasinabilir/paket_hazirla.sh [çıktı klasörü]   (varsayılan: ../Heybe_paket)
+# Kullanım: sh tasinabilir/paket_hazirla.sh [çıktı klasörü]   (varsayılan: ../Heybe_hazir — 08.11 klasör düzeni)
 set -e
 T=$(cd "$(dirname "$0")" && pwd)
 U="$T/usb_kok"
 SURUM=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['surum'])" "$U/heybe/surum.json")
-CIKTI=${1:-$T/../../Heybe_paket}
+CIKTI=${1:-$T/../../Heybe_hazir}
 mkdir -p "$CIKTI"
 CIKTI=$(cd "$CIKTI" && pwd)
 python3 "$T/sayfa_derle.py" >/dev/null
@@ -19,10 +19,10 @@ done
 G=$(mktemp -d "${TMPDIR:-/tmp}/heybe_paket.XXXX")
 P="$G/CLE-Heybe"
 mkdir -p "$P/program" "$P/model" "$P/kutuphane" "$P/heybe"
-# kişisel ya da deneme dosyaları pakete girmez: benim/ (kullanıcının kayıtları), kutuphane/ (kitaplar), model/,
+# kişisel ya da deneme dosyaları pakete girmez: benim/ (kullanıcının kayıtları), kutuphane/ (kitaplar), model/, harita/ (09.11: bölge haritası kullanıcının),
 # durum/, PRO_TESTERA.txt (tek bir denemeciye yazılmış not), Mac'in ._ dosyaları
 ( cd "$U" && find . -type f ! -name '._*' ! -name '.DS_Store' \
-    ! -path './heybe/benim/*' ! -path './kutuphane/*' ! -path './model/*' ! -path './durum/*' ! -name 'PRO_TESTERA.txt' ) |
+    ! -path './heybe/benim/*' ! -path './kutuphane/*' ! -path './model/*' ! -path './harita/*' ! -path './durum/*' ! -name 'PRO_TESTERA.txt' ) |
 while read -r f; do
   mkdir -p "$P/$(dirname "$f")" && cp -X "$U/$f" "$P/$f"
 done
@@ -31,7 +31,7 @@ chmod +x "$P"/program/*/* "$P/program/llamafile.exe" "$P/Heybe_Mac.command" "$P/
 printf 'Heybe indirir: modeller ilk açılışta buraya iner.\nHeybe downloads its models here on first start.\n' >"$P/model/BENI_OKU_README.txt"
 printf 'Kitaplar buraya iner.\nBooks are downloaded here.\n' >"$P/kutuphane/BENI_OKU_README.txt"
 # denetim: modeller, kitaplar, kişisel kayıtlar ve kişisel yollar pakette yok
-if find "$P" \( -name '*.gguf' -o -name '*.zim' -o -name 'yanlis_cevaplar.jsonl' -o -name 'acil_kart.json' -o -name 'ayar.json' \) | grep -q .; then
+if find "$P" \( -name '*.gguf' -o -name '*.zim' -o -name '*.pmtiles' -o -name '*.rota' -o -name 'yanlis_cevaplar.jsonl' -o -name 'acil_kart.json' -o -name 'ayar.json' \) | grep -q .; then
   echo "DURDUM: pakette model, kitap ya da kişisel kayıt var"; exit 3
 fi
 # aranan ad ve ev klasörü bu bilgisayarınkidir; betiğe yazılmaz (08.11: yazılınca kendisi iz olmuştu)

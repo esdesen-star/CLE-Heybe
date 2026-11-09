@@ -1,0 +1,26 @@
+OpenStreetMap verisi · OpenStreetMap data · Data OpenStreetMap
+===============================================================
+
+TÜRKÇE
+Haritalar (harita/ klasörü: .pmtiles görüntü, .rota yol ağı, .yer ad dizini)
+OpenStreetMap verisinden üretilir: © OpenStreetMap katkıcıları.
+Veri, Open Database License (ODbL) 1.0 ile açıktır:
+https://opendatacommons.org/licenses/odbl/1-0/ — https://www.openstreetmap.org/copyright
+Harita görüntüsü Protomaps temel haritasıdır (ODbL kapsamında üretilmiş iş).
+Yol verisi Geofabrik (download.geofabrik.de) özetlerinden alınır.
+
+ENGLISH
+Maps (harita/ folder: .pmtiles tiles, .rota road network, .yer name index)
+are made from OpenStreetMap data: © OpenStreetMap contributors.
+The data is available under the Open Database License (ODbL) 1.0:
+https://opendatacommons.org/licenses/odbl/1-0/ — https://www.openstreetmap.org/copyright
+The map tiles are the Protomaps basemap (a Produced Work under the ODbL).
+Road data comes from Geofabrik (download.geofabrik.de) extracts.
+
+ČESKY
+Mapy (složka harita/: dlaždice .pmtiles, silniční síť .rota, rejstřík názvů .yer)
+vznikají z dat OpenStreetMap: © přispěvatelé OpenStreetMap.
+Data jsou k dispozici pod licencí Open Database License (ODbL) 1.0:
+https://opendatacommons.org/licenses/odbl/1-0/ — https://www.openstreetmap.org/copyright
+Dlaždice mapy jsou podkladová mapa Protomaps (odvozené dílo podle ODbL).
+Silniční data pocházejí z výřezů Geofabrik (download.geofabrik.de).

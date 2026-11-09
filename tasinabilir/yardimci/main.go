@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.5 (07.11.2026, bu cevap yanlış)"
+const surum = "1.6 (09.11.2026, çevrim dışı harita)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string
@@ -79,7 +79,17 @@ func main() {
 	// 08.11 (Özet §59): Linux takılı belleği çoğu zaman program çalıştırma izni olmadan bağlar; Linux başlatıcısı
 	// programları bilgisayara kopyalar ve kopyanın klasörünü verir. Boşsa belleğin program/<işletim> klasörü.
 	programDir := flag.String("program", "", "programların klasörü (boşsa belleğin program/<işletim> klasörü)")
+	// 09.11 (harita 8i): çevrim dışı harita hazırlığı ve deneme komutları; sunucu açılmadan çalışıp çıkar.
+	haritaPbf := flag.String("harita-hazirla", "", "OpenStreetMap .osm.pbf dosyasından rota ağı ve yer dizini hazırla, sonra çık")
+	haritaCikti := flag.String("harita-cikti", "", "harita dosyalarının yolu ve adı, uzantısız (ör. harita/turkiye)")
+	haritaTarih := flag.String("harita-tarih", "", "OpenStreetMap verisinin tarihi (sayfada uyarıyla görünür)")
+	rotaDene := flag.String("rota-dene", "", "deneme: \"enlem,boylam;enlem,boylam;yaya|arac\" ya da \"ara:metin\"")
+	haritaKutu := flag.String("harita-kutu", "", "yalnız bu alan: \"batı,güney,doğu,kuzey\" (derece); -harita-hazirla ve -harita-kes ile")
+	haritaKes := flag.String("harita-kes", "", "harita görüntüsünü kes: PMTiles adresi ya da \"son\" (Protomaps'in son yapımı); -harita-kutu ve -harita-cikti ile")
 	flag.Parse()
+	if *haritaPbf != "" || *rotaDene != "" || *haritaKes != "" {
+		os.Exit(haritaKomut(*haritaPbf, *haritaCikti, *haritaTarih, *rotaDene, *haritaKutu, *haritaKes))
+	}
 
 	kutuphaneDir = filepath.Join(kok, "kutuphane")
 	kutuphaneXML = filepath.Join(kutuphaneDir, "kutuphane.xml")
@@ -142,6 +152,19 @@ func main() {
 	mux.HandleFunc("/api/yanlis", apiYanlis)                // "bu cevap yanlış" kayıtları (Ö18, 07.11): bellekte kalır
 	mux.HandleFunc("/api/ayar", apiAyar)                    // açılış dili (07.11 gece): bellekte, bilgisayardan bağımsız
 	mux.HandleFunc("/api/modeller", apiModeller)            // ilk kurulum (08.11): eksik modelleri indirir ve açar
+	// 09.11: çevrim dışı harita (8i): görüntü dosyası, rota ve yer arama
+	mux.Handle("/harita/", http.StripPrefix("/harita/", dosyaSun(haritaDir(), false)))
+	mux.HandleFunc("/api/harita", apiHarita)
+	mux.HandleFunc("/api/rota", apiRota)
+	mux.HandleFunc("/api/yer", apiYer)
+	mux.HandleFunc("/api/harita-ek", apiHaritaEk) // kurumun kendi noktaları (09.11, §77)
+	mux.HandleFunc("/api/harita-ek-sil", apiHaritaEkSil)
+	mux.HandleFunc("/api/harita-ek-geo", apiHaritaEkGeo)
+	mux.HandleFunc("/api/harita-ek-bag", apiHaritaEkBag)     // bağlantıdan liste (09.11)
+	mux.HandleFunc("/api/harita-ek-nokta", apiHaritaEkNokta) // "benim noktam"
+	mux.HandleFunc("/api/harita-katalog", apiHaritaKatalog)  // bölge haritası indirme (09.11, §78)
+	mux.HandleFunc("/api/harita-indir", apiHaritaIndir)
+	mux.HandleFunc("/api/harita-indir-dur", apiHaritaIndirDur)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -229,8 +252,13 @@ func dosyaSun(dizin string, benim bool) http.Handler {
 			http.NotFound(w, r)
 			return
 		}
-		if uz == ".txt" || uz == ".md" {
+		switch uz {
+		case ".txt", ".md":
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		case ".js", ".mjs": // 09.11: Windows'ta kayıt defteri .js'i yanlış türle verebilir; modül betikleri nosniff ile durur
+			w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+		case ".css":
+			w.Header().Set("Content-Type", "text/css; charset=utf-8")
 		}
 		w.Header().Set("Cache-Control", "no-store")
 		http.ServeFile(w, r, yol)
