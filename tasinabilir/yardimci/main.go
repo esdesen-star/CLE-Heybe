@@ -165,6 +165,8 @@ func main() {
 	mux.HandleFunc("/api/harita-katalog", apiHaritaKatalog)  // bölge haritası indirme (09.11, §78)
 	mux.HandleFunc("/api/harita-indir", apiHaritaIndir)
 	mux.HandleFunc("/api/harita-indir-dur", apiHaritaIndirDur)
+	mux.HandleFunc("/api/harita-dosya", apiHaritaDosya) // dosyadan harita ekle (09.11, §80)
+	mux.HandleFunc("/api/harita-sil", apiHaritaSil)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)

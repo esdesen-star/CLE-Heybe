@@ -32,7 +32,11 @@ func TestHaritaIndirUctanUca(t *testing.T) {
 	mux.HandleFunc("/index-v1.json", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `{"features":[{"properties":{"id":"deneme","name":"Deneme","iso3166-1:alpha2":["TR"],"urls":{"pbf":"%s/deneme-latest.osm.pbf"}},
 		  "geometry":{"type":"MultiPolygon","coordinates":[[[[28.9,39.9],[29.1,39.9],[29.1,40.1],[28.9,40.1],[28.9,39.9]]]]}},
-		  {"properties":{"id":"baska","name":"Başka site","urls":{"pbf":"https://kotu.example/x.osm.pbf"}},"geometry":{"type":"Point","coordinates":[1,1]}}]}`, sunucu.URL)
+		  {"properties":{"id":"baska","name":"Başka site","urls":{"pbf":"https://kotu.example/x.osm.pbf"}},"geometry":{"type":"Point","coordinates":[1,1]}},
+		  {"properties":{"id":"uzak","name":"Uzak","urls":{"pbf":"%s/uzak.osm.pbf"}},"geometry":{"type":"MultiPolygon","coordinates":[[[[10,10],[10.01,10],[10.01,10.01],[10,10.01],[10,10]]]]}},
+		  {"properties":{"id":"kenar","name":"Kenar","urls":{"pbf":"%s/kenar.osm.pbf"}},"geometry":{"type":"MultiPolygon","coordinates":[
+		    [[[28.95,39.95],[28.999,39.95],[28.999,40.05],[28.95,40.05],[28.95,39.95]]],
+		    [[[29.003,39.95],[29.1,39.95],[29.1,40.05],[29.003,40.05],[29.003,39.95]]]]}}]}`, sunucu.URL, sunucu.URL, sunucu.URL)
 	})
 	mux.HandleFunc("/builds.json", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `[{"key":"20261101.pmtiles","size":1},{"key":"20261108.pmtiles","size":%d}]`, len(arsiv))
@@ -72,8 +76,8 @@ func TestHaritaIndirUctanUca(t *testing.T) {
 	geofabrikKok, geofabrikKatalog, protomapsYapimlar, protomapsAdres = sunucu.URL+"/", sunucu.URL+"/index-v1.json", sunucu.URL+"/builds.json", sunucu.URL+"/"
 	eskiKok, eskiCalistir := kok, haritaHazirlaCalistir
 	kok = t.TempDir()
-	haritaHazirlaCalistir = func(ctx context.Context, pbf, cikti, tarih string, satir func(string)) error {
-		_, err := haritaHazirla(pbf, cikti, tarih, satir, nil)
+	haritaHazirlaCalistir = func(ctx context.Context, pbf, cikti, tarih string, kutu *[4]float64, satir func(string)) error {
+		_, err := haritaHazirla(pbf, cikti, tarih, satir, kutu)
 		return err
 	}
 	t.Cleanup(func() {
@@ -88,7 +92,7 @@ func TestHaritaIndirUctanUca(t *testing.T) {
 		json.Unmarshal(w.Body.Bytes(), &m)
 		return w.Code, m
 	}
-	if k, m := iste(apiHaritaKatalog, "GET", "/api/harita-katalog", ""); k != 200 || len(m["bolgeler"].([]any)) != 1 {
+	if k, m := iste(apiHaritaKatalog, "GET", "/api/harita-katalog", ""); k != 200 || len(m["bolgeler"].([]any)) != 3 {
 		t.Fatalf("katalog: %d %v", k, m)
 	}
 	k, teklif := iste(apiHaritaIndir, "POST", "/api/harita-indir", `{"bolge":"deneme"}`)
@@ -144,6 +148,49 @@ func TestHaritaIndirUctanUca(t *testing.T) {
 	}
 	if _, m := iste(apiHarita, "GET", "/api/harita", ""); len(m["haritalar"].([]any)) != 2 {
 		t.Fatalf("iki harita listelenmeli: %v", m)
+	}
+	// haritada seçilen alan: yol verisi kapsayan bölgeden iner, yalnız alanın içi hazırlanır
+	k, alan := iste(apiHaritaIndir, "POST", "/api/harita-indir", `{"kutu":[28.9995,39.9995,29.0015,40.0005],"isim":"Küçük Alan"}`)
+	if k != 200 || alan["alan"] != true || alan["yolKaynak"] != "Deneme" || alan["ad"] != "kucuk-alan" || alan["bellekGB"].(float64) > 0.2 {
+		t.Fatalf("alan teklifi: %d %v", k, alan)
+	}
+	if k, _ := iste(apiHaritaIndir, "POST", "/api/harita-indir", `{"kutu":[28.9995,39.9995,29.0015,40.0005],"isim":"Küçük Alan","onay":true}`); k != 200 {
+		t.Fatalf("alan başlatma: %d", k)
+	}
+	if m := bekle(); m["asama"] != "bitti" {
+		t.Fatalf("alan indirme: %v", m)
+	}
+	_, liste := iste(apiHarita, "GET", "/api/harita", "")
+	alanVar := false
+	for _, h := range liste["haritalar"].([]any) {
+		if h := h.(map[string]any); h["ad"] == "kucuk-alan" {
+			alanVar = h["isim"] == "Küçük Alan" && h["iso"] == "" // ülke adıyla değil, verilen adla görünsün
+		}
+	}
+	if !alanVar {
+		t.Fatalf("alan, verilen adıyla listelenmeli: %v", liste["haritalar"])
+	}
+	if _, m := iste(apiRota, "GET", "/api/rota?harita=kucuk-alan&a=40.000,29.000&b=40.000,29.002", ""); m["tamam"] != true || m["m"].(float64) > 200 {
+		t.Fatalf("alanda rota (yalnız A Sokak, ~171 m): %v", m)
+	}
+	if _, m := iste(apiRota, "GET", "/api/rota?harita=kucuk-alan&a=40.000,29.000&b=40.001,29.002", ""); m["varSapma"].(float64) < 100 {
+		t.Fatalf("alanın dışındaki yaya yolu ağa girmemeli (varış en yakın köşeye kaymalı): %v", m)
+	}
+	// bölge seçimi: kıta elenir; sınır şehrinde en çok noktayı tutan ülke (09.11, §80)
+	katalogDeneme := []bolge{
+		{ID: "avrupa", Pbf: "x", Kutu: [4]float64{0, 0, 50, 50}},
+		{ID: "ulke", Ust: "avrupa", Pbf: "x", Kutu: [4]float64{10, 10, 20, 20}},
+		{ID: "komsu", Ust: "asya", Pbf: "x", Kutu: [4]float64{19.5, 10, 25, 20}},
+		{ID: "ada", Ust: "avrupa", Pbf: "x", Kutu: [4]float64{30, 30, 31, 31}},
+	}
+	if b, _ := kapsayanBolge(katalogDeneme, [4]float64{17, 12, 20.5, 14}); b.ID != "ulke" {
+		t.Fatalf("sınır alanında ülke seçilmeli (kıta ve komşu değil): %q", b.ID)
+	}
+	if b, _ := kapsayanBolge(katalogDeneme, [4]float64{29.5, 29.5, 31.5, 33}); b.ID != "ada" { // görünüm adanın dışına taşıyor
+		t.Fatalf("ortası denize düşen görünümde ada seçilmeli: %q", b.ID)
+	}
+	if b, _ := kapsayanBolge(katalogDeneme, [4]float64{40, 40, 41, 41}); b.ID != "avrupa" {
+		t.Fatalf("hiçbir ülke yoksa kıta: %q", b.ID)
 	}
 	// yalnız görüntüsü olan haritada ad araması çökmez (yer dizini yok; kurum listeleri yine aranır)
 	if k, _ := iste(apiYer, "GET", "/api/yer?harita=dunya-genel&q=park", ""); k != 200 {

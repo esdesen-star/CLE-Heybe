@@ -16,15 +16,17 @@
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
+  /* 09.11 (§80): panel uzayınca harita da pencereden uzun oluyordu (768 px pencerede 2.088 px) ve "görünen alan"
+     çok büyük çıkıyordu. Masaüstü: harita pencere boyunda sabit; panel ve tarif kendi içinde kayar. */
   body { margin: 0; background: var(--zemin); color: var(--yazi); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-         display: grid; grid-template-columns: 380px 1fr; grid-template-rows: auto 1fr; height: 100vh; }
-  #panel { grid-column: 1; grid-row: 1; padding: 16px 16px 0; border-inline-end: 1px solid var(--cizgi); }
-  #sonuc { grid-column: 1; grid-row: 2; overflow-y: auto; padding: 0 16px 16px; border-inline-end: 1px solid var(--cizgi); }
+         display: grid; grid-template-columns: 380px 1fr; grid-template-rows: minmax(0, 1fr) auto; height: 100vh; overflow: hidden; }
+  #panel { grid-column: 1; grid-row: 1; min-height: 0; overflow-y: auto; padding: 16px 16px 0; border-inline-end: 1px solid var(--cizgi); }
+  #sonuc { grid-column: 1; grid-row: 2; max-height: 45vh; overflow-y: auto; padding: 0 16px 16px; border-inline-end: 1px solid var(--cizgi); }
   #harita { grid-column: 2; grid-row: 1 / 3; min-height: 0; }
   /* Telefon: arama, harita, tarif alt alta; sayfa kayar, harita sabit yükseklikte */
   @media (max-width: 760px) {
-    body { display: block; height: auto; }
-    #panel, #sonuc { border: 0; }
+    body { display: block; height: auto; overflow: visible; }
+    #panel, #sonuc { border: 0; overflow: visible; max-height: none; }
     #harita { height: 60vh; border-block: 1px solid var(--cizgi); }
     #sonuc { padding-top: 4px; }
   }
@@ -89,6 +91,14 @@
   #indirDurum { font-size: 14px; color: var(--soluk); min-height: 1.2em; }
   #indirDurum.hata { color: var(--dur); }
   .noktaForm { display: grid; gap: 6px; margin-top: 6px; }
+  #indirKutu h3 { font-size: 15px; margin: 16px 0 4px; }
+  #alanSatir input { flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--cizgi);
+                     border-radius: 10px; background: var(--kart); color: inherit; }
+  #dosyaDurum { font-size: 14px; color: var(--soluk); min-height: 1.2em; }
+  #dosyaDurum.hata { color: var(--dur); }
+  #haritaListe { list-style: none; padding: 0; margin: 4px 0 0; font-size: 14px; }
+  #haritaListe li { padding: 6px 0; border-bottom: 1px solid var(--cizgi); display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  #haritaListe small { color: var(--soluk); }
   .noktaForm select, .noktaForm input { font: inherit; font-size: 14px; padding: 4px 6px; }
 </style>
 </head>
@@ -142,9 +152,22 @@
     <p class="ekNot" data-m="indirAciklama"></p>
     <input type="search" id="bolgeAra" autocomplete="off">
     <ul class="oneri" id="bolgeListe"></ul>
+    <div id="alanKutu">
+      <h3 data-m="alanBaslik"></h3>
+      <p class="ekNot" id="alanAciklama"></p>
+      <div class="satir" id="alanSatir"><input type="text" id="alanAdi" maxlength="60" autocomplete="off">
+        <button type="button" class="ince" id="alanIndir" data-m="alanIndir"></button></div>
+    </div>
     <div id="teklif"></div>
     <p id="indirDurum" role="status" aria-live="polite"></p>
     <button type="button" class="ince" id="indirDur" data-m="indirDurdur" hidden></button>
+    <h3 data-m="dosyaBaslik"></h3>
+    <p class="ekNot" data-m="dosyaAciklama"></p>
+    <label class="dosyaSec"><span data-m="ekSec"></span>
+      <input type="file" id="haritaDosya" multiple accept=".pmtiles,.rota,.yer,.json,.pbf"></label>
+    <p id="dosyaDurum" role="status" aria-live="polite"></p>
+    <h3 data-m="haritalarBaslik"></h3>
+    <ul id="haritaListe"></ul>
   </details>
 </section>
 <div id="harita" role="application" aria-label="Harita"></div>
@@ -171,7 +194,17 @@ const METIN = {
     haritaSecEtiket: 'Harita:', ekBagEkle: 'Bağlantıdan ekle', ekBagNot: 'Ya da listenin internet adresini yapıştır (doğrudan dosyaya giden bağlantı: Excel, CSV, KML, GeoJSON). İnternet gerekir.',
     ekBagIndiriliyor: 'Liste indiriliyor…', ekBagHata: { adres: 'Bu bir internet adresi değil (http ya da https ile başlamalı).', baglanti: 'Adrese ulaşılamadı. İnternet var mı, adres doğru mu?' },
     noktamiKaydet: 'Noktamı kaydet', noktaAdi: 'Adı (ör. Mahalle parkı)', kaydet: 'Kaydet', noktaKaydedildi: '"Benim noktalarım" listesine kaydedildi.',
-    indirBaslik: 'Harita indir: ülke, bölge ya da bütün dünya', indirAciklama: 'İnternet varken bir ülkenin ya da bölgenin haritasını ve yol tarifini indir; bittikten sonra her şey internetsiz çalışır. Kaynak: OpenStreetMap (görüntü Protomaps, yol verisi Geofabrik).',
+    alanBaslik: 'Haritada gördüğün alanı indir', alanAciklama: 'Haritayı istediğin yere yaklaştır (ör. bir şehir), bir ad ver ve bu alanı indir. Yol tarifi için o bölgenin yol verisi iner; yalnız seçtiğin alan hazırlanır.',
+    alanIpucu: 'Alan seçmek için önce bir harita gerekir: örneğin bütün dünyanın genel haritasını indir, sonra istediğin yere yaklaş.',
+    alanAdi: 'Alanın adı (ör. Sandnessjøen)', alanIndir: 'Bu alanı indir', alanAdGerek: 'Önce alana bir ad ver.',
+    teklifAlanYol: (bolge, mb, gb) => `Yol tarifi için ${bolge} yol verisi iner (${boyut(mb)}); yalnız seçtiğin alan hazırlanır (yaklaşık ${sayi.format(gb)} GB bellek), dosya sonra silinir.`,
+    dosyaBaslik: 'Dosyadan harita ekle', dosyaAciklama: 'Başka bir Heybe\'den ya da bir kurumdan gelen dosyalar: .pmtiles (görüntü), .rota ve .yer (yol tarifi), .json (bilgi) ya da .osm.pbf (yol verisi; Heybe hazırlar). Aynı adlı dosyalar birlikte bir harita olur.',
+    dosyaYukleniyor: (ad, y) => `${ad} ekleniyor… %${y}`, dosyaEklendi: (ad) => `${ad} eklendi.`,
+    dosyaHata: { bicim: 'Bu dosya bir harita dosyası değil ya da bozuk.', 'yer-yok': 'Diskte yer yetmiyor.', suruyor: 'Başka bir iş sürüyor; bitince yeniden dene.', yazilamadi: 'Dosya yazılamadı.' },
+    haritalarBaslik: 'Bu Heybe\'deki haritalar', haritaKaldir: 'Kaldır', haritaKaldirSor: (ad) => `"${ad}" haritası bu Heybe'den kaldırılsın mı? Görüntüsü, yol tarifi ve yer adları silinir.`,
+    yolVarKisa: 'yol tarifi var', yolYokKisa: 'yalnız görüntü',
+    uyariTarihsiz: 'Bu harita OpenStreetMap verisidir; tarihi bilinmiyor. Afetten sonra yıkılan bina, kapanan yol ya da köprü haritada görünmez. Yolu gözünle doğrula, tehlikeli yerden geçme.',
+    indirBaslik: 'Harita ekle: indir, alan seç ya da dosyadan', indirAciklama: 'İnternet varken bir ülkenin ya da bölgenin haritasını ve yol tarifini indir; bittikten sonra her şey internetsiz çalışır. Kaynak: OpenStreetMap (görüntü Protomaps, yol verisi Geofabrik).',
     kita: { africa: 'Afrika', antarctica: 'Antarktika', asia: 'Asya', 'australia-oceania': 'Avustralya ve Okyanusya', 'central-america': 'Orta Amerika', europe: 'Avrupa', 'north-america': 'Kuzey Amerika', 'south-america': 'Güney Amerika' },
     bolgeAra: 'Ülke ya da bölge ara…', dunyaGenel: 'Bütün dünya — genel görünüm (yol tarifi yok)', dunyaTam: 'Bütün dünya — tam ayrıntı (yaklaşık 139 GB, yol tarifi yok)',
     katalogAliniyor: 'Bölge listesi alınıyor…', hesaplaniyor: 'Boyutlar hesaplanıyor… (büyük bölgede bir dakika sürebilir)',
@@ -226,7 +259,17 @@ const METIN = {
     haritaSecEtiket: 'Map:', ekBagEkle: 'Add from link', ekBagNot: 'Or paste the list\'s web address (a link straight to the file: Excel, CSV, KML, GeoJSON). Needs internet.',
     ekBagIndiriliyor: 'Downloading the list…', ekBagHata: { adres: 'This is not a web address (it must start with http or https).', baglanti: 'The address could not be reached. Is there internet, is the address right?' },
     noktamiKaydet: 'Save my point', noktaAdi: 'Name (e.g. neighbourhood park)', kaydet: 'Save', noktaKaydedildi: 'Saved to the list "Benim noktalarım" (my points).',
-    indirBaslik: 'Download a map: country, region or the whole world', indirAciklama: 'While there is internet, download the map and directions of a country or region; after that everything works offline. Source: OpenStreetMap (tiles Protomaps, road data Geofabrik).',
+    alanBaslik: 'Download the area you see on the map', alanAciklama: 'Zoom the map to the place you want (e.g. a town), give it a name and download this area. For directions the region\'s road data is downloaded; only the area you chose is prepared.',
+    alanIpucu: 'To choose an area you first need a map: for example download the whole-world overview, then zoom in where you want.',
+    alanAdi: 'Name of the area (e.g. Sandnessjøen)', alanIndir: 'Download this area', alanAdGerek: 'First give the area a name.',
+    teklifAlanYol: (bolge, mb, gb) => `For directions the road data of ${bolge} is downloaded (${boyut(mb)}); only the chosen area is prepared (about ${sayi.format(gb)} GB of memory), and the file is deleted afterwards.`,
+    dosyaBaslik: 'Add a map from files', dosyaAciklama: 'Files from another Heybe or an organisation: .pmtiles (tiles), .rota and .yer (directions), .json (info) or .osm.pbf (road data; Heybe prepares it). Files with the same name make one map.',
+    dosyaYukleniyor: (ad, y) => `Adding ${ad}… ${y}%`, dosyaEklendi: (ad) => `${ad} added.`,
+    dosyaHata: { bicim: 'This is not a map file, or it is damaged.', 'yer-yok': 'Not enough space on the drive.', suruyor: 'Another job is running; try again when it ends.', yazilamadi: 'The file could not be written.' },
+    haritalarBaslik: 'Maps in this Heybe', haritaKaldir: 'Remove', haritaKaldirSor: (ad) => `Remove the map "${ad}" from this Heybe? Its tiles, directions and place names are deleted.`,
+    yolVarKisa: 'with directions', yolYokKisa: 'tiles only',
+    uyariTarihsiz: 'This map is OpenStreetMap data of unknown date. Buildings that collapsed and roads or bridges that closed after a disaster do not show on it. Check the way with your own eyes and do not cross dangerous places.',
+    indirBaslik: 'Add a map: download, choose an area or from files', indirAciklama: 'While there is internet, download the map and directions of a country or region; after that everything works offline. Source: OpenStreetMap (tiles Protomaps, road data Geofabrik).',
     kita: {},
     bolgeAra: 'Search a country or region…', dunyaGenel: 'Whole world — overview (no directions)', dunyaTam: 'Whole world — full detail (about 139 GB, no directions)',
     katalogAliniyor: 'Getting the list of regions…', hesaplaniyor: 'Working out the sizes… (a large region can take a minute)',
@@ -281,7 +324,17 @@ const METIN = {
     haritaSecEtiket: 'Mapa:', ekBagEkle: 'Přidat z odkazu', ekBagNot: 'Nebo vlož webovou adresu seznamu (odkaz přímo na soubor: Excel, CSV, KML, GeoJSON). Potřebuje internet.',
     ekBagIndiriliyor: 'Stahuji seznam…', ekBagHata: { adres: 'Toto není webová adresa (musí začínat http nebo https).', baglanti: 'Adresa není dostupná. Je internet, je adresa správně?' },
     noktamiKaydet: 'Uložit můj bod', noktaAdi: 'Název (např. park ve čtvrti)', kaydet: 'Uložit', noktaKaydedildi: 'Uloženo do seznamu „Benim noktalarım“ (moje body).',
-    indirBaslik: 'Stáhnout mapu: země, oblast nebo celý svět', indirAciklama: 'Dokud je internet, stáhni mapu a trasy země nebo oblasti; potom vše funguje bez internetu. Zdroj: OpenStreetMap (dlaždice Protomaps, silniční data Geofabrik).',
+    alanBaslik: 'Stáhnout oblast, kterou vidíš na mapě', alanAciklama: 'Přibliž mapu na místo, které chceš (např. město), pojmenuj ho a stáhni tuto oblast. Pro trasy se stáhnou silniční data oblasti; připraví se jen vybrané místo.',
+    alanIpucu: 'K výběru oblasti je nejdřív potřeba mapa: například stáhni přehled celého světa a pak přibliž, kam chceš.',
+    alanAdi: 'Název oblasti (např. Sandnessjøen)', alanIndir: 'Stáhnout tuto oblast', alanAdGerek: 'Nejdřív oblast pojmenuj.',
+    teklifAlanYol: (bolge, mb, gb) => `Pro trasy se stáhnou silniční data: ${bolge} (${boyut(mb)}); připraví se jen vybraná oblast (asi ${sayi.format(gb)} GB paměti) a soubor se pak smaže.`,
+    dosyaBaslik: 'Přidat mapu ze souborů', dosyaAciklama: 'Soubory z jiného Heybe nebo od organizace: .pmtiles (dlaždice), .rota a .yer (trasy), .json (informace) nebo .osm.pbf (silniční data; Heybe je připraví). Soubory se stejným názvem tvoří jednu mapu.',
+    dosyaYukleniyor: (ad, y) => `Přidávám ${ad}… ${y} %`, dosyaEklendi: (ad) => `${ad} přidán.`,
+    dosyaHata: { bicim: 'Toto není mapový soubor nebo je poškozený.', 'yer-yok': 'Na disku není dost místa.', suruyor: 'Běží jiná úloha; zkus to po jejím skončení.', yazilamadi: 'Soubor nelze zapsat.' },
+    haritalarBaslik: 'Mapy v tomto Heybe', haritaKaldir: 'Odebrat', haritaKaldirSor: (ad) => `Odebrat mapu „${ad}“ z tohoto Heybe? Smažou se dlaždice, trasy i názvy míst.`,
+    yolVarKisa: 's trasami', yolYokKisa: 'jen dlaždice',
+    uyariTarihsiz: 'Tato mapa jsou data OpenStreetMap neznámého data. Budovy zřícené a cesty či mosty uzavřené po katastrofě na ní nejsou vidět. Cestu si ověř vlastníma očima a nechoď přes nebezpečná místa.',
+    indirBaslik: 'Přidat mapu: stáhnout, vybrat oblast nebo ze souborů', indirAciklama: 'Dokud je internet, stáhni mapu a trasy země nebo oblasti; potom vše funguje bez internetu. Zdroj: OpenStreetMap (dlaždice Protomaps, silniční data Geofabrik).',
     kita: { africa: 'Afrika', antarctica: 'Antarktida', asia: 'Asie', 'australia-oceania': 'Austrálie a Oceánie', 'central-america': 'Střední Amerika', europe: 'Evropa', 'north-america': 'Severní Amerika', 'south-america': 'Jižní Amerika' },
     bolgeAra: 'Hledat zemi nebo oblast…', dunyaGenel: 'Celý svět — přehled (bez tras)', dunyaTam: 'Celý svět — plné podrobnosti (asi 139 GB, bez tras)',
     katalogAliniyor: 'Načítám seznam oblastí…', hesaplaniyor: 'Počítám velikosti… (u velké oblasti to může trvat minutu)',
@@ -370,7 +423,9 @@ if (!bilgi.var || !bilgi.pmtiles) {
 }
 const HARITA = '&harita=' + encodeURIComponent(bilgi.ad);
 const oz = bilgi.ozet;
-$('uyari').textContent = M.uyari(new Date(oz.veriTarihi + 'T12:00:00').toLocaleDateString(dil, { day: 'numeric', month: 'long', year: 'numeric' }));
+$('uyari').textContent = oz.veriTarihi
+  ? M.uyari(new Date(oz.veriTarihi + 'T12:00:00').toLocaleDateString(dil, { day: 'numeric', month: 'long', year: 'numeric' }))
+  : M.uyariTarihsiz;
 
 const protokol = new pmtiles.Protocol();
 maplibregl.addProtocol('pmtiles', protokol.tile);
@@ -612,29 +667,30 @@ function indirKur() {
     for (const b of (q ? [] : ozel).concat(uyan)) {
       const li = document.createElement('li');
       const d = document.createElement('button'); d.type = 'button'; d.textContent = b.goster;
-      d.addEventListener('click', () => { ul.replaceChildren(); $('bolgeAra').value = b.goster; teklifAl(b.id); });
+      d.addEventListener('click', () => { ul.replaceChildren(); $('bolgeAra').value = b.goster; teklifAl({ bolge: b.id }); });
       li.append(d); ul.append(li);
     }
   }
   $('indirKutu').addEventListener('toggle', () => { if ($('indirKutu').open) { katalogYukle(); listele(); } });
   $('bolgeAra').addEventListener('input', () => { katalogYukle(); listele(); });
-  async function teklifAl(id) {
+  async function teklifAl(govde) {
     const tk = $('teklif'); tk.replaceChildren();
     $('indirDurum').className = ''; $('indirDurum').textContent = M.hesaplaniyor;
-    const y = await fetch('/api/harita-indir', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: JSON.stringify({ bolge: id }) }).catch(() => null);
+    const y = await fetch('/api/harita-indir', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: JSON.stringify(govde) }).catch(() => null);
     const t = y ? await y.json().catch(() => ({})) : { hata: 'internet-yok' };
     if (!y || !y.ok) { $('indirDurum').className = 'hata'; $('indirDurum').textContent = M.indirHata[t.hata] || M.hata; return; }
     $('indirDurum').textContent = '';
     const satir = (m, kotu) => { const p = document.createElement('p'); p.textContent = m; if (kotu) p.className = 'kotu'; tk.append(p); };
     satir(M.teklifHarita(t.haritaMB, t.ayrintiDusuk));
-    satir(t.yolVar ? M.teklifYol(t.yolMB, t.bellekGB) : M.teklifYolYok);
+    const yolBolge = t.yolIso && bolgeAdi ? (bolgeAdi.of(t.yolIso) || t.yolKaynak) : t.yolKaynak;
+    satir(!t.yolVar ? M.teklifYolYok : t.alan ? M.teklifAlanYol(yolBolge, t.yolMB, t.bellekGB) : M.teklifYol(t.yolMB, t.bellekGB));
     satir(M.teklifDisk(t.gerekGB, t.bosGB));
     if (!t.sigar) satir(M.teklifYerYok, true);
     if (t.buyukDosyaSorunu) satir(M.teklifFat, true);
     const b = document.createElement('button'); b.type = 'button'; b.textContent = M.indirDugme; b.disabled = !t.sigar || t.buyukDosyaSorunu;
     b.addEventListener('click', async () => {
       b.disabled = true;
-      const y2 = await fetch('/api/harita-indir', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: JSON.stringify({ bolge: id, onay: true }) }).catch(() => null);
+      const y2 = await fetch('/api/harita-indir', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: JSON.stringify({ ...govde, onay: true }) }).catch(() => null);
       const r2 = y2 ? await y2.json().catch(() => ({})) : { hata: 'internet-yok' };
       if (!y2 || !y2.ok) { $('indirDurum').className = 'hata'; $('indirDurum').textContent = M.indirHata[r2.hata] || M.hata; b.disabled = false; return; }
       tk.replaceChildren(); izle();
@@ -642,6 +698,46 @@ function indirKur() {
     tk.append(b);
   }
   $('indirDur').addEventListener('click', () => fetch('/api/harita-indir-dur', { method: 'POST', headers: { 'X-Heybe': '1' } }));
+  // Haritada görünen alan (09.11, §80): harita varsa
+  $('alanAdi').placeholder = M.alanAdi;
+  if (bilgi.var) {
+    $('alanAciklama').textContent = M.alanAciklama;
+    $('alanIndir').addEventListener('click', () => {
+      const isim = $('alanAdi').value.trim();
+      if (!isim) { $('indirDurum').className = 'hata'; $('indirDurum').textContent = M.alanAdGerek; $('alanAdi').focus(); return; }
+      const s = harita.getBounds();
+      const kutu = [Math.max(-180, s.getWest()), Math.max(-85, s.getSouth()), Math.min(180, s.getEast()), Math.min(85, s.getNorth())].map((v) => Math.round(v * 1e5) / 1e5);
+      teklifAl({ kutu, isim });
+    });
+  } else {
+    $('alanAciklama').textContent = M.alanIpucu;
+    $('alanSatir').hidden = true;
+  }
+  // Dosyadan harita ekle: büyük dosya belleğe alınmadan gönderilir; ilerleme XHR'den
+  $('haritaDosya').addEventListener('change', async () => {
+    const d = $('dosyaDurum');
+    const dosyalar = [...$('haritaDosya').files];
+    let pbfVar = false;
+    for (const f of dosyalar) {
+      d.className = '';
+      const sonuc = await new Promise((tamam) => {
+        const x = new XMLHttpRequest();
+        x.open('POST', '/api/harita-dosya?ad=' + encodeURIComponent(f.name));
+        x.setRequestHeader('X-Heybe', '1');
+        x.upload.onprogress = (e) => { if (e.lengthComputable) d.textContent = M.dosyaYukleniyor(f.name, Math.floor(e.loaded / e.total * 100)); };
+        x.onload = () => { let r = {}; try { r = JSON.parse(x.responseText); } catch (e) {} tamam({ ok: x.status === 200, r }); };
+        x.onerror = () => tamam({ ok: false, r: {} });
+        x.send(f);
+      });
+      if (!sonuc.ok) { d.className = 'hata'; d.textContent = `${f.name}: ${M.dosyaHata[sonuc.r.hata] || M.hata}`; break; }
+      if (sonuc.r.hazirlik) pbfVar = true;
+      d.textContent = M.dosyaEklendi(f.name);
+    }
+    $('haritaDosya').value = '';
+    haritaListeYaz(true); // reddedilen dosya olsa da eklenenler listede görünsün
+    if (pbfVar) izle();
+  });
+  haritaListeYaz(false);
   async function izle() {
     const r = await fetch('/api/harita-indir', { cache: 'no-store' }).then((y) => y.json()).catch(() => ({}));
     const d = $('indirDurum');
@@ -656,12 +752,34 @@ function indirKur() {
     if (r.asama === 'hata') m += ' ' + (M.indirHata[r.hata] || r.hata);
     d.textContent = m;
     if (r.asama === 'bitti' && !d.querySelector('a')) {
+      haritaListeYaz(true);
       const a = document.createElement('a'); a.href = `?dil=${dil}&harita=${encodeURIComponent(r.ad)}`; a.textContent = ' ' + M.yeniHaritaAc;
       d.append(a);
     }
     if (suruyor) setTimeout(izle, 2000);
   }
   izle();
+}
+
+// Bu Heybe'deki haritalar: ad, yol tarifi var mı, kaldır (09.11, §80)
+async function haritaListeYaz(yeni) {
+  const r = yeni ? await fetch('/api/harita', { cache: 'no-store' }).then((y) => y.json()).catch(() => bilgi) : bilgi;
+  const ul = $('haritaListe');
+  ul.replaceChildren();
+  for (const h of r.haritalar || []) {
+    const li = document.createElement('li');
+    const a = document.createElement('a'); a.href = `?dil=${dil}&harita=${encodeURIComponent(h.ad)}`; a.textContent = haritaIsmi(h);
+    const s = document.createElement('small'); s.textContent = ' · ' + (h.yol ? M.yolVarKisa : M.yolYokKisa);
+    const sol = document.createElement('span'); sol.append(a, s);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ince'; b.textContent = M.haritaKaldir;
+    b.addEventListener('click', async () => {
+      if (!confirm(M.haritaKaldirSor(haritaIsmi(h)))) return;
+      await fetch('/api/harita-sil', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: JSON.stringify({ ad: h.ad }) });
+      location.search = `?dil=${dil}`;
+    });
+    li.append(sol, b);
+    ul.append(li);
+  }
 }
 
 async function rotaBul() {
