@@ -70,6 +70,7 @@
   .kaynakCeviri .ceviriNot { font-size: 13px; color: var(--soluk); margin-top: 4px; }
   .kucukDugme { font-size: 14px; padding: 4px 10px; }
   .yanlisYer { margin-top: 14px; }
+  .okuYer { margin-top: 8px; }
   .yanlisYer textarea { width: 100%; box-sizing: border-box; }
   #ozgunKutu summary { cursor: pointer; color: var(--soluk); font-size: 14px; }
   #ozgunKutu .cevap { margin-top: 8px; color: var(--soluk); }
@@ -160,6 +161,8 @@
       <h2 data-m="cevapBaslik"></h2>
       <p class="bolumSatir" id="bolumSatir" dir="auto" hidden></p>
       <div class="cevap" id="cevap"></div>
+      <!-- 10.11 (Ercan: "cevap geldi ama sesli butonu göremedim"): cevabı bilgisayarın kendi sesiyle okur -->
+      <div class="okuYer" id="cevapOkuYer" hidden><button type="button" class="kucukDugme" id="cevapOku" data-m="konusmaOku"></button></div>
       <details id="ozgunKutu" hidden><summary id="ozgunBaslik"></summary><div class="cevap" id="ozgunMetin"></div></details>
       <!-- "Bu cevap yanlış" (Ö18, 07.11): kayıt yalnız bu bellekte kalır -->
       <div class="yanlisYer">
@@ -197,7 +200,8 @@
     <p><a href="#" id="konusmaGeri" data-m="geri"></a></p>
     <h1 data-m="konusmaBaslik"></h1>
     <p class="alt" data-m="konusmaAciklama"></p>
-    <p class="durum" id="konusmaDurum" role="status" aria-live="polite"></p>
+    <!-- 10.11 (Ercan): çevirmen hazırlanırken de açılıştaki noktalar + saniye; saniye ekran okuyucuya her saniye okunmasın -->
+    <p class="durum" id="konusmaDurum" role="status" aria-live="polite"><span class="dm"></span><span class="nokta" aria-hidden="true"><i></i><i></i><i></i></span><span class="sure" aria-hidden="true"></span></p>
     <label class="kopruSecim"><input type="checkbox" id="konusmaYuz"> <span data-m="konusmaYuzYuze"></span></label>
     <div id="konusmaAlan"></div>
   </section>
@@ -1399,23 +1403,51 @@
     s.querySelector('.kCevir').textContent = m.konusmaCevir;
     s.querySelector('.kOku').textContent = m.konusmaOku;
   }
+  // 10.11 (Ercan: "ses kötü olmuş korku filmi gibi"): Mac'te İngilizcede listenin ilk sesi "Albert"ti — şaka seslerinden
+  // biri (Bad News, Whisper, Zarvox…; sistem diline göre adı çevrilir: "Kötü Haber", "Org"). Şaka ve eski sesler hiç seçilmez;
+  // Eloquence ailesi (Eddy, Grandma…) en sona; bilinen doğal sesler, Premium/Gelişmiş sesler ve sistemin varsayılanı öne.
+  // Şaka sesleri yalnız en-US'de: adı başka dile çevrilmiş olsa bile doğal sesler (Samantha, Daniel…) önde kalır.
+  const SES_SAKA = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Organ|Pipe Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Kathy|Ralph|Princess|Agnes|Bruce|Vicki|Kötü Haber|İyi Haber|Org)$/i;
+  const SES_ELOQUENCE = /^(Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley)( \(|$)/;
+  const SES_IYI = /^(Samantha|Daniel|Karen|Moira|Tessa|Rishi|Alex|Ava|Allison|Susan|Tom|Serena|Kate|Oliver|Fiona|Veena)\b|Premium|Enhanced|Gelişmiş|Neural|Natural/i;
+  const sesPuan = (v) => (SES_IYI.test(v.name) ? 4 : 0) + (v.default ? 2 : 0) - (SES_ELOQUENCE.test(v.name) ? 5 : 0);
   function sesBul(k) {
     try {
-      const sesler = speechSynthesis.getVoices().filter((v) => v.localService && v.lang);   // yalnız bilgisayarın kendi sesi (internetsiz)
-      const ara = (o) => sesler.find((v) => v.lang.toLowerCase().replace('_', '-').startsWith(o));
-      return ara(k === 'no' ? 'nb' : k) || ara(k);
+      // yalnız bilgisayarın kendi sesi (internetsiz)
+      const sesler = speechSynthesis.getVoices().filter((v) => v.localService && v.lang && !SES_SAKA.test(v.name.trim()));
+      const uyan = (o) => sesler.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith(o));
+      const once = uyan(k === 'no' ? 'nb' : k), aday = once.length ? once : uyan(k);
+      return aday.sort((a, b) => sesPuan(b) - sesPuan(a))[0] || null;   // eşit puanda listedeki sıra kalır
     } catch (e) { return null; }
   }
-  function konusmaOkuHazirla(s, metin, k) {
-    const b = s.querySelector('.kOku');
-    const ses = typeof speechSynthesis !== 'undefined' ? sesBul(k) : null;
-    b.hidden = !ses || !metin;
+  // Sesli okuma tek yerde (10.11): konuşma panelleri ve cevap kutusu aynı ses seçimini kullanır.
+  // Okuyan düğmeye yeniden basılırsa susar; başka düğme öncekini keser ve kendi metnini okur.
+  // Bu dilde bilgisayarın kendi sesi yoksa false döner (düğme görünmez).
+  // 10.11 (Ercan: "tüm ses bilgisayardan dahi olanlar devre dışı bırakalım", §100): sesli okuma KAPALI. Bekçiler yazıyı
+  // denetliyor, sesi denetleyen bekçi yok (LM, §99) — okunuş bekçisi kurulana kadar hiçbir ses çıkmaz. Kod yerinde;
+  // kapalıyken düğmeler hiç görünmez (basınca bir şey yapmayan düğme kullanıcıyı şaşırtır). Açmak: true.
+  const SESLI_OKU = false;
+  let okuyanDugme = null;
+  function sesliOkuKur(b, metin, k) {
+    if (!SESLI_OKU) { b.onclick = null; return false; }
+    const ses = typeof speechSynthesis !== 'undefined' && metin ? sesBul(k) : null;
     b.onclick = () => {
+      if (!ses) return;
+      if (speechSynthesis.speaking && okuyanDugme === b) { speechSynthesis.cancel(); okuyanDugme = null; return; }
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(metin);
       u.voice = ses; u.lang = ses.lang;
+      u.onend = () => { if (okuyanDugme === b) okuyanDugme = null; };
+      okuyanDugme = b;
       speechSynthesis.speak(u);
     };
+    return !!ses;
+  }
+  // tarayıcı sesleri geç yükler: sayfa açılır açılmaz istenir ki ilk cevapta hazır olsun
+  if (SESLI_OKU) try { speechSynthesis.getVoices(); } catch (e) { /* ses yok */ }
+  function konusmaOkuHazirla(s, metin, k) {
+    const b = s.querySelector('.kOku');
+    b.hidden = !sesliOkuKur(b, metin, k);
   }
   async function konusmaCevir(x, y) {
     if (!konusmaHazir) return;
@@ -1461,9 +1493,28 @@
     try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch (e) { /* ses yok */ }
     konusmaKuruldu = true;
   }
+  // 10.11 (Ercan: "hemen hazır olmuyor, hazırlanıyor — yükleme animasyonu koysak"): açılıştaki gibi noktalar oynar,
+  // saniye işler; 6 dakikayı geçerse açılışın "uzun sürüyor" notu eklenir. Süre ilk istekten sayılır (ekrana dönünce sıfırlanmaz).
+  let konusmaBas = 0, konusmaSayac = null;
+  function konusmaDurumYaz() {
+    const d = $('konusmaDurum'), m = METIN[dil] || METIN.en;
+    const calisiyor = !konusmaHazir && !!konusmaSayac;
+    const sn = konusmaBas ? Math.floor((Date.now() - konusmaBas) / 1000) : 0;
+    d.className = 'durum' + (calisiyor ? ' calisiyor' : '');
+    d.querySelector('.dm').textContent = konusmaHazir ? '' : m.konusmaHazirlaniyor + (sn > 360 ? ' ' + m.acilisUzun : '');
+    d.querySelector('.sure').textContent = calisiyor && sn > 0 ? `⏱ ${sn}` : '';
+  }
+  function konusmaSayacDurdur() {
+    if (konusmaSayac) { clearInterval(konusmaSayac); konusmaSayac = null; }
+    konusmaDurumYaz();
+  }
   function konusmaHazirYaz(h) {
     konusmaHazir = h;
-    $('konusmaDurum').textContent = h ? '' : METIN[dil].konusmaHazirlaniyor;
+    if (h) { konusmaBas = 0; konusmaSayacDurdur(); } else {
+      if (!konusmaBas) konusmaBas = Date.now();
+      if (!konusmaSayac) konusmaSayac = setInterval(konusmaDurumYaz, 1000);
+      konusmaDurumYaz();
+    }
     document.querySelectorAll('#konusmaAlan .kCevir').forEach((b) => { b.disabled = !h; });
   }
   async function konusmaAc() {
@@ -1476,6 +1527,7 @@
     const bekle = async () => {
       if (await hazirMi(CEVIRMEN)) { konusmaHazirYaz(true); return; }
       if (Date.now() - bas < 15 * 60 * 1000 && !$('konusmaEkrani').hidden) setTimeout(bekle, 3000);
+      else konusmaSayacDurdur();   // bakmayı bıraktık: noktalar da durur, "çalışıyor" gibi görünmesin
     };
     bekle();
   }
@@ -1542,6 +1594,7 @@
     if (!acilElle) $('acilAc').open = false;
     $('soru').disabled = true; $('sor').disabled = true;
     $('cevapKart').hidden = true; $('kaynakKart').hidden = true; $('bolumSatir').hidden = true;
+    $('cevapOkuYer').hidden = true; try { speechSynthesis.cancel(); } catch (e) { /* ses yok */ }
     sonCevap = null; yanlisSifirla();
     try {
       // dil köprüsü: önce kendi dilinde; bilgi yoksa bellekteki öbür dillerde (çevirmen hazırsa)
@@ -1589,6 +1642,8 @@
           ic.split(/\s*[,،，、]\s*/).filter(Boolean).map((n) => `<a href="#k${n}">${n}</a>`).join(', ') + ']');
         bolumGoster(r);
       }
+      // ekranda ne yazıyorsa o okunur (durma cümleleri ve "bilmiyorum" dahil); [1, 3] gibi kaynak numaraları okunmaz
+      $('cevapOkuYer').hidden = !sesliOkuKur($('cevapOku'), $('cevap').innerText.replace(/\s*\[[\d,،，、\s]+\]/g, '').trim(), dil);
       sonCevap = { soru, dil, r };   // "bu cevap yanlış" bu cevabı kaydeder (Ö18)
       durumYaz('bitti', r.toplam_sn);
     } catch (e) {
