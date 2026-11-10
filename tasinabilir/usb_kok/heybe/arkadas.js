@@ -428,9 +428,9 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
     return yanit.content.trim();
   }
 
-  async function cevir(metin, kaynak, hedef, uzunluk = 450) {
-    // dil köprüsü: TranslateGemma sunucusuyla çeviri (AYAR.cevirmen)
-    const yanit = await (await getir(`${AYAR.cevirmen}/completion`, {
+  async function cevir(metin, kaynak, hedef, uzunluk = 450, adres = AYAR.cevirmen) {
+    // dil köprüsü: TranslateGemma sunucusuyla çeviri (AYAR.cevirmen; konuşma çevirisi kendi adresini verir — 10.11)
+    const yanit = await (await getir(`${adres}/completion`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: translateGemmaIstemi(metin, kaynak, hedef), n_predict: uzunluk, temperature: 0, seed: 1,
         stop: ['<end_of_turn>'] }),
@@ -1125,6 +1125,27 @@ ANSWER: ${a}`;
     return sorun;
   }
 
+  // ---- 10.11 (Özet §96, Ercan: "iki yabancı karşılaştı belki kendi aralarında konuşmak isteyecek"): konuşma çevirisi
+  //      süzgeci — DURDURMAZ, UYARIR (konuşmada susturmak değil, "tam tutmamış olabilir" demek yeter). Sayı (çeviride
+  //      kaynakta olmayan sayı), yazı (başka alfabe), olumsuzluk (iki dil ölçülmüşse doğrudan, değilse geri çeviriyle),
+  //      gidiş-dönüş (geri çeviride kaynakta olmayan sayı). Konuşan kendi cümlesinin geri çevirisini her zaman görür. ----
+  // Konuşmada olumsuz emir çoğu zaman yalın: "verme", "yapma", "dokunma" (yan cümle ya da cümle sonunda). Cevap bekçileri
+  // bu biçimi bilerek saymaz ("kesme", "arama" ad da olur); konuşma süzgeci yalnız uyardığı için burada sayılır.
+  const trYalinEmir = (m) => String(m || '').replace(/(\p{L}{2,}m)([ae])(?=\s*([.!?,;…]|$))/gu, (x, k, v) => k + v + (v === 'a' ? 'yın' : 'yin'));
+  function konusmaDenetle(kaynakMetin, kd, ceviri, hd, geri = '') {
+    const uyari = [];
+    if (kd === 'tr') { kaynakMetin = trYalinEmir(kaynakMetin); geri = trYalinEmir(geri); }
+    if (hd === 'tr') ceviri = trYalinEmir(ceviri);
+    const sayi = denetle([{ metin: kaynakMetin, dil: kd }], ceviri, hd).filter((x) => !x.startsWith('terim:'));
+    if (sayi.length) uyari.push(`sayı: ${sayi.map((x) => x.replace(/ \?$/, '')).join(', ')}`);
+    uyari.push(...yaziDenetle(ceviri, hd));
+    let ol = olumsuzlukKarsilastir(kaynakMetin, kd, ceviri, hd);
+    if (ol === null && geri && OLUMSUZ_SAY[kd]) ol = olumsuzlukKarsilastir(kaynakMetin, kd, geri, kd);
+    if (ol && ol.length) uyari.push('olumsuzluk');
+    if (geri) uyari.push(...gidisDonus(kaynakMetin, kd, geri));
+    return [...new Set(uyari)];
+  }
+
   function olumsuzlukKarsilastir(ozgun, kd, ceviri, dil) {
     // senkron çekirdek: iki dilin de sayacı varsa karşılaştırır; yoksa null (denetlenemedi)
     const say1 = OLUMSUZ_SAY[kd], say2 = OLUMSUZ_SAY[dil];
@@ -1507,7 +1528,7 @@ ANSWER: ${a}`;
   const Heybe = { AYAR, DIL, sor, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
     basliklariAyikla, kaynakMetni, cevir, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri };
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

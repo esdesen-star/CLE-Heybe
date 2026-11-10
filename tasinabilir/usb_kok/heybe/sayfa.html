@@ -56,6 +56,14 @@
   .aciklama { color: var(--soluk); font-size: 15px; margin: 0 0 12px; }
   .cevap { white-space: pre-wrap; }
   /* 09.11 (§90): cevabın geldiği bölüm — okuyan konu dışı cevabı bir bakışta görsün */
+  /* 10.11 (§96): konuşma çevirisi — iki kişi, iki dil; yüz yüzede üst panel ters döner */
+  .kisi .kisiUst { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .kisi .kisiAd { font-weight: 600; color: var(--vurgu); }
+  .kisi .kGelen { font-size: 24px; line-height: 1.35; margin: 12px 0 6px; min-height: 1.4em; white-space: pre-wrap; }
+  .kisi .kisiYaz { display: flex; gap: 8px; margin-top: 10px; }
+  .kisi .kGiden { font-size: 14px; color: var(--soluk); margin-top: 8px; white-space: pre-wrap; }
+  .kisi .dur { font-size: 14px; margin-top: 4px; }
+  #konusmaAlan.yuzYuze #kisi1 { transform: rotate(180deg); }
   .bolumSatir { margin: 0 0 10px; padding: 6px 10px; border-left: 4px solid var(--vurgu); background: var(--zemin); font-weight: 600; }
   #ozgunKutu { margin-top: 14px; }
   .kaynakCeviri { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--vurgu); }
@@ -173,6 +181,8 @@
       <a id="kitaplikBag" href="#" class="dugmeBag" data-m="kitaplikAyar"></a>
       <!-- 09.11 (harita 8i): bellekte harita varsa görünür; harita sayfası ayrı (MapLibre ana sayfayı ağırlaştırmasın) -->
       <a id="haritaBag" href="/heybe/harita.html" data-m="haritaBag" hidden></a>
+      <!-- 10.11 (§96): çevirmen modeli varsa -->
+      <a id="konusmaBag" href="#" data-m="konusmaBag" hidden></a>
       <a id="kutuphaneBag" href="/kiwix/" target="_blank" data-m="kutuphane"></a>
       <a id="dilDegistir" href="#" data-m="dilDegistir"></a>
     </div>
@@ -181,6 +191,17 @@
   </section>
 
   <!-- Kitaplık: Heybe bir klasördür (K13). Kitabı kullanıcı seçer; kendi dosyasını da ekler. -->
+  <!-- 10.11 (Özet §96, Ercan: "iki yabancı karşılaştı belki kendi aralarında konuşmak isteyecek"): konuşma çevirisi.
+       Her panel kendi seçtiği dilde yazar; çeviri karşı panelde büyük, konuşanın cümlesinin geri çevirisi kendi altında. -->
+  <section id="konusmaEkrani" hidden>
+    <p><a href="#" id="konusmaGeri" data-m="geri"></a></p>
+    <h1 data-m="konusmaBaslik"></h1>
+    <p class="alt" data-m="konusmaAciklama"></p>
+    <p class="durum" id="konusmaDurum" role="status" aria-live="polite"></p>
+    <label class="kopruSecim"><input type="checkbox" id="konusmaYuz"> <span data-m="konusmaYuzYuze"></span></label>
+    <div id="konusmaAlan"></div>
+  </section>
+
   <section id="kitaplikEkrani" hidden>
     <p><a href="#" id="geri" data-m="geri"></a></p>
     <h1 data-m="kitaplik"></h1>
@@ -474,6 +495,17 @@
       hata: 'Bir şey ters gitti: ',
       cevapBaslik: 'Cevap',
       bolumKaynak: (a) => `Bu cevap şu bölümden: ${a}`,
+      konusmaBag: '🗣️ Konuşma çevirisi',
+      konusmaBaslik: 'Konuşma çevirisi',
+      konusmaAciklama: 'İki kişi, iki dil. Herkes kendi dilini seçip yazar; çeviri karşı tarafta büyük görünür. Kendi cümlenin karşıya nasıl gittiğini de altında görürsün. İnternet gerekmez. Çeviri yanılabilir: önemli bir şeyde kısa ve açık cümle kur.',
+      konusmaYuzYuze: 'Yüz yüze (üstteki panel ters döner)',
+      konusmaYaz: 'Kendi dilinde yaz…',
+      konusmaCevir: 'Çevir',
+      konusmaGiden: (a) => `Karşı tarafa böyle gitti: ${a}`,
+      konusmaUyari: '⚠️ Bu çeviri tam tutmamış olabilir. Cümleyi kısaltıp yeniden dene.',
+      konusmaHazirlaniyor: 'Çevirmen hazırlanıyor… İlk açılışta birkaç dakika sürebilir.',
+      konusmaOku: '🔊 Sesli oku',
+      konusmaKisi: (n) => `${n}. kişi`,
       kaynakBaslik: 'Kaynaklar',
       durdur: (x) => `Bu cevapta kaynakta olmayan bir sayı var (${x}). Güvenlik için cevabı göstermiyorum. Lütfen aşağıdaki kaynakları oku.`,
       bilgiYok: 'Kaynaklarımda bu bilgi yok.',
@@ -667,6 +699,17 @@
       hata: 'Something went wrong: ',
       cevapBaslik: 'Answer',
       bolumKaynak: (a) => `This answer comes from: ${a}`,
+      konusmaBag: '🗣️ Conversation translator',
+      konusmaBaslik: 'Conversation translator',
+      konusmaAciklama: 'Two people, two languages. Each person picks a language and writes; the translation appears large on the other side. Under your own message you see how it reached the other person. No internet needed. Translation can be wrong: for anything important, use short, clear sentences.',
+      konusmaYuzYuze: 'Face to face (the top panel turns upside down)',
+      konusmaYaz: 'Write in your language…',
+      konusmaCevir: 'Translate',
+      konusmaGiden: (a) => `It reached the other person as: ${a}`,
+      konusmaUyari: '⚠️ This translation may not be exact. Shorten the sentence and try again.',
+      konusmaHazirlaniyor: 'The translator is starting… The first time this can take a few minutes.',
+      konusmaOku: '🔊 Read aloud',
+      konusmaKisi: (n) => `Person ${n}`,
       kaynakBaslik: 'Sources',
       durdur: (x) => `This answer contains a number that is not in the sources (${x}). For safety I am not showing it. Please read the sources below.`,
       bilgiYok: 'My sources do not contain this information.',
@@ -860,6 +903,17 @@
       hata: 'Něco se pokazilo: ',
       cevapBaslik: 'Odpověď',
       bolumKaynak: (a) => `Tato odpověď pochází z kapitoly: ${a}`,
+      konusmaBag: '🗣️ Překlad rozhovoru',
+      konusmaBaslik: 'Překlad rozhovoru',
+      konusmaAciklama: 'Dva lidé, dva jazyky. Každý si vybere svůj jazyk a píše; překlad se velkým písmem objeví na druhé straně. Pod svou zprávou vidíte, jak dorazila k druhému. Internet není potřeba. Překlad se může mýlit: u důležitých věcí pište krátké a jasné věty.',
+      konusmaYuzYuze: 'Tváří v tvář (horní panel se otočí vzhůru nohama)',
+      konusmaYaz: 'Pište svým jazykem…',
+      konusmaCevir: 'Přeložit',
+      konusmaGiden: (a) => `Druhá strana to dostala takto: ${a}`,
+      konusmaUyari: '⚠️ Tento překlad nemusí být přesný. Zkraťte větu a zkuste to znovu.',
+      konusmaHazirlaniyor: 'Překladač se připravuje… Poprvé to může trvat několik minut.',
+      konusmaOku: '🔊 Přečíst nahlas',
+      konusmaKisi: (n) => `Osoba ${n}`,
       kaynakBaslik: 'Zdroje',
       durdur: (x) => `V této odpovědi je číslo, které ve zdrojích není (${x}). Z bezpečnostních důvodů odpověď nezobrazuji. Přečtěte si prosím zdroje níže.`,
       bilgiYok: 'Tuto informaci ve svých zdrojích nemám.',
@@ -1086,7 +1140,7 @@
   }
 
   function ekranGoster(ad) {
-    for (const e of ['dilEkrani', 'anaEkran', 'kitaplikEkrani']) $(e).hidden = e !== ad;
+    for (const e of ['dilEkrani', 'anaEkran', 'kitaplikEkrani', 'konusmaEkrani']) $(e).hidden = e !== ad;
     // acil kart açık ekrana taşınır; kitaplıkta görünmez (Ö14)
     const yer = { dilEkrani: 'acilYerDil', anaEkran: 'acilYerAna' }[ad];
     if (yer) $(yer).appendChild($('acilKart'));
@@ -1315,6 +1369,120 @@
     kutu.appendChild(dugme);
     return kutu;
   }
+
+  // ---- konuşma çevirisi (10.11, Özet §96) ----
+  // İki panel; her panelin yazıları kendi seçtiği dilde (METIN o dilde yoksa İngilizce). Çeviri TranslateGemma ile
+  // (köprü seçimi kapalı olsa da: kullanıcı bu ekranı açtıysa çevirmen istenir). H.konusmaDenetle durdurmaz, uyarır.
+  const KONUSMA_DISI = new Set(['nb', 'nn', 'ku', 'az', 'pa', 'zu']);   // ekran çevirisinin de dışında bıraktıkları (07.11)
+  let konusmaKuruldu = false, konusmaHazir = false;
+  const konusmaMetin = (k) => METIN[k] || METIN.en;
+  function konusmaPanel(no, k) {
+    const s = document.createElement('section');
+    s.className = 'kart kisi'; s.id = 'kisi' + no;
+    s.innerHTML = '<div class="kisiUst"><span class="kisiAd"></span><select class="kDil"></select></div>' +
+      '<div class="kGelen" aria-live="polite"></div><div class="kGelenUyari dur"></div>' +
+      '<button type="button" class="kucukDugme kOku" hidden></button>' +
+      '<div class="kisiYaz"><textarea class="kYazi" rows="2" dir="auto" maxlength="600"></textarea><button type="button" class="kCevir"></button></div>' +
+      '<div class="kGiden"></div><div class="kGidenUyari dur"></div>';
+    const sec = s.querySelector('.kDil');
+    const diller = Object.keys(H.DIL_ADI).filter((d) => !KONUSMA_DISI.has(d)).sort((a, b) => dilAdiKisa(a).localeCompare(dilAdiKisa(b)));
+    for (const d of diller) { const o = document.createElement('option'); o.value = d; o.textContent = dilAdiKisa(d); sec.appendChild(o); }
+    sec.value = diller.includes(k) ? k : 'en';
+    sec.addEventListener('change', () => konusmaPanelYaz(s, no));
+    return s;
+  }
+  function konusmaPanelYaz(s, no) {
+    const k = s.querySelector('.kDil').value, m = konusmaMetin(k);
+    s.lang = k; s.dir = SAGDAN.has(k) ? 'rtl' : 'ltr';
+    s.querySelector('.kisiAd').textContent = m.konusmaKisi(no);
+    s.querySelector('.kYazi').placeholder = m.konusmaYaz;
+    s.querySelector('.kCevir').textContent = m.konusmaCevir;
+    s.querySelector('.kOku').textContent = m.konusmaOku;
+  }
+  function sesBul(k) {
+    try {
+      const sesler = speechSynthesis.getVoices().filter((v) => v.localService && v.lang);   // yalnız bilgisayarın kendi sesi (internetsiz)
+      const ara = (o) => sesler.find((v) => v.lang.toLowerCase().replace('_', '-').startsWith(o));
+      return ara(k === 'no' ? 'nb' : k) || ara(k);
+    } catch (e) { return null; }
+  }
+  function konusmaOkuHazirla(s, metin, k) {
+    const b = s.querySelector('.kOku');
+    const ses = typeof speechSynthesis !== 'undefined' ? sesBul(k) : null;
+    b.hidden = !ses || !metin;
+    b.onclick = () => {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(metin);
+      u.voice = ses; u.lang = ses.lang;
+      speechSynthesis.speak(u);
+    };
+  }
+  async function konusmaCevir(x, y) {
+    if (!konusmaHazir) return;
+    const kx = x.querySelector('.kDil').value, ky = y.querySelector('.kDil').value;
+    const metin = x.querySelector('.kYazi').value.trim();
+    if (!metin) return;
+    const mx = konusmaMetin(kx), my = konusmaMetin(ky);
+    const dugme = x.querySelector('.kCevir');
+    dugme.disabled = true; dugme.textContent = mx.ceviriliyor;
+    x.querySelector('.kGiden').textContent = ''; x.querySelector('.kGidenUyari').textContent = '';
+    try {
+      let ceviri = metin, geri = metin;
+      if (kx !== ky) {
+        ceviri = await H.cevir(metin, kx, ky, 400, CEVIRMEN);
+        geri = await H.cevir(ceviri, ky, kx, 400, CEVIRMEN);   // konuşan kendi cümlesinin karşıya nasıl gittiğini görür
+      }
+      const uyari = kx === ky ? [] : H.konusmaDenetle(metin, kx, ceviri, ky, geri);
+      const sayilar = uyari.filter((u) => /^(sayı|gidiş-dönüş):/.test(u)).map((u) => u.replace(/^[^:]+:\s*/, '')).join(', ');
+      const g = y.querySelector('.kGelen');
+      g.textContent = ceviri; g.lang = ky; g.dir = SAGDAN.has(ky) ? 'rtl' : 'ltr';
+      y.querySelector('.kGelenUyari').textContent = uyari.length ? my.konusmaUyari : '';
+      const gd = x.querySelector('.kGiden');
+      gd.textContent = mx.konusmaGiden(geri); gd.lang = kx;
+      x.querySelector('.kGidenUyari').textContent = uyari.length ? mx.konusmaUyari + (sayilar ? ` (${sayilar})` : '') : '';
+      konusmaOkuHazirla(y, ceviri, ky);
+      x.querySelector('.kYazi').value = '';
+    } catch (e) {
+      x.querySelector('.kGidenUyari').textContent = mx.hata + e.message;
+    } finally {
+      dugme.disabled = !konusmaHazir; dugme.textContent = mx.konusmaCevir;
+    }
+  }
+  function konusmaKur() {
+    const alan = $('konusmaAlan');
+    const a = konusmaPanel(1, dil || 'tr'), b = konusmaPanel(2, dil === 'en' ? 'tr' : 'en');
+    alan.append(a, b);
+    for (const [x, y, no] of [[a, b, 1], [b, a, 2]]) {
+      konusmaPanelYaz(x, no);
+      x.querySelector('.kCevir').addEventListener('click', () => konusmaCevir(x, y));
+      x.querySelector('.kYazi').addEventListener('keydown', (o) => { if (o.key === 'Enter' && !o.shiftKey) { o.preventDefault(); konusmaCevir(x, y); } });
+    }
+    $('konusmaYuz').addEventListener('change', () => alan.classList.toggle('yuzYuze', $('konusmaYuz').checked));
+    try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch (e) { /* ses yok */ }
+    konusmaKuruldu = true;
+  }
+  function konusmaHazirYaz(h) {
+    konusmaHazir = h;
+    $('konusmaDurum').textContent = h ? '' : METIN[dil].konusmaHazirlaniyor;
+    document.querySelectorAll('#konusmaAlan .kCevir').forEach((b) => { b.disabled = !h; });
+  }
+  async function konusmaAc() {
+    ekranGoster('konusmaEkrani');
+    if (!konusmaKuruldu) konusmaKur();
+    if (await hazirMi(CEVIRMEN)) { konusmaHazirYaz(true); return; }
+    konusmaHazirYaz(false);
+    try { await api('cevirmen', { ac: true }); } catch (e) { /* çevirmen açılamadı: durum satırı kalır */ }
+    const bas = Date.now();
+    const bekle = async () => {
+      if (await hazirMi(CEVIRMEN)) { konusmaHazirYaz(true); return; }
+      if (Date.now() - bas < 15 * 60 * 1000 && !$('konusmaEkrani').hidden) setTimeout(bekle, 3000);
+    };
+    bekle();
+  }
+  $('konusmaBag').addEventListener('click', (o) => { o.preventDefault(); konusmaAc(); });
+  $('konusmaGeri').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('anaEkran'); });
+  // bağlantı yalnız çevirmen modeli bu Heybe'de varsa
+  fetch(`${API}/cevirmen`, { cache: 'no-store' }).then((r) => r.json()).then((j) => { $('konusmaBag').hidden = !j || j.durum === 'yok'; }).catch(() => {});
 
   let disKaynaklar = {};   // Kiwix dışı kitaplar (yardımcının durum bilgisinden)
   function kaynaklariGoster(parcalar, adlar) {

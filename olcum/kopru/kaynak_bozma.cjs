@@ -38,6 +38,11 @@ const BOZMALAR = [
   // §90: cevabın geldiği bölüm
   ['bölüm: sıralanmıyor', 'return [...say.values()].sort((a, b) => b.sayi - a.sayi || a.ilk - b.ilk);', 'return [...say.values()];'],
   ['bölüm: atıf sayılmıyor', '        o.sayi++;\n', ''],
+  // §96: konuşma çevirisi süzgeci
+  ['konuşma: yalın emir sayılmıyor', "if (kd === 'tr') { kaynakMetin = trYalinEmir(kaynakMetin); geri = trYalinEmir(geri); }", ''],
+  ['konuşma: geri çeviriyle olumsuzluk yok', 'if (ol === null && geri && OLUMSUZ_SAY[kd]) ol = olumsuzlukKarsilastir(kaynakMetin, kd, geri, kd);', ''],
+  ['konuşma: sayı bakılmıyor', "if (sayi.length) uyari.push(`sayı: ${sayi.map((x) => x.replace(/ \\?$/, '')).join(', ')}`);", ''],
+  ['konuşma: gidiş-dönüş bakılmıyor', 'if (geri) uyari.push(...gidisDonus(kaynakMetin, kd, geri));', ''],
   ['eylem: yanma hissi yine yanık', "en: /\\bburn(s|ed|t)?\\b|scald\\w*/", "en: /\\bburn\\w*|scald\\w*/"],
 ];
 const dislerTam = (cikti) => {

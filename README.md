@@ -12,13 +12,13 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.20.1).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.20.2).
 
 ## Download and install
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.20.1.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.20.2.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -61,6 +61,10 @@ If you try one, please report it in an issue — that is the help we need most. 
   If a checker trips, the answer is not shown; the user reads the sources instead.
 - **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
 - **Personal data stays on the stick.** "This answer is wrong" reports and the emergency card stay on the stick and are never sent anywhere.
+
+## Conversation translator *(new in 0.20.2)*
+
+Two people, two languages, one screen — for a rescuer and an injured traveller, or families from different countries in a tent camp. Each person picks a language and writes; the translation appears large on the other side, and under your own message you see how it reached the other person (back-translation). If a number, a negation ("do not …") or a foreign letter slipped in translation, both sides see a warning. "Face to face" turns the top panel upside down for two people across a table; "Read aloud" uses the computer's own voice, offline. It needs the translator model and works in all 49 languages.
 
 ## Offline map and directions *(new in 0.15–0.18)*
 
@@ -147,13 +151,13 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.20.1).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.20.2).
 
 ## İndir ve kur
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.20.1.zip` dosyasını (yaklaşık 325 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.20.2.zip` dosyasını (yaklaşık 325 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -196,6 +200,10 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
   Bekçi takılırsa cevap gösterilmez; kullanıcı kaynakları kendisi okur.
 - **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
 - **Kişisel veri bellekte kalır.** "Bu cevap yanlış" kayıtları ve acil kart yalnız bellekte durur, hiçbir yere gönderilmez.
+
+## Konuşma çevirisi *(0.20.2'de yeni)*
+
+İki kişi, iki dil, tek ekran: bir kurtarıcıyla yabancı bir yaralı, ya da çadır kentte farklı ülkelerden aileler için. Herkes kendi dilini seçip yazar. Çeviri karşı tarafta büyük görünür; kendi cümlenin karşıya nasıl gittiğini de altında, geri çevirisiyle görürsün. Çeviride bir sayı, bir olumsuzluk ("yapmayın") ya da yabancı bir harf kaymışsa iki taraf da uyarı görür. "Yüz yüze" seçeneği, masada karşılıklı oturan iki kişi için üstteki paneli ters çevirir. "Sesli oku" bilgisayarın kendi sesiyle, internetsiz okur. Çevirmen modeli gerekir; 49 dilin hepsinde çalışır.
 
 ## İnternetsiz harita ve yol tarifi *(0.15–0.18'de yeni)*
 

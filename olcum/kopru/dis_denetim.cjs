@@ -424,3 +424,24 @@ for (const [metin, beklenen] of BOLUM_ORNEK) {
   if (r === beklenen) boDogru++; else console.log(`  YANLIŞ: ${r} (beklenen ${beklenen}) | ${metin}`);
 }
 console.log(`— bölüm dişi: ${boDogru}/${BOLUM_ORNEK.length} —`);
+
+// ---- 10.11 (§96): konuşma çevirisi süzgeci — durdurmaz, uyarır ----
+const KONUSMA_ORNEK = [
+  [true, 'tr', 'Günde 2 tablet ver.', 'en', 'Give 3 tablets a day.', ''],
+  [true, 'en', 'Do not move him.', 'tr', 'Onu hareket ettirin.', ''],
+  [true, 'tr', 'Cımbızla çıkar.', 'en', 'Remove it with 鑷子.', ''],
+  [true, 'tr', 'Bebeğe su vermeyin.', 'de', 'Geben Sie dem Baby Wasser.', 'Bebeğe su verin.'],
+  [true, 'tr', 'Ona su ver.', 'en', 'Do not give him water.', ''],
+  [true, 'tr', '2 saat bekle.', 'de', 'Warten Sie zwei Stunden.', '3 saat bekleyin.'],
+  [false, 'tr', 'Ona su verme.', 'en', 'Do not give him water.', ''],
+  [false, 'en', 'Do not touch the wound.', 'tr', 'Yaraya dokunma.', ''],
+  [false, 'tr', 'Hastane nerede?', 'de', 'Wo ist das Krankenhaus?', 'Hastane nerede?'],
+  [false, 'tr', 'Dondurma istiyorum.', 'en', 'I want ice cream.', ''],
+  [false, 'en', 'Give two tablets.', 'tr', 'İki tablet verin.', ''],
+];
+let kzDogru = 0;
+for (const [beklenen, kd, a, hd, b, g] of KONUSMA_ORNEK) {
+  const r = H.konusmaDenetle(a, kd, b, hd, g);
+  if ((r.length > 0) === beklenen) kzDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'uyar' : 'sessiz'}) | ${a} → ${b}`);
+}
+console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
