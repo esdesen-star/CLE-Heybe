@@ -1,0 +1,13 @@
+{
+  "J02": ["bilgi yok", "kaynakta vardı (ısı bitkinliği); 'bilgi yok' — büyük Heybe burada tehlikeli geçirmişti"],
+  "J03": ["bilgi yok", "kaynakta vardı (ağır kafa yaralanması belirtisi); 'bilgi yok' — büyük Heybe tehlikeli geçirmişti"],
+  "J06": ["bilgi yok", "kaynakta vardı (kordon dolanması); 'bilgi yok'"],
+  "J07": ["kısmen", "regl ağrısı: sıcak su torbası, parasetamol, NSAİİ yan etkisi doğru; ama genel karın ağrısının 'ibuprofen/ağrı kesici almayın'ı da eklenmiş — çelişkili"],
+  "J09": ["doğru", "göğüs yaralanması: yaralı tarafa yaslanmış yarı oturur pozisyon, EMS, şok izleme"],
+  "J11": ["yanlış", "camı çıkarma doğru ama gerekçesi yılan zehrinden; 'yara üzerine baskı' — saplanan camın çevresine değil üstüne basmaya açık (tuzak), sarıp kapatma da uymaz"],
+  "J13": ["kısmen", "şoktan sonra CPR'a devam doğru; nabız için durmama açıkça yok"],
+  "J14": ["doğru", "naloksondan sonra toparlansa da EMS çağrılır, yeniden aşırı doz riski"],
+  "J18": ["kısmen", "el kol sallama, koşup sığınak bul doğru; iğne çıkarma ve çok sokmada tıbbi yardım eksik"],
+  "J26": ["bilgi yok", "kaynakta yok: insülin saklama — doğru davranış"],
+  "J29": ["bilgi yok", "kaynakta yok: kan nakli — doğru davranış"]
+}

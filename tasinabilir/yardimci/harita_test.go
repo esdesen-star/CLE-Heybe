@@ -65,7 +65,20 @@ type tYol struct {
 	etiket [][2]string
 }
 
+// tIliski: ilişki (relation); uyeler: {tür (0 düğüm, 1 yol), kimlik} — 12.11
+type tIliski struct {
+	id     int64
+	uyeler [][2]int64
+	etiket [][2]string
+	roller []string // 13.11: üye rolleri ("from", "via", "to"); boşsa "outer"
+}
+
 func sahtePbf(t *testing.T, dugumler []tDugum, yollar []tYol) string {
+	t.Helper()
+	return sahtePbfIliskili(t, dugumler, yollar, nil)
+}
+
+func sahtePbfIliskili(t *testing.T, dugumler []tDugum, yollar []tYol, iliskiler []tIliski) string {
 	t.Helper()
 	tablo := []string{""}
 	no := map[string]int{"": 0}
@@ -110,6 +123,32 @@ func sahtePbf(t *testing.T, dugumler []tDugum, yollar []tYol) string {
 		w.bayt(8, paketli(deltaZZ(y.refs)))
 		g2.bayt(3, w.b)
 	}
+	g3 := &pbYaz{}
+	for _, r := range iliskiler {
+		w := &pbYaz{}
+		w.sayi(1, uint64(r.id))
+		var k, v, rol, tur []uint64
+		var ids []int64
+		for _, e := range r.etiket {
+			k = append(k, s(e[0]))
+			v = append(v, s(e[1]))
+		}
+		for i, u := range r.uyeler {
+			tur = append(tur, uint64(u[0]))
+			ids = append(ids, u[1])
+			if i < len(r.roller) {
+				rol = append(rol, s(r.roller[i]))
+			} else {
+				rol = append(rol, s("outer"))
+			}
+		}
+		w.bayt(2, paketli(k))
+		w.bayt(3, paketli(v))
+		w.bayt(8, paketli(rol))
+		w.bayt(9, paketli(deltaZZ(ids)))
+		w.bayt(10, paketli(tur))
+		g3.bayt(4, w.b)
+	}
 	st := &pbYaz{}
 	for _, x := range tablo {
 		st.bayt(1, []byte(x))
@@ -118,6 +157,9 @@ func sahtePbf(t *testing.T, dugumler []tDugum, yollar []tYol) string {
 	blok.bayt(1, st.b)
 	blok.bayt(2, g1.b)
 	blok.bayt(2, g2.b)
+	if len(iliskiler) > 0 {
+		blok.bayt(2, g3.b)
+	}
 	var z bytes.Buffer
 	zw := zlib.NewWriter(&z)
 	zw.Write(blok.b)
@@ -387,5 +429,147 @@ func TestHazirlikKutusu(t *testing.T) {
 	}
 	if _, err := haritaHazirla(pbf, on+"2", "2026-11-09", nil, &[4]float64{0, 0, 1, 1}); err == nil {
 		t.Fatal("boş kutu hata vermeli")
+	}
+}
+
+// 12.11 (rota sınavı, Özet §107): havalimanı ve meydan dizinde; tire yok sayılır; bütün kelimeler tutmazsa en seyrek
+// kelimeyle kısmi sonuç; kelimelerden biri dizinde hiç yoksa uydurulmaz.
+func TestYerAramaSinavDuzeltmeleri(t *testing.T) {
+	pbf := sahtePbf(t,
+		[]tDugum{
+			{1, 41.036, 28.984, nil}, {2, 41.037, 28.986, nil}, {3, 41.038, 28.988, nil},
+			{8, 39.920, 32.850, nil}, {9, 39.921, 32.852, nil},
+			{4, 41.0369, 28.9850, [][2]string{{"place", "suburb"}, {"name", "Taksim"}}},
+			// meydan başka şehirde: bağlamında "Taksim" yok (yanındaysa "Taksim'deki meydan" diye tam eşleşir — doğru)
+			{5, 39.9205, 32.8510, [][2]string{{"place", "square"}, {"name", "Cumhuriyet Meydanı"}}},
+			{6, 36.2047, 36.1631, [][2]string{{"amenity", "place_of_worship"}, {"name", "Habib-i Neccar Camii"}}},
+			{7, 36.3628, 36.2820, [][2]string{{"aeroway", "aerodrome"}, {"name", "Hatay Havaalanı"}}}, // OSM'deki adı (12.11)
+			// 12.11 (A13): Ulus'taki cami OSM'de tamlama eksiz, Çubuk'taki ekli yazılmış
+			{20, 39.9447, 32.8578, [][2]string{{"amenity", "place_of_worship"}, {"name", "Hacı Bayram Veli Camii"}}},
+			{21, 40.2156, 33.0186, [][2]string{{"amenity", "place_of_worship"}, {"name", "Hacı Bayram-ı Veli Camii"}}},
+			{22, 40.9900, 29.0300, [][2]string{{"place", "suburb"}, {"name", "Kadıköy"}}},
+		},
+		[]tYol{
+			{11, []int64{8, 9}, [][2]string{{"highway", "residential"}, {"name", "Meydanı Sokak"}}},
+			{12, []int64{2, 3}, [][2]string{{"highway", "residential"}, {"name", "Taksim Caddesi"}}},
+		})
+	on := filepath.Join(t.TempDir(), "sinav")
+	if _, err := haritaHazirla(pbf, on, "2026-11-12", nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if s, _ := yerAra(on+".yer", "hatay havalimani", 0, 0, false, 5); len(s) == 0 || s[0].Tur != "havalimani" || s[0].Kismi {
+		t.Fatalf("havalimanı dizinde olmalı (tam eşleşme): %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "cumhuriyet meydani", 0, 0, false, 5); len(s) == 0 || s[0].Tur != "meydan" {
+		t.Fatalf("meydan dizinde olmalı: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "Habibi Neccar Camii", 0, 0, false, 5); len(s) != 1 || s[0].Ad != "Habib-i Neccar Camii" {
+		t.Fatalf("tiresiz yazılış bulmalı: %+v", s)
+	}
+	// tamlama eki yalnız sorguda atılır: ekli sorgu ekli ve eksiz yazılanı, ekli tireli sorgu "Habibi"yi bulur
+	if s, _ := yerAra(on+".yer", "Hacı Bayram-ı Veli Camii", 0, 0, false, 5); len(s) != 2 {
+		t.Fatalf("ekli sorgu iki camiyi de bulmalı (Ulus'taki eksiz yazılmış): %+v", s)
+	}
+	// bitişik ekli sorgu ("bayrami") eksiz yazılanı da bulur. Sıra: yazılışı birebir tutan (Çubuk, 33 km) yakındakinin
+	// (Ulus, 0,8 km) önünde kalır — "aynı ad" artısı yakınlıktan büyük; ikisi de ilk üçte, uzaklık yanında yazar (bilinen)
+	if s, _ := yerAra(on+".yer", "haci bayrami veli camii", 39.94, 32.85, true, 5); len(s) != 2 {
+		t.Fatalf("bitişik ekli sorgu (bayrami) eksiz yazılanı da bulmalı: %+v", s)
+	}
+	// ek kuralında kök AYRI kelime olmalı: "kadiki" → "kadik" "Kadıköy"ün başı ama ayrı kelime değil → bulunmaz
+	if s, _ := yerAra(on+".yer", "kadiki", 0, 0, false, 5); len(s) != 0 {
+		t.Fatalf("ek kuralı kelime başıyla eşleşmemeli: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "taksim caddesi", 0, 0, false, 5); len(s) == 0 || s[0].Ad != "Taksim Caddesi" {
+		t.Fatalf("ek kuralı tam eşleşmeyi bozmamalı: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "Habib-i Neccar", 0, 0, false, 5); len(s) != 1 || s[0].Ad != "Habib-i Neccar Camii" {
+		t.Fatalf("tireli ekli sorgu bulmalı: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "Hacı Bayram Veli Camii", 39.94, 32.85, true, 5); len(s) != 2 || s[0].Ad != "Hacı Bayram Veli Camii" {
+		t.Fatalf("eksiz sorgu ikisini de bulmalı, yakındaki önce: %+v", s)
+	}
+	// "taksim meydani": hiçbir yer iki kelimeyi birden taşımıyor → en seyrek kelime (taksim) ile kısmi
+	s, _ := yerAra(on+".yer", "taksim meydani", 0, 0, false, 5)
+	if len(s) == 0 || !s[0].Kismi || !strings.HasPrefix(s[0].Ad, "Taksim") {
+		t.Fatalf("kısmi arama Taksim'i öne getirmeli: %+v", s)
+	}
+	for _, y := range s {
+		if !strings.Contains(aramaNormal(y.Ad+" "+y.Baglam), "taksim") {
+			t.Fatalf("kısmi sonuç en seyrek kelimeyi taşımalı: %+v", y)
+		}
+	}
+	// "gokdelen meydani": "gokdelen" dizinde hiç yok → genel kelimeyle (meydan) yer uydurulmaz
+	if s, _ := yerAra(on+".yer", "gokdelen meydani", 0, 0, false, 5); len(s) != 0 {
+		t.Fatalf("ayırt edici kelime yokken sonuç uydurulmamalı: %+v", s)
+	}
+}
+
+// 12.11 (rota sınavı A22): ilişki olarak çizilmiş yerler dizine girer — konumu ilk üyeden (yol → ilk düğüm, düğüm → kendisi)
+func TestIliskiBicimliYer(t *testing.T) {
+	pbf := sahtePbfIliskili(t,
+		[]tDugum{{1, 37.900, 40.190, nil}, {2, 37.901, 40.192, nil}, {31, 37.8939, 40.2011, nil}, {32, 37.8950, 40.2050, nil},
+			{41, 39.9205, 32.8510, nil}},
+		[]tYol{{11, []int64{1, 2}, [][2]string{{"highway", "residential"}, {"name", "Havaalanı Yolu"}}},
+			{21, []int64{31, 32, 31}, nil}}, // etiketsiz dış çizgi
+		[]tIliski{
+			{101, [][2]int64{{1, 21}}, [][2]string{{"type", "multipolygon"}, {"aeroway", "aerodrome"}, {"name", "Diyarbakır Havalimanı"}}, nil},
+			{102, [][2]int64{{0, 41}}, [][2]string{{"place", "square"}, {"name", "Ulus Meydanı"}}, nil},
+			{103, [][2]int64{{1, 21}}, [][2]string{{"type", "multipolygon"}, {"landuse", "grass"}}, nil}, // yer türü yok: alınmaz
+		})
+	on := filepath.Join(t.TempDir(), "iliski")
+	if _, err := haritaHazirla(pbf, on, "2026-11-12", nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	s, _ := yerAra(on+".yer", "havalimani diyarbakir", 0, 0, false, 5)
+	if len(s) == 0 || s[0].Tur != "havalimani" || math.Abs(s[0].Lat-37.8939) > 1e-4 || math.Abs(s[0].Lon-40.2011) > 1e-4 {
+		t.Fatalf("ilişki biçimli havalimanı ilk üye yolun ilk düğümünde olmalı: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "ulus meydani", 0, 0, false, 5); len(s) != 1 || s[0].Tur != "meydan" || math.Abs(s[0].Lat-39.9205) > 1e-4 {
+		t.Fatalf("üyesi düğüm olan ilişki o düğümde olmalı: %+v", s)
+	}
+}
+
+// 12.11 (ikinci arama sınavı A14, A21, A24): kısaltma, bitişik yazım, bir harflik yazım hatası
+func TestYerAramaKisaltmaBitisikYazim(t *testing.T) {
+	pbf := sahtePbf(t,
+		[]tDugum{
+			{1, 41.033, 28.978, nil}, {2, 41.034, 28.979, nil}, {3, 37.910, 40.236, nil}, {4, 37.911, 40.237, nil},
+			{5, 37.9106, 40.2364, [][2]string{{"amenity", "place_of_worship"}, {"name", "Ulu Cami"}}},
+			{6, 36.587, 36.173, [][2]string{{"place", "town"}, {"name", "İskenderun"}}},
+			{7, 38.760, 30.540, nil}, {8, 38.761, 30.541, nil}, // başka şehirde aynı adlı, kısaltmalı sokak
+		},
+		[]tYol{
+			{11, []int64{1, 2}, [][2]string{{"highway", "pedestrian"}, {"name", "İstiklal Caddesi"}}},
+			{12, []int64{3, 4}, [][2]string{{"highway", "residential"}, {"name", "Gazi Cd."}}},
+			{13, []int64{7, 8}, [][2]string{{"highway", "residential"}, {"name", "İstiklal Cd."}}},
+		})
+	on := filepath.Join(t.TempDir(), "yazim")
+	if _, err := haritaHazirla(pbf, on, "2026-11-12", nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if s, _ := yerAra(on+".yer", "istiklal cd.", 0, 0, false, 5); len(s) == 0 || s[0].Ad != "İstiklal Caddesi" {
+		t.Fatalf("Cd. kısaltması Caddesi'yi bulmalı: %+v", s)
+	}
+	// konum İstanbul'daysa İstanbul'daki "İstiklal Caddesi", uzaktaki "İstiklal Cd."nin önüne geçmeli (kısaltma puanda da aynı)
+	if s, _ := yerAra(on+".yer", "istiklal cd.", 41.03, 28.98, true, 5); len(s) < 2 || s[0].Ad != "İstiklal Caddesi" {
+		t.Fatalf("konuma yakın İstiklal Caddesi önde olmalı: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "gazi caddesi", 0, 0, false, 5); len(s) == 0 || s[0].Ad != "Gazi Cd." {
+		t.Fatalf("dizinde Cd. yazanı da bulmalı (cad ↔ cd): %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "ulucami", 0, 0, false, 5); len(s) == 0 || s[0].Ad != "Ulu Cami" {
+		t.Fatalf("bitişik yazım bulmalı: %+v", s)
+	}
+	s, _ := yerAra(on+".yer", "iskendrun", 0, 0, false, 5)
+	if len(s) == 0 || s[0].Ad != "İskenderun" || s[0].Duzelti != "iskenderun" {
+		t.Fatalf("bir harflik yazım hatası düzeltilmeli: %+v", s)
+	}
+	if s, _ := yerAra(on+".yer", "iskndrn", 0, 0, false, 5); len(s) != 0 {
+		t.Fatalf("iki harften fazla farkta uydurma yok: %+v", s)
+	}
+	for _, c := range [][3]string{{"iskendrun", "iskenderun", "1"}, {"iksenderun", "iskenderun", "1"}, {"iskenderun", "iskenderun", ""}, {"iskndrn", "iskenderun", ""}, {"abc", "abd", "1"}} {
+		if birHarfFark(c[0], c[1]) != (c[2] == "1") {
+			t.Fatalf("birHarfFark(%q, %q) beklenen %v", c[0], c[1], c[2] == "1")
+		}
 	}
 }

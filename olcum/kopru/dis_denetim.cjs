@@ -265,6 +265,18 @@ const EYLEM_ORNEK = [
   ['', 'tr', 'İshal olan çocuğa ne verilir?', 'Ağızdan sıvı çözeltisi içmesini sağlayın.'],
   ['', 'tr', 'Annem asetilsalisilik asit tabletlerini yuttu, ne yapayım?', '112\'yi arayın ve kutuyu yanınızda tutun.'],
   ['', 'en', 'My child swallowed bleach. What should I do?', 'Do not give water or milk unless the poison centre tells you to.'],
+  // 13.11 (§115–§116): saplanan cisim · bebekte baş · ani şiddetli baş ağrısı (J11, J23, J20 — görülmüş)
+  ['saplanan cismi çıkarmak ya da üstüne bastırmak', 'tr', 'Kardeşimin koluna cam parçası saplandı, kan sızıyor', 'Kanamayı durdurmak için yara üzerine baskı uygulayın.'],
+  ['', 'tr', 'Kardeşimin koluna cam parçası saplandı, kan sızıyor', 'Camın çevresine bastırarak kanamayı durdurun.'],
+  ['saplanan cismi çıkarmak ya da üstüne bastırmak', 'en', 'A piece of glass is embedded in his arm', 'Press firmly on the wound to stop the bleeding.'],
+  ['', 'tr', 'Bacağı derin kesildi, kan durmuyor', 'Yara üzerine doğrudan baskı uygulayın.'],
+  ['bebekte başı iyice geriye yatırmak', 'tr', '4 aylık bebeğim nefes almıyor', 'Yetişkinlerde başı iyice geriye yatırıp ağızdan nefes vermek bu durum için bir rehber olabilir.'],
+  ['bebekte başı iyice geriye yatırmak', 'en', 'My 4-month-old baby is not breathing', 'Tilt the head fully back and give two breaths.'],
+  ['', 'tr', 'Annem yığıldı, nefes almıyor', 'Başını iyice geriye yatırıp çenesini kaldırın.'],
+  ['', 'tr', '4 aylık bebeğim nefes almıyor', 'Yetişkinde baş iyice geriye yatırılır, bebekte ise hafifçe.'],
+  ['ani ve çok şiddetli baş ağrısına ağrı kesici', 'tr', 'Birden çok şiddetli bir baş ağrısı başladı', 'Parasetamol alın ve dinlenin.'],
+  ['ani ve çok şiddetli baş ağrısına ağrı kesici', 'en', 'I suddenly got the worst headache of my life', 'Take paracetamol and rest.'],
+  ['', 'tr', 'Yorgunluktan başım ağrıyor', 'Parasetamol alabilirsiniz, bol su için.'],
 ];
 let eDogru = 0;
 for (const [ad, dil, soru, cevap] of EYLEM_ORNEK) {
@@ -445,3 +457,226 @@ for (const [beklenen, kd, a, hd, b, g] of KONUSMA_ORNEK) {
   if ((r.length > 0) === beklenen) kzDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${beklenen ? 'uyar' : 'sessiz'}) | ${a} → ${b}`);
 }
 console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
+
+// ---- 10.11 (§101): okuma kipi sıralaması (modelsiz) — seyrek kök ağır, başlık yarım artı, tutmayan paragraf gelmez ----
+{
+  const E = H.dilBilgi('en');
+  const p = (ad, metin) => ({ ad, bolum: '', metin, yol: ad, kitap: 'k', kaynak: 'kiwix' });
+  const sik = Array.from({ length: 8 }, (_, i) => p(`Care ${i}`, `Clean the wound before cleaning the bandage, step ${i}.`));
+  const OKUMA_ORNEK = [
+    // seyrek kök: "snake" tek paragrafta, "wound" ve "clean" sekizinde → yılan paragrafı birinci
+    ['seyrek kök öne', 'snake wound cleaning', [...sik, p('Animals', 'A snake can hide under rocks.')], (r) => r[0] && r[0][1].ad === 'Animals'],
+    // eşit metin puanında başlıkta geçen kök öne geçer (Cuts listede önce olsa bile)
+    ['başlık artısı', 'burn treatment', [p('Cuts', 'Start the treatment quickly here.'), p('Burns', 'Start the treatment quickly now.')], (r) => r[0] && r[0][1].ad === 'Burns'],
+    // hiç kök tutmayan paragraf gelmez
+    ['tutmayan gelmez', 'snake', [p('Animals', 'A snake.'), p('Kit', 'A bandage roll.')], (r) => r.length === 1],
+    // içerik kelimesi yoksa boş
+    ['kelime yoksa boş', 'how do I', [p('Animals', 'A snake.')], (r) => r.length === 0],
+  ];
+  let okDogru = 0;
+  for (const [ad, soru, ham, iyi] of OKUMA_ORNEK) {
+    const r = H.kelimeSirala(ham, soru, E);
+    if (iyi(r)) okDogru++; else console.log(`  YANLIŞ (okuma): ${ad} → ${r.map(([s, x]) => `${x.ad} ${s.toFixed(2)}`).join(' | ')}`);
+  }
+  console.log(`— okuma dişi: ${okDogru}/${OKUMA_ORNEK.length} —`);
+}
+
+// ---- 12.11 (§109): kişiye göre kaynak — sorunun kişisi, başlığın kişisi, sona itme, kardeş makale; uyarı kutuları ----
+{
+  const K = (...m) => H.soruKisisi(m);
+  const ayni = (s, beklenen) => [...s].sort().join(',') === beklenen;
+  const KISI_ORNEK = [
+    ['annem → yetişkin', K(['Annem mutfakta birden yere yığıldı', 'tr']), 'yetiskin'],
+    ['8 aylık → bebek', K(['8 aylık bebeğim boğuldu', 'tr']), 'bebek'],
+    ['8 aylık hamile → bebek değil', K(['8 aylık hamileyim, başım çok ağrıyor', 'tr']), 'yetiskin'],
+    ['6 yaşında → çocuk', K(['6 yaşındaki oğlum düştü', 'tr']), 'cocuk'],
+    ['iki kişi → karışık', K(['Annem 6 yaşındaki kardeşimi gölden çıkardı', 'tr']), 'cocuk,yetiskin'],
+    ['13 yaş belirsiz', K(['13 yaşındaki oğlum bayıldı', 'tr']), ''],
+    ['"hala" kişi değil', K(['Göbek bağı hala bağlı', 'tr']), ''],
+    ['bebeğin annesi → karışık', K(['Bebeğin annesi bayıldı', 'tr']), 'bebek,yetiskin'],
+    // §111: kendi dilinin sözlüğü varsa çeviri okunmaz (I01: "küçüklerde olduğu gibi" → "as with children")
+    ['sözlüklü dilde çeviri okunmaz', K(['Kızım bayıldı', 'tr'], ['My 4-year-old daughter fainted', 'en']), ''],
+    ['I01: deyimdeki "children" kişi değil', K(['15 yaşındaki yeğenim yığıldı. Küçüklerde olduğu gibi mi bastırayım?', 'tr'], ['My 15-year-old nephew collapsed. Should I press as with children?', 'en']), ''],
+    ['sözlüksüz dilde çeviriden yaş', K(['Moje dcera omdlela', 'cs'], ['My 4-year-old daughter fainted', 'en']), 'cocuk'],
+    ['12–15 yaş + "çocuk" → belirsiz', K(['13 yaşındaki çocuğum bayıldı', 'tr']), ''],
+    ['İngilizce akraba', K(['My grandfather collapsed', 'en']), 'yetiskin'],
+  ];
+  let kDogru = 0;
+  for (const [ad, s, b] of KISI_ORNEK) if (ayni(s, b)) kDogru++; else console.log(`  YANLIŞ (kişi): ${ad} → {${[...s]}} beklenen {${b}}`);
+  const Y = new Set(['yetiskin']), C = new Set(['cocuk']), B = new Set(['bebek']), KAR = new Set(['cocuk', 'yetiskin']);
+  const BASLIK_ORNEK = [
+    ['yetişkine çocuk CPR uymaz', H.kisiUymaz(Y, 'Unresponsive and abnormal breathing (baby and child)'), true],
+    ['bebeğe "baby and child" uyar', H.kisiUymaz(B, 'Unresponsive and abnormal breathing (baby and child)'), false],
+    ['çocuğa yetişkin CPR uymaz', H.kisiUymaz(C, 'Unresponsive and abnormal breathing (adolescent and adult)'), true],
+    ['yetişkine "adolescent and adult" uyar', H.kisiUymaz(Y, 'Unresponsive and abnormal breathing (adolescent and adult)'), false],
+    ['kişisiz başlık hep uyar', H.kisiUymaz(Y, 'Choking'), false],
+    ['"Çocuk felci" kişi değil', H.kisiUymaz(Y, 'Çocuk felci'), false],
+    ['büyük harfli "Infant"', H.kisiUymaz(Y, 'Infant CPR'), true],
+    // karışık kişide hiçbir başlık uymaz sayılmaz (yetişkin başlığı seçildi: kümenin ilk elemanı 'cocuk' — bozma bunu yakalar)
+    ['karışık soruda hiçbir şey uymaz değil', H.kisiUymaz(KAR, 'Unresponsive and abnormal breathing (adolescent and adult)'), false],
+  ];
+  for (const [ad, r, b] of BASLIK_ORNEK) if (r === b) kDogru++; else console.log(`  YANLIŞ (başlık): ${ad} → ${r}`);
+  const p = (ad, bolum = '', metin = ad + ' ' + bolum) => ({ ad, bolum, metin, yol: ad, kitap: 'k', kaynak: 'kiwix' });
+  const cocukCpr = 'Unresponsive and abnormal breathing (baby and child)', yetiskinCpr = 'Unresponsive and abnormal breathing (adolescent and adult)';
+  const sirali = [[0.5, p(cocukCpr, 'a')], [0.45, p('Choking', 'b')], [0.4, p(yetiskinCpr, 'c')]];
+  const SIRA_ORNEK = [
+    ['yetişkinde çocuk makalesi sona', H.kisiSirala(sirali, Y).map((x) => x[1].ad), ['Choking', yetiskinCpr, cocukCpr]],
+    ['karışıkta sıra aynı', H.kisiSirala(sirali, KAR).map((x) => x[1].ad), [cocukCpr, 'Choking', yetiskinCpr]],
+    ['karışıkta yetişkin makalesi de yerinde', H.kisiSirala([...sirali].reverse(), KAR).map((x) => x[1].ad), [yetiskinCpr, 'Choking', cocukCpr]],
+  ];
+  for (const [ad, r, b] of SIRA_ORNEK) if (JSON.stringify(r) === JSON.stringify(b)) kDogru++; else console.log(`  YANLIŞ (sıra): ${ad} → ${r.join(' | ')}`);
+  // uyarı kutuları: en iyi makalenin kutusu (sınır dışı) gelir, başka makalenin kutusu gelmez, en çok AYAR.uyariKutusu
+  const burn = (b, m) => [0.1, p('Burns', b, m)];
+  const havuz = [[0.9, p('Burns', 'First aid steps', 'Cool the burn.')], [0.8, p('Burns', 'Guidelines', 'Cool with water.')],
+    [0.7, p('Burns', 'Introduction', 'Burns hurt.')], [0.6, p('Shock', 'NOTE', 'Lay the person down.')], [0.5, p('Cuts', 'x', 'Clean it.')],
+    [0.4, p('Cuts', 'y', 'Cover it.')], [0.3, p('Fever', 'z', 'Rest.')], [0.2, p('Cuts', 'CAUTION', 'Do not glue.')], burn('NOTE', 'Do not apply ice.'), burn('CAUTION', 'Do not burst blisters.'), burn('Key action', 'Cool it.')];
+  const once = H.AYAR.uyariKutusu;
+  H.AYAR.uyariKutusu = 2;
+  const u2 = H.parcaSec(havuz);
+  H.AYAR.uyariKutusu = 0;
+  const u0 = H.parcaSec(havuz);
+  H.AYAR.uyariKutusu = once;
+  const UYARI_ORNEK = [
+    ['buz uyarısı gelir', u2.some((x) => x.metin === 'Do not apply ice.'), true],
+    ['en çok 2 kutu', u2.filter((x) => x.uyari).length, 2],
+    ['başka makalenin kutusu sınır dışı gelmez', u2.some((x) => x.metin === 'Do not glue.'), false],
+    ['kapalıyken kutu yok', u0.some((x) => x.uyari), false],
+  ];
+  for (const [ad, r, b] of UYARI_ORNEK) if (r === b) kDogru++; else console.log(`  YANLIŞ (uyarı): ${ad} → ${r}`);
+  const toplam = KISI_ORNEK.length + BASLIK_ORNEK.length + SIRA_ORNEK.length + UYARI_ORNEK.length;
+  // kardeş makale (sahte kütüphane): çocuk CPR'ı gelmiş yetişkin sorusuna yetişkin kardeşi eklenir, karışıkta eklenmez
+  (async () => {
+    const gercek = globalThis.fetch, kutuphane = H.AYAR.kutuphane;
+    H.AYAR.kutuphane = 'http://sahte';
+    const yanit = (govde) => ({ ok: true, status: 200, json: async () => govde, text: async () => govde });
+    globalThis.fetch = async (u) => {
+      if (u.includes('/suggest')) return yanit([{ kind: 'path', path: 'Unresponsive_and_abnormal_breathing_baby_and_child' },
+        { kind: 'path', path: 'Unresponsive_and_abnormal_breathing_adolescent_and_adult' }, { kind: 'path', path: 'Unresponsive_and_abnormal_breathing_with_suspected_opioid_overdose' }]);
+      if (u.includes('adolescent_and_adult')) return yanit(`<html><head><title>${yetiskinCpr}</title></head><body><h2>Key action</h2><p>Immediately start chest compressions.</p></body></html>`);
+      return yanit('<html><head><title>x</title></head><body><p>x</p></body></html>');
+    };
+    let dogru = 0;
+    try {
+      const ham = [{ ...p(cocukCpr, 'First aid steps', 'Give rescue breaths.'), yol: 'Unresponsive_and_abnormal_breathing_baby_and_child' }];
+      const ekY = await H.kardesMakaleler(ham, Y), ekK = await H.kardesMakaleler(ham, KAR), ekB = await H.kardesMakaleler(ham, B);
+      const ekDip = await H.kardesMakaleler([], Y, ham);   // yanlış makale sıranın başında değil (havuzun dibinde)
+      const KARDES_ORNEK = [
+        ['yetişkine yetişkin kardeşi eklenir', ekY.length > 0 && ekY.every((x) => x.ad === yetiskinCpr), true],
+        ['karışıkta kardeş yok', ekK.length, 0],
+        ['uyan makalede kardeş aranmaz', ekB.length, 0],
+        ['dipteki yanlış makale için kardeş aranmaz', ekDip.length, 0],
+      ];
+      for (const [ad, r, b] of KARDES_ORNEK) if (r === b) dogru++; else console.log(`  YANLIŞ (kardeş): ${ad} → ${JSON.stringify(r)}`);
+      console.log(`— kişi dişi: ${kDogru + dogru}/${toplam + KARDES_ORNEK.length} —`);
+    } finally {
+      globalThis.fetch = gercek;
+      H.AYAR.kutuphane = kutuphane;
+    }
+  })().catch((e) => console.log(`— kişi dişi: 0/1 (${e.message}) —`));
+}
+
+// ---- 12.11 (8i-5): yol sorusu — haritayı önerir; ilk yardım sorusu ("hastaneye nasıl götürürüm") yol sorusu değildir ----
+{
+  const YOL_ORNEK = [
+    ['En yakın hastane nerede?', 'tr', { tur: 'hastane' }],
+    ['Hastaneye nasıl giderim?', 'tr', { tur: 'hastane' }],
+    ['Kanayan kolu olan çocuğu hastaneye nasıl götürürüm?', 'tr', null],
+    ["Samandağ'a nasıl giderim?", 'tr', { nereye: 'Samandağ' }],
+    ['Ankara’ya nasıl gidilir', 'tr', { nereye: 'Ankara' }],
+    ['En yakın toplanma alanı neresi', 'tr', { tur: 'toplanma' }],
+    ['Ağrı nerede başlıyor?', 'tr', null],
+    ['Yılan sokan yer nerede şişer?', 'tr', null],
+    ['Su kaç dakika kaynatılır?', 'tr', null],
+    ['İçme suyu nerede bulurum', 'tr', { tur: 'su' }],
+    ['Where is the nearest pharmacy?', 'en', { tur: 'eczane' }],
+    ['How do I get to Antakya?', 'en', { nereye: 'Antakya' }],
+    ['How do I treat a burn?', 'en', null],
+    ['Kde je nejbližší nemocnice?', 'cs', null],   // Çekçe kalıp yok: öneri yok (yanlış öneriden iyidir)
+  ];
+  let yDogru = 0;
+  for (const [q, d, b] of YOL_ORNEK) {
+    const r = H.yolSorusu(q, d);
+    if (JSON.stringify(r) === JSON.stringify(b)) yDogru++; else console.log(`  YANLIŞ (yol): ${q} → ${JSON.stringify(r)} (beklenen ${JSON.stringify(b)})`);
+  }
+  console.log(`— yol sorusu dişi: ${yDogru}/${YOL_ORNEK.length} —`);
+}
+
+// ---- 13.11 (§114): karşıt ortam bekçisi — sıcak ortam sorusuna yalnız soğuk bölümü (ya da tersi) atıflı cevap durur ----
+{
+  const b = (...ad) => ad.map((makale) => ({ makale }));
+  const ORTAM_ORNEK = [
+    ['J02: sıcakta bitkin, hipotermi', 'Öğle sıcağında yük boşaltırken gönüllü bitkin düştü, derisi soğuk ve nemli', 'tr', b('Hypothermia'), true],
+    ['karda titreyen, hipotermi: doğru', 'Karda mahsur kaldık, eşim titriyor', 'tr', b('Hypothermia'), false],
+    ['karda titreyen, sıcak çarpması', 'Karda mahsur kaldık, eşim titriyor', 'tr', b('Hyperthermia'), true],
+    ['sıcakta, sıcak çarpması: doğru', 'Güneşte çalışan babam yığıldı', 'tr', b('Hyperthermia'), false],
+    ['iki ortam birden: denetlenmez', 'Güneşli ama karlı dağda arkadaşım üşüyor', 'tr', b('Hypothermia'), false],
+    ['karışık atıf: denetlenmez', 'Öğle sıcağında bitkin düştü', 'tr', b('Hypothermia', 'Hyperthermia'), false],
+    ['sıcak su yanığı, yanık bölümü', 'Sıcak su döküldü, eli yandı', 'tr', b('Burns'), false],
+    ['İngilizce', 'He collapsed while working in the heat', 'en', b('Frostbite'), true],
+    ['sözlüksüz dil', 'Zkolaboval v horku', 'cs', b('Hypothermia'), false],
+  ];
+  let oDogru = 0;
+  for (const [ad, soru, dil, bol, beklenen] of ORTAM_ORNEK) {
+    const r = H.ortamDenetle(soru, dil, bol);
+    if ((r.length > 0) === beklenen) oDogru++; else console.log(`  YANLIŞ (ortam): ${ad} → ${JSON.stringify(r)}`);
+  }
+  console.log(`— ortam dişi: ${oDogru}/${ORTAM_ORNEK.length} —`);
+}
+
+// ---- 13.11 (§115): eylem bekçisi — saplanan cisim (J11, hafif kardeş): çıkarılmaz, üstüne değil çevresine bastırılır ----
+{
+  const S = 'Kardeşimin koluna büyük bir cam parçası saplandı, kan sızıyor';
+  const SAPLANAN_ORNEK = [
+    ['J11: yara üzerine baskı', S, 'Kanamayı durdurmak için yara üzerine baskı uygulayın [1].', 'tr', true],
+    ['camı çekip çıkarın', S, 'Camı dikkatlice çekip çıkarın ve yarayı bastırın.', 'tr', true],
+    ['çevresine bastır: doğru', S, 'Camın çevresine bastırarak kanamayı durdurun.', 'tr', false],
+    ['çıkarmayın: doğru', S, 'Camı çıkarmayın, yerinde sabitleyin.', 'tr', false],
+    ['sıradan kanamada yara üzerine baskı: doğru', 'Bacağı derin kesildi, kan durmuyor', 'Yara üzerine doğrudan baskı uygulayın.', 'tr', false],
+    ['İngilizce', 'A piece of glass is embedded in his arm', 'Press firmly on the wound to stop the bleeding.', 'en', true],
+    ['İngilizce doğru', 'A piece of glass is embedded in his arm', 'Apply pressure around the object; do not remove it.', 'en', false],
+  ];
+  let sDogru = 0;
+  for (const [ad, soru, cevap, dil, beklenen] of SAPLANAN_ORNEK) {
+    const r = H.eylemDenetle(soru, cevap, dil).filter((x) => x.includes('saplanan'));
+    if ((r.length > 0) === beklenen) sDogru++; else console.log(`  YANLIŞ (saplanan): ${ad} → ${JSON.stringify(r)}`);
+  }
+  console.log(`— saplanan dişi: ${sDogru}/${SAPLANAN_ORNEK.length} —`);
+}
+
+// ---- 13.11 (§116): eylem bekçisi — ani ve çok şiddetli baş ağrısına ağrı kesici (J20) ----
+{
+  const BAS_ORNEK = [
+    ['J20', 'Ağır bloğu sırtladığım an başımın arkasında sanki bir şey patladı, hayatımda yaşamadığım bir ağrı', 'Kişinin önerilen dozda bir ağrı kesici (örneğin parasetamol) almasına yardımcı olun.', 'tr', true],
+    ['birden şiddetli baş ağrısı + parasetamol', 'Birden çok şiddetli bir baş ağrısı başladı', 'Parasetamol alın ve dinlenin.', 'tr', true],
+    ['acil yardım: doğru', 'Birden çok şiddetli bir baş ağrısı başladı', 'Hemen acil yardımı arayın, işi bırakıp dinlenin.', 'tr', false],
+    ['sıradan baş ağrısı + parasetamol: serbest', 'Yorgunluktan başım ağrıyor', 'Parasetamol alabilirsiniz, bol su için.', 'tr', false],
+    ['İngilizce', 'I suddenly got the worst headache of my life', 'Take paracetamol and rest.', 'en', true],
+  ];
+  let bDogru = 0;
+  for (const [ad, soru, cevap, dil, beklenen] of BAS_ORNEK) {
+    const r = H.eylemDenetle(soru, cevap, dil).filter((x) => x.includes('baş ağrısına'));
+    if ((r.length > 0) === beklenen) bDogru++; else console.log(`  YANLIŞ (baş ağrısı): ${ad} → ${JSON.stringify(r)}`);
+  }
+  console.log(`— baş ağrısı dişi: ${bDogru}/${BAS_ORNEK.length} —`);
+}
+
+// ---- 13.11 (§116): son düzenin hafif kardeş cevaplarından — saplanan cisimde çevresiz baskı, bebekte baş, "etkili olabilir" ----
+{
+  const E = [
+    ['J11 son: kanamaya baskı', 'Koluna cam parçası saplandı, kan sızıyor', 'Yarayı durdurmak için kanamaya baskı uygulayın [1].', 'tr', 'saplanan', true],
+    ['çevresine baskı: doğru', 'Koluna cam parçası saplandı, kan sızıyor', 'Camın etrafına bez koyup çevresine baskı uygulayın.', 'tr', 'saplanan', false],
+    ['J23: bebekte baş iyice geriye', '4 aylık bebeğim nefes almıyor', 'Yetişkinlerde başı iyice geriye yatırıp ağızdan nefes vermek bu durum için bir rehber olabilir.', 'tr', 'bebekte başı', true],
+    ['bebekte hafifçe: doğru', '4 aylık bebeğim nefes almıyor', 'Bebeğin başını hafifçe nötr pozisyona getirip çenesini kaldırın.', 'tr', 'bebekte başı', false],
+    ['bebekte iyice yatırmayın: doğru', '4 aylık bebeğim nefes almıyor', 'Bebekte baş iyice geriye yatırılmaz.', 'tr', 'bebekte başı', false],
+    ['yetişkinde baş geriye: serbest', 'Annem yığıldı, nefes almıyor', 'Başını iyice geriye yatırıp çenesini kaldırın.', 'tr', 'bebekte başı', false],
+    ['ayırt eden cevap: serbest', '4 aylık bebeğim nefes almıyor', 'Yetişkinde baş iyice geriye yatırılır, bebekte ise hafifçe.', 'tr', 'bebekte başı', false],
+    ['"alt grupları" fiil değil', 'Bloğu sırtladığım an başımın arkasında bir şey patladı', 'Parasetamolün bazı alt grupları için bilgi var.', 'tr', 'baş ağrısına', false],
+    ['J20 hafif: parasetamol etkili olabilir', 'Bloğu sırtladığım an başımın arkasında bir şey patladı', 'Akut bel ağrılarında parasetamolün bazı alt grupları rahatlatmada etkili olabileceği belirtilmiştir.', 'tr', 'baş ağrısına', true],
+  ];
+  let d = 0;
+  for (const [ad, soru, cevap, dil, kural, beklenen] of E) {
+    const r = H.eylemDenetle(soru, cevap, dil).filter((x) => x.includes(kural));
+    if ((r.length > 0) === beklenen) d++; else console.log(`  YANLIŞ (§116): ${ad} → ${JSON.stringify(r)}`);
+  }
+  console.log(`— §116 kural dişi: ${d}/${E.length} —`);
+}

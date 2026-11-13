@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.6 (09.11.2026, çevrim dışı harita)"
+const surum = "1.11 (13.11.2026, dönüş yasakları)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string
@@ -151,6 +151,7 @@ func main() {
 	mux.HandleFunc("/api/baglanti-dosya", apiBaglantiDosya) // bağlantıdan PDF, metin, resim: sayfanın dosya formuna gelir
 	mux.HandleFunc("/api/yanlis", apiYanlis)                // "bu cevap yanlış" kayıtları (Ö18, 07.11): bellekte kalır
 	mux.HandleFunc("/api/ayar", apiAyar)                    // açılış dili (07.11 gece): bellekte, bilgisayardan bağımsız
+	mux.HandleFunc("/api/kip", apiKip)                      // okuma kipi (10.11): başlatıcılar okur, büyük model açılmaz
 	mux.HandleFunc("/api/modeller", apiModeller)            // ilk kurulum (08.11): eksik modelleri indirir ve açar
 	// 09.11: çevrim dışı harita (8i): görüntü dosyası, rota ve yer arama
 	mux.Handle("/harita/", http.StripPrefix("/harita/", dosyaSun(haritaDir(), false)))
@@ -162,6 +163,7 @@ func main() {
 	mux.HandleFunc("/api/harita-ek-geo", apiHaritaEkGeo)
 	mux.HandleFunc("/api/harita-ek-bag", apiHaritaEkBag)     // bağlantıdan liste (09.11)
 	mux.HandleFunc("/api/harita-ek-nokta", apiHaritaEkNokta) // "benim noktam"
+	mux.HandleFunc("/api/kapali", apiKapali)                 // kullanıcının kapattığı yollar (8f2)
 	mux.HandleFunc("/api/harita-katalog", apiHaritaKatalog)  // bölge haritası indirme (09.11, §78)
 	mux.HandleFunc("/api/harita-indir", apiHaritaIndir)
 	mux.HandleFunc("/api/harita-indir-dur", apiHaritaIndirDur)
@@ -390,6 +392,7 @@ func apiDurum(w http.ResponseWriter, r *http.Request) {
 	}
 	cevap["disKaynak"] = disKaynakOku()        // Kiwix dışı kitaplar: dosya → {adres, imzali}
 	cevap["modelEksik"] = len(eksikModeller()) // ilk kurulum (08.11): sayfa kurulum kartını gösterir
+	cevap["bellek"] = toplamBellek()           // 10.11: bilgisayarın belleği (bayt, bilinmiyorsa 0) — azsa okuma kipi önerilir
 	jsonYaz(w, 200, cevap)
 }
 

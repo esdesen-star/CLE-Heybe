@@ -22,11 +22,12 @@ import (
 )
 
 const (
-	rotaSihir    = "HEYBEROTA1\n"
-	bitYaya      = 1
-	bitAracIleri = 2
-	bitAracGeri  = 4
-	hucreOlcek   = 100 // ızgara hücresi 0,01 derece (~1 km)
+	rotaSihir     = "HEYBEROTA2\n" // 13.11: 2. sürüm dönüş yasaklarını da taşır
+	rotaSihirEski = "HEYBEROTA1\n" // yasaksız eski dosyalar okunmaya devam eder
+	bitYaya       = 1
+	bitAracIleri  = 2
+	bitAracGeri   = 4
+	hucreOlcek    = 100 // ızgara hücresi 0,01 derece (~1 km)
 )
 
 // yolSinifi: highway değeri → sınıf kodu, araç için varsayılan hız (km/s), yaya/araç izni.
@@ -208,6 +209,10 @@ func yerTuru(e map[string]string) string {
 	if e["railway"] == "station" {
 		return "istasyon"
 	}
+	// 12.11 (rota sınavı R23): afette yardım havalimanından gelir; dizinde yoktu ("Hatay Havalimanı" bulunmuyordu)
+	if e["aeroway"] == "aerodrome" {
+		return "havalimani"
+	}
 	switch e["place"] {
 	case "city":
 		return "sehir"
@@ -215,6 +220,8 @@ func yerTuru(e map[string]string) string {
 		return "kasaba"
 	case "village":
 		return "koy"
+	case "square": // 12.11 (rota sınavı R25): "Taksim Meydanı" dizinde yoktu
+		return "meydan"
 	case "suburb", "quarter":
 		return "semt"
 	case "neighbourhood":
@@ -309,6 +316,7 @@ type hazirlikOzet struct {
 	Parca      int     `json:"parca"`
 	GeoNokta   int     `json:"geoNokta"`
 	Yer        int     `json:"yer"`
+	Kisit      int     `json:"kisit,omitempty"` // 13.11: dönüş yasağı kaydı (gelinen parça → gidilen parça, kavşakta)
 	Sure       float64 `json:"sureSn"`
 	EnKucukLat float64 `json:"guney"`
 	EnKucukLon float64 `json:"bati"`
@@ -360,11 +368,62 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 			return nil, errors.New("kutuda hiç düğüm yok")
 		}
 	}
+	// İlişki geçişi (12.11, rota sınavı A22 — Özet §107): ilişki (relation) olarak çizilmiş yerler: büyük havalimanı,
+	// kampüs, meydan. Konumu ilk üyesinden: üye düğümse o düğüm, yolsa yolun ilk düğümü (1. geçişte bulunur);
+	// koordinatı 2. geçişte gelir. Önce okuyucu ilişkileri hiç okumuyordu ("Diyarbakır Havalimanı" dizinde yoktu).
+	type iliskiYer struct {
+		kayit yerKaydi
+		dugum int64
+	}
+	var iliskiYerler []iliskiYer
+	uyeYol := map[int64][]int{} // üye yolun kimliği → iliskiYerler sıraları
+	var kisitlar []osmKisit     // 13.11: dönüş yasakları (araç)
+	{
+		fi, err := os.Open(pbfYolu)
+		if err != nil {
+			return nil, err
+		}
+		gi := &pbfGezgin{Iliski: func(r *osmIliski) {
+			if k, ok := kisitOku(r); ok {
+				kisitlar = append(kisitlar, k)
+				return
+			}
+			t := yerTuru(r.Etiket)
+			if t == "" {
+				return
+			}
+			ad, ek := yerAdi(r.Etiket)
+			if ad == "" {
+				return
+			}
+			for i, tur := range r.UyeTur {
+				if i >= len(r.UyeRef) {
+					return
+				}
+				switch tur {
+				case 0:
+					iliskiYerler = append(iliskiYerler, iliskiYer{yerKaydi{tur: t, ad: ad, ek: ek}, r.UyeRef[i]})
+					return
+				case 1:
+					uyeYol[r.UyeRef[i]] = append(uyeYol[r.UyeRef[i]], len(iliskiYerler))
+					iliskiYerler = append(iliskiYerler, iliskiYer{kayit: yerKaydi{tur: t, ad: ad, ek: ek}})
+					return
+				}
+			}
+		}}
+		err = gi.Gez(fi)
+		fi.Close()
+		if err != nil {
+			return nil, fmt.Errorf("ilişki geçişi: %w", err)
+		}
+		gunluk(fmt.Sprintf("ilişki geçişi: %d ilişki biçimli yer, %d dönüş yasağı (%.0f sn)", len(iliskiYerler), len(kisitlar), time.Since(bas).Seconds()))
+	}
 	// 1. geçiş: yollar ve alan biçimli yerler (hastane binası gibi)
 	var refs []int64
 	var yolOff []uint32
 	var yolBayrak, yolHiz, yolSinif []uint8
 	var yolAd []uint32
+	var yolID []int64 // OSM yol kimliği (dönüş yasakları yolu kimliğiyle anar)
 	adlar := []string{""}
 	adNo := map[string]uint32{"": 0}
 	var yerler []yerKaydi
@@ -380,6 +439,11 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 		return nil, err
 	}
 	g := &pbfGezgin{Yol: func(y *osmYol) {
+		if ii, var_ := uyeYol[y.ID]; var_ && len(y.Refs) > 0 { // ilişki biçimli yerin üye yolu: konumu ilk düğümü
+			for _, i := range ii {
+				iliskiYerler[i].dugum = y.Refs[0]
+			}
+		}
 		if len(y.Refs) < 2 {
 			return
 		}
@@ -399,6 +463,7 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 			yolOff = append(yolOff, uint32(len(refs)))
 			refs = append(refs, y.Refs...)
 			yolBayrak = append(yolBayrak, b)
+			yolID = append(yolID, y.ID)
 			yolHiz = append(yolHiz, s.hiz)
 			yolSinif = append(yolSinif, s.kod)
 			ad := y.Etiket["name"]
@@ -429,6 +494,14 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 		return nil, fmt.Errorf("1. geçiş: %w", err)
 	}
 	f.Close()
+	for _, iy := range iliskiYerler { // ilişki biçimli yerler alan biçimlilerin yanına (kutuda değilse alınmaz)
+		if iy.dugum == 0 || (kutu != nil && !icMi(iy.dugum)) {
+			continue
+		}
+		yerRef = append(yerRef, iy.dugum)
+		yerRefNo = append(yerRefNo, len(yerler))
+		yerler = append(yerler, iy.kayit)
+	}
 	yolOff = append(yolOff, uint32(len(refs)))
 	gunluk(fmt.Sprintf("1. geçiş: %d yol, %d düğüm başvurusu, %d alan biçimli yer, %d sokak adı (%.0f sn)", len(yolBayrak), len(refs), len(yerRef), len(sokaklar), time.Since(bas).Seconds()))
 	if len(yolBayrak) == 0 {
@@ -580,6 +653,7 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 	var sUz []float32
 	var sBayrak, sHiz, sSinif []uint8
 	var sAd []uint32
+	var sYol []uint32 // parçanın yolu (yolID sırası); dosyaya yazılmaz
 	var gOff []uint32
 	var gLat, gLon []int32
 	for w := 0; w+1 < len(yolOff); w++ {
@@ -610,6 +684,7 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 						sHiz = append(sHiz, yolHiz[w])
 						sSinif = append(sSinif, yolSinif[w])
 						sAd = append(sAd, yolAd[w])
+						sYol = append(sYol, uint32(w))
 						gOff = append(gOff, uint32(araBas))
 					} else {
 						gLat, gLon = gLat[:araBas], gLon[:araBas]
@@ -645,7 +720,20 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 		komsu[dol[sB[i]]] = uint32(i)<<1 | 1
 		dol[sB[i]]++
 	}
-	gunluk(fmt.Sprintf("ağ: %d köşe, %d parça, %d ara nokta (%.0f sn)", V, S, len(gLat), time.Since(bas).Seconds()))
+	yanNokta := func(s, v uint32) (int32, int32) { // s parçasının v köşesine bitişik noktası (dönüş açısı için)
+		if sA[s] == v {
+			if gOff[s] < gOff[s+1] {
+				return gLat[gOff[s]], gLon[gOff[s]]
+			}
+			return vLat[sB[s]], vLon[sB[s]]
+		}
+		if gOff[s] < gOff[s+1] {
+			return gLat[gOff[s+1]-1], gLon[gOff[s+1]-1]
+		}
+		return vLat[sA[s]], vLon[sA[s]]
+	}
+	kVia, kGelen, kGiden, kTur, kAtlanan := kisitParcala(kisitlar, bul, koseNo, derece, komsu, sYol, yolID, vLat, vLon, yanNokta)
+	gunluk(fmt.Sprintf("ağ: %d köşe, %d parça, %d ara nokta, %d dönüş yasağı kaydı, %d belirsiz yasak alınmadı (%.0f sn)", V, S, len(gLat), len(kVia), kAtlanan, time.Since(bas).Seconds()))
 
 	// Yer bağlamı: en yakın şehir/kasaba ve semt/mahalle/köy.
 	for _, s := range sokaklar {
@@ -657,13 +745,13 @@ func haritaHazirla(pbfYolu, ciktiOnEk, veriTarihi string, gunluk func(string), k
 	}
 	yerler = yerBaglamVer(yerler)
 
-	ozet := &hazirlikOzet{Surum: 1, Kaynak: "OpenStreetMap (" + pbfYolu[strings.LastIndex(pbfYolu, "/")+1:] + ")",
+	ozet := &hazirlikOzet{Surum: 2, Kisit: len(kVia), Kaynak: "OpenStreetMap (" + pbfYolu[strings.LastIndex(pbfYolu, "/")+1:] + ")",
 		Lisans: "© OpenStreetMap katkıcıları — ODbL", Hazirlandi: time.Now().Format("2006-01-02"), VeriTarihi: veriTarihi,
 		Dugum: V, Parca: S, GeoNokta: len(gLat), Yer: len(yerler),
 		EnKucukLat: float64(mLat) / 1e7, EnKucukLon: float64(mLon) / 1e7, EnBuyukLat: float64(xLat) / 1e7, EnBuyukLon: float64(xLon) / 1e7}
 
 	// .rota yaz
-	if err := rotaYaz(ciktiOnEk+".rota", ozet, vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, adlar, gOff, gLat, gLon); err != nil {
+	if err := rotaYaz(ciktiOnEk+".rota", ozet, vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, adlar, gOff, kVia, kGelen, kGiden, kTur, gLat, gLon); err != nil {
 		return nil, err
 	}
 	if err := yerYaz(ciktiOnEk+".yer", yerler); err != nil {
@@ -771,7 +859,9 @@ func yerYaz(yol string, yerler []yerKaydi) error {
 }
 
 // rotaYaz: başlık JSON + diziler (küçük-sonlu). Ara noktalar en sonda: sorguda yalnız rota parçaları okunur.
-func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int64, hucreBas, derece, komsu, sA, sB []uint32, sUz []float32, sBayrak, sHiz, sSinif []uint8, sAd []uint32, adlar []string, gOff []uint32, gLat, gLon []int32) error {
+// 13.11 (2. sürüm): sayılara dönüş yasağı sayısı (R) eklenir; yasaklar ara noktalardan hemen önce (kavşak, gelen parça,
+// giden parça, tür: 0 "no_", 1 "only_").
+func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int64, hucreBas, derece, komsu, sA, sB []uint32, sUz []float32, sBayrak, sHiz, sSinif []uint8, sAd []uint32, adlar []string, gOff, kVia, kGelen, kGiden []uint32, kTur []uint8, gLat, gLon []int32) error {
 	f, err := os.Create(yol + ".part")
 	if err != nil {
 		return err
@@ -782,9 +872,9 @@ func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int6
 	binary.Write(w, binary.LittleEndian, uint32(len(bj)))
 	w.Write(bj)
 	adBlob := strings.Join(adlar, "\x00")
-	sayilar := []uint64{uint64(len(vLat)), uint64(len(hucreler)), uint64(len(komsu)), uint64(len(sA)), uint64(len(adBlob)), uint64(len(gLat))}
+	sayilar := []uint64{uint64(len(vLat)), uint64(len(hucreler)), uint64(len(komsu)), uint64(len(sA)), uint64(len(adBlob)), uint64(len(gLat)), uint64(len(kVia))}
 	binary.Write(w, binary.LittleEndian, sayilar)
-	for _, d := range []any{vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, []byte(adBlob), gOff, gLat, gLon} {
+	for _, d := range []any{vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, []byte(adBlob), gOff, kVia, kGelen, kGiden, kTur, gLat, gLon} {
 		if err := binary.Write(w, binary.LittleEndian, d); err != nil {
 			f.Close()
 			return err
@@ -798,4 +888,159 @@ func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int6
 		return err
 	}
 	return os.Rename(yol+".part", yol)
+}
+
+// ---- dönüş yasakları (13.11.2026, Planlama 8i-4) ----
+// OSM "restriction" ilişkisi: "from" yolundan "via" düğümüne gelen araç "to" yoluna dönemez (no_…) ya da yalnız oraya
+// dönebilir (only_…). Türkiye'de 9.341 yasağın 8.105'i düğüm üzerinden; yol üzerinden olanlar (1.172) şimdilik alınmaz.
+// "except" araç içeriyorsa, "restriction:hgv" gibi yalnız başka araca olanlar ve koşullu olanlar alınmaz. Yaya etkilenmez.
+type osmKisit struct {
+	gelen, via, giden int64
+	yalniz            bool
+	yon               string // "left" · "right" · "straight" · "u" (değerin sonundan: no_left_turn → left)
+}
+
+func kisitOku(r *osmIliski) (osmKisit, bool) {
+	if r.Etiket["type"] != "restriction" {
+		return osmKisit{}, false
+	}
+	v := r.Etiket["restriction"]
+	if v == "" {
+		v = r.Etiket["restriction:motorcar"]
+	}
+	if ex := r.Etiket["except"]; strings.Contains(ex, "motorcar") || strings.Contains(ex, "motor_vehicle") {
+		return osmKisit{}, false
+	}
+	k := osmKisit{yalniz: strings.HasPrefix(v, "only_")}
+	switch {
+	case strings.HasSuffix(v, "left_turn"):
+		k.yon = "left"
+	case strings.HasSuffix(v, "right_turn"):
+		k.yon = "right"
+	case strings.HasSuffix(v, "straight_on"):
+		k.yon = "straight"
+	case strings.HasSuffix(v, "u_turn"):
+		k.yon = "u"
+	}
+	if !k.yalniz && !strings.HasPrefix(v, "no_") {
+		return osmKisit{}, false
+	}
+	nf, nv, nt := 0, 0, 0
+	for i, rol := range r.UyeRol {
+		if i >= len(r.UyeTur) || i >= len(r.UyeRef) {
+			return osmKisit{}, false
+		}
+		switch rol {
+		case "from":
+			if r.UyeTur[i] != 1 {
+				return osmKisit{}, false
+			}
+			k.gelen, nf = r.UyeRef[i], nf+1
+		case "via":
+			if r.UyeTur[i] != 0 { // yol üzerinden yasak: şimdilik yok
+				return osmKisit{}, false
+			}
+			k.via, nv = r.UyeRef[i], nv+1
+		case "to":
+			if r.UyeTur[i] != 1 {
+				return osmKisit{}, false
+			}
+			k.giden, nt = r.UyeRef[i], nt+1
+		}
+	}
+	return k, nf == 1 && nv == 1 && nt == 1
+}
+
+// kisitParcala: yol kimlikli yasaklar → kavşak köşesi ve parçalar. Gelen ve giden yol aynıysa (dönüş yasağı "no_u_turn"
+// ya da "only_straight_on" aynı yol boyunca): no_ yalnız aynı parçaya geri dönüşü, only_ yalnız öbür parçayı kapsar.
+// 13.11 (40 gerçek yasakla ölçüm): OSM'de "to" yolu çoğu zaman kavşaktan GEÇER; iki yanını birden yasaklamak aracı
+// sıkıştırdı (15453383: rota yok, OSRM 60 m). Giden yol kavşaktan geçiyorsa yan dönüş açısıyla seçilir (sol, sağ, düz);
+// tek yan seçilemezse ya da gelen yol kavşaktan geçiyorsa yasak hiç alınmaz (yanlış yeri kapatmak, kapatmamaktan kötü).
+func kisitParcala(kisitlar []osmKisit, bul func(int64) int, koseNo []int32, derece, komsu, sYol []uint32, yolID []int64, vLat, vLon []int32, yanNokta func(s, v uint32) (int32, int32)) (kVia, kGelen, kGiden []uint32, kTur []uint8, atlanan int) {
+	gor := map[[3]uint32]bool{}
+	for _, k := range kisitlar {
+		i := bul(k.via)
+		if i < 0 || koseNo[i] < 0 {
+			continue
+		}
+		v := uint32(koseNo[i])
+		var gelen, giden []uint32
+		for e := derece[v]; e < derece[v+1]; e++ {
+			s := komsu[e] >> 1
+			if yolID[sYol[s]] == k.gelen {
+				gelen = append(gelen, s)
+			}
+			if yolID[sYol[s]] == k.giden {
+				giden = append(giden, s)
+			}
+		}
+		if len(gelen) == 0 || len(giden) == 0 {
+			continue
+		}
+		if k.gelen != k.giden {
+			if len(gelen) > 1 {
+				atlanan++
+				continue
+			}
+			if len(giden) > 1 {
+				var secilen []uint32
+				for _, b := range giden {
+					if donusYonuKisit(vLat, vLon, v, gelen[0], b, yanNokta) == k.yon {
+						secilen = append(secilen, b)
+					}
+				}
+				if len(secilen) != 1 {
+					atlanan++
+					continue
+				}
+				giden = secilen
+			}
+		}
+		tur := uint8(0)
+		if k.yalniz {
+			tur = 1
+		}
+		for _, a := range gelen {
+			for _, b := range giden {
+				if k.gelen == k.giden && (a == b) == k.yalniz { // aynı yol: bkz. yukarı
+					continue
+				}
+				anahtar := [3]uint32{v, a, b}
+				if gor[anahtar] {
+					continue
+				}
+				gor[anahtar] = true
+				kVia, kGelen, kGiden, kTur = append(kVia, v), append(kGelen, a), append(kGiden, b), append(kTur, tur)
+			}
+		}
+	}
+	return
+}
+
+// donusYonuKisit: a parçasından v köşesine gelip b parçasına giden aracın dönüşü: "left" · "right" · "straight" · "u"
+// (yön açısı farkı: |f| ≤ 35° düz, 35–160° sağ/sol, ≥ 160° geri dönüş). Pusula açısı saat yönünde arttığı için sağa
+// dönüşte fark artıdır.
+func donusYonuKisit(vLat, vLon []int32, v, a, b uint32, yanNokta func(s, v uint32) (int32, int32)) string {
+	aci := func(la1, lo1, la2, lo2 int32) float64 {
+		y := float64(lo2-lo1) * math.Cos(float64(la1)/1e7*math.Pi/180)
+		return math.Atan2(y, float64(la2-la1)) * 180 / math.Pi
+	}
+	pla, plo := yanNokta(a, v)
+	nla, nlo := yanNokta(b, v)
+	f := aci(vLat[v], vLon[v], nla, nlo) - aci(pla, plo, vLat[v], vLon[v])
+	for f > 180 {
+		f -= 360
+	}
+	for f <= -180 {
+		f += 360
+	}
+	switch {
+	case math.Abs(f) <= 35:
+		return "straight"
+	case math.Abs(f) >= 160:
+		return "u"
+	case f > 0:
+		return "right"
+	}
+	return "left"
 }

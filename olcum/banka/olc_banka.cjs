@@ -15,6 +15,8 @@ H.AYAR.cevirmen = process.env.KOPRU === '0' ? '' : (process.env.CEVIRMEN || 'htt
 if (process.env.ZAYIF === '0') H.AYAR.zayifHavuz = {};
 // §86: KUCUK=5000 küçük kitap araması · SORGU=ikisi (varsayılanlar kapalı — ölçüm için)
 if (process.env.KUCUK && H.AYAR.kucukKitap) H.AYAR.kucukKitap.sinir = +process.env.KUCUK;
+// §109: UYARI=2 en iyi makalenin uyarı kutuları (Key action · NOTE · CAUTION) makale sınırı dışında
+if (process.env.UYARI) H.AYAR.uyariKutusu = +process.env.UYARI;
 const SORGU = process.env.SORGU || '';   // §47 karşılaştırma: zayıf havuz eşiği kapalı
 // §58 kardeş modeller: KALIP=sablon (Gemma 3 dışı model kendi şablonuyla) · TEKMODEL=1 (çevirmen yok, köprüde soruyu
 // ve cevabı sohbet modeli çevirir — hafif kardeşin tek model düzeni)

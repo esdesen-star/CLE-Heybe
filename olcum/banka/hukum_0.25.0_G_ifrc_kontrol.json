@@ -1,0 +1,7 @@
+{
+  "G01": ["kısmen", "bası + acil yardım + yatırma doğru; kopan parmaklar sorusu cevaplanmadı (Amputation bölümü gelmedi), tehlikeli öneri yok"],
+  "G02": ["kısmen", "krup tanındı, rahat pozisyon, sakin kal; nemli hava ve ne zaman yardım çağrılacağı eksik"],
+  "G09": ["kısmen", "şok belirtileri + acil yardım doğru; yatırma ve sıcak tutma eksik"],
+  "G11": ["doğru", "çok yaralı: önce acil yardıma kritik durum bildir, sonra yeniden ara; güvenlik; solunum-dolaşım önceliği"],
+  "G15": ["doğru", "HACE: hızla ve güvenle alçalmak iki kez söylendi; ilaç dozu uydurmadı (reçete etiketine göre); 'düzelmezse EMS' biraz geç"]
+}

@@ -52,10 +52,16 @@ if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$KOK/model/gemma3-
   ANLAM=$!
   hazir_bekle http://127.0.0.1:8081 "$ANLAM" anlam
 
-  "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
-    -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
-  SOHBET=$!
-  hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+  # Okuma kipi (10.11, Özet §106): kullanıcı seçtiyse büyük sohbet modeli açılmaz — bellek ve pil kalır.
+  # Küçük anlam modeli açık kalır; sayfa soruya kitaplardaki bölümleri gösterir, cevap yazmaz.
+  if [ "$(curl -s http://127.0.0.1:8888/api/kip)" = "okuma" ]; then
+    echo "Okuma kipi seçili: büyük yapay zekâ açılmadı. Değiştirmek için: Kitaplık ve ayarlar → Okuma kipi."
+  else
+    "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
+      -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
+    SOHBET=$!
+    hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet
+  fi
 else
   echo "Modeller henüz kurulmadı. Sayfada: Kitaplık ve ayarlar → İlk kurulum (internet bir kez gerekir)."
 fi

@@ -41,9 +41,23 @@ type rotaAg struct {
 
 	mu      sync.Mutex
 	maliyet []float32
-	onceki  []uint32
-	nesil   []uint32
-	n       uint32
+	// kapalı yollar (harita_kapali.go): parça biti; nil ise kapalı yol yok. mu ile korunur.
+	kapaliBit  []uint64
+	kapaliSayi int
+
+	// dönüş yasakları (13.11, 2. sürüm dosya): yasaklı kavşağa yasak "gelen" parçadan varılınca araç ayrı bir DURUMA girer
+	// (V + j). Böylece aynı kavşağa başka yoldan varan rota yasaktan etkilenmez (köşe tabanlı aramada en ucuz geliş
+	// yasaklıysa öbür gelişler yok sayılırdı). kisitKose: kavşak biti · kisitDurum: kavşak<<32|gelen → j ·
+	// kisitVia[j]: durumun gerçek köşesi · kisitIzin[j]: only_ (boş değilse yalnız bunlar) · kisitYasak[j]: no_
+	kisitKose  []uint64
+	kisitDurum map[uint64]uint32
+	kisitVia   []uint32
+	kisitIzin  [][]uint32
+	kisitYasak [][]uint32
+	oncekiD    []uint32 // durumun bir önceki durumu (yol geri yürünürken)
+	onceki     []uint32
+	nesil      []uint32
+	n          uint32
 }
 
 type sayacOkuyucu struct {
@@ -66,7 +80,7 @@ func rotaOzetOku(yol string) (hazirlikOzet, error) {
 	}
 	defer f.Close()
 	b := make([]byte, len(rotaSihir)+4)
-	if _, err := io.ReadFull(f, b); err != nil || string(b[:len(rotaSihir)]) != rotaSihir {
+	if _, err := io.ReadFull(f, b); err != nil || (string(b[:len(rotaSihir)]) != rotaSihir && string(b[:len(rotaSihir)]) != rotaSihirEski) {
 		return oz, errors.New("rota dosyası tanınmadı")
 	}
 	n := binary.LittleEndian.Uint32(b[len(rotaSihir):])
@@ -87,10 +101,11 @@ func rotaAc(yol string) (*rotaAg, error) {
 	}
 	sr := &sayacOkuyucu{r: bufio.NewReaderSize(f, 4<<20)}
 	sihir := make([]byte, len(rotaSihir))
-	if _, err := io.ReadFull(sr, sihir); err != nil || string(sihir) != rotaSihir {
+	if _, err := io.ReadFull(sr, sihir); err != nil || (string(sihir) != rotaSihir && string(sihir) != rotaSihirEski) {
 		f.Close()
 		return nil, errors.New("rota dosyası tanınmadı")
 	}
+	yeni := string(sihir) == rotaSihir // 2. sürüm: dönüş yasakları var
 	var bj uint32
 	if err := binary.Read(sr, binary.LittleEndian, &bj); err != nil || bj > 1<<20 {
 		f.Close()
@@ -107,11 +122,18 @@ func rotaAc(yol string) (*rotaAg, error) {
 		return nil, err
 	}
 	sayilar := make([]uint64, 6)
+	if yeni {
+		sayilar = make([]uint64, 7)
+	}
 	if err := binary.Read(sr, binary.LittleEndian, sayilar); err != nil {
 		return nil, err
 	}
 	V, H, K, S, A, G := sayilar[0], sayilar[1], sayilar[2], sayilar[3], sayilar[4], sayilar[5]
-	if V > 1<<31 || S > 1<<30 || K > 1<<31 || G > 1<<31 || A > 1<<31 || H > 1<<31 {
+	R := uint64(0)
+	if yeni {
+		R = sayilar[6]
+	}
+	if V > 1<<31 || S > 1<<30 || K > 1<<31 || G > 1<<31 || A > 1<<31 || H > 1<<31 || R > 1<<26 {
 		return nil, errors.New("rota sayıları akıl dışı")
 	}
 	ag.vLat, ag.vLon = make([]int32, V), make([]int32, V)
@@ -127,11 +149,20 @@ func rotaAc(yol string) (*rotaAg, error) {
 		}
 	}
 	ag.adlar = strings.Split(string(adBlob), "\x00")
+	kVia, kGelen, kGiden, kTur := make([]uint32, R), make([]uint32, R), make([]uint32, R), make([]uint8, R)
+	for _, d := range []any{kVia, kGelen, kGiden, kTur} {
+		if err := binary.Read(sr, binary.LittleEndian, d); err != nil {
+			return nil, fmt.Errorf("rota dosyası eksik (dönüş yasakları): %w", err)
+		}
+	}
 	if st, err := f.Stat(); err != nil || st.Size() != sr.n+int64(G)*8 {
 		return nil, errors.New("rota dosyasının boyu tutmuyor (yarım kopyalanmış olabilir)")
 	}
 	if uint64(ag.gOff[S]) != G || uint64(ag.derece[V]) != K {
 		return nil, errors.New("rota dosyası iç tutarlılık denetiminden geçmedi")
+	}
+	if err := ag.kisitKur(kVia, kGelen, kGiden, kTur); err != nil {
+		return nil, err
 	}
 	ag.gLat, ag.gLon = make([]int32, G), make([]int32, G)
 	if err := binary.Read(sr, binary.LittleEndian, ag.gLat); err != nil {
@@ -147,13 +178,17 @@ func rotaAc(yol string) (*rotaAg, error) {
 func (ag *rotaAg) Kapat() {}
 
 const (
-	yayaHiz   = 1.3       // m/sn (~4,7 km/s): enkaz ve kalabalıkta gerçekçi
-	yayaAzami = 20 / 3.6  // A* üst sınırı yaya için: vapur yürüyüşten hızlı
-	aracAzami = 130 / 3.6 // A* için üst sınır
+	geriDonusCeza = 20        // sn: aracın geldiği yoldan geri dönmesi (OSRM araç ayarı u_turn_penalty ile aynı; 13.11)
+	yayaHiz       = 1.3       // m/sn (~4,7 km/s): enkaz ve kalabalıkta gerçekçi
+	yayaAzami     = 20 / 3.6  // A* üst sınırı yaya için: vapur yürüyüşten hızlı
+	aracAzami     = 130 / 3.6 // A* için üst sınır
 )
 
 // gecer: komşuluk girdisi (parça<<1 | yön) bu kipte kullanılabilir mi.
 func (ag *rotaAg) gecer(e uint32, arac bool) bool {
+	if ag.kapali(e >> 1) { // kullanıcının kapattığı yol (8f2): kimse geçemez
+		return false
+	}
 	b := ag.sBayrak[e>>1]
 	if !arac {
 		return b&bitYaya != 0
@@ -243,6 +278,9 @@ type rotaSonuc struct {
 	VarSapma   float64      `json:"varSapma"`
 	Gezilen    int          `json:"gezilen"`
 	VeriTarihi string       `json:"veriTarihi"`
+	Kapali     int          `json:"kapali,omitempty"` // bu haritada hesaba katılan kapalı yol sayısı (8f2)
+	// 13.11: dönüş yasaklarıyla (ve geri dönüşsüz) yol bulunamadı; bu rota onlar YOK SAYILARAK bulundu — sayfa uyarır
+	KuralsizRota bool `json:"kuralsizRota,omitempty"`
 }
 
 type yigin struct {
@@ -293,6 +331,10 @@ func (y *yigin) al() (float32, uint32) {
 func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 	arac := kip == "arac"
 	sonuc := rotaSonuc{VeriTarihi: ag.Ozet.VeriTarihi}
+	// 12.11: kilit en başta — başlangıç/varış köşesi seçimi de kapalı yolları (kapaliBit) okuyor
+	ag.mu.Lock()
+	defer ag.mu.Unlock()
+	sonuc.Kapali = ag.kapaliSayi
 	a1, o1 := int32(math.Round(lat1*1e7)), int32(math.Round(lon1*1e7))
 	a2, o2 := int32(math.Round(lat2*1e7)), int32(math.Round(lon2*1e7))
 	bas, bSap := ag.yakinKose(a1, o1, arac, true)
@@ -302,81 +344,112 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 		return sonuc
 	}
 	sonuc.BasSapma, sonuc.VarSapma = math.Round(bSap), math.Round(vSap)
-	ag.mu.Lock()
-	defer ag.mu.Unlock()
 	V := len(ag.vLat)
-	if ag.maliyet == nil {
-		ag.maliyet = make([]float32, V)
-		ag.onceki = make([]uint32, V)
-		ag.nesil = make([]uint32, V)
-	}
-	ag.n++
-	if ag.n == 0 { // taşma: sıfırla
-		for i := range ag.nesil {
-			ag.nesil[i] = 0
-		}
-		ag.n = 1
+	D := V + len(ag.kisitVia) // durumlar: köşeler + yasaklı gelişler (yalnız araçta kullanılır)
+	if len(ag.maliyet) != D {
+		ag.maliyet = make([]float32, D)
+		ag.onceki = make([]uint32, D)
+		ag.oncekiD = make([]uint32, D)
+		ag.nesil = make([]uint32, D)
 	}
 	hiz := float64(yayaAzami)
 	if arac {
 		hiz = aracAzami
 	}
+	gercek := func(d uint32) uint32 { // durumun köşesi
+		if int(d) < V {
+			return d
+		}
+		return ag.kisitVia[int(d)-V]
+	}
 	tLat, tLon := ag.vLat[son], ag.vLon[son]
-	sezgi := func(v uint32) float32 { return float32(mesafeE7(ag.vLat[v], ag.vLon[v], tLat, tLon) / hiz) }
+	sezgi := func(d uint32) float32 {
+		v := gercek(d)
+		return float32(mesafeE7(ag.vLat[v], ag.vLon[v], tLat, tLon) / hiz)
+	}
 	const yok = ^uint32(0)
-	ag.nesil[bas], ag.maliyet[bas], ag.onceki[bas] = ag.n, 0, yok
-	y := &yigin{}
-	y.it(sezgi(uint32(bas)), uint32(bas))
 	gezilen := 0
-	bulundu := false
-	for len(y.f) > 0 {
-		f, v := y.al()
-		g := ag.maliyet[v]
-		if f > g+sezgi(v)+0.001 { // eski girdi
-			continue
+	// ara: kati iken araç dönüş yasaklarına uyar ve geri dönüş (geldiği parçadan geri) 20 sn cezalı (OSRM'in araç
+	// ayarıyla aynı). 13.11, 40 gerçek yasakla ölçüm: cezasız rotaların 8'i yasağı kavşağı geçip yolun ortasında geri
+	// dönerek dolanıyordu; geri dönüşü tümden yasaklamak ise 3 kavşakta yol bırakmadı, 2'sinde OSRM'in üç katı dolaştırdı.
+	// kati yol bulamazsa gevşek arama yapılır ve sonuç işaretlenir: kullanıcı yolsuz kalmaz.
+	ara := func(kati bool) uint32 {
+		ag.n++
+		if ag.n == 0 { // taşma: sıfırla
+			for i := range ag.nesil {
+				ag.nesil[i] = 0
+			}
+			ag.n = 1
 		}
-		gezilen++
-		if int(v) == son {
-			bulundu = true
-			break
-		}
-		if gezilen > 20_000_000 {
-			break
-		}
-		for i := ag.derece[v]; i < ag.derece[v+1]; i++ {
-			e := ag.komsu[i]
-			if !ag.gecer(e, arac) {
+		kisitli := kati && arac && len(ag.kisitVia) > 0 // dönüş yasakları yalnız araca
+		geriCezali := kati && arac
+		ag.nesil[bas], ag.maliyet[bas], ag.onceki[bas], ag.oncekiD[bas] = ag.n, 0, yok, yok
+		y := &yigin{}
+		y.it(sezgi(uint32(bas)), uint32(bas))
+		for len(y.f) > 0 {
+			f, d := y.al()
+			g := ag.maliyet[d]
+			if f > g+sezgi(d)+0.001 { // eski girdi
 				continue
 			}
-			s := e >> 1
-			w := ag.sB[s]
-			if e&1 == 1 {
-				w = ag.sA[s]
+			gezilen++
+			v := gercek(d)
+			if int(v) == son {
+				return d
 			}
-			ng := g + ag.parcaSure(s, arac)
-			if ag.nesil[w] != ag.n || ng < ag.maliyet[w] {
-				ag.nesil[w], ag.maliyet[w], ag.onceki[w] = ag.n, ng, e
-				y.it(ng+sezgi(w), w)
+			if gezilen > 20_000_000 {
+				return yok
+			}
+			geri := yok // geldiği parçadan geri dönüş kenarı
+			if geriCezali && ag.onceki[d] != yok {
+				geri = ag.onceki[d] ^ 1
+			}
+			for i := ag.derece[v]; i < ag.derece[v+1]; i++ {
+				e := ag.komsu[i]
+				if !ag.gecer(e, arac) {
+					continue
+				}
+				s := e >> 1
+				if kisitli && int(d) >= V && !ag.kisitGecer(uint32(int(d)-V), s) { // yasaklı gelişten bu parçaya dönülmez
+					continue
+				}
+				w := ag.sB[s]
+				if e&1 == 1 {
+					w = ag.sA[s]
+				}
+				hedef := w
+				if kisitli && ag.kisitKose[w>>6]&(1<<(w&63)) != 0 {
+					if j, var_ := ag.kisitDurum[uint64(w)<<32|uint64(s)]; var_ {
+						hedef = uint32(V) + j
+					}
+				}
+				ng := g + ag.parcaSure(s, arac)
+				if e == geri {
+					ng += geriDonusCeza
+				}
+				if ag.nesil[hedef] != ag.n || ng < ag.maliyet[hedef] {
+					ag.nesil[hedef], ag.maliyet[hedef], ag.onceki[hedef], ag.oncekiD[hedef] = ag.n, ng, e, d
+					y.it(ng+sezgi(hedef), hedef)
+				}
 			}
 		}
+		return yok
+	}
+	sonD := ara(true)
+	if sonD == yok && arac {
+		sonD = ara(false)
+		sonuc.KuralsizRota = sonD != yok
 	}
 	sonuc.Gezilen = gezilen
-	if !bulundu {
+	if sonD == yok {
 		sonuc.Hata = "rota-yok"
 		return sonuc
 	}
-	// Geri yürü: parçalar sondan başa.
+	// Geri yürü: durumlar sondan başa (her durumun girdiği parça ve bir önceki durumu).
 	var yol []uint32
-	for v := uint32(son); int(v) != bas; {
-		e := ag.onceki[v]
-		yol = append(yol, e)
-		s := e >> 1
-		if e&1 == 0 {
-			v = ag.sA[s]
-		} else {
-			v = ag.sB[s]
-		}
-		if len(yol) > 5_000_000 {
+	for d := sonD; int(d) != bas; d = ag.oncekiD[d] {
+		yol = append(yol, ag.onceki[d])
+		if len(yol) > 5_000_000 || ag.oncekiD[d] == yok {
 			sonuc.Hata = "rota-bozuk"
 			return sonuc
 		}
@@ -384,7 +457,7 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 	for i, j := 0, len(yol)-1; i < j; i, j = i+1, j-1 {
 		yol[i], yol[j] = yol[j], yol[i]
 	}
-	sonuc.Saniye = math.Round(float64(ag.maliyet[son]))
+	sonuc.Saniye = math.Round(float64(ag.maliyet[sonD]))
 	// Çizgi ve adımlar
 	nokta := func(lat, lon int32) [2]float64 {
 		return [2]float64{math.Round(float64(lon)/10) / 1e6, math.Round(float64(lat)/10) / 1e6}
@@ -396,9 +469,13 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 		m      float64
 		basGeo int
 		sonGeo int
+		geri   bool // 13.11: bu adım geri dönüşle başlar (çıkmaz sokak ya da kuralsız rota) — birleştirilmez, görünür
 	}
 	var gruplar []grup
+	onceE := ^uint32(0)
 	for _, e := range yol {
+		geriDonus := e == onceE^1
+		onceE = e
 		s := e >> 1
 		ara := ag.araNoktalar(s)
 		if e&1 == 1 {
@@ -416,17 +493,17 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 		m := float64(ag.sUz[s])
 		sonuc.Metre += m
 		ad, sinif := ag.sAd[s], ag.sSinif[s]
-		if n := len(gruplar); n > 0 && gruplar[n-1].ad == ad && (ad != 0 || gruplar[n-1].sinif == sinif) {
+		if n := len(gruplar); n > 0 && !geriDonus && gruplar[n-1].ad == ad && (ad != 0 || gruplar[n-1].sinif == sinif) {
 			gruplar[n-1].m += m
 			gruplar[n-1].sonGeo = len(geo) - 1
 		} else {
-			gruplar = append(gruplar, grup{ad, sinif, m, ilk, len(geo) - 1})
+			gruplar = append(gruplar, grup{ad, sinif, m, ilk, len(geo) - 1, geriDonus})
 		}
 	}
 	sonuc.Metre = math.Round(sonuc.Metre)
 	sonuc.Geo = geo
 	// Sade tarif: 40 m'den kısa adsız parçalar (kaldırım, geçit) komşu adıma katılır; aynı adlı ardışıklar birleşir.
-	kucuk := func(g grup) bool { return g.ad == 0 && g.m < 40 && g.sinif != sinifVapur }
+	kucuk := func(g grup) bool { return g.ad == 0 && g.m < 40 && g.sinif != sinifVapur && !g.geri }
 	var sade []grup
 	for _, gr := range gruplar {
 		n := len(sade)
@@ -436,7 +513,7 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 			sade[0] = gr
 			continue
 		}
-		if n > 0 && (kucuk(gr) || (gr.ad != 0 && sade[n-1].ad == gr.ad)) {
+		if n > 0 && !gr.geri && (kucuk(gr) || (gr.ad != 0 && sade[n-1].ad == gr.ad)) {
 			sade[n-1].m += gr.m
 			sade[n-1].sonGeo = gr.sonGeo
 			continue
@@ -449,6 +526,9 @@ func (ag *rotaAg) Rota(lat1, lon1, lat2, lon2 float64, kip string) rotaSonuc {
 		if i > 0 {
 			onc := gruplar[i-1]
 			yon = donusYonu(geo, onc.sonGeo, gr.basGeo)
+			if gr.geri {
+				yon = "geri"
+			}
 		}
 		ad := ""
 		if int(gr.ad) < len(ag.adlar) {
@@ -526,4 +606,58 @@ func donusYonu(geo [][2]float64, kavsak, yeniBas int) string {
 		return "keskinsol"
 	}
 	return "geri"
+}
+
+// kisitKur: dosyadaki yasak kayıtları → durumlar. Aynı (kavşak, gelen parça) tek durum; birden çok kayıt birleşir.
+func (ag *rotaAg) kisitKur(kVia, kGelen, kGiden []uint32, kTur []uint8) error {
+	V, S := uint32(len(ag.vLat)), uint32(len(ag.sA))
+	if len(kVia) == 0 {
+		return nil
+	}
+	ag.kisitKose = make([]uint64, (V+63)/64)
+	ag.kisitDurum = map[uint64]uint32{}
+	for i := range kVia {
+		v, a, b := kVia[i], kGelen[i], kGiden[i]
+		if v >= V || a >= S || b >= S || kTur[i] > 1 {
+			return errors.New("rota dosyasında dönüş yasağı bozuk")
+		}
+		anahtar := uint64(v)<<32 | uint64(a)
+		j, var_ := ag.kisitDurum[anahtar]
+		if !var_ {
+			j = uint32(len(ag.kisitVia))
+			ag.kisitDurum[anahtar] = j
+			ag.kisitVia = append(ag.kisitVia, v)
+			ag.kisitIzin = append(ag.kisitIzin, nil)
+			ag.kisitYasak = append(ag.kisitYasak, nil)
+			ag.kisitKose[v>>6] |= 1 << (v & 63)
+		}
+		if kTur[i] == 1 {
+			ag.kisitIzin[j] = append(ag.kisitIzin[j], b)
+		} else {
+			ag.kisitYasak[j] = append(ag.kisitYasak[j], b)
+		}
+	}
+	return nil
+}
+
+// kisitGecer: j durumundan (yasaklı geliş) s parçasına dönülebilir mi
+func (ag *rotaAg) kisitGecer(j, s uint32) bool {
+	if iz := ag.kisitIzin[j]; len(iz) > 0 {
+		tut := false
+		for _, x := range iz {
+			if x == s {
+				tut = true
+				break
+			}
+		}
+		if !tut {
+			return false
+		}
+	}
+	for _, x := range ag.kisitYasak[j] {
+		if x == s {
+			return false
+		}
+	}
+	return true
 }

@@ -9,6 +9,9 @@ const { execFileSync } = require('child_process');
 const kok = path.join(__dirname, '..', '..');
 const kaynak = fs.readFileSync(path.join(kok, 'tasinabilir/usb_kok/heybe/arkadas.js'), 'utf8');
 const BOZMALAR = [
+  ['okuma: seyrek kök ağırlığı yok', 'Math.log(1 + ham.length / (1 + metin.filter((m) => m.includes(k)).length))', '1'],
+  ['okuma: başlık artısı yok', '(ad[i].includes(k) ? agirlik[j] / 2 : 0)', '0'],
+  ['okuma: tutmayan paragraf da geliyor', '.filter(([puan]) => puan > 0)', '.filter(() => true)'],
   ['yazı bekçisi kör', 'if ([...m[0]].some((h) => !izinli.test(h))', 'if (false && [...m[0]].some((h) => !izinli.test(h))'],
   ['yazı: mikro istisnası silindi', ".replace(/[μµ](?=[gGlLmM])/g, '')", ''],
   ['yazı: Japonca ailesi silindi', "ja: ['Han', 'Hiragana', 'Katakana'], ", ''],
@@ -43,7 +46,36 @@ const BOZMALAR = [
   ['konuşma: geri çeviriyle olumsuzluk yok', 'if (ol === null && geri && OLUMSUZ_SAY[kd]) ol = olumsuzlukKarsilastir(kaynakMetin, kd, geri, kd);', ''],
   ['konuşma: sayı bakılmıyor', "if (sayi.length) uyari.push(`sayı: ${sayi.map((x) => x.replace(/ \\?$/, '')).join(', ')}`);", ''],
   ['konuşma: gidiş-dönüş bakılmıyor', 'if (geri) uyari.push(...gidisDonus(kaynakMetin, kd, geri));', ''],
-  ['eylem: yanma hissi yine yanık', "en: /\\bburn(s|ed|t)?\\b|scald\\w*/", "en: /\\bburn\\w*|scald\\w*/"],
+  ['eylem: yanma hissi yine yanık', "en: /\\bburn(s|ed|t)?\\b|scald\\w*/", "en: /\\bburn\\w*|scald\\w*/"],  // §109: kişiye göre kaynak + uyarı kutuları
+  ['kişi: sona itilmiyor', 'return [...puanli.filter((x) => !uymaz(x)), ...puanli.filter(uymaz)];', 'return puanli;'],
+  ['kişi: "8 aylık hamile" bebek', '(?:aylık|haftalık)(?!\\s*(?:hamile|gebe))(?!\\p{L})', '(?:aylık|haftalık)(?!\\p{L})'],
+  ['kişi: karışık soruda da uygulanıyor', 'const tekKisi = (k) => (k && k.size === 1 ? [...k][0] : null);', 'const tekKisi = (k) => (k && k.size ? [...k][0] : null);'],
+  ['kişi: başlık Türkçe küçük harfle', "const e = String(baslik || '').toLowerCase(), b = kucuk(baslik || '')", "const e = kucuk(baslik || ''), b = kucuk(baslik || '')"],
+  ['kişi: "hala" akraba sayılıyor', '|teyze|halam|', '|teyze|hala|'],
+  ['kişi: kardeş eklenmiyor', '        if (++eklenen === 2) return ek;\n', '        return [];\n'],
+  ['uyarı: başka makalenin kutusu', "if (p.kitap !== ilk.kitap || p.ad !== ilk.makale || !UYARI_BOLUM.test(p.bolum || '')) continue;", "if (!UYARI_BOLUM.test(p.bolum || '')) continue;"],
+  ['kişi: kendi dili varken çeviri de okunuyor', '    if (metinler.length && SORU_KISI[metinler[0][1]]) metinler = [metinler[0]];\n', ''],
+  ['kişi: belirsiz yaş yok sayılıyor', '        if (!k && sayi(x[1]) != null) return new Set();   // 12–15: ergen mi çocuk mu kitaba göre bile belirsiz\n', ''],
+  ['kişi: bütün havuza bakılıyor', 'const uymayan = [...new Map(bakilan.filter(', 'const uymayan = [...new Map(ham.filter('],
+  // 8i-5: yol sorusu
+  ['yol: "nasıl" tek başına yol sorusu (götürmek de)', "nasıl gid(?:er|il)|yol tarif", "nasıl|yol tarif"],
+  ['yol: tür bakılmıyor', "if (tur) return { tur };", ""],
+  ['yol: özel ad aranmıyor', "return hedef ? { nereye: hedef[1].replace(/^the\\s+/, '') } : null;", "return null;"],
+  // §115: saplanan cisim
+  ['eylem: saplanan sorusu bakılmıyor (her soruda)', "soru: { tr: /saplan\\p{L}*|saplı(?!\\p{L})|", "soruYok: { tr: /saplan\\p{L}*|saplı(?!\\p{L})|"],
+  ['eylem: saplanmada baskı kalıbı yok', "tr: /(?<!\\p{L})(baskı|bastır)\\p{L}*|(cam", "tr: /(?<!\\p{L})(baskıX|bastırX)\\p{L}*|(cam"],
+  // §116: ani şiddetli baş ağrısı
+  ['eylem: baş ağrısı sorusu bakılmıyor (her soruda)', "kod: 'basagrisi',\n      soru: {", "kod: 'basagrisi',\n      soruYok: {"],
+  ['eylem: ağrı kesiciye yardım kalıbı yok', "[^.]{0,60}(almasına|içmesine|kullanmasına) yardım|", "[^.]{0,60}(almasınaX|içmesineX|kullanmasınaX) yardım|"],
+  ['eylem: saplanan çevre istisnası yok', "haric: { tr: /çevre\\p{L}*|etraf\\p{L}*|kenar\\p{L}*|iki yan\\p{L}*/u, en: /around|either side|both sides|beside/ } },", "},"],
+  ['eylem: bebekte baş kuralı soru bakmıyor', "kod: 'bebekbas',\n      soru: {", "kod: 'bebekbas',\n      soruYok: {"],
+  ['eylem: bebekte baş hafif istisnası yok', "haric: { tr: /hafif\\p{L}*|nötr|düz pozisyon/u, en: /gently|slightly|neutral/ } },", "},"],
+  ['eylem: baş ağrısı "etkili olabilir" yok', "[^.]{0,80}(etkili ol|rahatlat|hafiflet|iyi gel|işe yar)\\p{L}*/u,", "[^.]{0,80}(etkiliX ol|rahatlatX|hafifletX|iyi gelX|işe yarX)\\p{L}*/u,"],
+  // §114: karşıt ortam
+  ['ortam: soğuk ipucu bakılmıyor', 'if (sicak && !soguk && bolumler.every', 'if (sicak && bolumler.every'],
+  ['ortam: tek bölüm yetiyor', "if (sicak && !soguk && bolumler.every((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return", "if (sicak && !soguk && bolumler.some((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return"],
+  ['ortam: ters yön yok', "if (soguk && !sicak && bolumler.every((b) => ORTAM_MAKALE.sicak.test(b.makale || ''))) return ['durum: soğuk ortam sorusuna sıcak bölümü'];", ''],
+  ['uyarı: sınır yok', '        if (ek === ekSinir) break;\n', ''],
 ];
 const dislerTam = (cikti) => {
   const satirlar = [...cikti.matchAll(/(\d+)\/(\d+)/g)].map((m) => [+m[1], +m[2]]);

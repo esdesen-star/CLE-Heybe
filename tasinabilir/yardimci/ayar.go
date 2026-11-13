@@ -17,6 +17,7 @@ import (
 
 type genelAyar struct {
 	AcilisDili string `json:"acilisDili"`
+	OkumaKipi  bool   `json:"okumaKipi,omitempty"` // 10.11 (okuma_kipi.go): büyük sohbet modeli açılmaz
 }
 
 var (
@@ -37,7 +38,21 @@ func genelAyarOku() genelAyar {
 	return a
 }
 
-// GET /api/ayar → {acilisDili} · POST {acilisDili: "tr" | ""} → kaydeder, yenisini döner
+// genelAyarDegistir: oku → değiştir → güvenle yaz, tek kilit altında. İki uç (/api/ayar, /api/kip) aynı dosyayı yazar;
+// kural tek yerde kalsın diye ikisi de bundan geçer (10.11).
+func genelAyarDegistir(f func(*genelAyar)) (genelAyar, error) {
+	genelAyarKilit.Lock()
+	defer genelAyarKilit.Unlock()
+	a := genelAyarOku()
+	f(&a)
+	if err := os.MkdirAll(benimDir, 0o755); err != nil {
+		return a, err
+	}
+	b, _ := json.MarshalIndent(a, "", " ")
+	return a, guvenliYaz(genelAyarYolu(), b)
+}
+
+// GET /api/ayar → {acilisDili, okumaKipi} · POST {acilisDili: "tr" | ""} → kaydeder, yenisini döner
 func apiAyar(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var istek struct {
@@ -47,23 +62,20 @@ func apiAyar(w http.ResponseWriter, r *http.Request) {
 			jsonYaz(w, 400, map[string]any{"hata": "ayar okunamadı"})
 			return
 		}
-		genelAyarKilit.Lock()
-		defer genelAyarKilit.Unlock()
-		a := genelAyarOku()
+		d := ""
 		if istek.AcilisDili != nil {
-			d := strings.TrimSpace(*istek.AcilisDili)
+			d = strings.TrimSpace(*istek.AcilisDili)
 			if d != "" && !dilKodu.MatchString(d) {
 				jsonYaz(w, 400, map[string]any{"hata": "dil kodu geçersiz"})
 				return
 			}
-			a.AcilisDili = d
 		}
-		if err := os.MkdirAll(benimDir, 0o755); err != nil {
-			jsonYaz(w, 500, map[string]any{"hata": err.Error()})
-			return
-		}
-		b, _ := json.MarshalIndent(a, "", " ")
-		if err := guvenliYaz(genelAyarYolu(), b); err != nil {
+		a, err := genelAyarDegistir(func(a *genelAyar) {
+			if istek.AcilisDili != nil {
+				a.AcilisDili = d
+			}
+		})
+		if err != nil {
 			jsonYaz(w, 500, map[string]any{"hata": err.Error()})
 			return
 		}

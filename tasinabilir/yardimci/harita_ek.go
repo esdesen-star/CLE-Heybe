@@ -96,9 +96,12 @@ func ekTurEsle(s string) string {
 	return ""
 }
 
+// yalnız harita dizininin türleri: kurum listesinde ad olarak sık geçer ("Meydan", "Sokak"), tür kodu sayılmaz (12.11)
+var yalnizDizinTuru = map[string]bool{"sokak": true, "meydan": true, "havalimani": true}
+
 // yerTuruKod: zaten Heybe kodu yazılmışsa ("hastane", "toplanma" …) onu kabul et.
 func yerTuruKod(n string) string {
-	if _, ok := turAgirlik[n]; ok && n != "sokak" {
+	if _, ok := turAgirlik[n]; ok && !yalnizDizinTuru[n] {
 		return n
 	}
 	return ""
@@ -1218,7 +1221,7 @@ func apiHaritaEkNokta(w http.ResponseWriter, r *http.Request) {
 		jsonYaz(w, 400, map[string]string{"hata": "istek"})
 		return
 	}
-	if _, ok := turAgirlik[g.Tur]; !ok || g.Tur == "sokak" {
+	if _, ok := turAgirlik[g.Tur]; !ok || yalnizDizinTuru[g.Tur] { // kural tek yerde (yerTuruKod ile aynı)
 		g.Tur = "diger"
 	}
 	g.Ad = strings.TrimSpace(strings.NewReplacer("\n", " ", "\r", " ").Replace(g.Ad))

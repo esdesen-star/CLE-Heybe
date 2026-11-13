@@ -64,7 +64,9 @@
   .kisi .kGiden { font-size: 14px; color: var(--soluk); margin-top: 8px; white-space: pre-wrap; }
   .kisi .dur { font-size: 14px; margin-top: 4px; }
   #konusmaAlan.yuzYuze #kisi1 { transform: rotate(180deg); }
+  #haritaOneriSatir { border-color: var(--vurgu); } #haritaOneriBag { color: var(--vurgu); font-weight: 600; }   /* 12.11 (8i-5) */
   .bolumSatir { margin: 0 0 10px; padding: 6px 10px; border-left: 4px solid var(--vurgu); background: var(--zemin); font-weight: 600; }
+  .soruSatir { margin: 0 0 10px; padding: 2px 10px; color: var(--soluk); font-size: 14px; }
   #ozgunKutu { margin-top: 14px; }
   .kaynakCeviri { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--vurgu); }
   .kaynakCeviri .ceviriNot { font-size: 13px; color: var(--soluk); margin-top: 4px; }
@@ -155,11 +157,17 @@
     <p class="durum" id="durum" role="status" aria-live="polite"><span class="dm"></span><span class="nokta" aria-hidden="true"><i></i><i></i><i></i></span><span class="sure"></span></p>
     <!-- ilk kurulum (08.11, Özet §66): modeller yoksa ana ekranda yol gösterir -->
     <p id="kurulumNotu" hidden><button type="button" id="kurulumBag" data-m="kurulumAc"></button></p>
+    <!-- 10.11 (okuma kipi 2. adım, §106): bilgisayarın belleği azsa okuma kipi önerilir -->
+    <p class="not" id="kipOneriSatir" hidden><span id="kipOneriMetin"></span> <button type="button" class="kucukDugme" id="kipOneriDugme" data-m="kipOneriDugme"></button></p>
     <div class="acilYer" id="acilYerAna"></div>
+    <!-- 12.11 (8i-5): "hastaneye nasıl giderim" — haritayı önerir; cevabın yerine geçmez -->
+    <p class="not" id="haritaOneriSatir" hidden><a id="haritaOneriBag" href="/heybe/harita.html"></a></p>
 
     <section class="kart" id="cevapKart" hidden>
       <h2 data-m="cevapBaslik"></h2>
       <p class="bolumSatir" id="bolumSatir" dir="auto" hidden></p>
+      <!-- 10.11 (§105): soru başka dildeki kitaplarda arandıysa nasıl arandığı (geri çeviri) — okuyan kaymayı görsün -->
+      <p class="soruSatir" id="soruSatir" dir="auto" hidden></p>
       <div class="cevap" id="cevap"></div>
       <!-- 10.11 (Ercan: "cevap geldi ama sesli butonu göremedim"): cevabı bilgisayarın kendi sesiyle okur -->
       <div class="okuYer" id="cevapOkuYer" hidden><button type="button" class="kucukDugme" id="cevapOku" data-m="konusmaOku"></button></div>
@@ -227,6 +235,14 @@
 
     <!-- Açılış dili (07.11 gece, Ercan: "İlk kurulumda standart İngilizce açılsın · Browser de kullanıcı seçim yapabilsin
          sonraki seferde hangi dilde açılsın"): seçim bellekte (heybe/benim/ayar.json), bilgisayardan bağımsız -->
+    <!-- 10.11 (okuma kipi 2. adım, §106): büyük yapay zekâ açılmaz; bellek ve pil kalır -->
+    <section class="kart" id="kipKart">
+      <h2 data-m="kipBaslik"></h2>
+      <p class="aciklama" data-m="kipAciklama"></p>
+      <p class="aciklama" id="kipBellek" hidden></p>
+      <label class="kopruSecim"><input type="checkbox" id="kipSec"> <span data-m="kipSec"></span></label>
+      <p class="durum" id="kipDurum" role="status" aria-live="polite"></p>
+    </section>
     <section class="kart" id="acilisDiliKart">
       <h2 data-m="acilisDiliBaslik"></h2>
       <p class="aciklama" data-m="acilisDiliAciklama"></p>
@@ -367,7 +383,7 @@
       // örnek soru sınanmış olmalı: "Su kaç dakika kaynatılır?" kısa haliyle yemek pişirme sayfalarına gidiyor (06.11)
       ornek: 'Sorunu yaz… (ör. Sinek mantarı yenir mi?)',
       sor: 'Sor',
-      hazirlaniyor: 'Heybe hazırlanıyor… Model belleğin hızına göre 1–3 dakikada açılır. Bu arada kitaplığa bakabilirsin.',
+      hazirlaniyor: 'Heybe hazırlanıyor… Model belleğin hızına göre 1–3 dakikada açılır. Bu arada soru sorabilirsin: kitaplardaki ilgili bölümler gösterilir.',
       hazir: 'Heybe hazır. Sorunu yaz.',
       acilisHazirlaniyor: 'Heybe açılıyor',
       acilisHazir: 'Heybe hazır ✓',
@@ -386,7 +402,7 @@
       kurulumBitti: 'Modeller indi ve doğrulandı. Arama ve dil modeli açılıyor; birkaç dakika içinde Heybe hazır olur.',
       kurulumHazir: 'hazır',
       kurulumEksik: 'eksik',
-      kurulumGerek: 'Heybe\'nin modelleri henüz kurulmadı. İnternet varken bir kez indirilir.',
+      kurulumGerek: 'Heybe\'nin modelleri henüz kurulmadı. İnternet varken bir kez indirilir. O zamana kadar da soru sorabilirsin: kitaplardaki ilgili bölümler gösterilir.',
       kurulumGerekKisa: 'Modeller henüz kurulmadı — "Kitaplık ve ayarlar"dan kur',
       kurulumAc: 'Kurulumu aç',
       acilisDiliBaslik: 'Açılış dili',
@@ -439,6 +455,9 @@
         deprem: 'sarsıntı sırasında yer değiştirmek (kapı eşiği, merdiven, dışarı koşmak)',
         kusturma: 'kusturmak',
         donma: 'donmuş yeri ovmak ya da sıcakla ısıtmak',
+        saplanan: 'saplanan cismi çıkarmak ya da üstüne bastırmak (çevresine bastırılır)',   // 13.11 (§115)
+        basagrisi: 'ani ve çok şiddetli baş ağrısına ağrı kesici (acil yardım gerekir)',   // 13.11 (§116)
+        bebekbas: 'bebekte başı iyice geriye yatırmak (bebekte baş düz tutulur)',
         yanik: 'yanığa yağ, macun ya da buz sürmek; kabarcığı patlatmak',
         yilan: 'yılan ısırığını kesmek, emmek ya da buzlamak',
         nobet: 'nöbet geçirenin ağzına bir şey koymak ya da onu zorla tutmak',
@@ -482,6 +501,9 @@
       oneriBak: 'Bu dil için önerilen kitaplara bak',
       kitaplikAyar: '📚 Kitaplık ve ayarlar',
       haritaBag: '🗺️ Harita ve yol tarifi',
+      // 12.11 (8i-5): yol sorusunda haritayı öner (yolu harita hesaplar, sohbet yol tarif etmez)
+      haritaOneriTur: (t) => `🗺️ Yol sorusu gibi: haritada en yakın ${t} göster →`, haritaOneriYer: (y) => `🗺️ Yol sorusu gibi: haritada «${y}» için yol tarifi →`,
+      haritaTur: { hastane: 'hastaneyi', eczane: 'eczaneyi', toplanma: 'toplanma alanını', su: 'içme suyunu', barinak: 'barınağı', saglik: 'sağlık ocağını', polis: 'karakolu', itfaiye: 'itfaiyeyi' },
       ilkOneri: (a) => `Önerilen ücretsiz kitaplar: ${a}. Listeye ekle ve indir`,
       ilkOneriBasladi: 'Liste kaydedildi, indirme başladı. "Kitaplık ve ayarlar" bölümünden izleyebilirsin.',
       ilkOneriInternetYok: 'Şu an internet yok ya da indirme başlamadı. Liste kaydedildi; internet gelince "Kitaplık ve ayarlar" bölümünden indirebilirsin.',
@@ -499,6 +521,7 @@
       hata: 'Bir şey ters gitti: ',
       cevapBaslik: 'Cevap',
       bolumKaynak: (a) => `Bu cevap şu bölümden: ${a}`,
+      soruArandi: (d, a) => `Sorun ${d} kitaplarda şöyle arandı (geri çevirisi): «${a}»`,
       konusmaBag: '🗣️ Konuşma çevirisi',
       konusmaBaslik: 'Konuşma çevirisi',
       konusmaAciklama: 'İki kişi, iki dil. Herkes kendi dilini seçip yazar; çeviri karşı tarafta büyük görünür. Kendi cümlenin karşıya nasıl gittiğini de altında görürsün. İnternet gerekmez. Çeviri yanılabilir: önemli bir şeyde kısa ve açık cümle kur.',
@@ -513,6 +536,24 @@
       kaynakBaslik: 'Kaynaklar',
       durdur: (x) => `Bu cevapta kaynakta olmayan bir sayı var (${x}). Güvenlik için cevabı göstermiyorum. Lütfen aşağıdaki kaynakları oku.`,
       bilgiYok: 'Kaynaklarımda bu bilgi yok.',
+      // 10.11 okuma kipi 2. adım (§106): kullanıcı seçer, başlatıcı büyük yapay zekâyı hiç açmaz
+      kipBaslik: 'Okuma kipi',
+      kipAciklama: 'Zayıf bilgisayar ya da pil için. Büyük yapay zekâ hiç açılmaz; Heybe daha hızlı açılır, daha az bellek kullanır. Soru yine sorulur: kitaplardaki ilgili bölümler kaynağın kendi sözleriyle gösterilir, cevap yazılmaz. Seçim bu bellekte saklanır.',
+      kipSec: 'Okuma kipi (büyük yapay zekâyı açma)',
+      kipAcildi: 'Okuma kipi açık. Büyük yapay zekâ açılmayacak.',
+      kipAcildiAcik: 'Okuma kipi açık. Büyük yapay zekâ şu an açık; bellek Heybe yeniden açılınca boşalır. Sonraki açılışlarda hiç açılmaz.',
+      kipKapandi: 'Okuma kipi kapalı. Büyük yapay zekâ açılıyor; hazır olunca Heybe yine cevap yazar.',
+      kipBellek: (gb) => `Bu bilgisayarın belleği: ${gb} GB.`,
+      kipOneri: (gb) => `Bu bilgisayarın belleği ${gb} GB. Büyük yapay zekâ için az olabilir; okuma kipi önerilir.`,
+      kipOneriDugme: 'Okuma kipine geç',
+      hazirOkuma: 'Heybe okuma kipinde hazır. Sorunu yaz: kitaplardaki ilgili bölümler gösterilir, cevap yazılmaz.',
+      okumaSeciliNot: 'Okuma kipi seçili: cevap yazılmadı. Kitaplardaki en ilgili bölümler aşağıda; kaynağın kendi sözleri.',
+      // 10.11 okuma kipi (8c, §101): sohbet modeli yokken cevap yazılmaz, kitaplardaki bölümler gösterilir
+      okuma: 'Kitaplarda aranıyor…',
+      okumaNot: 'Okuma kipi: yapay zekâ henüz açık değil, cevap yazılmadı. Kitaplardaki en ilgili bölümler aşağıda; kaynağın kendi sözleri.',
+      okumaHata: 'Yapay zekâ cevap veremedi; okuma kipine geçildi. Kitaplardaki en ilgili bölümler aşağıda; kaynağın kendi sözleri.',
+      okumaYok: 'Kitaplarda bununla ilgili bir bölüm bulunamadı.',
+      okumaKelimeNot: 'Okuma kipi: yapay zekâ açık değil, cevap yazılmadı. Kitaplarda kelimeyle arandı; en üstteki bölüm her zaman en doğrusu olmayabilir, birkaçına bak.',
       senin: 'Senin dosyan',
       kutuphane: 'Kütüphaneye göz at',
       kitaplik: 'Kitaplık',
@@ -574,7 +615,7 @@
       bosDil: 'There is no English book on this stick yet. You can download one in the "Library".',
       ornek: 'Type your question…',
       sor: 'Ask',
-      hazirlaniyor: 'Heybe is getting ready… The model starts in 1–3 minutes, depending on the stick. Meanwhile you can look at the library.',
+      hazirlaniyor: 'Heybe is getting ready… The model starts in 1–3 minutes, depending on the stick. Meanwhile you can already ask: Heybe shows the relevant passages from the books.',
       hazir: 'Heybe is ready. Type your question.',
       acilisHazirlaniyor: 'Heybe is starting',
       acilisHazir: 'Heybe is ready ✓',
@@ -593,7 +634,7 @@
       kurulumBitti: 'The models are downloaded and checked. Search and the language model are starting; Heybe will be ready in a few minutes.',
       kurulumHazir: 'ready',
       kurulumEksik: 'missing',
-      kurulumGerek: 'Heybe\'s models are not installed yet. They are downloaded once while you have internet.',
+      kurulumGerek: 'Heybe\'s models are not installed yet. They are downloaded once while you have internet. Until then you can still ask: Heybe shows the relevant passages from the books.',
       kurulumGerekKisa: 'Models not installed yet — set them up in "Library & settings"',
       kurulumAc: 'Open setup',
       acilisDiliBaslik: 'Opening language',
@@ -644,6 +685,9 @@
         deprem: 'moving around during the shaking (doorway, stairs, running outside)',
         kusturma: 'making the person vomit',
         donma: 'rubbing frozen skin or warming it with strong heat',
+        saplanan: 'removing an embedded object or pressing on it (press around it instead)',
+        basagrisi: 'a painkiller for a sudden, very severe headache (it needs emergency help)',
+        bebekbas: 'tilting a baby\'s head far back (keep a baby\'s head neutral)',
         yanik: 'putting butter, oil, toothpaste or ice on a burn; popping blisters',
         yilan: 'cutting, sucking or icing a snake bite',
         nobet: 'putting something in the mouth of a person having a seizure, or holding them down',
@@ -686,6 +730,8 @@
       oneriBak: 'See recommended books for this language',
       kitaplikAyar: '📚 Library and settings',
       haritaBag: '🗺️ Map and directions',
+      haritaOneriTur: (t) => `🗺️ Looks like a directions question: show the nearest ${t} on the map →`, haritaOneriYer: (y) => `🗺️ Looks like a directions question: directions to «${y}» on the map →`,
+      haritaTur: { hastane: 'hospital', eczane: 'pharmacy', toplanma: 'assembly point', su: 'drinking water', barinak: 'shelter', saglik: 'health centre', polis: 'police station', itfaiye: 'fire station' },
       ilkOneri: (a) => `Recommended free books: ${a}. Add to list and download`,
       ilkOneriBasladi: 'List saved, download started. You can follow it under "Library and settings".',
       ilkOneriInternetYok: 'No internet right now, or the download did not start. The list is saved; when you are online you can download it under "Library and settings".',
@@ -703,6 +749,7 @@
       hata: 'Something went wrong: ',
       cevapBaslik: 'Answer',
       bolumKaynak: (a) => `This answer comes from: ${a}`,
+      soruArandi: (d, a) => `Your question was searched in the ${d} books as (translated back): “${a}”`,
       konusmaBag: '🗣️ Conversation translator',
       konusmaBaslik: 'Conversation translator',
       konusmaAciklama: 'Two people, two languages. Each person picks a language and writes; the translation appears large on the other side. Under your own message you see how it reached the other person. No internet needed. Translation can be wrong: for anything important, use short, clear sentences.',
@@ -717,6 +764,22 @@
       kaynakBaslik: 'Sources',
       durdur: (x) => `This answer contains a number that is not in the sources (${x}). For safety I am not showing it. Please read the sources below.`,
       bilgiYok: 'My sources do not contain this information.',
+      kipBaslik: 'Reading mode',
+      kipAciklama: 'For a weak computer or to save battery. The large AI is never started; Heybe opens faster and uses less memory. You can still ask: the relevant passages from the books are shown in the source\'s own words, and no answer is written. The choice is stored on this USB drive.',
+      kipSec: 'Reading mode (do not start the large AI)',
+      kipAcildi: 'Reading mode is on. The large AI will not be started.',
+      kipAcildiAcik: 'Reading mode is on. The large AI is running right now; its memory is freed when Heybe is restarted. It will not start on later launches.',
+      kipKapandi: 'Reading mode is off. The large AI is starting; once it is ready, Heybe writes answers again.',
+      kipBellek: (gb) => `This computer has ${gb} GB of memory.`,
+      kipOneri: (gb) => `This computer has ${gb} GB of memory. That may be too little for the large AI; reading mode is recommended.`,
+      kipOneriDugme: 'Switch to reading mode',
+      hazirOkuma: 'Heybe is ready in reading mode. Type your question: the relevant passages from the books are shown, and no answer is written.',
+      okumaSeciliNot: 'Reading mode is on, so no answer was written. The most relevant passages from the books are below, in the source\'s own words.',
+      okuma: 'Searching the books…',
+      okumaNot: 'Reading mode: the AI is not running yet, so no answer was written. The most relevant passages from the books are below, in the source\'s own words.',
+      okumaHata: 'The AI could not answer, so Heybe switched to reading mode. The most relevant passages from the books are below, in the source\'s own words.',
+      okumaYok: 'No passage about this was found in the books.',
+      okumaKelimeNot: 'Reading mode: the AI is not running, so no answer was written. The books were searched by words; the top passage is not always the best one, so look at several.',
       senin: 'Your file',
       kutuphane: 'Browse the books',
       kitaplik: 'Library',
@@ -778,7 +841,7 @@
       bosDil: 'Na tomto disku zatím není žádná česká kniha. Můžete ji stáhnout v části „Knihovna“.',
       ornek: 'Napište otázku…',
       sor: 'Zeptat se',
-      hazirlaniyor: 'Heybe se připravuje… Model se podle rychlosti disku spustí za 1–3 minuty. Mezitím se můžete podívat do knihovny.',
+      hazirlaniyor: 'Heybe se připravuje… Model se podle rychlosti disku spustí za 1–3 minuty. Mezitím se už můžete ptát: Heybe ukáže související úryvky z knih.',
       hazir: 'Heybe už odpovídá. Napište otázku.',
       acilisHazirlaniyor: 'Heybe se spouští',
       acilisHazir: 'Heybe je připraven ✓',
@@ -797,7 +860,7 @@
       kurulumBitti: 'Modely jsou stažené a ověřené. Vyhledávání a jazykový model se spouštějí; Heybe bude za pár minut připravená.',
       kurulumHazir: 'připraveno',
       kurulumEksik: 'chybí',
-      kurulumGerek: 'Modely Heybe ještě nejsou nainstalované. Stáhnou se jednou, když máte internet.',
+      kurulumGerek: 'Modely Heybe ještě nejsou nainstalované. Stáhnou se jednou, když máte internet. Do té doby se můžete ptát: Heybe ukáže související úryvky z knih.',
       kurulumGerekKisa: 'Modely ještě nejsou nainstalované — nainstalujte je v „Knihovna a nastavení“',
       kurulumAc: 'Otevřít instalaci',
       acilisDiliBaslik: 'Jazyk při spuštění',
@@ -848,6 +911,9 @@
         deprem: 'přesouvání během otřesů (dveřní rám, schody, vybíhání ven)',
         kusturma: 'vyvolávání zvracení',
         donma: 'tření omrzlého místa nebo jeho prudké zahřívání',
+        saplanan: 'vytahovat zabodnutý předmět nebo na něj tlačit (tlačí se kolem něj)',
+        basagrisi: 'lék proti bolesti při náhlé velmi silné bolesti hlavy (je potřeba rychlá pomoc)',
+        bebekbas: 'zaklánět hlavu kojence daleko dozadu (hlava kojence má být v neutrální poloze)',
         yanik: 'máslo, olej, zubní pasta nebo led na popáleninu; propichování puchýřů',
         yilan: 'řezání, vysávání nebo chlazení hadího uštknutí ledem',
         nobet: 'vkládání něčeho do úst při záchvatu nebo násilné držení',
@@ -890,6 +956,8 @@
       oneriBak: 'Zobrazit doporučené knihy pro tento jazyk',
       kitaplikAyar: '📚 Knihovna a nastavení',
       haritaBag: '🗺️ Mapa a trasa',
+      haritaOneriTur: (t) => `🗺️ Vypadá to na otázku na cestu: ukázat na mapě nejbližší ${t} →`, haritaOneriYer: (y) => `🗺️ Vypadá to na otázku na cestu: trasa «${y}» na mapě →`,
+      haritaTur: { hastane: 'nemocnici', eczane: 'lékárnu', toplanma: 'shromaždiště', su: 'pitnou vodu', barinak: 'přístřeší', saglik: 'zdravotní středisko', polis: 'policii', itfaiye: 'hasiče' },
       ilkOneri: (a) => `Doporučené knihy zdarma: ${a}. Přidat do seznamu a stáhnout`,
       ilkOneriBasladi: 'Seznam uložen, stahování začalo. Můžete ho sledovat v části „Knihovna a nastavení“.',
       ilkOneriInternetYok: 'Teď není internet nebo se stahování nespustilo. Seznam je uložen; až budete online, stáhnete ho v části „Knihovna a nastavení“.',
@@ -907,6 +975,7 @@
       hata: 'Něco se pokazilo: ',
       cevapBaslik: 'Odpověď',
       bolumKaynak: (a) => `Tato odpověď pochází z kapitoly: ${a}`,
+      soruArandi: (d, a) => `Váš dotaz se v knihách (${d}) hledal takto (zpětný překlad): „${a}“`,
       konusmaBag: '🗣️ Překlad rozhovoru',
       konusmaBaslik: 'Překlad rozhovoru',
       konusmaAciklama: 'Dva lidé, dva jazyky. Každý si vybere svůj jazyk a píše; překlad se velkým písmem objeví na druhé straně. Pod svou zprávou vidíte, jak dorazila k druhému. Internet není potřeba. Překlad se může mýlit: u důležitých věcí pište krátké a jasné věty.',
@@ -921,6 +990,22 @@
       kaynakBaslik: 'Zdroje',
       durdur: (x) => `V této odpovědi je číslo, které ve zdrojích není (${x}). Z bezpečnostních důvodů odpověď nezobrazuji. Přečtěte si prosím zdroje níže.`,
       bilgiYok: 'Tuto informaci ve svých zdrojích nemám.',
+      kipBaslik: 'Režim čtení',
+      kipAciklama: 'Pro slabý počítač nebo kvůli baterii. Velká umělá inteligence se vůbec nespustí; Heybe se otevře rychleji a spotřebuje méně paměti. Ptát se můžete dál: související úryvky z knih se zobrazí slovy samotného zdroje, odpověď se nenapíše. Volba se uloží na tento disk.',
+      kipSec: 'Režim čtení (nespouštět velkou umělou inteligenci)',
+      kipAcildi: 'Režim čtení je zapnutý. Velká umělá inteligence se nespustí.',
+      kipAcildiAcik: 'Režim čtení je zapnutý. Velká umělá inteligence teď běží; paměť se uvolní po novém spuštění Heybe. Při dalších spuštěních se už nespustí.',
+      kipKapandi: 'Režim čtení je vypnutý. Velká umělá inteligence se spouští; až bude připravena, Heybe zase píše odpovědi.',
+      kipBellek: (gb) => `Tento počítač má ${gb} GB paměti.`,
+      kipOneri: (gb) => `Tento počítač má ${gb} GB paměti. Pro velkou umělou inteligenci to může být málo; doporučujeme režim čtení.`,
+      kipOneriDugme: 'Přepnout do režimu čtení',
+      hazirOkuma: 'Heybe je připraven v režimu čtení. Napište otázku: zobrazí se související úryvky z knih, odpověď se nenapíše.',
+      okumaSeciliNot: 'Režim čtení je zapnutý, odpověď nebyla napsána. Nejdůležitější úryvky z knih jsou níže, slovy samotného zdroje.',
+      okuma: 'Hledám v knihách…',
+      okumaNot: 'Režim čtení: umělá inteligence ještě neběží, odpověď nebyla napsána. Nejdůležitější úryvky z knih jsou níže, slovy samotného zdroje.',
+      okumaHata: 'Umělá inteligence nemohla odpovědět, Heybe přešel do režimu čtení. Nejdůležitější úryvky z knih jsou níže, slovy samotného zdroje.',
+      okumaYok: 'V knihách se o tom nenašel žádný úryvek.',
+      okumaKelimeNot: 'Režim čtení: umělá inteligence neběží, odpověď nebyla napsána. V knihách se hledalo podle slov; horní úryvek nemusí být vždy nejlepší, podívejte se na několik.',
       senin: 'Váš soubor',
       kutuphane: 'Procházet knihy',
       kitaplik: 'Knihovna',
@@ -1014,11 +1099,12 @@
   // Her dil düğmesi kendi adıyla yazılı; son seçilen dil yine öne çıkarılır (dilEkraniGoster).
   // 07.11 gece (ikinci adım, Ercan): kullanıcı "Kitaplık ve ayarlar"dan açılış dilini seçebilir; seçim bellekte saklanır.
   let acilisDili = '';
+  let okumaSecili = false;   // okuma kipi (§106): yardımcının ayarından okunur
   function ekranDili() {
     return METIN[acilisDili] ? acilisDili : 'en';
   }
   async function ayarOku() {
-    try { const a = await (await fetch(`${API}/ayar`, { cache: 'no-store' })).json(); acilisDili = METIN[a.acilisDili] ? a.acilisDili : ''; }
+    try { const a = await (await fetch(`${API}/ayar`, { cache: 'no-store' })).json(); acilisDili = METIN[a.acilisDili] ? a.acilisDili : ''; okumaSecili = !!a.okumaKipi; }
     catch (e) { acilisDili = ''; }   // eski yardımcı program ya da okunamadı: standart
   }
   function acilisDiliKur() {
@@ -1036,6 +1122,57 @@
     s.value = acilisDili;
     $('acilisDiliDurum').textContent = '';
   }
+
+  // ---- okuma kipi, 2. adım (10.11, Planlama 8c, §106) ----
+  // Seçim yardımcıda (heybe/benim/ayar.json); başlatıcılar açılışta /api/kip'e bakar, okumaysa büyük modeli açmaz.
+  // Bilgisayarın belleği azsa (AZ_BELLEK — tahmin, ölçülmedi: büyük model + anlam modeli + tarayıcı 8 GB altında
+  // sıkışır) ana ekranda öneri çıkar. Okuma kipi kapanınca yardımcı büyük modeli hemen açar, açılış döngüsü yeniden başlar.
+  const AZ_BELLEK = 7.5 * 2 ** 30;
+  const gbYaz = (b) => Math.round(b / 2 ** 30);
+  let bellekBayt = 0;
+  function kipOneriGoster() {
+    const m = METIN[dil] || METIN.en;
+    const az = bellekBayt > 0 && bellekBayt < AZ_BELLEK;
+    $('kipOneriSatir').hidden = !(az && !okumaSecili && dil);
+    $('kipOneriDugme').hidden = false;
+    if (az) $('kipOneriMetin').textContent = m.kipOneri(gbYaz(bellekBayt));
+  }
+  function kipKur() {
+    const m = METIN[dil] || METIN.en;
+    $('kipSec').checked = okumaSecili;
+    $('kipBellek').hidden = !bellekBayt;
+    if (bellekBayt) $('kipBellek').textContent = bellekBayt < AZ_BELLEK ? m.kipOneri(gbYaz(bellekBayt)) : m.kipBellek(gbYaz(bellekBayt));
+    $('kipDurum').textContent = '';
+  }
+  async function kipDegistir(okuma) {
+    const m = METIN[dil] || METIN.en;
+    try {
+      const y = await fetch(`${API}/kip`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' },
+        body: JSON.stringify({ kip: okuma ? 'okuma' : 'tam' }) });
+      if (!y.ok) throw new Error(String(y.status));
+      okumaSecili = (await y.text()).trim() === 'okuma';
+    } catch (e) {
+      $('kipSec').checked = okumaSecili;
+      return m.acilisDiliHata;
+    }
+    $('kipSec').checked = okumaSecili;
+    kipOneriGoster();
+    if (!okumaSecili) {
+      // büyük model açılıyor: hazır olana kadar okuma yolu sürer, sonra normal cevap (açılış döngüsü yeniden)
+      acilis.sohbet = await hazirMi(H.AYAR.sohbet);
+      modellerHazir = false;
+      if (!bekleZaman) bekle();
+      return m.kipKapandi;
+    }
+    if (dil && acilisBitti()) durumYaz('hazirOkuma');
+    return acilis.sohbet ? m.kipAcildiAcik : m.kipAcildi;
+  }
+  $('kipSec').addEventListener('change', async () => { $('kipDurum').textContent = await kipDegistir($('kipSec').checked); });
+  $('kipOneriDugme').addEventListener('click', async () => {
+    const yazi_ = await kipDegistir(true);
+    $('kipOneriSatir').hidden = false; $('kipOneriDugme').hidden = true; $('kipOneriMetin').textContent = yazi_;
+  });
+  fetch(`${API}/durum`, { cache: 'no-store' }).then((y) => y.json()).then((d) => { bellekBayt = +d.bellek || 0; kipOneriGoster(); }).catch(() => {});
   // ✓: bellekte o dilde aranabilir kitap ya da kullanıcı dosyası var. Kütüphane birkaç saniyede açılır → bekler.
   async function dilTikleri(deneme = 0) {
     let diller;
@@ -1091,7 +1228,7 @@
   }
 
   // Heybe'nin çalıştığı adımlar: bu adımlarda noktalar oynar ve geçen süre işler (06.11, Ercan'ın isteği)
-  const CALISAN = new Set(['hazirlaniyor', 'baslik', 'kaynak', 'kopru', 'cevap']);
+  const CALISAN = new Set(['hazirlaniyor', 'baslik', 'kaynak', 'kopru', 'cevap', 'okuma']);
   let sayacBas = 0, sayac = null;
   function sureYaz() {
     const sn = Math.floor((Date.now() - sayacBas) / 1000);
@@ -1102,7 +1239,7 @@
     const m = METIN[dil] ? METIN[dil][anahtar] : '';
     durum.querySelector('.dm').textContent = typeof m === 'function' ? m(ek) : (m || '') + (typeof ek === 'string' || typeof ek === 'number' ? ek : '');
     const calisiyor = CALISAN.has(anahtar);
-    durum.className = 'durum' + (anahtar === 'hazir' ? ' hazir' : '') + (calisiyor ? ' calisiyor' : '');
+    durum.className = 'durum' + (anahtar === 'hazir' || anahtar === 'hazirOkuma' ? ' hazir' : '') + (calisiyor ? ' calisiyor' : '');
     if (calisiyor && !sayac) { sayacBas = Date.now(); sayac = setInterval(sureYaz, 1000); }
     if (!calisiyor && sayac) { clearInterval(sayac); sayac = null; }
     sureYaz();
@@ -1168,6 +1305,7 @@
     kopruDurumYaz(kopruAnahtari);
     kopruHazirla();
     dilNotuGuncelle();
+    kipOneriGoster();
     ekranGoster('anaEkran');
   }
 
@@ -1189,7 +1327,8 @@
   $('dilDegistir').addEventListener('click', (o) => { o.preventDefault(); dilEkraniGoster(); });
   $('kitaplikBag').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('kitaplikEkrani'); kitaplikYenile(); });
   // 09.11: harita bağlantısı yalnız harita varsa; sayfa seçili dille açılır
-  fetch('/api/harita', { cache: 'no-store' }).then((r) => r.json()).then((h) => { $('haritaBag').hidden = !h.var; }).catch(() => {});
+  let haritaYolVar = false;   // 12.11 (8i-5): yol tarifi olan harita varsa yol sorusunda harita önerilir
+  fetch('/api/harita', { cache: 'no-store' }).then((r) => r.json()).then((h) => { $('haritaBag').hidden = !h.var; haritaYolVar = !!(h.var && h.yolVar); }).catch(() => {});
   $('haritaBag').addEventListener('click', () => { $('haritaBag').href = '/heybe/harita.html?dil=' + encodeURIComponent(dil || 'en'); });
   $('geri').addEventListener('click', (o) => { o.preventDefault(); ekranGoster('anaEkran'); dilNotuGuncelle(); });
 
@@ -1203,22 +1342,25 @@
   // ---- açılış göstergesi (07.11 gece, Ercan'ın isteği): hangi parça hazır, ne kadar zaman geçti; bitince "hazır" ----
   // Dil ekranında da görünür. Ana ekrandaki "hazırlanıyor" satırına da aynı adımlar eklenir.
   const acilis = { bas: Date.now(), kutuphane: false, anlam: false, sohbet: false, modelEksik: false, modelSon: 0 };
-  const acilisBitti = () => acilis.anlam && acilis.sohbet;
+  // okuma kipinde (§106) büyük sohbet modeli hiç gelmez: anlam modeli hazırsa açılış biter
+  const acilisBitti = () => acilis.anlam && (acilis.sohbet || okumaSecili);
   function acilisAdimlari(m) {
     const a = m.acilisAdim || METIN.en.acilisAdim;
-    return ['kutuphane', 'anlam', 'sohbet'].map((k) => `${a[k]} ${acilis[k] ? '✓' : '…'}`).join(' · ');
+    return (okumaSecili ? ['kutuphane', 'anlam'] : ['kutuphane', 'anlam', 'sohbet']).map((k) => `${a[k]} ${acilis[k] ? '✓' : '…'}`).join(' · ');
   }
   function acilisYaz() {
     const m = METIN[dil] || METIN[ekranDili()] || METIN.en, d = $('acilisDurum');
     const sn = Math.floor((Date.now() - acilis.bas) / 1000);
     d.className = 'durum' + (acilisBitti() ? ' hazir' : acilis.modelEksik ? '' : ' calisiyor');
-    d.querySelector('.dm').textContent = acilisBitti() ? m.acilisHazir : acilis.modelEksik ? m.kurulumGerekKisa
+    d.querySelector('.dm').textContent = acilisBitti() ? (okumaSecili ? m.hazirOkuma : m.acilisHazir) : acilis.modelEksik ? m.kurulumGerekKisa
       : `${m.acilisHazirlaniyor} — ${acilisAdimlari(m)}${sn > 360 ? ' · ' + m.acilisUzun : ''}`;
     d.querySelector('.sure').textContent = acilisBitti() || acilis.modelEksik || sn < 1 ? '' : `⏱ ${sn}`;
   }
   const acilisSayac = setInterval(() => { acilisYaz(); if (acilisBitti()) clearInterval(acilisSayac); }, 1000);
 
+  let bekleZaman = null;   // açılış döngüsü sürüyor mu (okuma kipi kapanınca yeniden başlar, iki kez başlamaz)
   async function bekle() {
+    bekleZaman = null;
     if (!acilis.kutuphane) { try { await H.kitaplik(); acilis.kutuphane = true; } catch (e) { /* kütüphane açılıyor */ } }
     if (!acilis.anlam) acilis.anlam = await hazirMi(H.AYAR.gomme);
     if (!acilis.sohbet) acilis.sohbet = await hazirMi(H.AYAR.sohbet);
@@ -1227,15 +1369,17 @@
     if (dil && !acilisBitti() && ['hazirlaniyor', 'kurulumGerek'].includes(durumAnahtari)) {
       if (acilis.modelEksik) durumYaz('kurulumGerek'); else durumYaz('hazirlaniyor', ` (${acilisAdimlari(METIN[dil])})`);
     }
+    // 10.11 (okuma kipi, §101): kütüphane açılınca soru sorulabilir — modeller hazır değilse kitaplardaki bölümler gösterilir
+    if (acilis.kutuphane && !soruyor) { $('soru').disabled = false; $('sor').disabled = false; }
     if (acilisBitti()) {
-      $('soru').disabled = false; $('sor').disabled = false;
       modellerHazir = true;
-      kopruHazirla();
-      if (dil) durumYaz('hazir'); else durumAnahtari = 'hazir';
+      if (!okumaSecili) kopruHazirla();   // okuma kipinde çevirmen (4B) istenmez
+      const hazir = okumaSecili ? 'hazirOkuma' : 'hazir';
+      if (dil) durumYaz(hazir); else durumAnahtari = hazir;
       if (!$('anaEkran').hidden) $('soru').focus();
       dilNotuGuncelle();
     } else {
-      setTimeout(bekle, 2000);
+      bekleZaman = setTimeout(bekle, 2000);
     }
   }
 
@@ -1325,6 +1469,7 @@
   // 06.11 sınav: ilk açılışta dil seçilmeden önce modeller hazır olunca METIN[null] hata verdi, kutu işaretli göründü
   // ama köprü bağlanmadı → durum anahtarı saklanır, yazı dil seçilince yazılır; seçim dil belli olunca kurulur.
   let modellerHazir = false, kopruAnahtari = '', kopruBekliyor = false;
+  let soruyor = false;   // bir soru cevaplanırken açılış döngüsü soru kutusunu yeniden açmasın
   function kopruDurumYaz(d) {
     kopruAnahtari = d;
     const m = METIN[dil];
@@ -1335,7 +1480,7 @@
     if (!kopruBekliyor) { kopruBekliyor = true; cevirmenBekle(Date.now()); }
   }
   async function kopruHazirla() {
-    if (!modellerHazir || !dil) return;   // "başka dil" ancak kullanıcının dili seçilince belli olur
+    if (!modellerHazir || !dil || okumaSecili) return;   // "başka dil" ancak kullanıcının dili seçilince belli olur; okuma kipinde çevirmen (4B) istenmez
     let durum = 'yok';
     try { durum = (await (await fetch(`${API}/cevirmen`)).json()).durum; } catch (e) { /* eski yardımcı: seçim yok */ }
     if (durum === 'yok') return;   // çevirmen dosyası yok → seçim gösterilmez, köprü yok
@@ -1585,6 +1730,33 @@
     if (no === bolumNo) el.textContent = METIN[dil].bolumKaynak(adlar.join(' · '));
   }
 
+  // 10.11 (§105): soru başka dildeki kitaplarda arandıysa, nasıl arandığı okuyanın dilinde gösterilir (geri çeviri).
+  // "lavabo açıcı" → "faucet" (F15) gibi kaymayı makine ayıramadı (§102: düşen ad oranı 0,60 ↔ 0,40, iç içe); okuyan görür.
+  // Cevabı bekletmez: cevap gösterildikten sonra çevrilir; yeni soru gelirse eski satır yazılmaz.
+  let soruNo = 0;
+  // yol sorusu (8i-5): haritada en yakın X ya da adı geçen yere yol — harita sayfası ?yakin= / ?nereye= ile açılır
+  function haritaOneriGoster(soru) {
+    const y = haritaYolVar ? H.yolSorusu(soru, dil) : null;
+    $('haritaOneriSatir').hidden = !y;
+    if (!y) return;
+    const m = METIN[dil];
+    const tur = y.tur && (m.haritaTur || METIN.en.haritaTur)[y.tur];
+    $('haritaOneriBag').textContent = y.tur ? m.haritaOneriTur(tur || y.tur) : m.haritaOneriYer(y.nereye);
+    $('haritaOneriBag').href = '/heybe/harita.html?dil=' + encodeURIComponent(dil || 'en') + (y.tur ? '&yakin=' + y.tur : '&nereye=' + encodeURIComponent(y.nereye));
+  }
+
+  async function soruGoster(r) {
+    const el = $('soruSatir'), no = ++soruNo;
+    el.hidden = true;
+    const g = (r.gruplar || []).find((x) => x.dil && x.dil !== dil && x.soru);
+    if (!g || !H.AYAR.cevirmen) return;
+    let geri = '';
+    try { geri = String(await H.cevir(g.soru, g.dil, dil, 160)).split(/\r?\n/).map((x) => x.trim()).filter(Boolean)[0] || ''; } catch (e) { return; }
+    if (!geri || no !== soruNo) return;
+    el.textContent = METIN[dil].soruArandi(dilAdiKisa(g.dil, dil), geri);
+    el.hidden = false;
+  }
+
   $('form').addEventListener('submit', async (o) => {
     o.preventDefault();
     const soru = $('soru').value.trim();
@@ -1592,13 +1764,35 @@
     // ilk soruda kart tek satıra iner (kullanıcı elle açıp kapamadıysa): cevaba yer açılır. Modeller hazır olunca
     // inmez — hızlı bilgisayarda kart birkaç saniyede kaybolurdu (06.11 sınavı).
     if (!acilElle) $('acilAc').open = false;
+    soruyor = true;
     $('soru').disabled = true; $('sor').disabled = true;
     $('cevapKart').hidden = true; $('kaynakKart').hidden = true; $('bolumSatir').hidden = true;
+    $('soruSatir').hidden = true; soruNo++;
+    haritaOneriGoster(soru);
     $('cevapOkuYer').hidden = true; try { speechSynthesis.cancel(); } catch (e) { /* ses yok */ }
     sonCevap = null; yanlisSifirla();
     try {
-      // dil köprüsü: önce kendi dilinde; bilgi yoksa bellekteki öbür dillerde (çevirmen hazırsa)
-      const r = await H.sor(soru, (adim) => durumYaz(adim), dil, H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek' } : {});
+      // 10.11 okuma kipi (8c, §101): sohbet modeli hazır değilse (açılıyor, kurulmamış, bu makinede açılamadı) cevap yazılmaz,
+      // kitaplardaki en ilgili bölümler gösterilir. Anlam modeli açıksa sıralamayı o yapar (ölçü: §101).
+      const okuyarak = async () => {
+        try { return await H.oku(soru, (adim) => durumYaz(adim), dil, { anlam: acilis.anlam }); } catch (e) {
+          // anlam modeli de cevap vermiyorsa kelimeyle sıralanır (hiç model yok); kütüphane hatası olduğu gibi gösterilir
+          if (!acilis.anlam || (acilis.anlam = await hazirMi(H.AYAR.gomme))) throw e;
+          return H.oku(soru, (adim) => durumYaz(adim), dil, { anlam: false });
+        }
+      };
+      let r;
+      if (acilis.sohbet && acilis.anlam && !okumaSecili) {
+        try {
+          // dil köprüsü: önce kendi dilinde; bilgi yoksa bellekteki öbür dillerde (çevirmen hazırsa)
+          r = await H.sor(soru, (adim) => durumYaz(adim), dil, H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek' } : {});
+        } catch (e) {
+          // model cevap vermiyorsa (kapandı, bellek yetmedi) okuma kipine düşülür; kütüphane hatası olduğu gibi gösterilir
+          acilis.sohbet = await hazirMi(H.AYAR.sohbet); acilis.anlam = await hazirMi(H.AYAR.gomme);
+          if (acilis.sohbet && acilis.anlam) throw e;
+          r = { ...await okuyarak(), modelHatasi: true };
+        }
+      } else r = await okuyarak();
       const adlar = {};
       try { for (const k of await H.kitaplik()) adlar[k.ad] = k.baslik; } catch (e) { /* adlar olmadan da gösterilir */ }
       try { disKaynaklar = (await (await fetch(`${API}/durum`, { cache: 'no-store' })).json()).disKaynak || {}; } catch (e) { /* eski yardımcı */ }
@@ -1610,7 +1804,13 @@
         $('ozgunMetin').textContent = r.ozgun.cevap;
         $('ozgunKutu').hidden = false;
       }
-      if (r.durdur) {
+      if (r.okuma) {
+        // okuma kipi: cevap yok; neden yok olduğu ve bölümlerin aşağıda olduğu söylenir
+        const m = METIN[dil];
+        // anlam modeli de yoksa (kelimeyle sıralandı, ölçü §101: alıntıların ~üçte biri ilk 6'da) okuyana birkaçına bakması söylenir
+        $('cevap').textContent = r.bilgiYok ? m.okumaYok + (r.kitapVar ? '' : SATIR + SATIR + m.bosDil)
+          : (r.modelHatasi ? m.okumaHata : !r.anlam ? m.okumaKelimeNot : okumaSecili ? m.okumaSeciliNot : m.okumaNot);
+      } else if (r.durdur) {
         // her durma sebebi kendi cümlesiyle (06.11 gece: olumsuzluk Ö12, bağlam Ö13)
         const m = METIN[dil], neden = [];
         const sayilar = r.eksik.filter((x) => !/^(terim|olumsuzluk|bağlam|gidiş-dönüş|yön|durum|eylem|yazı|kip|aktarma|çeviride düştü):/.test(x)).map((x) => x.replace(/ \?$/, ''));
@@ -1645,10 +1845,13 @@
       // ekranda ne yazıyorsa o okunur (durma cümleleri ve "bilmiyorum" dahil); [1, 3] gibi kaynak numaraları okunmaz
       $('cevapOkuYer').hidden = !sesliOkuKur($('cevapOku'), $('cevap').innerText.replace(/\s*\[[\d,،，、\s]+\]/g, '').trim(), dil);
       sonCevap = { soru, dil, r };   // "bu cevap yanlış" bu cevabı kaydeder (Ö18)
+      $('yanlisAc').hidden = !!r.okuma;   // okuma kipinde cevap yazılmadı: işaretlenecek cevap yok
+      if (!r.okuma) soruGoster(r);   // beklenmez: cevap ekranda, satır çeviri gelince çıkar
       durumYaz('bitti', r.toplam_sn);
     } catch (e) {
       durumYaz('hata', e.message);
     } finally {
+      soruyor = false;
       $('soru').disabled = false; $('sor').disabled = false;
     }
   });
@@ -1684,6 +1887,7 @@
 
   async function kitaplikYenile() {
     acilisDiliKur();
+    kipKur();
     modelleriYenile();
     const m = METIN[dil];
     try {

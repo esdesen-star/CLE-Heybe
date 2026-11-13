@@ -145,7 +145,7 @@ func modelleriIndir(ctx context.Context) {
 	// hepsi yerinde: başlatıcının açmadıklarını aç (başlatıcı modellerden biri eksikse ikisini de açmaz)
 	if modelAcilsin {
 		for _, m := range modeller {
-			if m.Ne != "cevirmen" && modelVar(m) {
+			if modelKendiligindenAcilsin(m) && modelVar(m) { // 10.11: okuma kipinde sohbet modeli açılmaz
 				if err := modelSunucusuAc(m); err != nil {
 					log.Printf("model açılamadı %s: %v", m.Dosya, err)
 				}
@@ -216,7 +216,7 @@ func modelIndir(ctx context.Context, m modelKaydi) bool {
 	}
 	i.yaz(func(i *indirme) { i.Durum, i.Inen = "bitti", i.Boyut })
 	log.Printf("model indi ve doğrulandı: %s", m.Dosya)
-	if modelAcilsin && m.Ne != "cevirmen" {
+	if modelKendiligindenAcilsin(m) { // 10.11: okuma kipinde sohbet modeli açılmaz
 		if err := modelSunucusuAc(m); err != nil {
 			log.Printf("model açılamadı %s: %v", m.Dosya, err)
 		}

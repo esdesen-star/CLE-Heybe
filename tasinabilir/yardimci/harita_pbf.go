@@ -113,12 +113,24 @@ type osmYol struct {
 	Etiket map[string]string
 }
 
+// osmIliski: ilişki (relation). 12.11 (rota sınavı A22): büyük havalimanları, kampüsler, meydanlar çoğu zaman çok
+// parçalı alan (multipolygon) ilişkisi olarak çizilir; okuyucu ilişkileri hiç okumuyordu → "Diyarbakır Havalimanı" yoktu.
+// Yalnız yer dizini için okunur: etiketler ve üyeler (tür: 0 düğüm, 1 yol, 2 ilişki).
+type osmIliski struct {
+	ID     int64
+	Etiket map[string]string
+	UyeTur []uint8
+	UyeRef []int64
+	UyeRol []string // 13.11 (dönüş yasakları): "from", "via", "to"
+}
+
 // pbfGezgin: dosyayı blok blok gezer; her blokta istenen geri çağırmaları yapar.
 // dugumIste false ise düğüm blokları açılmadan geçilmez ama düğümler çözülmez (hız).
 type pbfGezgin struct {
 	Dugum       func(d *osmDugum)
 	Yol         func(y *osmYol)
-	DugumEtiket bool // düğüm etiketleri de çözülsün mü (yer dizini için)
+	Iliski      func(r *osmIliski) // 12.11: yer dizini için
+	DugumEtiket bool               // düğüm etiketleri de çözülsün mü (yer dizini için)
 }
 
 func (g *pbfGezgin) Gez(r io.Reader) error {
@@ -350,6 +362,12 @@ func (g *pbfGezgin) blok(b []byte) error {
 						return err
 					}
 				}
+			case 4:
+				if g.Iliski != nil {
+					if err := g.iliski(v, tablo); err != nil {
+						return err
+					}
+				}
 			}
 		}
 	}
@@ -533,5 +551,70 @@ func (g *pbfGezgin) yol(b []byte, tablo [][]byte) error {
 	}
 	y.Etiket = etiketYap(keys, vals, tablo)
 	g.Yol(&y)
+	return nil
+}
+
+// iliski: Relation iletisi — 1 kimlik, 2/3 etiket, 9 üye kimlikleri (fark kodlu, zigzag), 10 üye türleri.
+func (g *pbfGezgin) iliski(b []byte, tablo [][]byte) error {
+	p := pbOku{b: b}
+	var r osmIliski
+	var keys, vals []uint32
+	for !p.bitti() {
+		no, tel, err := p.alan()
+		if err != nil {
+			return err
+		}
+		switch {
+		case no == 1 && tel == 0:
+			v, err := p.varint()
+			if err != nil {
+				return err
+			}
+			r.ID = int64(v)
+		case no == 2 && tel == 2:
+			v, err := p.baytlar()
+			if err != nil {
+				return err
+			}
+			paketliVarint(v, func(x uint64) { keys = append(keys, uint32(x)) })
+		case no == 3 && tel == 2:
+			v, err := p.baytlar()
+			if err != nil {
+				return err
+			}
+			paketliVarint(v, func(x uint64) { vals = append(vals, uint32(x)) })
+		case no == 8 && tel == 2: // üye rolleri (dize tablosu sırası)
+			v, err := p.baytlar()
+			if err != nil {
+				return err
+			}
+			paketliVarint(v, func(x uint64) {
+				rol := ""
+				if int(x) < len(tablo) {
+					rol = string(tablo[x])
+				}
+				r.UyeRol = append(r.UyeRol, rol)
+			})
+		case no == 9 && tel == 2:
+			v, err := p.baytlar()
+			if err != nil {
+				return err
+			}
+			var t int64
+			paketliVarint(v, func(x uint64) { t += zigzag(x); r.UyeRef = append(r.UyeRef, t) })
+		case no == 10 && tel == 2:
+			v, err := p.baytlar()
+			if err != nil {
+				return err
+			}
+			paketliVarint(v, func(x uint64) { r.UyeTur = append(r.UyeTur, uint8(x)) })
+		default:
+			if err := p.atla(tel); err != nil {
+				return err
+			}
+		}
+	}
+	r.Etiket = etiketYap(keys, vals, tablo)
+	g.Iliski(&r)
 	return nil
 }

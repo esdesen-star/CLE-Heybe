@@ -1,0 +1,9 @@
+{
+  "I06": ["doğru", "enfekte yarada tıbbi yardım + sıkı kapatma önerilmez; kaynakla tutarlı"],
+  "I12": ["bilgi yok", "kaynakta yok: uyuz tedavisi kitapta yok — doğru davranış"],
+  "I13": ["kısmen", "organları geri itme + ıslak bez + EMS doğru; çeviri 'organlar' yerine 'metal parçaları' dedi"],
+  "I14": ["yanlış", "kişi sorusu (4 yaş): çocukta çok sessizleşme = bilinç değişikliği → 112 verilmedi; 'dinlenip gözlemlenmesi gerekebilir' — tuzağa düştü"],
+  "I17": ["yanlış", "omuz çıkığına bel ağrısı bölümü (konu dışı): ısı ve ağrı kesici; çıkıkçı sorusu cevaplanmadı"],
+  "I18": ["kısmen", "numara uydurmadı; ama numaranın kitapta olmadığını söylemedi"],
+  "I20": ["kısmen", "kalemi kullan demedi, gözlem önerdi; ama 'şimdi kullanma' açıkça yok"]
+}

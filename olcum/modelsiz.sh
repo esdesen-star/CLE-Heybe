@@ -56,6 +56,8 @@ iste "liste girişi dişi" "$G/denetim" "liste girişi dişi: ([0-9]+)/\1"
 iste "düşen kelime dişi" "$G/denetim" "düşen kelime dişi: ([0-9]+)/\1"
 iste "bölüm dişi" "$G/denetim" "bölüm dişi: ([0-9]+)/\1"
 iste "konuşma dişi" "$G/denetim" "konuşma dişi: ([0-9]+)/\1"
+# 10.11 (§101): okuma kipi (modelsiz sıralama)
+iste "okuma dişi" "$G/denetim" "okuma dişi: ([0-9]+)/\1"
 node olcum/kopru/eylem_bozma.cjs >"$G/bozma" 2>&1
 iste "eylem bozma denemesi" "$G/bozma" "([0-9]+) bozma, \1 yakalandı"
 node olcum/kopru/kaynak_bozma.cjs >"$G/kbozma" 2>&1

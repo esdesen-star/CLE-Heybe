@@ -22,7 +22,7 @@ UYKU=900; [ -n "$BEKLE" ] && UYKU=86400
 (sleep $UYKU) | sh "$H/Heybe_Mac.command" >"$LOG" 2>&1 &
 BAS=$!
 s=0
-until grep -qE "sohbet hazır|Model hazır|açılamadı" "$LOG" 2>/dev/null; do sleep 1; s=$((s+1)); [ $s -ge 900 ] && break; done
+until grep -qE "sohbet hazır|Model hazır|açılamadı|Okuma kipi seçili" "$LOG" 2>/dev/null; do sleep 1; s=$((s+1)); [ $s -ge 900 ] && break; done
 # 06.11 gece: çevirmeni başlatıcı açmaz; sayfa gibi yardımcıdan iste, hazır olunca süreyi yaz (dil köprüsü)
 if [ -f "$H/model/translategemma-4b.gguf" ]; then
   curl -s -X POST -H "X-Heybe: 1" -H "Content-Type: application/json" -d '{"ac":true}' http://127.0.0.1:8888/api/cevirmen >/dev/null

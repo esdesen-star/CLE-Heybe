@@ -64,6 +64,7 @@
   ol#adimlar span { color: var(--soluk); }
   .maplibregl-popup-content { color: #2b2118; font: 14px/1.4 system-ui, sans-serif; }
   .maplibregl-popup-content button { margin: 4px 4px 0 0; padding: 6px 10px; font-size: 14px; }
+  .maplibregl-popup-content button.kapat { color: #b3261e; border-color: #b3261e; } /* 12.11 (8f2): yolu kapat */
   .bos { padding: 24px; }
   #ekKutu { margin: 14px 0 16px; border-top: 1px solid var(--cizgi); padding-top: 10px; }
   #ekKutu summary { cursor: pointer; color: var(--vurgu); font-size: 15px; }
@@ -189,7 +190,8 @@ const METIN = {
     tur: { hastane: 'Hastane', toplanma: 'Toplanma alanı', eczane: 'Eczane', su: 'İçme suyu', saglik: 'Sağlık ocağı',
            polis: 'Polis', itfaiye: 'İtfaiye', barinak: 'Barınak', okul: 'Okul', belediye: 'Belediye', ibadet: 'İbadet yeri',
            akaryakit: 'Akaryakıt', otogar: 'Otogar', istasyon: 'İstasyon', market: 'Market', sehir: 'Şehir', kasaba: 'Kasaba / ilçe',
-           koy: 'Köy', semt: 'Semt', mahalle: 'Mahalle', mezra: 'Mezra', sokak: 'Yol', dagitim: 'Yardım dağıtımı', diger: 'Kurumun noktası' },
+           koy: 'Köy', semt: 'Semt', mahalle: 'Mahalle', mezra: 'Mezra', sokak: 'Yol', dagitim: 'Yardım dağıtımı', diger: 'Kurumun noktası',
+           havalimani: 'Havalimanı', meydan: 'Meydan' },   // 12.11 (rota sınavı)
     ekBaslik: 'Kurumun listesi: toplanma alanı, su, barınak…',
     haritaSecEtiket: 'Harita:', ekBagEkle: 'Bağlantıdan ekle', ekBagNot: 'Ya da listenin internet adresini yapıştır (doğrudan dosyaya giden bağlantı: Excel, CSV, KML, GeoJSON). İnternet gerekir.',
     ekBagIndiriliyor: 'Liste indiriliyor…', ekBagHata: { adres: 'Bu bir internet adresi değil (http ya da https ile başlamalı).', baglanti: 'Adrese ulaşılamadı. İnternet var mı, adres doğru mu?' },
@@ -234,7 +236,14 @@ const METIN = {
     konumYok: 'Bu cihaz konumunu veremedi. Başlangıcı adını yazarak ya da haritaya dokunarak seç.',
     konumAdi: 'Konumum', secilen: 'Haritada seçilen nokta',
     buradanBasla: 'Buradan başla', burayaGit: 'Buraya git',
-    aramaYok: 'Bulunamadı.', basGerek: 'Önce başlangıcı seç: Konumum, ad ya da haritaya dokun.',
+    // 12.11 (8f2): kapalı yol
+    kuralsiz: 'Dönüş yasaklarına uyan bir yol bulunamadı; bu tarif yasakları ve geri dönüşü hesaba katmıyor. Tabelalara uy.',   // 13.11
+    yakinBekliyor: (t) => `En yakın ${t.toLocaleLowerCase('tr')} için önce nerede olduğunu seç: Konumum'a bas, bir ad yaz ya da haritaya dokun.`,   // 8i-5
+    yoluKapat: 'Yolu kapat (yıkık, geçilmez)', kapaliYolYok: 'Buraya yakın yol yok. Kapatmak istediğin yolun tam üstüne dokun.',
+    kapatildi: (ad) => `${ad} kapalı işaretlendi; rota oradan geçmez.`, buYol: 'Bu yol', kapaliBaslik: 'Kapalı yol',
+    kapaliTarih: (t) => `${t} tarihinde kapatıldı`, yoluAc: 'Yolu yeniden aç', acildi: 'Yol yeniden açıldı.',
+    kapaliNot: (n) => `${n} kapalı yol hesaba katıldı.`, rotaYokKapali: 'Yol bulunamadı. Kapattığın yollar yüzünden olabilir: haritadaki kırmızı çizgiye dokunup yolu açabilirsin.',
+    aramaYok: 'Bulunamadı.', kismi: 'Kelimelerin hepsi bir arada bulunamadı; en ayırt edici kelimeyle bulunanlar:', duzelti: (q) => `Yazım düzeltildi: «${q}» için sonuçlar`, basGerek: 'Önce başlangıcı seç: Konumum, ad ya da haritaya dokun.',
     hesap: 'Rota hesaplanıyor…', agYukleniyor: 'Yol ağı ilk kez belleğe alınıyor. Yavaş bellekte bu yarım dakika sürebilir; sonraki rotalar anında çıkar.', rotaYok: 'Bu iki nokta arasında yol bulunamadı.', yolYok: 'Seçilen noktanın yakınında yol yok.',
     rotaYokYaya: 'Yürüyerek yol bulunamadı: arada deniz, otoyol ya da yayaya kapalı köprü olabilir. Araçla dene.',
     sureNot: 'Süre tahminidir. Enkaz, trafik ve bekleme hesaba katılmaz.', vapurNot: ' (sefer olmayabilir)', kusUcusu: (m) => `kuş uçuşu ${uzunluk(m)}`,
@@ -254,7 +263,8 @@ const METIN = {
     tur: { hastane: 'Hospital', toplanma: 'Assembly point', eczane: 'Pharmacy', su: 'Drinking water', saglik: 'Clinic',
            polis: 'Police', itfaiye: 'Fire station', barinak: 'Shelter', okul: 'School', belediye: 'Town hall', ibadet: 'Place of worship',
            akaryakit: 'Fuel', otogar: 'Bus station', istasyon: 'Station', market: 'Supermarket', sehir: 'City', kasaba: 'Town',
-           koy: 'Village', semt: 'District', mahalle: 'Neighbourhood', mezra: 'Hamlet', sokak: 'Road', dagitim: 'Aid distribution', diger: 'Organisation\'s point' },
+           koy: 'Village', semt: 'District', mahalle: 'Neighbourhood', mezra: 'Hamlet', sokak: 'Road', dagitim: 'Aid distribution', diger: 'Organisation\'s point',
+           havalimani: 'Airport', meydan: 'Square' },
     ekBaslik: 'Organisation\'s list: assembly points, water, shelter…',
     haritaSecEtiket: 'Map:', ekBagEkle: 'Add from link', ekBagNot: 'Or paste the list\'s web address (a link straight to the file: Excel, CSV, KML, GeoJSON). Needs internet.',
     ekBagIndiriliyor: 'Downloading the list…', ekBagHata: { adres: 'This is not a web address (it must start with http or https).', baglanti: 'The address could not be reached. Is there internet, is the address right?' },
@@ -299,7 +309,13 @@ const METIN = {
     konumYok: 'This device could not give its location. Choose the start by typing its name or tapping the map.',
     konumAdi: 'My location', secilen: 'Point chosen on the map',
     buradanBasla: 'Start here', burayaGit: 'Go here',
-    aramaYok: 'Not found.', basGerek: 'First choose the start: My location, a name, or tap the map.',
+    kuralsiz: 'No route that obeys the turn restrictions was found; these directions ignore turn restrictions and U-turn rules. Follow the road signs.',
+    yakinBekliyor: (t) => `To find the nearest ${t.toLowerCase()}, first choose where you are: press My location, type a name or tap the map.`,
+    yoluKapat: 'Close this road (collapsed, impassable)', kapaliYolYok: 'There is no road near here. Tap right on the road you want to close.',
+    kapatildi: (ad) => `${ad} is marked closed; routes will avoid it.`, buYol: 'This road', kapaliBaslik: 'Closed road',
+    kapaliTarih: (t) => `closed on ${t}`, yoluAc: 'Reopen road', acildi: 'The road is open again.',
+    kapaliNot: (n) => (n === 1 ? '1 closed road taken into account.' : `${n} closed roads taken into account.`), rotaYokKapali: 'No route was found. It may be because of the roads you closed: tap a red line on the map to reopen a road.',
+    aramaYok: 'Not found.', kismi: 'No place matches all the words; these match the most distinctive one:', duzelti: (q) => `Spelling corrected: results for “${q}”`, basGerek: 'First choose the start: My location, a name, or tap the map.',
     hesap: 'Finding the route…', agYukleniyor: 'Loading the road network for the first time. On a slow drive this can take half a minute; later routes are instant.', rotaYok: 'No road was found between these two points.', yolYok: 'There is no road near the chosen point.',
     rotaYokYaya: 'No walking route was found: there may be sea, a motorway or a bridge closed to pedestrians in between. Try by car.',
     sureNot: 'The time is an estimate. Rubble, traffic and waiting are not counted.', vapurNot: ' (may not be running)', kusUcusu: (m) => `${uzunluk(m)} as the crow flies`,
@@ -319,7 +335,8 @@ const METIN = {
     tur: { hastane: 'Nemocnice', toplanma: 'Shromaždiště', eczane: 'Lékárna', su: 'Pitná voda', saglik: 'Zdravotní středisko',
            polis: 'Policie', itfaiye: 'Hasiči', barinak: 'Úkryt', okul: 'Škola', belediye: 'Radnice', ibadet: 'Místo bohoslužby',
            akaryakit: 'Čerpací stanice', otogar: 'Autobusové nádraží', istasyon: 'Nádraží', market: 'Supermarket', sehir: 'Město', kasaba: 'Městečko',
-           koy: 'Vesnice', semt: 'Čtvrť', mahalle: 'Čtvrť', mezra: 'Osada', sokak: 'Cesta', dagitim: 'Výdej pomoci', diger: 'Bod organizace' },
+           koy: 'Vesnice', semt: 'Čtvrť', mahalle: 'Čtvrť', mezra: 'Osada', sokak: 'Cesta', dagitim: 'Výdej pomoci', diger: 'Bod organizace',
+           havalimani: 'Letiště', meydan: 'Náměstí' },
     ekBaslik: 'Seznam organizace: shromaždiště, voda, úkryt…',
     haritaSecEtiket: 'Mapa:', ekBagEkle: 'Přidat z odkazu', ekBagNot: 'Nebo vlož webovou adresu seznamu (odkaz přímo na soubor: Excel, CSV, KML, GeoJSON). Potřebuje internet.',
     ekBagIndiriliyor: 'Stahuji seznam…', ekBagHata: { adres: 'Toto není webová adresa (musí začínat http nebo https).', baglanti: 'Adresa není dostupná. Je internet, je adresa správně?' },
@@ -364,7 +381,13 @@ const METIN = {
     konumYok: 'Toto zařízení nedokázalo zjistit polohu. Vyber začátek napsáním názvu nebo klepnutím do mapy.',
     konumAdi: 'Moje poloha', secilen: 'Bod vybraný na mapě',
     buradanBasla: 'Začít zde', burayaGit: 'Jít sem',
-    aramaYok: 'Nenalezeno.', basGerek: 'Nejdřív vyber začátek: Moje poloha, název nebo klepni do mapy.',
+    kuralsiz: 'Nenašla se trasa, která dodržuje zákazy odbočení; tento popis zákazy odbočení ani otáčení nebere v úvahu. Řiď se dopravními značkami.',
+    yakinBekliyor: (t) => `Hledáš nejbližší místo (${t.toLocaleLowerCase('cs')}): nejdřív vyber, kde jsi — stiskni Moje poloha, napiš název nebo klepni do mapy.`,
+    yoluKapat: 'Uzavřít cestu (zřícená, neprůjezdná)', kapaliYolYok: 'Poblíž není žádná cesta. Klepni přímo na cestu, kterou chceš uzavřít.',
+    kapatildi: (ad) => `${ad}: označeno jako uzavřené; trasa tudy nepovede.`, buYol: 'Tato cesta', kapaliBaslik: 'Uzavřená cesta',
+    kapaliTarih: (t) => `uzavřeno ${t}`, yoluAc: 'Znovu otevřít cestu', acildi: 'Cesta je znovu otevřená.',
+    kapaliNot: (n) => `Započítané uzavřené cesty: ${n}.`, rotaYokKapali: 'Trasa nebyla nalezena. Může to být kvůli uzavřeným cestám: klepnutím na červenou čáru cestu znovu otevřeš.',
+    aramaYok: 'Nenalezeno.', kismi: 'Žádné místo neodpovídá všem slovům; tato odpovídají tomu nejvýraznějšímu:', duzelti: (q) => `Opraven překlep: výsledky pro „${q}“`, basGerek: 'Nejdřív vyber začátek: Moje poloha, název nebo klepni do mapy.',
     hesap: 'Hledám trasu…', agYukleniyor: 'Silniční síť se poprvé načítá do paměti. Na pomalém disku to může trvat půl minuty; další trasy budou hned.', rotaYok: 'Mezi těmito dvěma body nebyla nalezena cesta.', yolYok: 'Poblíž vybraného bodu není cesta.',
     rotaYokYaya: 'Pěší trasa nebyla nalezena: mezi body může být moře, dálnice nebo most uzavřený pro chodce. Zkus to autem.',
     sureNot: 'Čas je odhad. Trosky, provoz a čekání nejsou započítány.', vapurNot: ' (nemusí jezdit)', kusUcusu: (m) => `${uzunluk(m)} vzdušnou čarou`,
@@ -449,6 +472,7 @@ const haritaHazir = new Promise((tamam) => { if (harita.loaded()) tamam(); else 
 harita.addControl(new maplibregl.ScaleControl({ unit: 'metric' }));
 
 const nokta = { bas: null, son: null };
+let bekleyenYakin = null;   // 12.11 (8i-5): sohbetten ?yakin=hastane geldiyse başlangıç seçilince en yakınlar listelenir
 const isaret = {
   bas: new maplibregl.Marker({ color: '#2f6b3a' }),
   son: new maplibregl.Marker({ color: '#a02c1c' })
@@ -459,6 +483,7 @@ function noktaKoy(hangi, lat, lon, ad) {
   $(hangi === 'bas' ? 'nereden' : 'nereye').value = ad;
   $(hangi === 'bas' ? 'neredenOneri' : 'nereyeOneri').replaceChildren();
   if (nokta.bas && nokta.son) rotaBul();
+  if (hangi === 'bas' && bekleyenYakin) { const t = bekleyenYakin; bekleyenYakin = null; yakinListele(t); }
 }
 
 // Ad ile arama: yazdıkça (yarım saniye bekleyerek) bellekteki dizin taranır.
@@ -469,7 +494,11 @@ function aramaBagla(girdi, liste, hangi) {
     const q = girdi.value.trim();
     if (q.length < 2) { liste.replaceChildren(); return; }
     zaman = setTimeout(async () => {
-      const yakin = nokta.bas && hangi === 'son' ? `&konum=${nokta.bas.lat},${nokta.bas.lon}` : '';
+      // aynı adlı yerler (12.11, ikinci arama sınavı: iki "Hacı Bayram-ı Veli Camii", onlarca "İstiklal Caddesi"): başlangıç
+      // seçiliyse ona yakın olan, değilse harita bir şehre yaklaştırılmışsa (yakınlık ≥ 9) haritanın ortasına yakın olan öne
+      const orta = harita.getCenter();
+      const yakin = nokta.bas && hangi === 'son' ? `&konum=${nokta.bas.lat},${nokta.bas.lon}`
+        : harita.getZoom() >= 9 ? `&konum=${orta.lat.toFixed(5)},${orta.lng.toFixed(5)}` : '';
       try {
         const r = await (await fetch(`/api/yer?q=${encodeURIComponent(q)}${yakin}${HARITA}`)).json();
         if (girdi.value.trim() !== q) return;
@@ -481,6 +510,11 @@ function aramaBagla(girdi, liste, hangi) {
 function oneriYaz(liste, yerler, sec) {
   liste.replaceChildren();
   if (!yerler.length) { const li = document.createElement('li'); li.textContent = M.aramaYok; li.style.padding = '8px 10px'; liste.append(li); return; }
+  // 12.11 (rota sınavı): bütün kelimeler tutmadıysa yardımcı en seyrek kelimeyle bulur (kismi) — okuyan bunu bilsin
+  if (yerler[0].kismi || yerler[0].duzelti) {   // 12.11: bir harflik yazım hatası düzeltildiyse de söylenir
+    const li = document.createElement('li'); li.textContent = yerler[0].duzelti ? M.duzelti(yerler[0].duzelti) : M.kismi;
+    li.style.padding = '8px 10px'; li.style.fontSize = '13px'; liste.append(li);
+  }
   for (const y of yerler) {
     const li = document.createElement('li');
     const b = document.createElement('button');
@@ -509,15 +543,32 @@ $('konumum').addEventListener('click', () => {
 
 harita.on('click', (e) => {
   if (harita.getLayer('ek') && harita.queryRenderedFeatures(e.point, { layers: ['ek'] }).length) return; // kurum noktasının kendi kutusu açılır
+  // kapalı yol çizgisi: parmakla tam üstüne basmak zor, 8 piksel pay
+  const kapaliDokunus = harita.getLayer('kapali') && harita.queryRenderedFeatures([[e.point.x - 8, e.point.y - 8], [e.point.x + 8, e.point.y + 8]], { layers: ['kapali'] });
+  if (kapaliDokunus && kapaliDokunus.length) { kapaliKutusu(kapaliDokunus[0].properties, e.lngLat); return; }
   const { lng, lat } = e.lngLat;
   const kutu = document.createElement('div');
   const b1 = document.createElement('button'); b1.type = 'button'; b1.textContent = M.buradanBasla;
   const b2 = document.createElement('button'); b2.type = 'button'; b2.textContent = M.burayaGit;
   const b3 = document.createElement('button'); b3.type = 'button'; b3.className = 'ince'; b3.textContent = M.noktamiKaydet;
-  kutu.append(b1, b2, b3);
+  const b4 = document.createElement('button'); b4.type = 'button'; b4.className = 'ince kapat'; b4.textContent = M.yoluKapat;
+  kutu.append(b1, b2, b3, b4);
   const p = new maplibregl.Popup({ closeButton: true }).setLngLat([lng, lat]).setDOMContent(kutu).addTo(harita);
   b1.addEventListener('click', () => { p.remove(); noktaKoy('bas', lat, lng, M.secilen); });
   b2.addEventListener('click', () => { p.remove(); noktaKoy('son', lat, lng, M.secilen); });
+  b4.addEventListener('click', async () => {
+    p.remove();
+    // 12.11 (8f2): orta yakınlıkta parmak rotanın çizgisine bassa da en yakın yol 15–20 m ötedeki ara sokak çıkıyordu
+    // (Antakya–Samandağ denemesi). Dokunuş çizili rotaya 12 pikselden yakınsa nokta rotanın üstüne çekilir.
+    const [klat, klon] = rotayaCek(harita.project([lng, lat]), lat, lng);   // kutu açıkken harita kaydırılmış olabilir
+    const r = await kapaliIste('POST', { lat: klat, lon: klon });
+    if (r && r.hata === 'yol-yok') { durum(M.kapaliYolYok, true); return; }
+    if (!r || !r.kapali) { durum(M.hata, true); return; }
+    const k = r.kapali[r.kapali.length - 1];
+    const mesaj = M.kapatildi(k.ad || M.sinif[k.tur] || M.buYol);
+    durum(mesaj);
+    if (nokta.bas && nokta.son) { const y = await rotaBul(true); if (y && y.tamam) durum(`${mesaj} ${M.kapaliNot(y.kapali)}`); }
+  });
   // 09.11 (§78): kişi e-Devlet'ten öğrendiği toplanma alanını ya da bir su noktasını kendisi işaretler
   b3.addEventListener('click', () => {
     const f = document.createElement('div'); f.className = 'noktaForm';
@@ -539,17 +590,78 @@ harita.on('click', (e) => {
   });
 });
 
+// 12.11 (8f2, LM 10.11): kullanıcının kapattığı yollar — afetten sonra yıkılan yol, çöken köprü. Rota oradan geçmez
+// (yaya da araç da). Kayıt bu Heybe'de, harita adına göre (harita/kapali.json); kırmızı kesik çizgi, dokununca açılır.
+async function kapaliIste(yontem, govde, id) {
+  const y = await fetch(`/api/kapali?${id ? 'id=' + encodeURIComponent(id) : ''}${HARITA}`, { method: yontem, cache: 'no-store',
+    headers: { 'Content-Type': 'application/json', 'X-Heybe': '1' }, body: govde ? JSON.stringify(govde) : undefined }).catch(() => null);
+  if (!y) return null;
+  const r = await y.json().catch(() => null);
+  if (r && r.kapali) kapaliCiz(r.kapali);
+  return r;
+}
+let sonRota = null;   // çizili rotanın çizgisi [[lon, lat], …] (rotayaCek için)
+function rotayaCek(nokta, lat, lon) {
+  if (!sonRota || sonRota.length < 2) return [lat, lon];
+  let en = Infinity, enN = null;
+  let onceki = harita.project(sonRota[0]);
+  for (let i = 1; i < sonRota.length; i++) {
+    const simdi = harita.project(sonRota[i]);
+    const dx = simdi.x - onceki.x, dy = simdi.y - onceki.y, l = dx * dx + dy * dy;
+    const t = l ? Math.max(0, Math.min(1, ((nokta.x - onceki.x) * dx + (nokta.y - onceki.y) * dy) / l)) : 0;
+    const x = onceki.x + t * dx, y = onceki.y + t * dy, d = Math.hypot(nokta.x - x, nokta.y - y);
+    if (d < en) { en = d; enN = [x, y]; }
+    onceki = simdi;
+  }
+  if (en > 12) return [lat, lon];
+  const ll = harita.unproject(enN);
+  return [ll.lat, ll.lng];
+}
+async function kapaliCiz(liste) {
+  await haritaHazir;
+  const veri = { type: 'FeatureCollection', features: liste.filter((k) => k.bagli && k.geo && k.geo.length > 1).map((k) => ({ type: 'Feature',
+    properties: { id: k.id, ad: k.ad || M.sinif[k.tur] || M.adsiz, tarih: k.tarih }, geometry: { type: 'LineString', coordinates: k.geo } })) };
+  const kaynak = harita.getSource('kapali');
+  if (kaynak) { kaynak.setData(veri); return; }
+  harita.addSource('kapali', { type: 'geojson', data: veri });
+  harita.addLayer({ id: 'kapali-kenar', type: 'line', source: 'kapali', layout: { 'line-cap': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': 10 } });
+  harita.addLayer({ id: 'kapali', type: 'line', source: 'kapali', paint: { 'line-color': '#b3261e', 'line-width': 6, 'line-dasharray': [1.2, 0.8] } });
+}
+function kapaliKutusu(o, yer) {
+  const kutu = document.createElement('div');
+  const b = document.createElement('strong'); b.textContent = M.kapaliBaslik;
+  const a = document.createElement('div'); a.textContent = [o.ad, M.kapaliTarih(new Date(o.tarih + 'T12:00:00').toLocaleDateString(dil, { day: 'numeric', month: 'long', year: 'numeric' }))].join(' · ');
+  const ac = document.createElement('button'); ac.type = 'button'; ac.textContent = M.yoluAc;
+  kutu.append(b, a, ac);
+  const p = new maplibregl.Popup().setLngLat(yer).setDOMContent(kutu).addTo(harita);
+  ac.addEventListener('click', async () => {
+    p.remove();
+    const r = await kapaliIste('DELETE', null, o.id);
+    if (!r || !r.kapali) { durum(M.hata, true); return; }
+    durum(M.acildi);
+    if (nokta.bas && nokta.son) { const y = await rotaBul(true); if (y && y.tamam) durum(M.acildi); }
+  });
+}
+if (bilgi.yolVar) kapaliIste('GET');
+
 document.querySelectorAll('input[name=kip]').forEach((r) => r.addEventListener('change', () => { if (nokta.bas && nokta.son) rotaBul(); }));
 const kip = () => document.querySelector('input[name=kip]:checked').value;
 
-document.querySelectorAll('[data-tur]').forEach((b) => b.addEventListener('click', async () => {
+async function yakinListele(tur) {
   if (!nokta.bas) { durum(M.basGerek, true); return; }
   try {
-    const r = await (await fetch(`/api/yer?tur=${b.dataset.tur}&konum=${nokta.bas.lat},${nokta.bas.lon}${HARITA}`)).json();
+    const r = await (await fetch(`/api/yer?tur=${encodeURIComponent(tur)}&konum=${nokta.bas.lat},${nokta.bas.lon}${HARITA}`)).json();
     durum(r.length ? '' : M.yakinYok, !r.length);
     oneriYaz($('yakinListe'), r, (y) => { $('yakinListe').replaceChildren(); noktaKoy('son', y.lat, y.lon, y.ad || M.tur[y.tur]); });
   } catch (e) { durum(M.hata, true); }
-}));
+}
+document.querySelectorAll('[data-tur]').forEach((b) => b.addEventListener('click', () => yakinListele(b.dataset.tur)));
+// 12.11 (8i-5): sohbetten gelen yol sorusu — ?yakin=hastane (başlangıç seçilince en yakınlar) · ?nereye=Samandağ (arama kutusu dolar)
+{
+  const gelen = new URLSearchParams(location.search);
+  if (M.tur[gelen.get('yakin')]) { bekleyenYakin = gelen.get('yakin'); durum(M.yakinBekliyor(M.tur[bekleyenYakin])); }
+  if (gelen.get('nereye')) { $('nereye').value = gelen.get('nereye').slice(0, 100); $('nereye').dispatchEvent(new Event('input')); }
+}
 
 // Kurumun listesi (09.11, §77): yükle, listele, kaldır; noktalar haritada daire olarak.
 const ekRenk = ['match', ['get', 'tur'], 'toplanma', '#2f6b3a', 'su', '#1f6fb2', 'barinak', '#c2681b', 'hastane', '#a02c1c',
@@ -782,7 +894,7 @@ async function haritaListeYaz(yeni) {
   }
 }
 
-async function rotaBul() {
+async function rotaBul(yerinde = false) {   // yerinde: harita rotaya sığdırılmaz (yol kapatınca kullanıcı neyi kapattığını görsün)
   durum(M.hesap);
   $('ozet').textContent = '';
   $('sureNot').textContent = '';
@@ -793,9 +905,11 @@ async function rotaBul() {
     r = await (await fetch(`/api/rota?a=${nokta.bas.lat},${nokta.bas.lon}&b=${nokta.son.lat},${nokta.son.lon}&kip=${kip()}${HARITA}`)).json();
   } catch (e) { clearTimeout(uzun); durum(M.hata, true); return; }
   clearTimeout(uzun);
-  if (r.hata === 'harita-yok') { durum(M.yolYokHarita, true); cizgi(null); return; }
-  if (!r.tamam) { durum(r.hata === 'yol-yok' ? M.yolYok : (kip() === 'yaya' ? M.rotaYokYaya : M.rotaYok), true); cizgi(null); return; }
+  if (r.hata === 'harita-yok') { durum(M.yolYokHarita, true); cizgi(null); return r; }
+  if (!r.tamam) { durum(r.hata === 'yol-yok' ? M.yolYok : r.kapali ? M.rotaYokKapali : (kip() === 'yaya' ? M.rotaYokYaya : M.rotaYok), true); cizgi(null); return r; }
   const notlar = [];
+  if (r.kapali) notlar.push(M.kapaliNot(r.kapali));
+  if (r.kuralsizRota) notlar.push(M.kuralsiz);   // 13.11: dönüş yasaklarıyla yol çıkmadı
   if (r.basSapma > 150) notlar.push(M.sapma(r.basSapma));
   if (r.varSapma > 150) notlar.push(M.sapma(r.varSapma));
   durum(notlar.join(' '));
@@ -810,22 +924,25 @@ async function rotaBul() {
     $('adimlar').append(li);
   }
   const son = document.createElement('li'); son.textContent = M.varis; $('adimlar').append(son);
-  cizgi(r.geo);
+  cizgi(r.geo, yerinde);
+  return r;
 }
 
-async function cizgi(geo) {
+async function cizgi(geo, yerinde = false) {
   await haritaHazir; // rota haritanın stili yüklenmeden gelirse beklenir
+  sonRota = geo;
   const veri = { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: geo || [] } };
   const kaynak = harita.getSource('rota');
   if (kaynak) kaynak.setData(veri);
   else {
     harita.addSource('rota', { type: 'geojson', data: veri });
+    const alti = harita.getLayer('kapali-kenar') ? 'kapali-kenar' : undefined;   // kapalı yol rotanın üstünde görünsün
     harita.addLayer({ id: 'rota-kenar', type: 'line', source: 'rota', layout: { 'line-join': 'round', 'line-cap': 'round' },
-                      paint: { 'line-color': '#ffffff', 'line-width': 9 } });
+                      paint: { 'line-color': '#ffffff', 'line-width': 9 } }, alti);
     harita.addLayer({ id: 'rota', type: 'line', source: 'rota', layout: { 'line-join': 'round', 'line-cap': 'round' },
-                      paint: { 'line-color': '#8a3b12', 'line-width': 5 } });
+                      paint: { 'line-color': '#8a3b12', 'line-width': 5 } }, alti);
   }
-  if (geo && geo.length > 1) {
+  if (geo && geo.length > 1 && !yerinde) {
     const b = geo.reduce((k, p) => k.extend(p), new maplibregl.LngLatBounds(geo[0], geo[0]));
     harita.fitBounds(b, { padding: 50, maxZoom: 16 });
   }

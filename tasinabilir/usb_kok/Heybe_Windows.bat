@@ -47,8 +47,13 @@ goto anlam
 :anlam_hazir
 echo Anlam modeli hazir.
 
+rem Okuma kipi (10.11, Ozet 106): kullanici sectiyse buyuk sohbet modeli acilmaz - bellek ve pil kalir
+curl -s http://127.0.0.1:8888/api/kip | find "okuma" >nul && goto okuma_kipi
 start "Heybe Sohbet" /min "%LLAMA%" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "%KOK%model\gemma3-4b.gguf" -c 8192
 echo Sohbet modeli aciliyor; sayfa hazir olunca kendisi haber verir.
+goto modeller_tamam
+:okuma_kipi
+echo Okuma kipi secili: buyuk yapay zeka acilmadi. Degistirmek icin: Kitaplik ve ayarlar - Okuma kipi.
 goto modeller_tamam
 :modelsiz
 echo Modeller henuz kurulmadi. Sayfada: Kitaplik ve ayarlar - Ilk kurulum (internet bir kez gerekir).
