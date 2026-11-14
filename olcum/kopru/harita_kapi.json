@@ -1,0 +1,2543 @@
+{
+ "ar": {
+  "yon.sol": {
+   "ceviri": "اتجه يسارًا",
+   "geri": "Sol yöne dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "اتجه إلى اليسار",
+   "geri": "Sol yöne dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "قم بتدوير حاد إلى اليسار.",
+   "geri": "Keskin bir şekilde sola dön.",
+   "deneme": 2,
+   "ilk": "انعطف يسارًا بقوة",
+   "ilkGeri": "Sağa doğru sert bir şekilde dönün."
+  },
+  "yon.sag": {
+   "ceviri": "اتجه يمينًا",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "انعطف يمينًا",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "انعطف يمينًا حادًا",
+   "geri": "Sağa sert bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "استمر في المضي قدمًا.",
+   "geri": "İlerlemeye devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "ارجع",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "ابدأ المسار من هذه النقطة.",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "المسار من هنا",
+   "ilkGeri": "Bu yönden"
+  },
+  "burayaGit": {
+   "ceviri": "الطريق إلى هنا",
+   "geri": "Buraya ulaşmak",
+   "deneme": 1
+  }
+ },
+ "bg": {
+  "yon.sol": {
+   "ceviri": "Завийте наляво",
+   "geri": "Soluna doğru dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Завийте наляво",
+   "geri": "Soluna doğru dönün.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Направете рязко ляво завиване.",
+   "geri": "Ani bir şekilde soluma yön verin.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Завийте надясно",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Завийте надясно",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Направете рязко завиване надясно.",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Продължете направо",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Върнете се",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Маршрут от тук",
+   "geri": "Buradan rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Получете инструкции как да стигнете до тази точка.",
+   "geri": "Bu noktaya nasıl ulaşacağınız konusunda talimatları edinin.",
+   "deneme": 2,
+   "ilk": "Пътят до тук",
+   "ilkGeri": "Bu yolun hikayesi"
+  }
+ },
+ "bn": {
+  "yon.sol": {
+   "ceviri": "বাম দিকে ঘুরুন",
+   "geri": "Sol yöne dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "বাম দিকে ঘুরুন",
+   "geri": "Sol yöne dönün",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "ডানে ঘুরুন",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "ডানদিকে ঘুরুন",
+   "geri": "Sağ yöne dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "ডানে তীক্ষ্ণভাবে ঘুরুন",
+   "geri": "Sağ yönde sert bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "সামনে সোজা যান",
+   "geri": "İleri doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "সামনে ঘুরুন এবং ফিরে যান।",
+   "geri": "İlerleyin ve geri dönün.",
+   "deneme": 2,
+   "ilk": "পিছিয়ে যান",
+   "ilkGeri": "Çekilin"
+  },
+  "buradanBasla": {
+   "ceviri": "এই স্থান থেকে যাওয়ার পথ",
+   "geri": "Bu noktadan çıkış yolu",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "এখানে আসার পথ",
+   "geri": "İşte buraya ulaşmanın yolları",
+   "deneme": 1
+  }
+ },
+ "ca": {
+  "yon.sol": {
+   "ceviri": "Gira a l'esquerra",
+   "geri": "Sol koş",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Gira a l'esquerra",
+   "geri": "Sol koş",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Gira bruscament a l'esquerra",
+   "geri": "Ani bir şekilde sola dön",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Gira a la dreta",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Gira a la dreta",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Gira bruscament a la dreta",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Segueix endavant",
+   "geri": "Devam et",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Dona-te la volta i torna.",
+   "geri": "Kendine dön ve geri gel.",
+   "deneme": 2,
+   "ilk": "D'aquesta manera",
+   "ilkGeri": "Bu şekilde"
+  },
+  "buradanBasla": {
+   "ceviri": "Ruta des d'aquí",
+   "geri": "Buradan rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Com arribar aquí",
+   "geri": "Buraya nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "da": {
+  "yon.sol": {
+   "ceviri": "Vend til venstre",
+   "geri": "Soluna doğru dön",
+   "deneme": 2,
+   "ilk": "Tag til venstre",
+   "ilkGeri": "Sol ve sağa dön"
+  },
+  "yon.hafifsol": {
+   "ceviri": "Hold lidt til venstre",
+   "geri": "Biraz sola dönün.",
+   "deneme": 2,
+   "ilk": "Tag til venstre",
+   "ilkGeri": "Sol ve sağa dön"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Tag skarpt til venstre",
+   "geri": "Keskin bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Tag til højre",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Tag til højre",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Tag skarpt til højre",
+   "geri": "Sağlara keskin bir şekilde dönün",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Fortsæt ligeud",
+   "geri": "Doğru bir şekilde devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Vend tilbage",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Rute fra her",
+   "geri": "Rota buradan",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Find vej til dette sted",
+   "geri": "Bu yere nasıl ulaşacağınızı öğrenin",
+   "deneme": 2,
+   "ilk": "Rute til her",
+   "ilkGeri": "Bu rotanın yolu"
+  }
+ },
+ "de": {
+  "yon.sol": {
+   "ceviri": "Gehen Sie nach links.",
+   "geri": "Sol tarafa gidin.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Gehen Sie nach links.",
+   "geri": "Sol tarafa gidin.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Scharf nach links abbiegen",
+   "geri": "Sol tarafından sola dönün",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Biegen rechts",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Rechts abbiegen",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Rechts scharf abbiegen",
+   "geri": "Sağdan çok keskin bir dönüş yapın.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Weiter in gerader Richtung",
+   "geri": "Daha düz bir yönde",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Zurückkehren",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Routen von hier",
+   "geri": "Buradan rota seçenekleri",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Wie komme ich hierher?",
+   "geri": "Buraya nasıl ulaşabilirim?",
+   "deneme": 1
+  }
+ },
+ "el": {
+  "yon.sol": {
+   "ceviri": "Πάρτε αριστερά",
+   "geri": "Sol tarafı dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Πάρτε αριστερά",
+   "geri": "Sol tarafı dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Πάρτε την αριστερή στροφή.",
+   "geri": "Sol dönüşü yapın.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Περάστε δεξιά",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Στρίψτε δεξιά",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Κάντε μια απότομη στροφή προς τα δεξιά.",
+   "geri": "Sağa ani bir dönüş yapın.",
+   "deneme": 2,
+   "ilk": "Πάρτε την αριστερή εκτός",
+   "ilkGeri": "Sol taraftaki olanı seçin."
+  },
+  "yon.duz": {
+   "ceviri": "Συνεχίστε ευθεία",
+   "geri": "Düz devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Επιστρέψτε",
+   "geri": "Geri dönün",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Διαδρομή από εδώ",
+   "geri": "Bu noktadan itibaren yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Λάβετε οδηγίες για να φτάσετε σε αυτό το σημείο.",
+   "geri": "Bu noktaya nasıl ulaşabileceğiniz konusunda talimatları alın.",
+   "deneme": 2,
+   "ilk": "Δρόμος προς εδώ",
+   "ilkGeri": "Bu yöne doğru yol"
+  }
+ },
+ "es": {
+  "yon.sol": {
+   "ceviri": "Gire a la izquierda",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Gira a la izquierda",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Gire bruscamente a la izquierda.",
+   "geri": "Ani bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Gire a la derecha",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Gira a la derecha",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Gire bruscamente a la derecha.",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Siga recto.",
+   "geri": "Düz devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Volver atrás",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Ruta desde aquí",
+   "geri": "Buradan rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Cómo llegar aquí",
+   "geri": "Buraya nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "et": {
+  "yon.sol": {
+   "ceviri": "Pöördu vasakule",
+   "geri": "Sol dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Pöördu vasakule",
+   "geri": "Sol dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Pöördu vasakule.",
+   "geri": "Sol dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Pöördu paremale",
+   "geri": "Sağlara dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Pöördu paremale",
+   "geri": "Sağlara dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Tehke terav paremapoolne pöör.",
+   "geri": "Direksiyonu sağa, keskin bir şekilde çevirin.",
+   "deneme": 2,
+   "ilk": "Pöördu vasakule.",
+   "ilkGeri": "Sol dönün."
+  },
+  "yon.duz": {
+   "ceviri": "Jätka edasi suunas",
+   "geri": "Devam et",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Tagasi",
+   "geri": "Geri",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Alustage marsruuti sellest punktist.",
+   "geri": "Bu noktadan yola çıkararak rotayı başlatın.",
+   "deneme": 2,
+   "ilk": "Siin olev tee",
+   "ilkGeri": "Bu yol"
+  },
+  "burayaGit": {
+   "ceviri": "Siia jõudmise marsruut",
+   "geri": "Bu noktaya ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "fa": {
+  "yon.sol": {
+   "ceviri": "به سمت چپ بروید",
+   "geri": "Sol tarafa doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "به سمت چپ بروید",
+   "geri": "Sol tarafa doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "به چپ، به شدت",
+   "geri": "Sol tarafına, çok",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "به سمت راست بپیچید.",
+   "geri": "Sağa dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "به سمت راست بگردید",
+   "geri": "Sağa dönün.",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "به سمت راست، به شدت",
+   "geri": "Sağa doğru, çok",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "ادامه دهید و در مسیر مستقیم حرکت کنید.",
+   "geri": "Devam edin ve düz bir yolda ilerleyin.",
+   "deneme": 2,
+   "ilk": "ادامه مسیر در همان جهت",
+   "ilkGeri": "Yol aynı yönde devam ediyor."
+  },
+  "yon.geri": {
+   "ceviri": "چرخ بزنید و به عقب برگردید.",
+   "geri": "Döndüğünüzü ve geriye doğru hareket ettiğinizi belirtin.",
+   "deneme": 2,
+   "ilk": "بازگرد",
+   "ilkGeri": "İade et"
+  },
+  "buradanBasla": {
+   "ceviri": "از این نقطه مسیر را آغاز کنید.",
+   "geri": "Bu noktadan yola başlayın.",
+   "deneme": 2,
+   "ilk": "مسیر از اینجا",
+   "ilkGeri": "Yol burasıdan"
+  },
+  "burayaGit": {
+   "ceviri": "مسیر رسیدن به اینجا",
+   "geri": "Bu noktaya ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "fi": {
+  "yon.sol": {
+   "ceviri": "Käänny vasemmalle",
+   "geri": "Soluna dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Käänny vasemmalle",
+   "geri": "Soluna dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Käänny äkkiä vasemmalle",
+   "geri": "Aniden solağa sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Käänny oikealle",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Käänny oikealle",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Käänny äkkiä oikealle",
+   "geri": "Aniden sağa dönün",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Jatka suoraan eteenpäin",
+   "geri": "Doğrudan ilerlemeye devam edin.",
+   "deneme": 2,
+   "ilk": "Jatka suoraan",
+   "ilkGeri": "Devam edin"
+  },
+  "yon.geri": {
+   "ceviri": "Palaa takaisin",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Aloita reitti tästä kohdasta",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "Reitti tästä",
+   "ilkGeri": "Bu rota"
+  },
+  "burayaGit": {
+   "ceviri": "Tähän pääseminen",
+   "geri": "Bu hedefe ulaşmak",
+   "deneme": 1
+  }
+ },
+ "fil": {
+  "yon.sol": {
+   "ceviri": "Lumiko sa kaliwa.",
+   "geri": "Soluna dön.",
+   "deneme": 2,
+   "ilk": "Lumiko pakaliwa",
+   "ilkGeri": "Sa sağa dön"
+  },
+  "yon.hafifsol": {
+   "ceviri": "Lumiko sa kaliwa",
+   "geri": "Soluna",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Lumiko sa kaliwa.",
+   "geri": "Soluna dön.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Lumiko sa kanan",
+   "geri": "Sa sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Lumiko sa kanan",
+   "geri": "Sa sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Lumiko sa kanan.",
+   "geri": "Sa sağa dön.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Magpatuloy nang diretso.",
+   "geri": "Düz bir şekilde devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Bumalik",
+   "geri": "Geri dönmek",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Simulan ang ruta mula sa puntong ito.",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "Direksyon mula dito",
+   "ilkGeri": "Bu yönden gelen talimatlar"
+  },
+  "burayaGit": {
+   "ceviri": "Paano makarating dito?",
+   "geri": "Buraya nasıl ulaşabilirim?",
+   "deneme": 1
+  }
+ },
+ "fr": {
+  "yon.sol": {
+   "ceviri": "Tournez à gauche",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Tournez à gauche",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Tournez brusquement à gauche.",
+   "geri": "Ani bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Tournez à droite",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Tournez à droite",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Tournez brusquement à droite.",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Continuez tout droit",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Retournez et revenez.",
+   "geri": "Dönün ve geri gelin.",
+   "deneme": 2,
+   "ilk": "Retourner son chemin",
+   "ilkGeri": "Yoluna dönmek"
+  },
+  "buradanBasla": {
+   "ceviri": "Itinéraire à partir d'ici",
+   "geri": "Buradan başlayarak yol tarifi",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Obtenez les indications pour vous rendre à cet endroit.",
+   "geri": "Bu yere nasıl ulaşacağınızla ilgili talimatları edinin.",
+   "deneme": 2,
+   "ilk": "Itinéraire pour se rendre ici",
+   "ilkGeri": "İleriye nasıl ulaşılacağı için yol tarifi"
+  }
+ },
+ "gu": {
+  "yon.sol": {
+   "ceviri": "ડાબે વળો",
+   "geri": "Sol tarafına dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "ડાબી તરફ વળો",
+   "geri": "Sol tara yönünde dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "ડાબે જોરથી વળો",
+   "geri": "Sol yönde sert bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "જમણું બાજુ વળો",
+   "geri": "Sağ tarafı dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "જમણી તરફ વળો",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "જમણી તરફ તીવ્ર વળાંક લો.",
+   "geri": "Sağ yönde keskin bir dönüş yapın.",
+   "deneme": 2,
+   "ilk": "ડાબે વળો",
+   "ilkGeri": "Sol tarafına dön"
+  },
+  "yon.duz": {
+   "ceviri": "આગળ જતો રહો",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "પાછા ફરો",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "અહીંથી નીકળવાનો રસ્તો",
+   "geri": "Buradan çıkış yolu",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "અહીં આવવાનો રસ્તો",
+   "geri": "İşte buraya ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "he": {
+  "yon.sol": {
+   "ceviri": null,
+   "ilk": "פנה שמאלה",
+   "ilkGeri": "Sağa dön",
+   "ikinci": "פנה שמאלה",
+   "ikinciGeri": "Sağa dön"
+  },
+  "yon.hafifsol": {
+   "ceviri": "הישאר מעט שמאלה",
+   "geri": "Biraz sola dön",
+   "deneme": 2,
+   "ilk": "פנה שמאלה",
+   "ilkGeri": "Sağa dön"
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "פנה ימינה חזק",
+   "ilkGeri": "Sağa güçlü bir şekilde dönün.",
+   "ikinci": "בצעו פנייה חדה שמאלה.",
+   "ikinciGeri": "Sağa doğru keskin bir dönüş yapın."
+  },
+  "yon.sag": {
+   "ceviri": "פנה ימינה",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "פנה ימינה",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "פנה ימינה חזק",
+   "geri": "Sağa güçlü bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "המשיכו במסל הדרך.",
+   "geri": "Hedefinize doğru ilerlemeye devam edin.",
+   "deneme": 2,
+   "ilk": "להמשיך ישר",
+   "ilkGeri": "Devam et"
+  },
+  "yon.geri": {
+   "ceviri": "להיסגת",
+   "geri": "geri çekilmek",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "מסלול מנקודה זו",
+   "geri": "Bu noktadan itibaren yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "הדרך להגיע לכאן",
+   "geri": "Bu noktaya nasıl ulaşılacağı",
+   "deneme": 1
+  }
+ },
+ "hi": {
+  "yon.sol": {
+   "ceviri": "बाएं मुड़ें",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "बाएं मुड़ें",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "तेजी से बाईं ओर मुड़ें।",
+   "geri": "Hızlı bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "दाएं ओर मुड़ें",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "दाएं ओर मुड़ें",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "दाएं ओर तेज मुड़ें।",
+   "geri": "Sağ yönde ani bir dönüş yapın.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "सीधे आगे बढ़ें",
+   "geri": "Doğrudan ilerleyin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "वापस जाएँ",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "यहां से मार्ग",
+   "geri": "Buradan nasıl ulaşılır?",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "इस बिंदु तक जाने के लिए निर्देश प्राप्त करें।",
+   "geri": "Bu noktaya ulaşmak için talimatları alın.",
+   "deneme": 2,
+   "ilk": "यहां तक का रास्ता",
+   "ilkGeri": "Hatta bu yol"
+  }
+ },
+ "hr": {
+  "yon.sol": {
+   "ceviri": "Obratite se lijevo",
+   "geri": "Sol ve sağa dönün.",
+   "geriEn": "Turn left",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Držite se malo na lijevoj strani.",
+   "geri": "Biraz sola tarafa doğru ilerleyin.",
+   "deneme": 2,
+   "ilk": "Odlazite lijevo",
+   "ilkGeri": "Sol sağa"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Napravite ošar tajni za lijevo.",
+   "geri": "Solu, lütfen sol taraf için gizli bir yöntem bulun.",
+   "deneme": 2,
+   "ilk": "Naokolo, lijevo",
+   "ilkGeri": "Sağa, sonra sola."
+  },
+  "yon.sag": {
+   "ceviri": "Desno",
+   "geri": "Sağ",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Slijedite desno",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Napravite ošar tajni desno.",
+   "geri": "Sağ tarafında gizli bir yol oluşturun.",
+   "deneme": 2,
+   "ilk": "Naokolo, pravo",
+   "ilkGeri": "Ayrıca, hukukun üstünlüğüne saygı."
+  },
+  "yon.duz": {
+   "ceviri": "Nastavite pravo",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Vratite se",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Put odavde",
+   "geri": "Buradan ayrılıyorum.",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Put do ovdje",
+   "geri": "Buraya ulaşma yolu",
+   "deneme": 1
+  }
+ },
+ "hu": {
+  "yon.sol": {
+   "ceviri": null,
+   "ilk": "Balra kell fordulni",
+   "ilkGeri": "Sağa dönmek gerekiyor",
+   "ikinci": "Balra forduljon",
+   "ikinciGeri": "Sağa dönün"
+  },
+  "yon.hafifsol": {
+   "ceviri": "Kérlek, egy kicsit balra tartsd.",
+   "geri": "Lütfen biraz sola doğru hareket etmeyi rica ediyorum.",
+   "deneme": 2,
+   "ilk": "Balra forduljon",
+   "ilkGeri": "Sağa dönün"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Merészből balra",
+   "geri": "Merész'in sol tarafı",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Jobbra forduljon",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Jobbra forduljon",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Vágjon meredekebben jobbra.",
+   "geri": "Daha dik bir şekilde sağa dönün.",
+   "deneme": 2,
+   "ilk": "Merészből jobbra",
+   "ilkGeri": "Sağdan sola"
+  },
+  "yon.duz": {
+   "ceviri": "Folyamatban menjen egyenesen",
+   "geri": "İşlemi doğrudan ve verimli bir şekilde ilerletmek",
+   "deneme": 2,
+   "ilk": "Folyamatban tovább",
+   "ilkGeri": "Devam ediyor"
+  },
+  "yon.geri": {
+   "ceviri": "Visszaforduljon",
+   "geri": "Geri dönün",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Kezdje az útvonalat innen.",
+   "geri": "Buradan başlayarak yolu takip edin.",
+   "deneme": 2,
+   "ilk": "Ez aút",
+   "ilkGeri": "Bu yol"
+  },
+  "burayaGit": {
+   "ceviri": "Hozzon létre egy útvonalat erre a pontra",
+   "geri": "Bu noktaya bir rota oluşturun.",
+   "deneme": 2,
+   "ilk": "Útvonal innen",
+   "ilkGeri": "Rota buradan"
+  }
+ },
+ "id": {
+  "yon.sol": {
+   "ceviri": "Belok ke kiri",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Belok ke kiri",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "Belok tajam ke kiri",
+   "ilkGeri": "Kesik sağa",
+   "ikinci": "Belok tajam ke kiri.",
+   "ikinciGeri": "Ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani, ani,"
+  },
+  "yon.sag": {
+   "ceviri": "Belok ke kanan",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Belok ke kanan",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Belok tajam ke kanan",
+   "geri": "Keskin bir şekilde sağa dön",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Teruslah berjalan lurus.",
+   "geri": "Sürekli düz bir çizgide ilerlemeye devam edin.",
+   "deneme": 2,
+   "ilk": "Lanjutkan terus ke depan",
+   "ilkGeri": "Devam edin"
+  },
+  "yon.geri": {
+   "ceviri": "Kembalilah",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Mulai rute dari titik ini",
+   "geri": "Bu rota, bu noktadan başlayacak",
+   "deneme": 2,
+   "ilk": "Jalur dari sini",
+   "ilkGeri": "Bu yolun başlangıç noktası"
+  },
+  "burayaGit": {
+   "ceviri": "Jalur menuju tempat ini",
+   "geri": "Bu noktaya giden yol",
+   "deneme": 1
+  }
+ },
+ "is": {
+  "yon.sol": {
+   "ceviri": "Velta til vinstri",
+   "geri": "Solgun",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Velta til vinstri",
+   "geri": "Solgun",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "Velta í stærri velli",
+   "ilkGeri": "Büyük bir alanda hareket etme",
+   "ikinci": "Veltaðu í stærri velli",
+   "ikinciGeri": "Daha geniş bir alanda hareket edin."
+  },
+  "yon.sag": {
+   "ceviri": "Velta til hægri",
+   "geri": "Sağa dön",
+   "deneme": 2,
+   "ilk": "Veyju hægra",
+   "ilkGeri": "Solun batısı"
+  },
+  "yon.hafifsag": {
+   "ceviri": null,
+   "ilk": "Veyjuð hægra",
+   "ilkGeri": "Soluk sağ kol",
+   "ikinci": "Haldaðu örlíti til hægri",
+   "ikinciGeri": "Biraz sola"
+  },
+  "yon.keskinsag": {
+   "ceviri": "Véluðu í hægri",
+   "geri": "Sağ tarafına dönün",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Farið áfram í sama beinni",
+   "geri": "Devam edin, aynı yönde",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Snúðu og gang aftur",
+   "geri": "Döndürün ve geri dönün",
+   "deneme": 2,
+   "ilk": "Venda aftur",
+   "ilkGeri": "Yeniden"
+  },
+  "buradanBasla": {
+   "ceviri": null,
+   "ilk": "Stóð frá þessu stað",
+   "ilkGeri": "Bu durumla ilgili",
+   "ikinci": "Byggja brað í þessu stað",
+   "ikinciGeri": "Bu yerde büyük bir başarı elde etmek"
+  },
+  "burayaGit": {
+   "ceviri": "Stóð til að koma hér",
+   "geri": "Buraya gelmek üzereydim.",
+   "deneme": 1
+  }
+ },
+ "it": {
+  "yon.sol": {
+   "ceviri": "Girare a sinistra",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Gira a sinistra",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Girare a sinistra bruscamente",
+   "geri": "Ani bir şekilde sola dönmek",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Girare a destra",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Gira a destra",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Girare a destra in modo deciso",
+   "geri": "Sağa ani bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Proseguire dritto",
+   "geri": "Doğru yolda ilerlemeye devam",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Ritorna indietro",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Percorso da qui",
+   "geri": "Buradan geçen yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Percorso per arrivare qui",
+   "geri": "Buraya nasıl ulaşılacağı",
+   "deneme": 1
+  }
+ },
+ "ja": {
+  "yon.sol": {
+   "ceviri": "左に曲がってください",
+   "geri": "Sol tarafa dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "左に進む",
+   "geri": "Sol tarafa doğru ilerleyin",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "急に左に曲がる",
+   "geri": "Aniden sola dönmek",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "右に曲がってください",
+   "geri": "Sağa dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "右に進む",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "急に右に曲がる",
+   "geri": "Aniden sağa dönmek",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "まっすぐ進んでください",
+   "geri": "Doğru yolda ilerlemeye devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "振り返って、元の場所へ戻る",
+   "geri": "Dönüp, başlangıç noktasına geri dönün.",
+   "deneme": 2,
+   "ilk": "引き返す",
+   "ilkGeri": "Yeniden düşünmek"
+  },
+  "buradanBasla": {
+   "ceviri": "ここから",
+   "geri": "Buradan",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "この場所への行き方を教えてください。",
+   "geri": "Bu yere nasıl ulaşabileceğimi bana anlatabilir misiniz?",
+   "deneme": 2,
+   "ilk": "ここまでの経路",
+   "ilkGeri": "Bu ana kadar izlenen yol"
+  }
+ },
+ "kn": {
+  "yon.sol": {
+   "ceviri": "ಎಡಕ್ಕೆ ತಿರುಗಿ",
+   "geri": "Sol tara doğru dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "ಎಡಕ್ಕೆ ತಿರುಗಿ",
+   "geri": "Sol tara doğru dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "ಎಡೆಗೆ ತೀರಾ ಬಾಗು",
+   "ilkGeri": "Çok esnek",
+   "ikinci": "ಎಡೆಗೆ ತೀರಾ ಬಲ ತಿರುವು ತೆಗೆದುಕೊಳ್ಳಿ.",
+   "ikinciGeri": "Yolun sağ tarafında çok keskin bir viraja dönün."
+  },
+  "yon.sag": {
+   "ceviri": "ಬಲಭಾಗಕ್ಕೆ ತಿರುಗಿ",
+   "geri": "Sağ tarafına dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "ಎತ್ತರವಾಗಿ, ಬಲಕ್ಕೆ ತಿರುಗಿ",
+   "geri": "Yüksekten, sağa doğru",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "ಅಲಗುವ ದಿಕ್ಕಿನಲ್ಲಿ ತೀರಾ ಕಟ್ಟು ತಿರುವು ತೆಗೆದುಕೊಳ್ಳಿ.",
+   "geri": "Yolun sağ tarafında çok keskin bir dönüşe gidin.",
+   "deneme": 2,
+   "ilk": "ಒಂದು ಕಡೆ ತಟ್ಟು",
+   "ilkGeri": "Bir tarafı pamuklu"
+  },
+  "yon.duz": {
+   "ceviri": "ಮುಂದೆ ತೆರಳಿ ಮುಂದುವಹಿ.",
+   "geri": "Devam et, ilerlemeye devam et.",
+   "deneme": 2,
+   "ilk": "ಮುಂದೆ ತೆರಳಿ",
+   "ilkGeri": "Sonra"
+  },
+  "yon.geri": {
+   "ceviri": "ಹಿಂತಿರುಳ್ಳಿ",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "ಈ ಸ್ಥಳದಿಂದ ಮಾರ್ಗವನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "ಇಂದಿನ ಮಾರ್ಗ",
+   "ilkGeri": "Bugünkü rota"
+  },
+  "burayaGit": {
+   "ceviri": "ಇಲ್ಲಿಗೆ ಹೋಗುವ ಮಾರ್ಗ",
+   "geri": "İşte buraya ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "ko": {
+  "yon.sol": {
+   "ceviri": "좌회전",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "좌회전",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "왼쪽으로 급하게 방향을 전환",
+   "geri": "Sol tarafa ani bir şekilde yön değiştirmek",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "오른쪽으로",
+   "geri": "Sağa",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "오른쪽으로 회전",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "단호하게 오른쪽으로 회전",
+   "geri": "Kesinlikle sağa dönün.",
+   "deneme": 2,
+   "ilk": "왼쪽으로 급격하게 회전",
+   "ilkGeri": "Sol tarafa ani bir şekilde dönme"
+  },
+  "yon.duz": {
+   "ceviri": "직진",
+   "geri": "Doğuya doğru ilerlemek",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "되돌아가",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "여기에서 출발하는 경로",
+   "geri": "Buradan başlayan rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "이 지점으로 가는 방법을 알려주세요.",
+   "geri": "Bu noktaya nasıl ulaşabileceğimi bana söyleyebilir misiniz?",
+   "deneme": 2,
+   "ilk": "여기에 가는 방법",
+   "ilkGeri": "İçeri nasıl ulaşacağınızı"
+  }
+ },
+ "lt": {
+  "yon.sol": {
+   "ceviri": "Pasukti į kairę",
+   "geri": "Sol sağa",
+   "geriEn": "Turn left",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Šiek tiek šiek tiek kairiau.",
+   "geri": "Biraz sola doğru.",
+   "deneme": 2,
+   "ilk": "Pasukite į kairę",
+   "ilkGeri": "Sol sağa"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Šiūlykite staigiai į kairę.",
+   "geri": "Ani bir şekilde sola doğru dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Pasukti į dešinę",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Šviesti į dešinę",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Šiūlykite į dešinę",
+   "geri": "Sağ yöne dönün",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Toliau važiuok tiesiogiai",
+   "geri": "Şimdi düz bir çizgide devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Grįžti",
+   "geri": "Geri gelmek",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Maršrutas nuo čia",
+   "geri": "Buradan geçen rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Maršrutas iki čia",
+   "geri": "Bu kısma nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "lv": {
+  "yon.sol": {
+   "ceviri": "Pagrieziet pa kreiso.",
+   "geri": "Solu sağa.",
+   "geriEn": "Turn left.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Nedaudz pagriezieties pa kreiso.",
+   "geri": "Biraz solağa solağa dönün.",
+   "deneme": 2,
+   "ilk": "Pagrieziet pa kreiso pusi",
+   "ilkGeri": "Solu sağa"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Lēciet spilgtā pagriezienā pa kreisi",
+   "geri": "Düz bir çizgide, dönme yönünde sola doğru atlayın.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Pagriezieties pa labi",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Pagrieziet pa labi",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Lēni pagriezieties pa labo pusi.",
+   "geri": "Yavaşça sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Turpināt gūt taisni",
+   "geri": "Daha fazla doğrudan başarı elde etmek",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Atgriezieties",
+   "geri": "Geri gelin",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Sāciet maršrutu no šī punkta",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "Maršruta sākums",
+   "ilkGeri": "Rota başlangıç noktası"
+  },
+  "burayaGit": {
+   "ceviri": "Ceļš līdz šeit",
+   "geri": "Buraya gelme yolunu",
+   "deneme": 1
+  }
+ },
+ "ml": {
+  "yon.hafifsol": {
+   "ceviri": "ഒരു ഭാഗം ഇടതുവശത്തേക്ക് തിരിക്കുക",
+   "geri": "Bir bölümü sola doğru çevirin.",
+   "deneme": 2,
+   "ilk": "ഇടത്തേക്ക് തിരിഞ്ഞ് പോകൂ",
+   "ilkGeri": "Sağa dönün"
+  },
+  "yon.keskinsol": {
+   "ceviri": "തീവ്ര ഇടതുവശത്തേക്ക് തിരിഞ്ഞ് പോകൂ",
+   "geri": "Çok sola doğru dönün.",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "തീവ്രമായി വലോട്ടോട്ട് തിരിഞ്ഞ് പോകൂ",
+   "geri": "Çok hızlı ve şiddetli bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": null,
+   "ilk": "തുടര്‍ന്നോ",
+   "ilkGeri": "Başlangıç",
+   "ikinci": "തുടര്‍ന്നുവരുക",
+   "ikinciGeri": "Başlayın"
+  },
+  "yon.geri": {
+   "ceviri": "തിരിഞ്ഞ് പോകൂ",
+   "geri": "Geri dönün.",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "ഇവിടെ നിന്ന് പുറപ്പെടുന്ന വഴി",
+   "geri": "Buradan ayrılmak için yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "ഇവിടെ എത്തുന്നതിനുള്ള വഴി",
+   "geri": "İşte buraya ulaşmanın yolları",
+   "deneme": 1
+  }
+ },
+ "mr": {
+  "yon.sol": {
+   "ceviri": "डावीकडे वळा.",
+   "geri": "Sol tarafa dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "डावीकडे वळा.",
+   "geri": "Sol tarafa dönün.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "गंभीरपणे डावीकडे वळा.",
+   "geri": "Çok dikkatli bir şekilde sola doğru dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "उजवीकडे वळा.",
+   "geri": "Sağa dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "उजवीकडे वळा",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "उजवीकडे तीव्र वळण घ्या.",
+   "geri": "Sağ yönde keskin bir dönüş yapın.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "पुढे सरळ मार्ग रस्ता आहे.",
+   "geri": "İleride düz bir yol bulunmaktadır.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "उलट दिशेने जा",
+   "geri": "Ters yöne git",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "या ठिकाणाहून मार्गाला सुरुवात करा.",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "येथूनचा मार्ग",
+   "ilkGeri": "Bu yol"
+  },
+  "burayaGit": {
+   "ceviri": "या ठिकाणी जाण्यासाठी मार्ग मिळवा.",
+   "geri": "Bu yere ulaşmak için bir yol bulun.",
+   "deneme": 2,
+   "ilk": "येथील मार्ग",
+   "ilkGeri": "Buradaki yol"
+  }
+ },
+ "nl": {
+  "yon.sol": {
+   "ceviri": "Neem de linkeromslag",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Draai naar links",
+   "geri": "Sol yönünde dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Draai scherp naar links.",
+   "geri": "Şiddetle sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Neem de rechterafslag",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Draai naar rechts",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Draai scherp rechts",
+   "geri": "Sağ yöne hızlı bir şekilde dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Ga rechtdoor.",
+   "geri": "Doğruya devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Terugkeren",
+   "geri": "Geri dönmek",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Route vanaf hier",
+   "geri": "Buradan itibaren rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Vind de routebeschrijving naar dit punt",
+   "geri": "Bu noktaya nasıl ulaşacağınızı bulun.",
+   "deneme": 2,
+   "ilk": "Route naar hier",
+   "ilkGeri": "Bu adrese nasıl ulaşılır?"
+  }
+ },
+ "no": {
+  "yon.sol": {
+   "ceviri": "Ta til venstre",
+   "geri": "Sol sağa",
+   "geriEn": "Turn left",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Hold deg litt til venstre.",
+   "geri": "Biraz sola doğru yerleşin.",
+   "deneme": 2,
+   "ilk": "Ta til venstre",
+   "ilkGeri": "Sol sağa"
+  },
+  "yon.keskinsol": {
+   "ceviri": "Ta en brå sving til venstre",
+   "geri": "Ani bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Ta til høyre",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Ta til høyre",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Ta en brå sving til høyre",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Fortsett rett frem",
+   "geri": "İlerlemeye devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Vend deg om og gå tilbake",
+   "geri": "Döndün, geri dön",
+   "deneme": 2,
+   "ilk": "Vend tilbake",
+   "ilkGeri": "İade"
+  },
+  "buradanBasla": {
+   "ceviri": "Rute fra her",
+   "geri": "Rota buradan",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Få veibeskrivelse til dette punktet",
+   "geri": "Bu noktaya ulaşmak için yol tarifini alın.",
+   "deneme": 2,
+   "ilk": "Veien hit",
+   "ilkGeri": "Bu yoldan"
+  }
+ },
+ "pl": {
+  "yon.sol": {
+   "ceviri": "Skręć w lewo",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Skręć w lewo",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "Skręć ostro w lewo.",
+   "ilkGeri": "Sağa dönün.",
+   "ikinci": "Skręć ostro w lewo.",
+   "ikinciGeri": "Sağa dönün."
+  },
+  "yon.sag": {
+   "ceviri": "Skręć w prawo",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Skręć w prawo",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Skręć gwałtownie w prawo",
+   "geri": "Ani bir şekilde sağa dön",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Kontynuuj prosto",
+   "geri": "Devam et",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Wróć",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Trasa od tego miejsca",
+   "geri": "Bu noktadan itibaren yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Trasa prowadząca tutaj",
+   "geri": "Bu noktaya giden yol",
+   "deneme": 1
+  }
+ },
+ "pt": {
+  "yon.sol": {
+   "ceviri": "Vire à esquerda",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Vire à esquerda",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Vire à esquerda, em um ângulo fechado.",
+   "geri": "Sol dönün, dar bir açıyla.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Vire à direita",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Vire à direita",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Vire à direita em um ângulo fechado.",
+   "geri": "Sağa, darbe açısıyla dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Continue na mesma direção",
+   "geri": "Aynı yönde devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Volte",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Rota a partir daqui",
+   "geri": "Buradan itibaren yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Como chegar aqui",
+   "geri": "Buraya nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "ro": {
+  "yon.sol": {
+   "ceviri": "Faceți la stânga",
+   "geri": "Sol veğe",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Mergea la stânga",
+   "geri": "Sol yoluna dönüyordu.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Faceți o cotitură bruscă la stânga.",
+   "geri": "Ani ve hızlı bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Faceți la dreapta",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Mergeți la dreapta",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Faceți o cotitură bruscă la dreapta.",
+   "geri": "Ani ve hızlı bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Continuați drept",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Întoarce-te",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Începeți traseul de la acest punct.",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "Traseul de aici",
+   "ilkGeri": "Bu rota"
+  },
+  "burayaGit": {
+   "ceviri": "Cum ajung aici?",
+   "geri": "Buraya nasıl ulaşabilirim?",
+   "deneme": 1
+  }
+ },
+ "ru": {
+  "yon.sol": {
+   "ceviri": "Поверните налево",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Поверните налево",
+   "geri": "Soluna dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Резко поверните налево.",
+   "geri": "Keskin bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Поверните направо",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Поверните направо",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Сверните резко направо.",
+   "geri": "Ani bir şekilde sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Продолжайте прямо по дороге",
+   "geri": "Doğru yolda devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Вернуться",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Маршрут отсюда",
+   "geri": "Buradan çıkış noktası",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Как добраться сюда",
+   "geri": "Buraya nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "sk": {
+  "yon.sol": {
+   "ceviri": "Vľavo",
+   "geri": "Solun",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Choďte vľavo",
+   "geri": "Sol sağa",
+   "geriEn": "Go left",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Zatočte prudko vľavo.",
+   "geri": "Hızlı bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Vpravo",
+   "geri": "Sağa",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Natáčajte sa doprava",
+   "geri": "Sağ yöne dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Zato prudko doprava",
+   "geri": "Ancak dikkatli olun, sağa doğru",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Pokračujte rovno.",
+   "geri": "Devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Vráťte sa",
+   "geri": "Geri dönün",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Trasa odtiaľto",
+   "geri": "Bu rota buradan",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Cesta sem",
+   "geri": "Buraya gelme yolu",
+   "deneme": 1
+  }
+ },
+ "sl": {
+  "yon.sol": {
+   "ceviri": null,
+   "ilk": "Desno",
+   "ilkGeri": "Sağ",
+   "ikinci": "Spremenite usmeritev",
+   "ikinciGeri": "Yönü değiştirin"
+  },
+  "yon.hafifsol": {
+   "ceviri": "Sajite levo",
+   "geri": "Lütfen sola bakın.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Št strogo levo",
+   "geri": "Lütfen, lütfen sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Desno",
+   "geri": "Sağ",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Desno",
+   "geri": "Sağ",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Št strogo desno",
+   "geri": "Ş, kesinlikle sağ",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Pravzaprav nadaljujte.",
+   "geri": "Aslında, devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Nazaj",
+   "geri": "Geri",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Pot od tu",
+   "geri": "Buradan devam",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Pot do tu",
+   "geri": "Bu noktaya nasıl geldik",
+   "deneme": 1
+  }
+ },
+ "sr": {
+  "yon.sol": {
+   "ceviri": "Уклоните се лево",
+   "geri": "Soluna doğru çekilin.",
+   "deneme": 2,
+   "ilk": "Уклоните се десно",
+   "ilkGeri": "Sağa çekilin."
+  },
+  "yon.hafifsol": {
+   "ceviri": "Држите се неколико мета на лево.",
+   "geri": "Hedeflerinizi sol tarafa yerleştirin.",
+   "deneme": 2,
+   "ilk": "Уклоните се десно",
+   "ilkGeri": "Sağa çekilin."
+  },
+  "yon.keskinsol": {
+   "ceviri": "Зауставите се и направите остру завој налево.",
+   "geri": "Yavaşlayın ve sol tarafa sert bir dönüş yapın.",
+   "deneme": 2,
+   "ilk": "Заустави се и уклони се десно",
+   "ilkGeri": "Durun ve sağa çekilin."
+  },
+  "yon.sag": {
+   "ceviri": "Уклоните се десно",
+   "geri": "Sağa çekilin.",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Скрени десно",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Заустави се и уклони се десно",
+   "geri": "Durun ve sağa çekilin.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Наставите право",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Врати се",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Почните пут из овог места.",
+   "geri": "Bu noktadan yola çıkın.",
+   "deneme": 2,
+   "ilk": "Маршрута овде",
+   "ilkGeri": "Rota burada"
+  },
+  "burayaGit": {
+   "ceviri": "Пута до овде",
+   "geri": "Buraya kadar",
+   "deneme": 1
+  }
+ },
+ "sv": {
+  "yon.sol": {
+   "ceviri": "Sväng åt vänster",
+   "geri": "Soluna doğru dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Sväng åt vänster",
+   "geri": "Soluna doğru dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Vänd skarpt åt vänster.",
+   "geri": "Keskin bir şekilde sola dönün.",
+   "deneme": 2,
+   "ilk": "Sväng brått.",
+   "ilkGeri": "Hızlan."
+  },
+  "yon.sag": {
+   "ceviri": "Sväng åt höger",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Sväng åt höger",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Sväng brant åt höger",
+   "geri": "Aşağıya doğru, sağa doğru keskin bir dönüş yapın.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Fortsätt rakt fram",
+   "geri": "İlerlemeye devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Vänd dig om och gå tillbaka",
+   "geri": "Dönün ve geri dönün.",
+   "deneme": 2,
+   "ilk": "Vänd om",
+   "ilkGeri": "Dönün"
+  },
+  "buradanBasla": {
+   "ceviri": "Rutt från här",
+   "geri": "Buradan geçen rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Väg till här",
+   "geri": "Bu yoldan buraya ulaşın",
+   "deneme": 1
+  }
+ },
+ "sw": {
+  "yon.sol": {
+   "ceviri": null,
+   "ilk": "Tendeka",
+   "ilkGeri": "Tendeka",
+   "ikinci": "Nenda kuelewa",
+   "ikinciGeri": "Lütfen, daha fazla bilgi edinmek için"
+  },
+  "yon.hafifsol": {
+   "ceviri": "Tendeka upande wa kushoto",
+   "geri": "Sol tara yönünde dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Tend kutoka upande la kushoto",
+   "geri": "Sol tarağından sola doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Tendeka kulia",
+   "geri": "Sağ tarafına dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Tendeka kulia",
+   "geri": "Sağ tarafına dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": null,
+   "ilk": "Tend kutoka kulia sana",
+   "ilkGeri": "Çok acı çekiyorum.",
+   "ikinci": "Tendeka kwa kasi kubwa",
+   "ikinciGeri": "Çok hızlı bir şekilde"
+  },
+  "yon.duz": {
+   "ceviri": "Endelea moja kwa moja",
+   "geri": "Devam et",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Kurudi",
+   "geri": "Geri dönmek",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Anza njia kuanzia eneo hili",
+   "geri": "Bu noktadan başlayarak yolu izleyin.",
+   "deneme": 2,
+   "ilk": "Njia kutoka hapa",
+   "ilkGeri": "Yol buraya"
+  },
+  "burayaGit": {
+   "ceviri": "Njia ya kwenda hapa",
+   "geri": "Buraya nasıl ulaşılacağı",
+   "deneme": 1
+  }
+ },
+ "ta": {
+  "yon.sol": {
+   "ceviri": "இடதுபுறமாகச் செல்லவும்.",
+   "geri": "Sol tarafa doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "இடது புறமாகச் செல்லவும்.",
+   "geri": "Sol tarafa doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "திடீரென இடது பக்கம் திரும்பவும்.",
+   "geri": "Aniden sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "வலது பக்கம் திரும்பவும்",
+   "geri": "Sağ tarafına dönün.",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "வலது பக்கம் திரும்பவும்",
+   "geri": "Sağ tarafına dönün.",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "வலதுபுறமாகத் திரும்பவும்.",
+   "geri": "Sağ tarafınıza dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "தொடர்ந்து நேராக செல்லவும்.",
+   "geri": "Düz bir yolda sürekli ilerlemeye devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "திரும்பிச் செல்லுங்கள்",
+   "geri": "Geri dönün",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "இங்கிருந்து செல்லும் வழி",
+   "geri": "Buradan çıkış yolu",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "இங்கு வரும் வழி",
+   "geri": "Buraya nasıl ulaşacağınızı öğrenin",
+   "deneme": 1
+  }
+ },
+ "te": {
+  "yon.sol": {
+   "ceviri": "ఎడమ వైపుకు తిరగండి",
+   "geri": "Sol tarafa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "ఎడమ వైపుకు వెళ్లండి",
+   "geri": "Sol tarafa gidin",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "ఖచ్చితంగా ఎడమ వైపుకు తిరగండి",
+   "geri": "Kesinlikle sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "కుడి వైపుకు తిరగండి",
+   "geri": "sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "కుడి వైపుకు తిరగండి",
+   "geri": "sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "ఖచ్చితంగా కుడివైపుకు తిరగండి",
+   "geri": "Kesinlikle sağa dönün.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "ఇంకా ముందుకు సాగండి",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "తిరిగి వెళ్ళు",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "ఇక్కడి నుండి వెళ్లే మార్గం",
+   "geri": "Buradan çıkış yolu",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "ఇక్కడికి ఎలా వెళ్లాలి",
+   "geri": "İşte buraya nasıl ulaşabileceğinizi öğrenmek ister misiniz?",
+   "deneme": 1
+  }
+ },
+ "th": {
+  "yon.sol": {
+   "ceviri": "เลี้ยวซ้าย",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "เลี้ยวซ้าย",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "เลี้ยวซ้ายอย่างรวดเร็ว",
+   "geri": "Hızlı bir şekilde sola dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "เลี้ยวขวา",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "เลี้ยวขวา",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": null,
+   "ilk": "เลี้ยวซ้ายอย่างรวดเร็ว",
+   "ilkGeri": "Hızlı bir şekilde sola dönün.",
+   "ikinci": "เลี้ยวซ้ายอย่างรวดเร็ว",
+   "ikinciGeri": "Hızlı bir şekilde sola dönün."
+  },
+  "yon.duz": {
+   "ceviri": "เดินไปตามทางตรง",
+   "geri": "Doğru yolda ilerleyin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "กลับไป",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "เส้นทางจากที่นี่",
+   "geri": "Bu noktadan itibaren yol",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "เส้นทางไปยังที่นี้",
+   "geri": "Bu yere ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "uk": {
+  "yon.sol": {
+   "ceviri": "Поверніть ліворуч",
+   "geri": "Soluna doğru dönün",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Поверніть ліворуч",
+   "geri": "Soluna doğru dönün",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Різко поверніть ліворуч",
+   "geri": "Ani bir şekilde sol tarafa dönün.",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Повернути праворуч",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Поверніть праворуч",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Робіть різкий поворот направо",
+   "geri": "Sağa ani bir dönüş yapın.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Продовжуйте рухатися прямо.",
+   "geri": "Daha düz bir yolda ilerlemeye devam edin.",
+   "deneme": 2,
+   "ilk": "Продовжуйте прямо.",
+   "ilkGeri": "Devam edin."
+  },
+  "yon.geri": {
+   "ceviri": "Повертайтесь",
+   "geri": "Geri dönün",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Маршрут від цього місця",
+   "geri": "Bu noktadan itibaren rota",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Шлях сюди",
+   "geri": "Buraya nasıl geldin?",
+   "deneme": 1
+  }
+ },
+ "ur": {
+  "yon.sol": {
+   "ceviri": null,
+   "ilk": "لوائیں",
+   "ilkGeri": "Sağ",
+   "ikinci": "لوائیں",
+   "ikinciGeri": "Sağ"
+  },
+  "yon.hafifsol": {
+   "ceviri": "کمی سمت چپ میں رہیں۔",
+   "geri": "Biraz sola doğru yerleşin.",
+   "deneme": 2,
+   "ilk": "چپ سمت جائیں",
+   "ilkGeri": "Sağa dönün"
+  },
+  "yon.keskinsol": {
+   "ceviri": null,
+   "ilk": "سمپت سمت میں دائیں طرف جائیں۔",
+   "ilkGeri": "سمپت'te sağ tarafa doğru ilerleyin.",
+   "ikinci": "سمجھا سمت میں تیز مڑیں۔",
+   "ikinciGeri": "Yolun yönünü doğru belirleyin ve hızlı dönüşler yapın."
+  },
+  "yon.sag": {
+   "ceviri": "دائیں جانب جائیں",
+   "geri": "sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "کمی دائیں جانب رہیں۔",
+   "geri": "Biraz sağa çekilin.",
+   "deneme": 2,
+   "ilk": "درست سمت میں جائیں",
+   "ilkGeri": "Doğru yöne gitin."
+  },
+  "yon.keskinsag": {
+   "ceviri": "سمپت سمت میں دائیں طرف جائیں۔",
+   "geri": "سمپت'te sağ tarafa doğru ilerleyin.",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "پہلے ہی راستے پر چلتے رہیں۔",
+   "geri": "Yolunuzu takip etmeye devam edin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": null,
+   "ilk": "دور ہو جائیں",
+   "ilkGeri": "Uzaklaşın",
+   "ikinci": "دائیں طرف سے گھیریں اور پیچھے جائیں۔",
+   "ikinciGeri": "Sağdan sarın ve arkaya doğru çekilin."
+  },
+  "buradanBasla": {
+   "ceviri": "یہاں سے راستہ",
+   "geri": "Buradan çıkış yolu",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "یہاں تک پہنچنے کا راستہ",
+   "geri": "İşte buraya ulaşmanın yolu",
+   "deneme": 1
+  }
+ },
+ "vi": {
+  "yon.sol": {
+   "ceviri": "Rẽ trái",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "Rẽ trái",
+   "geri": "Sol dönüş",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "Rẽ sang trái gấp",
+   "geri": "Sol şeride ani bir şekilde geçin",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "Rẽ phải",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "Rẽ phải",
+   "geri": "Sağa dön",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "Rẽ sang phải gấp",
+   "geri": "Sağa dönerek hızla manevra yapın",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "Tiếp tục đi thẳng",
+   "geri": "Devam edin",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "Quay lại",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "Hướng đi từ đây",
+   "geri": "Buradan nasıl ilerlemeliyim?",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "Cách đi đến đây",
+   "geri": "Buraya nasıl ulaşılır?",
+   "deneme": 1
+  }
+ },
+ "zh": {
+  "yon.sol": {
+   "ceviri": "向左转",
+   "geri": "Sol yöne dön",
+   "deneme": 1
+  },
+  "yon.hafifsol": {
+   "ceviri": "向左转",
+   "geri": "Sol yöne dön",
+   "deneme": 1
+  },
+  "yon.keskinsol": {
+   "ceviri": "向左转",
+   "geri": "Sol yöne dön",
+   "deneme": 1
+  },
+  "yon.sag": {
+   "ceviri": "向右转",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.hafifsag": {
+   "ceviri": "向右转",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.keskinsag": {
+   "ceviri": "向右转",
+   "geri": "Sağa dönün",
+   "deneme": 1
+  },
+  "yon.duz": {
+   "ceviri": "继续直行",
+   "geri": "Devam edin, düz yolda ilerleyin.",
+   "deneme": 1
+  },
+  "yon.geri": {
+   "ceviri": "返回",
+   "geri": "Geri dön",
+   "deneme": 1
+  },
+  "buradanBasla": {
+   "ceviri": "从这里开始的路线",
+   "geri": "Buradan başlayacak olan rota.",
+   "deneme": 1
+  },
+  "burayaGit": {
+   "ceviri": "到达此处的方法",
+   "geri": "İşte buraya ulaşmanın yolları:",
+   "deneme": 1
+  }
+ }
+}

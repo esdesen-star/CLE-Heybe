@@ -17,6 +17,15 @@ if (process.env.ZAYIF === '0') H.AYAR.zayifHavuz = {};
 if (process.env.KUCUK && H.AYAR.kucukKitap) H.AYAR.kucukKitap.sinir = +process.env.KUCUK;
 // §109: UYARI=2 en iyi makalenin uyarı kutuları (Key action · NOTE · CAUTION) makale sınırı dışında
 if (process.env.UYARI) H.AYAR.uyariKutusu = +process.env.UYARI;
+// §122 konu uyumu bekçisi: yardımcı yokken küçük kitabın makale listesi dosyadan (yardımcının -makaleler komutuyla yazılır).
+// Varsayılan sınav kütüphanesinin listesi; MAKALELER=0 bekçiyi kapatır (eski sürümlerle karşılaştırma).
+{
+  const liste = process.env.MAKALELER || path.join(__dirname, '..', 'sadakat', 'kitap', 'makaleler.json');
+  if (process.env.MAKALELER !== '0' && fs.existsSync(liste)) {
+    const m = JSON.parse(fs.readFileSync(liste, 'utf8'));
+    H.AYAR.makaleler = async (kitap) => m[kitap] || null;
+  }
+}
 const SORGU = process.env.SORGU || '';   // §47 karşılaştırma: zayıf havuz eşiği kapalı
 // §58 kardeş modeller: KALIP=sablon (Gemma 3 dışı model kendi şablonuyla) · TEKMODEL=1 (çevirmen yok, köprüde soruyu
 // ve cevabı sohbet modeli çevirir — hafif kardeşin tek model düzeni)

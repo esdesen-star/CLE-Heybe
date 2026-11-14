@@ -1,0 +1,8 @@
+{
+  "M03": ["doğru", "rotayı ve dönüşü birine bildir, yerel acil hizmete ulaşmayı ve işaret araçlarını öğren, risklere göre ilk yardım çantası; yükseklik bölümünden zararsız satırlar karışmış"],
+  "M05": ["kısmen", "insan ısırığı da aynı; temiz suyla hemen, basınçlı yıka, enfeksiyonu izle, deri kapatma/tetanoz/kuduz için tıbbi yardım; kanıyorken bastırma ve steril sargı eksik"],
+  "M06": ["doğru", "büyük kan kabarcığını sağlık çalışanı tedavi etsin, kazmayı bırak, temiz suyla yıka; örtme eksik"],
+  "M20": ["kısmen", "'durun, sakin olun demeyin, kendi zamanında tepki versin' tuzağa karşı; ama 'ayrıntılı konuşmayı teşvik etmez, tek oturum zararlı olabilir' susturmaya da okunabilir; çoğu yas bölümünden"],
+  "M29": ["bilgi yok", "kaynakta yok: köpeğe kalp masajı — doğru davranış"],
+  "M30": ["bilgi yok", "kaynakta yok: çök-kapan-tutun — 'kaynaklarda yok' dedi, uydurmadı — doğru davranış"]
+}

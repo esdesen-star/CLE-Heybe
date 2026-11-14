@@ -58,4 +58,7 @@ function srKiril(m) {
 const srNesne = (o) => (o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, srNesne(v)]))
   : typeof o === 'string' ? srKiril(o) : o);
 
-module.exports = { yerTutucu, cevir1, temiz, koru, geriKoy, temizCevir, srKiril, srNesne };
+// 06.11 (Ercan'ın Bulgarca testi): "stick" çevirmende "çubuk / asa / kalem" oluyordu → çeviriye "USB drive" gider.
+// 13.11 (§124): arayuz_cevir.cjs'ten buraya — anlam denetçisi de çevirmene giden metni ölçsün
+const bellekli = (m) => m.replace(/\b(the|this) stick\b/gi, '$1 USB drive').replace(/\bstick\b/gi, 'USB drive');
+module.exports = { yerTutucu, cevir1, temiz, koru, geriKoy, temizCevir, srKiril, srNesne, bellekli };

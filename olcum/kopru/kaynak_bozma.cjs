@@ -72,10 +72,14 @@ const BOZMALAR = [
   ['eylem: bebekte baş hafif istisnası yok', "haric: { tr: /hafif\\p{L}*|nötr|düz pozisyon/u, en: /gently|slightly|neutral/ } },", "},"],
   ['eylem: baş ağrısı "etkili olabilir" yok', "[^.]{0,80}(etkili ol|rahatlat|hafiflet|iyi gel|işe yar)\\p{L}*/u,", "[^.]{0,80}(etkiliX ol|rahatlatX|hafifletX|iyi gelX|işe yarX)\\p{L}*/u,"],
   // §114: karşıt ortam
-  ['ortam: soğuk ipucu bakılmıyor', 'if (sicak && !soguk && bolumler.every', 'if (sicak && bolumler.every'],
-  ['ortam: tek bölüm yetiyor', "if (sicak && !soguk && bolumler.every((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return", "if (sicak && !soguk && bolumler.some((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return"],
-  ['ortam: ters yön yok', "if (soguk && !sicak && bolumler.every((b) => ORTAM_MAKALE.sicak.test(b.makale || ''))) return ['durum: soğuk ortam sorusuna sıcak bölümü'];", ''],
+  ['ortam: soğuk ipucu bakılmıyor', 'if (sicak && !soguk && bolumler.some', 'if (sicak && bolumler.some'],
+  ['ortam: hepsi karşıt olmalı (§120 öncesi)', "if (sicak && !soguk && bolumler.some((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return", "if (sicak && !soguk && bolumler.every((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return"],
+  ['ortam: ters yön yok', "if (soguk && !sicak && bolumler.some((b) => ORTAM_MAKALE.sicak.test(b.makale || ''))) return ['durum: soğuk ortam sorusuna sıcak bölümü'];", ''],
   ['uyarı: sınır yok', '        if (ek === ekSinir) break;\n', ''],
+  // §122: konu uyumu
+  ['konu: yarı yarıya da durur', '    return toplam > 0 && disari * 2 > toplam;', '    return toplam > 0 && disari * 2 >= toplam;'],
+  ['konu: tek dış atıf yeter', '    return toplam > 0 && disari * 2 > toplam;', '    return toplam > 0 && disari > 0;'],
+  // ("adres yokken de çalışır" bozması eşdeğer çıktı: adres yoksa liste alınamaz, bekçi yine susar — dişle ölçülemez, çıkarıldı)
 ];
 const dislerTam = (cikti) => {
   const satirlar = [...cikti.matchAll(/(\d+)\/(\d+)/g)].map((m) => [+m[1], +m[2]]);

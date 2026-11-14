@@ -27,10 +27,13 @@
     // öbür dillerin kitaplarına bakılır). Yalnız ölçülen dil: görülmüş 112 Türkçe cevapta 0,45 altı doğru 0, kötü 4.
     zayifHavuz: { tr: 0.45 },
     // 09.11 (§86): makale sayısı `sinir`dan az olan kitap küçüktür — tek kelimeyle de aranır; konu makalesinden `konu` paragraf.
-    // VARSAYILAN KAPALI (sinir 0). Ölçüm: aramayı görülmemiş G setinde de iyileştirdi (kaynak cümlesi 32 → 42/75, sorgu
-    // 'ikisi' ile birlikte), ama daha çok cevap durmadan geçti ve geçenlerin kötüsü arttı (G: yanlış/tehlikeli geçen 0 → 4).
-    // Bekçiler yeni cevap türlerini (çevirinin düşürdüğü kelime, yanlış bölüm) görene dek açılmaz. Ölçmek için: sinir 5000.
-    kucukKitap: { sinir: 0, konu: 5 },
+    // CEVAP YOLUNDA KAPALI (sinir 0). 09.11: sorgu 'ikisi' ile G'de yanlış/tehlikeli geçen 0 → 4. 13.11 (§120) yeniden
+    // ölçüldü (sorgu özgün, o günden beri eklenen bekçilerle): 150 etiketli soruda soruya ait makale aday 114 → 144, en
+    // başta 100 → 114, kaynak cümlesi 200 → 295/481; uçtan uca beş sette (G H I J M) işe yarar cevap 18 → 25, geçen kötü
+    // 7 → 5 — ama tehlikeli geçen 1 → 3 (karbonmonoksite sıcak su torbası, nefes alan kişiye CPR, apandisitte sıcak su
+    // torbası; ikisi yanlış bölümden). Güvenlik önce: kapalı. `okuma`: okuma kipinde (cevap yazılmaz, bölüm gösterilir)
+    // aynı arama AÇIK — kaynak cümlesi F 46 → 48, G 42 → 44/75 (anlam modeliyle), kelimeyle F 16 → 18, G 27 → 28.
+    kucukKitap: { sinir: 0, konu: 5, okuma: 5000 },
     // 12.11 (§111): en iyi makalenin uyarı kutuları (Key action · NOTE · CAUTION) makale başına sınıra takılmadan en çok
     // bu kadar eklenir. Görülmüş F+G+H'de kaçan alıntıların 57'si makale sınırında kalmıştı ("Do not apply ice", "Do not
     // make the person vomit"); en iyi makaleden ≤2 kutu: alıntı 109 → 116/223. Görülmemiş I'de işe yarar cevap 4 → 6.
@@ -38,6 +41,13 @@
     // yaralanması NOT'u hafif darbe için "dinlensin, gününe devam etsin" diyor; burundan berrak sıvı gelen soruya bu
     // cümle eklendi (J03). Kutusuz aynı soru zararsız. Yeniden açmak (ör. yalnız CAUTION) yeni görülmemiş setle ölçülür.
     uyariKutusu: 0,
+    // 13.11 (§122): konu uyumu bekçisi — küçük kitapta (makale sayısı `sinir` altı) soru kitabın BÜTÜN paragraflarına karşı
+    // ayrıca sıralanır (anlam modeli; köprüde kaynak dilindeki çeviriyle). Cevabın o kitaba atıflarının yarısından çoğu
+    // bu bağımsız sıralamanın birinci makalesinden değilse durur. Notlu 104 cevapta (görülmüş setler, §121): kötü 13/27
+    // (tehlikeli 5/11) durdu, iyi 6/77. Komşu durum tuzaklarını görmez (bağımsız arama da aynı kelimeye kanar).
+    // `makaleler`: yardımcı programın küçük kitap makale listesi (/api/makaleler); boşsa bekçi çalışmaz. 0: kapalı.
+    konuBekci: { sinir: 500 },
+    makaleler: '',
   };
 
   const PARCA_SAYISI = 6;       // modele giden paragraf sayısı
@@ -646,8 +656,11 @@ ANSWER: ${a}`;
   // ---- 13.11 (§114): karşıt ortam bekçisi — görülmemiş J setinde (J02) "öğle sıcağında" bitkin düşen gönüllüye cevap
   //      hipotermi bölümünden yazıldı (ıslak giysi çıkar, battaniyeyle ört, sıcak içecek) ve hiçbir bekçi görmedi: sıcaktan
   //      bitkin birini ısıtmak zarar verir; tersi (donana serinletme) de öyle. Soru yalnız sıcak bir ortamı anlatıyorsa ve
-  //      cevabın atıf yaptığı makalelerin HEPSİ soğuk konusuysa (ya da tersi) durur. Ortam ipuçları kullanıcının kendi
-  //      sözlerinden (tr, en); "derisi soğuk" gibi belirti sözleri ortam sayılmaz. Sözlüğü olmayan dilde denetlemez. ----
+  //      cevap soğuk konusunun makalesine atıf yapıyorsa (ya da tersi) durur. Ortam ipuçları kullanıcının kendi
+  //      sözlerinden (tr, en); "derisi soğuk" gibi belirti sözleri ortam sayılmaz. Sözlüğü olmayan dilde denetlemez.
+  //      13.11 (§120): önce atıfların HEPSİ karşıt makaleden olmalıydı; arama genişleyince aynı J02 cevabı bir satırını
+  //      psikolojik ilk yardımdan alıp geçti (battaniye, sıcak içecek, sıcak su torbası). Artık TEK karşıt atıf yeter:
+  //      kayıtlı 1.142 cevapta yeni alarm yalnız J02 (5 kayıt), boş alarm 0. ----
   const ORTAM = {
     tr: { sicak: /(?<!\p{L})(sıca[kğ]\p{L}*|güneş\p{L}*|bunaltıcı|kavurucu)/u,
       soguk: /(?<!\p{L})(kar(da|a|ı|lı|dan|lar)?(?!\p{L})|tipi\p{L}*|ayaz\p{L}*|kış\p{L}*|don(muş|du|mak|ma|ar)\p{L}*|soğuk (hava|su|ortam|rüzgar|gece)|soğukta|üşü\p{L}*|hipoterm\p{L}*)/u },
@@ -660,9 +673,58 @@ ANSWER: ${a}`;
     if (!O || !bolumler || !bolumler.length) return [];
     const m = dil === 'tr' ? kucuk(soru) : String(soru).toLowerCase();
     const sicak = O.sicak.test(m), soguk = O.soguk.test(m);
-    if (sicak && !soguk && bolumler.every((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return ['durum: sıcak ortam sorusuna soğuk bölümü'];
-    if (soguk && !sicak && bolumler.every((b) => ORTAM_MAKALE.sicak.test(b.makale || ''))) return ['durum: soğuk ortam sorusuna sıcak bölümü'];
+    if (sicak && !soguk && bolumler.some((b) => ORTAM_MAKALE.soguk.test(b.makale || ''))) return ['durum: sıcak ortam sorusuna soğuk bölümü'];
+    if (soguk && !sicak && bolumler.some((b) => ORTAM_MAKALE.sicak.test(b.makale || ''))) return ['durum: soğuk ortam sorusuna sıcak bölümü'];
     return [];
+  }
+
+  // ---- 13.11 (§122): konu uyumu bekçisi (AYAR.konuBekci) — cevabın dayandığı makale sorunun makalesi mi? Küçük kitabın
+  //      bütün makaleleri yardımcıdan (ZIM dizini) listelenir, paragrafları bir kez okunur ve anlam vektörleri önbellekte
+  //      kalır (IFRC: 61 makale, 811 paragraf). Soru bu paragraflara karşı sıralanır; cevabın o kitaba yaptığı atıfların
+  //      yarısından çoğu birinci makaleden değilse durur. Arama tahmini ölçülenle birebir: belge biçimi anlamSirala'nınki.
+  //      Karar ölçümle (§121): çevrilmiş soruyla 13/27 ↔ 6/77; Türkçe soruyla 15/27 ↔ 19/77 (boş alarm çok). ----
+  const kitapMakaleOnbellek = new Map();
+  async function kitapParagraflari(kitap) {
+    if (!kitapMakaleOnbellek.has(kitap)) {
+      kitapMakaleOnbellek.set(kitap, (async () => {
+        let liste = null;
+        try {   // sınav düzeni yardımcısız koşar: AYAR.makaleler bir işlev olabilir (olcum/banka/olc_banka.cjs)
+          liste = typeof AYAR.makaleler === 'function' ? await AYAR.makaleler(kitap)
+            : (await (await getir(`${AYAR.makaleler}?kitap=${encodeURIComponent(kitap)}`)).json()).makaleler || null;
+        } catch (e) { return null; }
+        if (!liste || !liste.length) return null;
+        const ham = [];
+        for (const { yol } of liste) {
+          let m;
+          try { m = await makale(yol, kitap); } catch (e) { continue; }
+          for (const [bolum, metin] of m.paragraflar) ham.push({ ad: m.ad, bolum, metin, yol, kitap, kaynak: 'kiwix' });
+        }
+        return ham.length ? ham : null;
+      })());
+    }
+    return kitapMakaleOnbellek.get(kitap);
+  }
+  async function konuDenetle(sorguMetni, metin, parcalar) {
+    const S = AYAR.konuBekci || {};
+    if (!S.sinir || !AYAR.makaleler) return [];
+    const atif = atifBolumleri(metin, parcalar).filter((a) => a.kaynak === 'kiwix' && a.kitap);
+    if (!atif.length) return [];
+    const kitaplar = await kitaplik();
+    for (const kitap of [...new Set(atif.map((a) => a.kitap))]) {
+      const k = kitaplar.find((x) => x.ad === kitap);
+      if (!k || !(k.makaleSayisi > 0 && k.makaleSayisi < S.sinir)) continue;
+      const ham = await kitapParagraflari(kitap);
+      if (!ham) continue;
+      let tahmin;
+      try { tahmin = (await anlamSirala(ham, sorguMetni))[0][1].ad; } catch (e) { continue; }   // anlam modeli yoksa bekçi susar, öbürleri sürer
+      if (konuUymaz(atif.filter((a) => a.kitap === kitap), tahmin)) return [`durum: cevap sorunun makalesinden değil (bağımsız arama: ${tahmin})`];
+    }
+    return [];
+  }
+  // karar (modelsiz sınanır): kitabın atıflarının yarısından ÇOĞU tahmin edilen makalenin dışındaysa uymaz; yarı yarıya uyar
+  function konuUymaz(atif, tahmin) {
+    const toplam = atif.reduce((t, a) => t + a.sayi, 0), disari = atif.filter((a) => a.makale !== tahmin).reduce((t, a) => t + a.sayi, 0);
+    return toplam > 0 && disari * 2 > toplam;
   }
 
   // ---- Ö27 (09.11, Özet §86): yazı sistemi bekçisi — çeviri cevaba başka bir alfabenin kelimesini bırakabilir.
@@ -719,7 +781,7 @@ ANSWER: ${a}`;
     return (D.kucuk(soru).match(D.harf) || []).filter((w) => w.length > 3 && !D.durak.has(w.slice(0, 5)));
   }
 
-  async function adaylar(soru, basliklar, dil = 'tr') {
+  async function adaylar(soru, basliklar, dil = 'tr', kucukSinir = AYAR.kucukKitap.sinir) {
     // sorunun içerik kelimeleri ve ikili kelime grupları da aranır; İlk yardım her soruda adaydır.
     // Tek kitapta (Türkçe Vikipedi) 05.11'deki sıranın aynısı — denklik sınavı bunu ölçer.
     const D = dilBilgi(dil);   // köprüde genel diller de (tr, en, cs için dilAl ile aynı)
@@ -737,7 +799,7 @@ ANSWER: ${a}`;
     for (let i = 0; i < sorgular.length; i++) yollar.push(...await metinAra(sorgular[i], i === 0 ? 5 : 2, kitaplar));
     for (const k of kitaplar) if (D.hepAday && k.seri.startsWith('wikipedia_')) yollar.push({ kitap: k.ad, yol: D.hepAday });
     // küçük kitap: her içerik kelimesi tek başına da aranır (en iyi 1 sonuç) — sona eklenir, büyük kitabın sırası değişmez
-    const kucukler = kitaplar.filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < AYAR.kucukKitap.sinir);
+    const kucukler = kitaplar.filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < kucukSinir);
     if (kucukler.length && !(D.genel && BOSLUKSUZ.test(soru))) {
       for (const w of [...new Set(kelimeler)]) yollar.push(...await metinAra(w, 1, kucukler));
     }
@@ -767,9 +829,9 @@ ANSWER: ${a}`;
   }
 
   // aday makalelerin paragrafları (kütüphaneden); ek: her paragrafa eklenecek alanlar (köprüde { dil })
-  async function adayParcalar(soru, basliklar, dil, ek = {}) {
+  async function adayParcalar(soru, basliklar, dil, ek = {}, kucukSinir = AYAR.kucukKitap.sinir) {
     const ham = [];
-    for (const { kitap, yol } of await adaylar(soru, basliklar, dil)) {
+    for (const { kitap, yol } of await adaylar(soru, basliklar, dil, kucukSinir)) {
       let m;
       try { m = await makale(yol, kitap); } catch (e) { continue; }
       for (const [bolum, metin] of m.paragraflar) ham.push({ ad: m.ad, bolum, metin, yol, kitap, kaynak: 'kiwix', ...ek });
@@ -818,8 +880,10 @@ ANSWER: ${a}`;
     const kardes = await kardesMakaleler(sirali.slice(0, KARDES_BAKIS).map((x) => x[1]), kisi, ham);
     if (kardes.length) sirali = await anlamSirala([...ham, ...kardes], sorguMetni);   // anlam vektörleri önbellekte: yalnız yeniler hesaplanır
     const puanli = kisiSirala(sirali, kisi);
-    if (AYAR.aramaGozlem) AYAR.aramaGozlem({ soru, dil, sorguMetni, puanli });   // yalnız ölçüm (olcum/kopru/arama_olc.cjs)
+    if (AYAR.aramaGozlem) AYAR.aramaGozlem({ soru, dil, sorguMetni, puanli });   // yalnız ölçüm (olcum/kopru/arama_olc.cjs, olcum/sadakat/makale_olc.cjs)
     // konu makalesi: en iyi paragrafın makalesi; küçük kitaptaysa ondan AYAR.kucukKitap.konu paragraf gelebilir
+    // 13.11 (§120) denendi, geri alındı: öndeki makalelerin başlıklarını sohbet modeline seçtirmek ("kişinin durumu
+    // hangisi?"). 150 etiketli soruda doğru makale en başta 114 → 104 (3–6 aday): 17 düzeltti, 27 bozdu.
     const kucukKitap = new Set((await kitaplik()).filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < AYAR.kucukKitap.sinir).map((k) => k.ad));
     const konu = puanli.length && puanli[0][1].kaynak === 'kiwix' && kucukKitap.has(puanli[0][1].kitap)
       ? puanli[0][1].kitap + '|' + puanli[0][1].ad : null;
@@ -870,7 +934,8 @@ ANSWER: ${a}`;
     const D = dilAl(dil);
     // başlık önerisini sohbet modeli yapamaz: sorunun içerik kelimeleri başlık gibi aranır (her biri adla ve metinle)
     const kelimeler = [...new Set(icerikKelimeleri(soru, D))].slice(0, OKUMA_KELIME);
-    const ham = [...await adayParcalar(soru, kelimeler, dil), ...await benimParcalar(soru, D, dil)];
+    // küçük kitapta kelimeler tek tek de aranır (AYAR.kucukKitap.okuma, §120) — okuma kipi cevap yazmaz, yalnız bölüm gösterir
+    const ham = [...await adayParcalar(soru, kelimeler, dil, {}, AYAR.kucukKitap.okuma), ...await benimParcalar(soru, D, dil)];
     if (!ham.length) return [];
     const kisi = soruKisisi([[soru, dil]]);   // 12.11 (§109): sohbet yolundaki kişi kuralının aynısı
     const sirala = async (h) => (secenek.anlam ? anlamSirala(h, soru) : kelimeSirala(h, soru, D));
@@ -1776,7 +1841,8 @@ ANSWER: ${a}`;
       // Ö25: özgün cevap kaynağın dilindeki soruyla, çeviri kullanıcının sorusuyla (tr/en ise) eylem bekçisinden geçer
       denetim.eylem = [...new Set([...eylemDenetle(g.soru, ozgun, kd), ...(kd !== dil ? eylemDenetle(soru, cevap, dil) : [])])];
       denetim.ortam = ortamDenetle(soru, dil, atifBolumleri(ozgun, parcalar));   // §114
-      const eksik = [...new Set([...denetim.eylem, ...denetim.ozgun, ...denetim.ceviri, ...denetim.terim, ...denetim.yazi, ...denetim.kip, ...denetim.olumsuzluk, ...denetim.gidisDonus, ...denetim.ortam])];
+      denetim.konu = await konuDenetle(g.soru, ozgun, parcalar);   // §122: kaynağın dilindeki soruyla
+      const eksik = [...new Set([...denetim.eylem, ...denetim.ozgun, ...denetim.ceviri, ...denetim.terim, ...denetim.yazi, ...denetim.kip, ...denetim.olumsuzluk, ...denetim.gidisDonus, ...denetim.ortam, ...denetim.konu])];
       denetim.ikinciGoz = eksik.length ? [] : await ikinciGoz(soru, cevap);   // Ö22: durmuş cevaba sorulmaz
       eksik.push(...denetim.ikinciGoz);
       return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: false, kitapVar, gruplar,
@@ -1789,7 +1855,7 @@ ANSWER: ${a}`;
     const cevap = ya.metin;
     const sorular = { [dil]: soru };
     for (const x of gruplar || []) sorular[x.dil] = x.soru;
-    const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil), ...ortamDenetle(soru, dil, atifBolumleri(cevap, parcalar))]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı · §114 ortam
+    const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil), ...ortamDenetle(soru, dil, atifBolumleri(cevap, parcalar)), ...await konuDenetle(soru, cevap, parcalar)]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı · §114 ortam · §122 konu
     if (!ya.yok && !eksik.length) eksik.push(...await ikinciGoz(soru, cevap));   // Ö22
     return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: ya.yok,
       bolumler: ya.yok ? [] : atifBolumleri(cevap, parcalar), kitapVar, arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
@@ -1799,7 +1865,7 @@ ANSWER: ${a}`;
   const Heybe = { AYAR, DIL, sor, oku, okumaKaynak, kelimeSirala, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
     basliklariAyikla, kaynakMetni, cevir, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle };
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle, konuDenetle, konuUymaz };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

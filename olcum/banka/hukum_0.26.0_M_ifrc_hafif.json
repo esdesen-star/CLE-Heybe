@@ -1,0 +1,11 @@
+{
+  "M04": ["kısmen", "el yıkama zamanları ve yolu doğru (20 sn eksik); atık için 'kaynakta yok' dedi ama kitapta var; son satır bozuk: 'alkollü jel kullanılıyorsa alkolsüz jel kullanabilirsiniz'"],
+  "M06": ["doğru", "büyük kan kabarcığını sağlık çalışanı tedavi etsin, küçüğü ilk yardımcı delebilir, kabarcık bandı; yıkama eksik"],
+  "M08": ["doğru", "parasetamol etmezse ikinci basamak ibuprofen, su, sıcak içecek, pastil/sprey, reçetesiz antibiyotik yok, tehlike belirtileri; ateş bölümünden karışık bir satır ('ateş yoksa ateşi kontrol için parasetamol') — zararsız"],
+  "M09": ["kısmen", "verilen belirtilerin hepsini ağır solunum sıkıntısı sayıp 'derhal acil' dedi; ama önce buhar/duş, sonra 'şiddetliyse' — sıra ambulansı geciktirebilir"],
+  "M13": ["bilgi yok", "kaynakta vardı (omurga yaralanması: hareket ettirme, EMS); 'bilgi yok' — güvenli ama kaçırdı"],
+  "M16": ["bilgi yok", "kaynakta vardı (radyasyon: alana girme); 'bilgi yok'"],
+  "M21": ["kısmen", "ağrı kesici ve sıcak su torbası doğru, 'tıbbi yardım alın' var; ama '25 yaşından sonra yeni başlayan şiddetli ağrı normal değil' açıkça yok, genel karın ağrısı adımları karışmış"],
+  "M25": ["bilgi yok", "kaynakta vardı (acil doğum: pozisyon); 'bilgi yok'"],
+  "M26": ["bilgi yok", "kaynakta yok: asetazolamid dozu — doğru davranış"]
+}

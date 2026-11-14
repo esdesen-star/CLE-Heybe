@@ -8,6 +8,7 @@
      simgeler, rota ve arama yardımcıdan gelir; internet istenmez. Rotayı algoritma hesaplar, dil modeli değil. -->
 <link rel="stylesheet" href="harita_kit/maplibre-gl.css">
 <style>
+  [hidden] { display: none !important; }   /* 13.11: .haritaSecSatir'ın flex'i gizlemeyi eziyordu, tek haritada boş seçim kutusu */
   :root { --zemin: #f6f1e7; --yazi: #2b2118; --soluk: #6b5d4f; --kart: #fffaf2; --cizgi: #d9cbb4;
           --vurgu: #8a3b12; --uyari: #9a6a00; --dur: #a02c1c; --tamam: #2f6b3a; }
   @media (prefers-color-scheme: dark) {
@@ -180,6 +181,7 @@
 
 <script src="harita_kit/pmtiles.js"></script>
 <script src="harita_kit/basemaps.js"></script>
+<script src="harita_metin_ek.js"></script><!-- 13.11 (§123): öbür dillerin ekran yazıları, makine çevirisi -->
 <script type="module">
 import * as maplibregl from './harita_kit/maplibre-gl.mjs';
 
@@ -199,7 +201,7 @@ const METIN = {
     alanBaslik: 'Haritada gördüğün alanı indir', alanAciklama: 'Haritayı istediğin yere yaklaştır (ör. bir şehir), bir ad ver ve bu alanı indir. Yol tarifi için o bölgenin yol verisi iner; yalnız seçtiğin alan hazırlanır.',
     alanIpucu: 'Alan seçmek için önce bir harita gerekir: örneğin bütün dünyanın genel haritasını indir, sonra istediğin yere yaklaş.',
     alanAdi: 'Alanın adı (ör. Sandnessjøen)', alanIndir: 'Bu alanı indir', alanAdGerek: 'Önce alana bir ad ver.',
-    teklifAlanYol: (bolge, mb, gb) => `Yol tarifi için ${bolge} yol verisi iner (${boyut(mb)}); yalnız seçtiğin alan hazırlanır (yaklaşık ${sayi.format(gb)} GB bellek), dosya sonra silinir.`,
+    teklifAlanYol: (bolge, b, g) => `Yol tarifi için ${bolge} yol verisi iner (${b}); yalnız seçtiğin alan hazırlanır (yaklaşık ${g} GB bellek), dosya sonra silinir.`,
     dosyaBaslik: 'Dosyadan harita ekle', dosyaAciklama: 'Başka bir Heybe\'den ya da bir kurumdan gelen dosyalar: .pmtiles (görüntü), .rota ve .yer (yol tarifi), .json (bilgi) ya da .osm.pbf (yol verisi; Heybe hazırlar). Aynı adlı dosyalar birlikte bir harita olur.',
     dosyaYukleniyor: (ad, y) => `${ad} ekleniyor… %${y}`, dosyaEklendi: (ad) => `${ad} eklendi.`,
     dosyaHata: { bicim: 'Bu dosya bir harita dosyası değil ya da bozuk.', 'yer-yok': 'Diskte yer yetmiyor.', suruyor: 'Başka bir iş sürüyor; bitince yeniden dene.', yazilamadi: 'Dosya yazılamadı.' },
@@ -210,9 +212,9 @@ const METIN = {
     kita: { africa: 'Afrika', antarctica: 'Antarktika', asia: 'Asya', 'australia-oceania': 'Avustralya ve Okyanusya', 'central-america': 'Orta Amerika', europe: 'Avrupa', 'north-america': 'Kuzey Amerika', 'south-america': 'Güney Amerika' },
     bolgeAra: 'Ülke ya da bölge ara…', dunyaGenel: 'Bütün dünya — genel görünüm (yol tarifi yok)', dunyaTam: 'Bütün dünya — tam ayrıntı (yaklaşık 139 GB, yol tarifi yok)',
     katalogAliniyor: 'Bölge listesi alınıyor…', hesaplaniyor: 'Boyutlar hesaplanıyor… (büyük bölgede bir dakika sürebilir)',
-    teklifHarita: (mb, dusuk) => `Harita görüntüsü: ${boyut(mb)}${dusuk ? ' — bölge büyük, en yakın ayrıntı biraz düşük' : ''}.`,
-    teklifYol: (mb, gb) => `Yol tarifi verisi: ${boyut(mb)} indirilir; hazırlarken yaklaşık ${sayi.format(gb)} GB bellek ister.`,
-    teklifYolYok: 'Yol tarifi yok, yalnız görüntü.', teklifDisk: (g, b) => `Diskte gereken: ${sayi.format(g)} GB · boş: ${sayi.format(b)} GB.`,
+    teklifHarita: (b) => `Harita görüntüsü: ${b}.`, teklifHaritaBuyuk: (b) => `Harita görüntüsü: ${b} — bölge büyük, en yakın ayrıntı biraz düşük.`,
+    teklifYol: (b, g) => `Yol tarifi verisi: ${b} indirilir; hazırlarken yaklaşık ${g} GB bellek ister.`,
+    teklifYolYok: 'Yol tarifi yok, yalnız görüntü.', teklifDisk: (g, b) => `Diskte gereken: ${g} GB · boş: ${b} GB.`,
     teklifYerYok: 'Diskte yer yetmiyor.', teklifFat: 'Bu bellek FAT32: 4 GB\'tan büyük dosya yazılamaz. Belleği exFAT yap ya da daha küçük bölge seç.',
     indirDugme: 'İndir', indirDurdur: 'Durdur', yeniHaritaAc: 'Yeni haritayı aç',
     asama: { harita: 'Harita görüntüsü iniyor', yol: 'Yol verisi iniyor', hazirlik: 'Yol tarifi hazırlanıyor', bitti: 'Harita hazır ✓', durdu: 'Durduruldu. Yeniden başlatınca kaldığı yerden sürer.', hata: 'Durdu:' },
@@ -229,7 +231,7 @@ const METIN = {
     ekUyari: { 'bozuk-koordinat': (n) => `${n} satırın koordinatı okunamadı.`, 'derece-degil': (n) => `${n} satırın koordinatı derece değil.`,
                'enlem-boylam-takas': (n) => `${n} satırda enlem ve boylam yer değiştirmişti, düzeltildi.`, 'harita-disinda': (n) => `${n} nokta bu haritanın dışında.`,
                'taninmayan-tur': (x) => `Tanınmayan tür: ${x} — "kurumun noktası" sayıldı.`,
-               sayfali: (v) => `Bu adres sayfa sayfa veriyor: yalnız ilk sayfa alındı (${v.replace('/', ' / ')}). Kurumun indirilebilir dosyasını (CSV ya da Excel) kullan.`,
+               sayfali: (v) => `Bu adres sayfa sayfa veriyor: yalnız ilk sayfa alındı (${v}). Kurumun indirilebilir dosyasını (CSV ya da Excel) kullan.`,
                'tur-yok': (n) => `${n} noktanın türü belli değil. Bir "tür" sütunu ekle ya da dosya adına "toplanma", "su" gibi bir sözcük koy.` },
     uyari: (t) => `Bu harita ${t} tarihli OpenStreetMap verisidir. Afetten sonra yıkılan bina, kapanan yol ya da köprü haritada görünmez. Yolu gözünle doğrula, tehlikeli yerden geçme.`,
     konumAra: 'Konum aranıyor… GPS\'li cihazda internetsiz çalışır.',
@@ -242,17 +244,17 @@ const METIN = {
     yoluKapat: 'Yolu kapat (yıkık, geçilmez)', kapaliYolYok: 'Buraya yakın yol yok. Kapatmak istediğin yolun tam üstüne dokun.',
     kapatildi: (ad) => `${ad} kapalı işaretlendi; rota oradan geçmez.`, buYol: 'Bu yol', kapaliBaslik: 'Kapalı yol',
     kapaliTarih: (t) => `${t} tarihinde kapatıldı`, yoluAc: 'Yolu yeniden aç', acildi: 'Yol yeniden açıldı.',
-    kapaliNot: (n) => `${n} kapalı yol hesaba katıldı.`, rotaYokKapali: 'Yol bulunamadı. Kapattığın yollar yüzünden olabilir: haritadaki kırmızı çizgiye dokunup yolu açabilirsin.',
+    kapaliNot: (n) => `${n} kapalı yol hesaba katıldı.`, kapaliNot1: '1 kapalı yol hesaba katıldı.', rotaYokKapali: 'Yol bulunamadı. Kapattığın yollar yüzünden olabilir: haritadaki kırmızı çizgiye dokunup yolu açabilirsin.',
     aramaYok: 'Bulunamadı.', kismi: 'Kelimelerin hepsi bir arada bulunamadı; en ayırt edici kelimeyle bulunanlar:', duzelti: (q) => `Yazım düzeltildi: «${q}» için sonuçlar`, basGerek: 'Önce başlangıcı seç: Konumum, ad ya da haritaya dokun.',
     hesap: 'Rota hesaplanıyor…', agYukleniyor: 'Yol ağı ilk kez belleğe alınıyor. Yavaş bellekte bu yarım dakika sürebilir; sonraki rotalar anında çıkar.', rotaYok: 'Bu iki nokta arasında yol bulunamadı.', yolYok: 'Seçilen noktanın yakınında yol yok.',
     rotaYokYaya: 'Yürüyerek yol bulunamadı: arada deniz, otoyol ya da yayaya kapalı köprü olabilir. Araçla dene.',
-    sureNot: 'Süre tahminidir. Enkaz, trafik ve bekleme hesaba katılmaz.', vapurNot: ' (sefer olmayabilir)', kusUcusu: (m) => `kuş uçuşu ${uzunluk(m)}`,
+    sureNot: 'Süre tahminidir. Enkaz, trafik ve bekleme hesaba katılmaz.', vapurNot: ' (sefer olmayabilir)', kusUcusu: (u) => `kuş uçuşu ${u}`,
     haritaYok: 'Bu Heybe\'de henüz harita yok.', hata: 'Bir sorun çıktı. Yeniden dene.',
-    ozet: (m, sn, kip) => `${uzunluk(m)} · ${kip === 'arac' ? 'araçla' : 'yürüyerek'} yaklaşık ${sure(sn)}`,
-    sapma: (m) => `Seçilen nokta en yakın yola ${uzunluk(m)} uzakta.`,
+    ozetArac: (u, s) => `${u} · araçla yaklaşık ${s}`, ozetYaya: (u, s) => `${u} · yürüyerek yaklaşık ${s}`,
+    sapma: (u) => `Seçilen nokta en yakın yola ${u} uzakta.`,
     yon: { basla: 'Yola çık', duz: 'Düz devam et', hafifsag: 'Hafif sağa', hafifsol: 'Hafif sola', sag: 'Sağa dön',
            sol: 'Sola dön', keskinsag: 'Keskin sağa dön', keskinsol: 'Keskin sola dön', geri: 'Geri dön' },
-    varis: 'Vardın.', boyunca: (ad) => ad ? `: ${ad}` : '',
+    varis: 'Vardın.', boyunca: (ad) => `: ${ad}`,
     sinif: { 16: 'toprak yol', 17: 'yaya alanı', 18: 'yaya yolu', 19: 'patika', 20: 'merdiven', 14: 'ara yol', 21: 'bisiklet yolu', 24: 'vapur' },
     adsiz: 'adsız yol', dk: 'dk', sa: 'sa', yakinYok: 'Yürünebilir uzaklıkta bulunamadı. Bu bölgede haritada kayıt eksik olabilir; toplanma alanı, su ve barınak için yerel yetkililere (AFAD, belediye) sor.', km: 'km', m: 'm',
     lisans: '© OpenStreetMap katkıcıları · Protomaps'
@@ -268,63 +270,63 @@ const METIN = {
     ekBaslik: 'Organisation\'s list: assembly points, water, shelter…',
     haritaSecEtiket: 'Map:', ekBagEkle: 'Add from link', ekBagNot: 'Or paste the list\'s web address (a link straight to the file: Excel, CSV, KML, GeoJSON). Needs internet.',
     ekBagIndiriliyor: 'Downloading the list…', ekBagHata: { adres: 'This is not a web address (it must start with http or https).', baglanti: 'The address could not be reached. Is there internet, is the address right?' },
-    noktamiKaydet: 'Save my point', noktaAdi: 'Name (e.g. neighbourhood park)', kaydet: 'Save', noktaKaydedildi: 'Saved to the list "Benim noktalarım" (my points).',
+    noktamiKaydet: 'Save this place', noktaAdi: 'Name (e.g. neighbourhood park)', kaydet: 'Save', noktaKaydedildi: 'Saved to the list "Benim noktalarım" (my points).',
     alanBaslik: 'Download the area you see on the map', alanAciklama: 'Zoom the map to the place you want (e.g. a town), give it a name and download this area. For directions the region\'s road data is downloaded; only the area you chose is prepared.',
     alanIpucu: 'To choose an area you first need a map: for example download the whole-world overview, then zoom in where you want.',
     alanAdi: 'Name of the area (e.g. Sandnessjøen)', alanIndir: 'Download this area', alanAdGerek: 'First give the area a name.',
-    teklifAlanYol: (bolge, mb, gb) => `For directions the road data of ${bolge} is downloaded (${boyut(mb)}); only the chosen area is prepared (about ${sayi.format(gb)} GB of memory), and the file is deleted afterwards.`,
+    teklifAlanYol: (bolge, b, g) => `For directions the road data of ${bolge} is downloaded (${b}); only the chosen area is prepared (about ${g} GB of memory), and the file is deleted afterwards.`,
     dosyaBaslik: 'Add a map from files', dosyaAciklama: 'Files from another Heybe or an organisation: .pmtiles (tiles), .rota and .yer (directions), .json (info) or .osm.pbf (road data; Heybe prepares it). Files with the same name make one map.',
     dosyaYukleniyor: (ad, y) => `Adding ${ad}… ${y}%`, dosyaEklendi: (ad) => `${ad} added.`,
     dosyaHata: { bicim: 'This is not a map file, or it is damaged.', 'yer-yok': 'Not enough space on the drive.', suruyor: 'Another job is running; try again when it ends.', yazilamadi: 'The file could not be written.' },
     haritalarBaslik: 'Maps in this Heybe', haritaKaldir: 'Remove', haritaKaldirSor: (ad) => `Remove the map "${ad}" from this Heybe? Its tiles, directions and place names are deleted.`,
-    yolVarKisa: 'with directions', yolYokKisa: 'tiles only',
+    yolVarKisa: 'with route planning', yolYokKisa: 'map view only',
     uyariTarihsiz: 'This map is OpenStreetMap data of unknown date. Buildings that collapsed and roads or bridges that closed after a disaster do not show on it. Check the way with your own eyes and do not cross dangerous places.',
     indirBaslik: 'Add a map: download, choose an area or from files', indirAciklama: 'While there is internet, download the map and directions of a country or region; after that everything works offline. Source: OpenStreetMap (tiles Protomaps, road data Geofabrik).',
     kita: {},
-    bolgeAra: 'Search a country or region…', dunyaGenel: 'Whole world — overview (no directions)', dunyaTam: 'Whole world — full detail (about 139 GB, no directions)',
+    bolgeAra: 'Search a country or region…', dunyaGenel: 'Whole world — overview (no route planning)', dunyaTam: 'Whole world — full detail (about 139 GB, no route planning)',
     katalogAliniyor: 'Getting the list of regions…', hesaplaniyor: 'Working out the sizes… (a large region can take a minute)',
-    teklifHarita: (mb, dusuk) => `Map tiles: ${boyut(mb)}${dusuk ? ' — large region, closest detail slightly lower' : ''}.`,
-    teklifYol: (mb, gb) => `Road data for directions: ${boyut(mb)} to download; preparing it needs about ${sayi.format(gb)} GB of memory.`,
-    teklifYolYok: 'No directions, map tiles only.', teklifDisk: (g, b) => `Needed on the drive: ${sayi.format(g)} GB · free: ${sayi.format(b)} GB.`,
+    teklifHarita: (b) => `Map view: ${b}.`, teklifHaritaBuyuk: (b) => `Map view: ${b} — large region, closest detail slightly lower.`,
+    teklifYol: (b, g) => `Road data for directions: ${b} to download; preparing it needs about ${g} GB of memory.`,
+    teklifYolYok: 'No route planning, map view only.', teklifDisk: (g, b) => `Needed on the drive: ${g} GB · free: ${b} GB.`,
     teklifYerYok: 'Not enough space on the drive.', teklifFat: 'This drive is FAT32: files over 4 GB cannot be written. Format it as exFAT or choose a smaller region.',
     indirDugme: 'Download', indirDurdur: 'Stop', yeniHaritaAc: 'Open the new map',
-    asama: { harita: 'Downloading map tiles', yol: 'Downloading road data', hazirlik: 'Preparing directions', bitti: 'Map ready ✓', durdu: 'Stopped. Starting again continues where it left off.', hata: 'Stopped:' },
+    asama: { harita: 'Downloading the map view', yol: 'Downloading road data', hazirlik: 'Preparing route planning', bitti: 'Map ready ✓', durdu: 'Stopped. Starting again continues where it left off.', hata: 'Stopped:' },
     indirHata: { 'internet-yok': 'No internet. Downloading a map needs internet.', 'katalog-alinamadi': 'The list of regions could not be fetched.', 'harita-kaynagi-yok': 'The map source could not be reached.',
                  'yol-verisi-alinamadi': 'The road data could not be reached.', 'saglama-tutmadi': 'The road data checksum did not match; it was deleted, try again.', 'saglama-alinamadi': 'The checksum could not be fetched.',
                  'hazirlik-durdu': 'Preparation stopped: this computer may not have enough memory for this region. Choose a smaller region.', 'yer-yok': 'Not enough space on the drive.', suruyor: 'Another download is running.', 'bolge-yok': 'Region not found.' },
-    yolYokHarita: 'This map has no directions (tiles only). Download a country or region map for directions.', haritaIndirOner: 'You can choose a country or region under "Download a map" below.',
+    yolYokHarita: 'This map has no route planning (map view only). Download a country or region map for route planning.', haritaIndirOner: 'You can choose a country or region under "Download a map" below.',
     ekAciklama: 'Add an organisation\'s list of points (civil protection, municipality, Red Cross/Crescent): Excel, CSV, KML or GeoJSON. Columns: name, type, latitude, longitude; neighbourhood and district are optional. The list stays in this Heybe; every point shows the name of its list.',
     ekSec: 'Choose a file', ekOkunuyor: 'Reading the list…', ekKaldir: 'Remove', ekKaldirSor: (d) => `Remove the list "${d}" from this Heybe?`,
-    ekEklendi: (n, d) => `${d}: ${n} points added.`, ekNokta: (n) => `${n} points`, liste: (l) => `list: ${l}`,
+    ekEklendi: (n, d) => `${d}: ${n} places added.`, ekNokta: (n) => `${n} places`, liste: (l) => `list: ${l}`,
     ekHata: { 'enlem-boylam-yok': 'No latitude and longitude columns were found in the file.', 'derece-degil': 'The coordinates are not in degrees (UTM or similar). Latitude and longitude must be degrees, e.g. 36.2025 and 36.1600.',
               'nokta-yok': 'The file has no readable points.', okunamadi: 'The file could not be read.', bicim: 'This file type cannot be read. Use Excel, CSV, KML or GeoJSON.',
               'cok-buyuk': 'The file is too large (30 MB at most).', 'sayfa-yok': 'No sheet was found in the Excel file.' },
     ekUyari: { 'bozuk-koordinat': (n) => `${n} rows had unreadable coordinates.`, 'derece-degil': (n) => `${n} rows had coordinates that are not degrees.`,
-               'enlem-boylam-takas': (n) => `${n} rows had latitude and longitude swapped; corrected.`, 'harita-disinda': (n) => `${n} points are outside this map.`,
+               'enlem-boylam-takas': (n) => `${n} rows had latitude and longitude swapped; corrected.`, 'harita-disinda': (n) => `${n} places are outside this map.`,
                'taninmayan-tur': (x) => `Unrecognised type: ${x} — counted as "organisation's point".`,
-               sayfali: (v) => `This address gives data page by page: only the first page was taken (${v.replace('/', ' / ')}). Use the organisation's downloadable file (CSV or Excel).`,
-               'tur-yok': (n) => `${n} points have no clear type. Add a "type" column or put a word such as "assembly" or "water" in the file name.` },
+               sayfali: (v) => `This address gives data page by page: only the first page was taken (${v}). Use the organisation's downloadable file (CSV or Excel).`,
+               'tur-yok': (n) => `${n} places have no clear type. Add a "type" column or put a word such as "assembly" or "water" in the file name.` },
     uyari: (t) => `This map is OpenStreetMap data from ${t}. Buildings that collapsed and roads or bridges that closed after a disaster do not show on it. Check the way with your own eyes and do not cross dangerous places.`,
     konumAra: 'Looking for your location… Works offline on devices with GPS.',
     konumYok: 'This device could not give its location. Choose the start by typing its name or tapping the map.',
     konumAdi: 'My location', secilen: 'Point chosen on the map',
-    buradanBasla: 'Start here', burayaGit: 'Go here',
+    buradanBasla: 'Route from here', burayaGit: 'Route to here',
     kuralsiz: 'No route that obeys the turn restrictions was found; these directions ignore turn restrictions and U-turn rules. Follow the road signs.',
     yakinBekliyor: (t) => `To find the nearest ${t.toLowerCase()}, first choose where you are: press My location, type a name or tap the map.`,
     yoluKapat: 'Close this road (collapsed, impassable)', kapaliYolYok: 'There is no road near here. Tap right on the road you want to close.',
     kapatildi: (ad) => `${ad} is marked closed; routes will avoid it.`, buYol: 'This road', kapaliBaslik: 'Closed road',
     kapaliTarih: (t) => `closed on ${t}`, yoluAc: 'Reopen road', acildi: 'The road is open again.',
-    kapaliNot: (n) => (n === 1 ? '1 closed road taken into account.' : `${n} closed roads taken into account.`), rotaYokKapali: 'No route was found. It may be because of the roads you closed: tap a red line on the map to reopen a road.',
+    kapaliNot: (n) => `${n} closed roads taken into account.`, kapaliNot1: '1 closed road taken into account.', rotaYokKapali: 'No route was found. It may be because of the roads you closed: tap a red line on the map to reopen a road.',
     aramaYok: 'Not found.', kismi: 'No place matches all the words; these match the most distinctive one:', duzelti: (q) => `Spelling corrected: results for “${q}”`, basGerek: 'First choose the start: My location, a name, or tap the map.',
     hesap: 'Finding the route…', agYukleniyor: 'Loading the road network for the first time. On a slow drive this can take half a minute; later routes are instant.', rotaYok: 'No road was found between these two points.', yolYok: 'There is no road near the chosen point.',
     rotaYokYaya: 'No walking route was found: there may be sea, a motorway or a bridge closed to pedestrians in between. Try by car.',
-    sureNot: 'The time is an estimate. Rubble, traffic and waiting are not counted.', vapurNot: ' (may not be running)', kusUcusu: (m) => `${uzunluk(m)} as the crow flies`,
+    sureNot: 'The time is an estimate. Rubble, traffic and waiting are not counted.', vapurNot: ' (may not be in service)', kusUcusu: (u) => `${u} as the crow flies`,
     haritaYok: 'This Heybe has no map yet.', hata: 'Something went wrong. Try again.',
-    ozet: (m, sn, kip) => `${uzunluk(m)} · about ${sure(sn)} ${kip === 'arac' ? 'by car' : 'on foot'}`,
-    sapma: (m) => `The chosen point is ${uzunluk(m)} from the nearest road.`,
+    ozetArac: (u, s) => `${u} · about ${s} by car`, ozetYaya: (u, s) => `${u} · about ${s} on foot`,
+    sapma: (u) => `The chosen point is ${u} from the nearest road.`,
     yon: { basla: 'Set off', duz: 'Continue straight', hafifsag: 'Bear right', hafifsol: 'Bear left', sag: 'Turn right',
            sol: 'Turn left', keskinsag: 'Turn sharp right', keskinsol: 'Turn sharp left', geri: 'Turn back' },
-    varis: 'You have arrived.', boyunca: (ad) => ad ? `: ${ad}` : '',
+    varis: 'You have arrived.', boyunca: (ad) => `: ${ad}`,
     sinif: { 16: 'dirt road', 17: 'pedestrian area', 18: 'footway', 19: 'path', 20: 'steps', 14: 'service road', 21: 'cycleway', 24: 'ferry' },
     adsiz: 'unnamed road', dk: 'min', sa: 'h', yakinYok: 'Nothing found within a reachable distance. The map may be missing records in this area; ask local authorities about assembly points, water and shelter.', km: 'km', m: 'm',
     lisans: '© OpenStreetMap contributors · Protomaps'
@@ -344,7 +346,7 @@ const METIN = {
     alanBaslik: 'Stáhnout oblast, kterou vidíš na mapě', alanAciklama: 'Přibliž mapu na místo, které chceš (např. město), pojmenuj ho a stáhni tuto oblast. Pro trasy se stáhnou silniční data oblasti; připraví se jen vybrané místo.',
     alanIpucu: 'K výběru oblasti je nejdřív potřeba mapa: například stáhni přehled celého světa a pak přibliž, kam chceš.',
     alanAdi: 'Název oblasti (např. Sandnessjøen)', alanIndir: 'Stáhnout tuto oblast', alanAdGerek: 'Nejdřív oblast pojmenuj.',
-    teklifAlanYol: (bolge, mb, gb) => `Pro trasy se stáhnou silniční data: ${bolge} (${boyut(mb)}); připraví se jen vybraná oblast (asi ${sayi.format(gb)} GB paměti) a soubor se pak smaže.`,
+    teklifAlanYol: (bolge, b, g) => `Pro trasy se stáhnou silniční data: ${bolge} (${b}); připraví se jen vybraná oblast (asi ${g} GB paměti) a soubor se pak smaže.`,
     dosyaBaslik: 'Přidat mapu ze souborů', dosyaAciklama: 'Soubory z jiného Heybe nebo od organizace: .pmtiles (dlaždice), .rota a .yer (trasy), .json (informace) nebo .osm.pbf (silniční data; Heybe je připraví). Soubory se stejným názvem tvoří jednu mapu.',
     dosyaYukleniyor: (ad, y) => `Přidávám ${ad}… ${y} %`, dosyaEklendi: (ad) => `${ad} přidán.`,
     dosyaHata: { bicim: 'Toto není mapový soubor nebo je poškozený.', 'yer-yok': 'Na disku není dost místa.', suruyor: 'Běží jiná úloha; zkus to po jejím skončení.', yazilamadi: 'Soubor nelze zapsat.' },
@@ -355,9 +357,9 @@ const METIN = {
     kita: { africa: 'Afrika', antarctica: 'Antarktida', asia: 'Asie', 'australia-oceania': 'Austrálie a Oceánie', 'central-america': 'Střední Amerika', europe: 'Evropa', 'north-america': 'Severní Amerika', 'south-america': 'Jižní Amerika' },
     bolgeAra: 'Hledat zemi nebo oblast…', dunyaGenel: 'Celý svět — přehled (bez tras)', dunyaTam: 'Celý svět — plné podrobnosti (asi 139 GB, bez tras)',
     katalogAliniyor: 'Načítám seznam oblastí…', hesaplaniyor: 'Počítám velikosti… (u velké oblasti to může trvat minutu)',
-    teklifHarita: (mb, dusuk) => `Dlaždice mapy: ${boyut(mb)}${dusuk ? ' — velká oblast, nejbližší detail o něco nižší' : ''}.`,
-    teklifYol: (mb, gb) => `Silniční data pro trasy: ${boyut(mb)} ke stažení; příprava potřebuje asi ${sayi.format(gb)} GB paměti.`,
-    teklifYolYok: 'Bez tras, jen dlaždice mapy.', teklifDisk: (g, b) => `Potřeba na disku: ${sayi.format(g)} GB · volno: ${sayi.format(b)} GB.`,
+    teklifHarita: (b) => `Dlaždice mapy: ${b}.`, teklifHaritaBuyuk: (b) => `Dlaždice mapy: ${b} — velká oblast, nejbližší detail o něco nižší.`,
+    teklifYol: (b, g) => `Silniční data pro trasy: ${b} ke stažení; příprava potřebuje asi ${g} GB paměti.`,
+    teklifYolYok: 'Bez tras, jen dlaždice mapy.', teklifDisk: (g, b) => `Potřeba na disku: ${g} GB · volno: ${b} GB.`,
     teklifYerYok: 'Na disku není dost místa.', teklifFat: 'Tento disk je FAT32: soubory nad 4 GB nelze zapsat. Naformátuj ho na exFAT nebo vyber menší oblast.',
     indirDugme: 'Stáhnout', indirDurdur: 'Zastavit', yeniHaritaAc: 'Otevřít novou mapu',
     asama: { harita: 'Stahuji dlaždice mapy', yol: 'Stahuji silniční data', hazirlik: 'Připravuji trasy', bitti: 'Mapa je připravena ✓', durdu: 'Zastaveno. Po novém spuštění pokračuje, kde skončilo.', hata: 'Zastaveno:' },
@@ -374,7 +376,7 @@ const METIN = {
     ekUyari: { 'bozuk-koordinat': (n) => `${n} řádků mělo nečitelné souřadnice.`, 'derece-degil': (n) => `${n} řádků nemělo souřadnice ve stupních.`,
                'enlem-boylam-takas': (n) => `${n} řádků mělo prohozenou šířku a délku; opraveno.`, 'harita-disinda': (n) => `${n} bodů je mimo tuto mapu.`,
                'taninmayan-tur': (x) => `Neznámý typ: ${x} — počítáno jako „bod organizace“.`,
-               sayfali: (v) => `Tato adresa dává data po stránkách: vzata jen první stránka (${v.replace('/', ' / ')}). Použij stažitelný soubor organizace (CSV nebo Excel).`,
+               sayfali: (v) => `Tato adresa dává data po stránkách: vzata jen první stránka (${v}). Použij stažitelný soubor organizace (CSV nebo Excel).`,
                'tur-yok': (n) => `${n} bodů nemá jasný typ. Přidej sloupec „typ“ nebo dej do názvu souboru slovo jako „shromaždiště“ či „voda“.` },
     uyari: (t) => `Tato mapa jsou data OpenStreetMap z ${t}. Budovy zřícené a cesty či mosty uzavřené po katastrofě na ní nejsou vidět. Cestu si ověř vlastníma očima a nechoď přes nebezpečná místa.`,
     konumAra: 'Hledám polohu… Na zařízení s GPS funguje bez internetu.',
@@ -386,22 +388,38 @@ const METIN = {
     yoluKapat: 'Uzavřít cestu (zřícená, neprůjezdná)', kapaliYolYok: 'Poblíž není žádná cesta. Klepni přímo na cestu, kterou chceš uzavřít.',
     kapatildi: (ad) => `${ad}: označeno jako uzavřené; trasa tudy nepovede.`, buYol: 'Tato cesta', kapaliBaslik: 'Uzavřená cesta',
     kapaliTarih: (t) => `uzavřeno ${t}`, yoluAc: 'Znovu otevřít cestu', acildi: 'Cesta je znovu otevřená.',
-    kapaliNot: (n) => `Započítané uzavřené cesty: ${n}.`, rotaYokKapali: 'Trasa nebyla nalezena. Může to být kvůli uzavřeným cestám: klepnutím na červenou čáru cestu znovu otevřeš.',
+    kapaliNot: (n) => `Započítané uzavřené cesty: ${n}.`, kapaliNot1: 'Započítané uzavřené cesty: 1.', rotaYokKapali: 'Trasa nebyla nalezena. Může to být kvůli uzavřeným cestám: klepnutím na červenou čáru cestu znovu otevřeš.',
     aramaYok: 'Nenalezeno.', kismi: 'Žádné místo neodpovídá všem slovům; tato odpovídají tomu nejvýraznějšímu:', duzelti: (q) => `Opraven překlep: výsledky pro „${q}“`, basGerek: 'Nejdřív vyber začátek: Moje poloha, název nebo klepni do mapy.',
     hesap: 'Hledám trasu…', agYukleniyor: 'Silniční síť se poprvé načítá do paměti. Na pomalém disku to může trvat půl minuty; další trasy budou hned.', rotaYok: 'Mezi těmito dvěma body nebyla nalezena cesta.', yolYok: 'Poblíž vybraného bodu není cesta.',
     rotaYokYaya: 'Pěší trasa nebyla nalezena: mezi body může být moře, dálnice nebo most uzavřený pro chodce. Zkus to autem.',
-    sureNot: 'Čas je odhad. Trosky, provoz a čekání nejsou započítány.', vapurNot: ' (nemusí jezdit)', kusUcusu: (m) => `${uzunluk(m)} vzdušnou čarou`,
+    sureNot: 'Čas je odhad. Trosky, provoz a čekání nejsou započítány.', vapurNot: ' (nemusí jezdit)', kusUcusu: (u) => `${u} vzdušnou čarou`,
     haritaYok: 'Tento Heybe zatím nemá mapu.', hata: 'Něco se pokazilo. Zkus to znovu.',
-    ozet: (m, sn, kip) => `${uzunluk(m)} · ${kip === 'arac' ? 'autem' : 'pěšky'} asi ${sure(sn)}`,
-    sapma: (m) => `Vybraný bod je ${uzunluk(m)} od nejbližší cesty.`,
+    ozetArac: (u, s) => `${u} · autem asi ${s}`, ozetYaya: (u, s) => `${u} · pěšky asi ${s}`,
+    sapma: (u) => `Vybraný bod je ${u} od nejbližší cesty.`,
     yon: { basla: 'Vyraz', duz: 'Pokračuj rovně', hafifsag: 'Mírně vpravo', hafifsol: 'Mírně vlevo', sag: 'Odboč vpravo',
            sol: 'Odboč vlevo', keskinsag: 'Odboč ostře vpravo', keskinsol: 'Odboč ostře vlevo', geri: 'Otoč se' },
-    varis: 'Jsi v cíli.', boyunca: (ad) => ad ? `: ${ad}` : '',
+    varis: 'Jsi v cíli.', boyunca: (ad) => `: ${ad}`,
     sinif: { 16: 'polní cesta', 17: 'pěší zóna', 18: 'chodník', 19: 'stezka', 20: 'schody', 14: 'účelová cesta', 21: 'cyklostezka', 24: 'trajekt' },
     adsiz: 'cesta bez jména', dk: 'min', sa: 'h', yakinYok: 'V dosažitelné vzdálenosti nic nenalezeno. Mapa může mít v této oblasti mezery; na shromaždiště, vodu a úkryt se zeptej místních úřadů.', km: 'km', m: 'm',
     lisans: '© přispěvatelé OpenStreetMap · Protomaps'
   }
 };
+
+// 13.11 (§123): öbür diller — ekran yazılarının makine çevirisi (harita_metin_ek.js; olcum/kopru/arayuz_cevir.cjs SAYFA=harita
+// üretir, insan denetimi yok). Kalıp metinler yalnız {0}, {1}… taşır; eksik ya da bozuk metin İngilizce kalır. Ana sayfanın
+// metinKur'unun aynısı (sayfa.html) — harita ayrı bir sayfa olduğu için burada da var.
+function metinKur(taban, ek) {
+  const o = {};
+  for (const [k, v] of Object.entries(taban)) {
+    const e = ek ? ek[k] : undefined;
+    if (typeof v === 'function') o[k] = typeof e === 'string' ? (...a) => e.replace(/\{(\d)\}/g, (x, i) => a[i] ?? '') : v;
+    else if (v && typeof v === 'object') o[k] = metinKur(v, e);
+    else o[k] = typeof e === 'string' && e ? e : v;
+  }
+  return o;
+}
+const CEVIRMENIN_YAZAMADIGI = new Set(['pa', 'zu']);   // sayfa.html ile aynı (07.11)
+for (const [d, ek] of Object.entries(window.HEYBE_HARITA_EK || {})) if (!METIN[d] && !CEVIRMENIN_YAZAMADIGI.has(d)) METIN[d] = metinKur(METIN.en, ek);
 
 const $ = (id) => document.getElementById(id);
 let dil = new URLSearchParams(location.search).get('dil') || '';
@@ -412,10 +430,32 @@ if (!METIN[dil]) dil = (navigator.language || 'en').slice(0, 2);
 const M = METIN[dil] || METIN.en;
 if (!METIN[dil]) dil = 'en';
 document.documentElement.lang = dil;
+document.documentElement.dir = ['ar', 'fa', 'he', 'ur'].includes(dil) ? 'rtl' : 'ltr';   // sayfa.html'in SAGDAN'ı (13.11, §123)
+// Makine çevirisi dillerinde birimli sayı ve yol özeti (13.11, §123): çevirmen bağlamsız "min"i 46 dilin 30'undan çoğunda
+// "en az" yaptı (Endonezce "lütfen", Macarca "kalite"); Japoncada özete kendi "dakika/saat"ini ekledi ("31 分分").
+// Sayıyı birimiyle tarayıcının kendi dil verisi (Intl, CLDR) yazar — birim adı sayıya göre değişir (Arapçada 2 metre ile
+// 5 metre ayrı kelime), tek başına alınamaz. Özet cümlesi çeviriye girmez, parçalardan kurulur.
+// Ölçülmüş tr/en/cs kendi metnini korur. modelsiz.sh (harita_birim_denetle.cjs) bunu 46 dilde koşturur.
+function makineDuzelt(M, dil) {
+  if (['tr', 'en', 'cs'].includes(dil)) return M;
+  const BIRIM = { m: 'meter', km: 'kilometer', dk: 'minute', sa: 'hour' };
+  M.birimli = (x, k) => { try { return new Intl.NumberFormat(dil, { style: 'unit', unit: BIRIM[k], unitDisplay: 'short', maximumFractionDigits: 1 }).format(x); } catch (e) { return `${x} ${METIN.en[k]}`; } };
+  M.ozetYaya = (u, s) => `${u} · ${M.yaya} ≈ ${s}`;
+  M.ozetArac = (u, s) => `${u} · ${M.arac} ≈ ${s}`;
+  return M;
+}
+makineDuzelt(M, dil);
 const sayi = new Intl.NumberFormat(dil, { maximumFractionDigits: 1 });
-function uzunluk(m) { return m < 1000 ? `${Math.round(m / 10) * 10} ${M.m}` : `${sayi.format(m / 1000)} ${M.km}`; }
+function birimli(x, k) { return M.birimli ? M.birimli(x, k) : `${k === 'km' ? sayi.format(x) : x} ${M[k]}`; }
+function uzunluk(m) { return m < 1000 ? birimli(Math.round(m / 10) * 10, 'm') : birimli(m / 1000, 'km'); }
 function boyut(mb) { return mb < 1000 ? `${Math.max(1, Math.round(mb))} MB` : `${sayi.format(mb / 1000)} GB`; }
-function sure(sn) { const d = Math.max(1, Math.round(sn / 60)); return d < 60 ? `${d} ${M.dk}` : `${Math.floor(d / 60)} ${M.sa} ${d % 60} ${M.dk}`; }
+function sure(sn) { const d = Math.max(1, Math.round(sn / 60)); return d < 60 ? birimli(d, 'dk') : `${birimli(Math.floor(d / 60), 'sa')} ${birimli(d % 60, 'dk')}`; }
+// Her adımın başında dilden bağımsız ok (13.11, §123): eski makine çevirisinde sol/sağ karışmıştı (Slovence "sola dön" →
+// "sağ"); çeviri artık anlam kapısından geçiyor (olcum/kopru/anlam_kapi.cjs), ok her dilde aynı ikinci işaret.
+// Oklar yön karakterleridir, sağdan sola yazılan dillerde de dönmez.
+const YON_OK = { basla: '•', duz: '↑', hafifsag: '↗', hafifsol: '↖', sag: '→', sol: '←', keskinsag: '↘', keskinsol: '↙', geri: '↶' };
+// 13.11 (§123): kalıp metinler yalnız {0}… taşır (makine çevirisi için); tekil/çoğul ve biçim seçimi burada
+function kapaliYazi(n) { return n === 1 ? M.kapaliNot1 : M.kapaliNot(n); }
 document.querySelectorAll('[data-m]').forEach((e) => { e.textContent = M[e.dataset.m]; });
 document.querySelectorAll('[data-tur]').forEach((e) => { e.textContent = M.tur[e.dataset.tur]; });
 document.title = `Heybe · ${M.baslik}`;
@@ -521,7 +561,7 @@ function oneriYaz(liste, yerler, sec) {
     b.type = 'button';
     b.textContent = y.ad || M.tur[y.tur] || y.tur;
     const s = document.createElement('small');
-    s.textContent = [M.tur[y.tur] || y.tur, y.baglam, y.liste ? M.liste(y.liste) : '', y.m ? M.kusUcusu(y.m) : ''].filter(Boolean).join(' · ');
+    s.textContent = [M.tur[y.tur] || y.tur, y.baglam, y.liste ? M.liste(y.liste) : '', y.m ? M.kusUcusu(uzunluk(y.m)) : ''].filter(Boolean).join(' · ');
     b.append(s);
     b.addEventListener('click', () => sec(y));
     li.append(b);
@@ -567,7 +607,7 @@ harita.on('click', (e) => {
     const k = r.kapali[r.kapali.length - 1];
     const mesaj = M.kapatildi(k.ad || M.sinif[k.tur] || M.buYol);
     durum(mesaj);
-    if (nokta.bas && nokta.son) { const y = await rotaBul(true); if (y && y.tamam) durum(`${mesaj} ${M.kapaliNot(y.kapali)}`); }
+    if (nokta.bas && nokta.son) { const y = await rotaBul(true); if (y && y.tamam) durum(`${mesaj} ${kapaliYazi(y.kapali)}`); }
   });
   // 09.11 (§78): kişi e-Devlet'ten öğrendiği toplanma alanını ya da bir su noktasını kendisi işaretler
   b3.addEventListener('click', () => {
@@ -793,10 +833,10 @@ function indirKur() {
     if (!y || !y.ok) { $('indirDurum').className = 'hata'; $('indirDurum').textContent = M.indirHata[t.hata] || M.hata; return; }
     $('indirDurum').textContent = '';
     const satir = (m, kotu) => { const p = document.createElement('p'); p.textContent = m; if (kotu) p.className = 'kotu'; tk.append(p); };
-    satir(M.teklifHarita(t.haritaMB, t.ayrintiDusuk));
+    satir((t.ayrintiDusuk ? M.teklifHaritaBuyuk : M.teklifHarita)(boyut(t.haritaMB)));
     const yolBolge = t.yolIso && bolgeAdi ? (bolgeAdi.of(t.yolIso) || t.yolKaynak) : t.yolKaynak;
-    satir(!t.yolVar ? M.teklifYolYok : t.alan ? M.teklifAlanYol(yolBolge, t.yolMB, t.bellekGB) : M.teklifYol(t.yolMB, t.bellekGB));
-    satir(M.teklifDisk(t.gerekGB, t.bosGB));
+    satir(!t.yolVar ? M.teklifYolYok : t.alan ? M.teklifAlanYol(yolBolge, boyut(t.yolMB), sayi.format(t.bellekGB)) : M.teklifYol(boyut(t.yolMB), sayi.format(t.bellekGB)));
+    satir(M.teklifDisk(sayi.format(t.gerekGB), sayi.format(t.bosGB)));
     if (!t.sigar) satir(M.teklifYerYok, true);
     if (t.buyukDosyaSorunu) satir(M.teklifFat, true);
     const b = document.createElement('button'); b.type = 'button'; b.textContent = M.indirDugme; b.disabled = !t.sigar || t.buyukDosyaSorunu;
@@ -908,17 +948,17 @@ async function rotaBul(yerinde = false) {   // yerinde: harita rotaya sığdır�
   if (r.hata === 'harita-yok') { durum(M.yolYokHarita, true); cizgi(null); return r; }
   if (!r.tamam) { durum(r.hata === 'yol-yok' ? M.yolYok : r.kapali ? M.rotaYokKapali : (kip() === 'yaya' ? M.rotaYokYaya : M.rotaYok), true); cizgi(null); return r; }
   const notlar = [];
-  if (r.kapali) notlar.push(M.kapaliNot(r.kapali));
+  if (r.kapali) notlar.push(kapaliYazi(r.kapali));
   if (r.kuralsizRota) notlar.push(M.kuralsiz);   // 13.11: dönüş yasaklarıyla yol çıkmadı
-  if (r.basSapma > 150) notlar.push(M.sapma(r.basSapma));
-  if (r.varSapma > 150) notlar.push(M.sapma(r.varSapma));
+  if (r.basSapma > 150) notlar.push(M.sapma(uzunluk(r.basSapma)));
+  if (r.varSapma > 150) notlar.push(M.sapma(uzunluk(r.varSapma)));
   durum(notlar.join(' '));
-  $('ozet').textContent = M.ozet(r.m, r.sn, kip());
+  $('ozet').textContent = (kip() === 'arac' ? M.ozetArac : M.ozetYaya)(uzunluk(r.m), sure(r.sn));
   $('sureNot').textContent = M.sureNot;
   for (const a of r.adimlar) {
     const li = document.createElement('li');
     const ad = a.ad || M.sinif[a.tur] || M.adsiz;
-    li.textContent = `${M.yon[a.yon] || a.yon}${M.boyunca(ad)}${a.tur === 24 ? M.vapurNot : ''} `;
+    li.textContent = `${YON_OK[a.yon] ? YON_OK[a.yon] + ' ' : ''}${M.yon[a.yon] || a.yon}${ad ? M.boyunca(ad) : ''}${a.tur === 24 ? M.vapurNot : ''} `;
     const s = document.createElement('span'); s.textContent = uzunluk(a.m);
     li.append(s);
     $('adimlar').append(li);

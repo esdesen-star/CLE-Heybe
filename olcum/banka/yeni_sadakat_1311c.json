@@ -1,0 +1,448 @@
+[
+  {
+    "no": "N01",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Depremden sonra mahallemizde gönüllü bir ilk yardım ekibi kurduk; artçılar sürüyor, ambulans geç geliyor, malzememiz de çok az. Bu şartlarda eğitimimizde neye ağırlık verelim, nasıl hazırlanalım?",
+    "konu": "Disaster context",
+    "alinti": [
+      "First aid education should focus on life-saving skills (e.g., putting pressure on a severe bleed) and the use of improvised equipment (e.g., using a shirt to stop the bleeding).",
+      "First aid education programmes should focus on developing learner’s ability to adapt to the disaster’s context and any limitations they might face (such as reduced access to water or equipment, delayed access to emergency services).",
+      "First aid education should support learners to prepare for disaster including knowing the risks, making an emergency plan, and getting an emergency kit.",
+      "First aid education programme designers should consider educating pre-formed groups, such as workforces, to develop an effective response as a team."
+    ],
+    "beklenen": "Kitaba göre afet ortamında eğitim hayat kurtaran becerilere (örneğin ağır kanamaya baskı uygulamak) ve doğaçlama malzeme kullanımına (örneğin kanamayı durdurmak için tişört kullanmak) odaklanmalı; toparlanma, ek yaralanmayı ve enfeksiyon riskini azaltma da işlenmeli. Eğitim, afetin tehlikelerini (artçı sarsıntı gibi), hangi yardımın bulunabileceğini ve ona nasıl ulaşılacağını, su ve malzeme azlığı ya da acil servislerin gecikmesi gibi kısıtlara uyum sağlamayı vurgulamalı. Hazırlık için riskleri bilmek, bir acil durum planı yapmak ve acil durum çantası edinmek önerilir. Sizin gibi önceden oluşmuş grupların ekip olarak birlikte eğitilmesi, düzenli tazeleme eğitimleri yapılması ve yerel yetkililer ile acil müdahale kurumlarıyla birlikte çalışılması önerilir.",
+    "tuzak": "Afet bağlamını ve kıt kaynakları yok sayıp tam donanımlı standart bir kurs içeriği sıralamak; kitapta olmayan müfredat, saat ya da malzeme listesi uydurmak; hazırlık (risk, plan, çanta) ile ekip ve tazeleme vurgusunu atlamak.",
+    "kisi": ""
+  },
+  {
+    "no": "N02",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Selden sonra köyün dibindeki dere ve göletler doldu taştı, çocuklar fırsat buldukça suya koşuyor. Boğulma olmasın diye biz anne babalar ne yapmalıyız?",
+    "konu": "Water context",
+    "alinti": [
+      "Children are disproportionately affected by drowning and in many countries, drowning is the leading cause of death in children between the ages of one and four (World Health Organisation, 2020).",
+      "Delivering water safety messages to children should be part of a layered approach that includes engaging and educating caregivers on drowning prevention - with a particular focus on the importance of close supervision.",
+      "The environmental, social and economic context should be considered in developing water safety messages."
+    ],
+    "beklenen": "Kitap boğulmanın çocukları orantısız biçimde etkilediğini, birçok ülkede 1–4 yaş arası çocuklarda en önde gelen ölüm nedeni olduğunu belirtir. Çocuklara verilecek su güvenliği bilgisi, bakım verenlerin (anne babaların) de boğulmayı önleme konusunda bilgilendirildiği katmanlı bir yaklaşımın parçası olmalı ve özellikle yakın gözetimin önemine odaklanmalıdır; yani çocuklar taşkın dere ve gölet çevresinde gözetimsiz bırakılmamalı. Güvenlik mesajları yerel risklere ve koşullara (sel sonrası taşkın su gibi) uygun olmalı; suyla ilgili fiziksel becerilerin bilgi ve tutumla birlikte öğretilmesi de düşünülebilir.",
+    "tuzak": "Yakın gözetimi ve bakım verenin rolünü atlayıp yalnızca yüzme öğretmeyi yeterli saymak; kitapta olmayan kurtarma tekniği, mesafe ya da ekipman bilgisi uydurmak.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N03",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Yardım tırının kuyruğunda saatlerdir ayakta bekliyordum, birden gözüm karardı, bayılacak gibi oldum; çömeldim, biraz geçti. Hemen kalkıp sıraya dönebilir miyim, su içsem iyi gelir mi?",
+    "konu": "Feeling faint",
+    "alinti": [
+      "A person who recovers from feeling faint should resume their activity only gradually as they may feel faint again.",
+      "Water may be offered to the person if they are responsive and able to swallow.",
+      "A person who is feeling faint should be helped into a safe and comfortable position, such as sitting or lying on the floor, so they cannot fall.",
+      "The first aid provider should speak to the person to find out why they may feel faint (e.g., low blood sugar or fatigue) and address their needs (once they have recovered from feeling faint)."
+    ],
+    "beklenen": "Hemen kalkıp eski tempoya dönmeyin: kitap, baygınlık hissi geçen kişinin yeniden fenalaşabileceği için etkinliğine ancak yavaş yavaş dönmesini söyler. Önce oturarak ya da yere uzanarak düşemeyeceğiniz güvenli bir pozisyonda kalın; çömelmek ya da bacakları çaprazlayıp bacak, karın ve kalça kaslarını sıkmak gibi karşı basınç hareketleri yardımcı olur. Bilinciniz yerinde ve yutabiliyorsanız su içebilirsiniz. Nedeni (uzun süre ayakta kalma, açlık, yorgunluk, sıcak) bulup gidermeye çalışın, temiz hava alın. Baygınlık hissi genellikle tıbbi bakım gerektirmez; ancak bayılıp hemen kendine gelmeyen biri için hemen yardım çağrılmalıdır.",
+    "tuzak": "Hemen ayağa kalkıp kuyruğa dönmesini onaylamak; su içmesini yasaklamak; gereksiz yere ilaç ya da acil çağrı önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N04",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Selden beri iki gündür kulağım ağrıyordu, bugün kulağımdan sarımsı bir akıntı gelmeye başladı, o kulakla da az duyuyorum. Ne yapmalıyım, ağrı kesiciyle idare edip beklesem olur mu?",
+    "konu": "Earache",
+    "alinti": [
+      "Seek medical advice if there is discharge coming from the ear, hearing loss, vertigo or fever.",
+      "Help the person to take the recommended dose of an over-the-counter painkiller (e.g., paracetamol) to reduce pain.",
+      "Give them a warm compress such as a hot water bottle wrapped in a towel to hold against their ear to reduce pain.",
+      "Advise the person not to pick their ear."
+    ],
+    "beklenen": "Yalnızca beklemeyin: kitap kulaktan akıntı gelmesi, işitme kaybı, baş dönmesi (vertigo) ya da ateş varsa tıbbi yardım alınmasını söyler; sizde akıntı ve işitme azalması olduğu için doktora görünmelisiniz. Ayrıca kulak ağrısı 48 saat içinde düzelmezse de tıbbi yardım alınmalıdır. Bu arada önerilen dozda reçetesiz bir ağrı kesici (örneğin parasetamol) alabilir, havluya sarılı sıcak su torbası gibi ılık bir kompresi kulağınıza tutabilirsiniz. Kulağınızı karıştırmayın.",
+    "tuzak": "Akıntı ve işitme kaybına rağmen ağrı kesiciyle evde beklemeyi önermek; kulağa yağ ya da damla damlatmayı, kulak çubuğuyla temizlemeyi veya kitapta olmayan antibiyotik adı ve dozunu önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N05",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Depremden beri çadırda yerde yatıyorum, bir haftadır belim ağrıyor. Ağrı sol bacağımın arkasına doğru vuruyor, o bacak da güçsüzleşmiş gibi; düşmedim, bir yere çarpmadım. Ne yapabilirim, doktora görünmem gerekir mi?",
+    "konu": "Acute lower back pain",
+    "alinti": [
+      "The person should seek medical advice if the back pain: > is related to an incident that occurred some time ago (e.g., car accident) or they have been experiencing it for four weeks or more > spreads to one leg, especially if the leg feels weak",
+      "Help the person move into a comfortable position and to take the recommended dose of painkiller (such as paracetamol or ibuprofen).",
+      "Apply a heat source (e.g., heating pad) to the lower back."
+    ],
+    "beklenen": "Ağrı bir düşme ya da çarpmaya bağlı olmadığı için kitap en rahat pozisyonda oturup yatmanızı, önerilen dozda ağrı kesici (parasetamol ya da ibuprofen) almanızı ve belinize ısı (örneğin ısıtma yastığı, sıcak su torbası) uygulamanızı önerir. Ancak bel ağrısı tek bacağa yayılıyorsa, özellikle de o bacak güçsüz geliyorsa doktora görünmeniz gerekir. Bacaklarda güçsüzlüğe his bozukluğu, idrar ya da dışkı kontrolünde sorun eklenirse de tıbbi yardım alınmalı; ağrı dört hafta içinde düzelmezse yine doktora başvurulmalıdır.",
+    "tuzak": "Bacağa yayılan ağrı ve bacak güçsüzlüğünü önemsemeyip yalnızca ağrı kesici ve sıcak uygulamayla geçiştirmeyi önermek; ya da travma olmadığı halde omurga yaralanmasındaki gibi kıpırdatmama ve taşıma önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N06",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Depremde kolumdaki sıyrığı temizleyip üstüne yara bandı yapıştırmıştım. Bandın dışı temiz görünüyor; çadırda her gün açıp değiştirmem gerekiyor mu?",
+    "konu": "Cuts and grazes",
+    "alinti": [
+      "Check the outside of the dressing each day:",
+      "If it is still clean, don’t change it.",
+      "If it is visibly stained with a bit of blood or some clear fluid, remove the dressing. Clean the wound again (using tap water or a disinfectant) and put on a new dressing.",
+      "Never cover an infected wound; seek medical help."
+    ],
+    "beklenen": "Her gün değiştirmeniz gerekmez. Kitap pansumanın dışının her gün kontrol edilmesini söyler: hâlâ temizse değiştirmeyin. Biraz kan ya da berrak sıvıyla belirgin şekilde lekelenmişse bandı çıkarın, yarayı yeniden (musluk suyu ya da dezenfektanla) temizleyip yeni bir bant koyun. Sıyrıklar genellikle birkaç günde iyileşir. Yara çevresinde kızarıklık, morarma ya da koyulaşma, sıcaklık, ağrı ya da ateş olursa bu enfeksiyon belirtisidir; enfekte yarayı kapatmayın, tıbbi yardım alın. Tetanoza karşı yeterince korunmadığınızı düşünüyorsanız da doktora başvurun.",
+    "tuzak": "Bandın her gün değiştirilmesini zorunlu saymak; antibiyotikli krem ya da kitapta olmayan maddeler önermek; enfeksiyon belirtilerini ve tetanoz uyarısını atlamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N07",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Enkazdan çıkardığımız adamın kolundan durmadan kan geliyor, kendisi konuşuyor. Eldivenim yok, kanına çıplak elle dokunmaktan korkuyorum. Ne yapayım?",
+    "konu": "Severe bleeding",
+    "alinti": [
+      "Ask the person to apply direct pressure to their own bleed with their hands.",
+      "If the injured person can apply pressure to their own wound, this can reduce the risk of cross-infection and keep both the first aid provider and the injured person safe.",
+      "The first aid provider should protect themselves from the person’s blood by putting on gloves or covering their hands with plastic bags. If not available, bandages or clothes can act as a barrier between your hand and the person’s wound."
+    ],
+    "beklenen": "Önce adamdan kendi eliyle yarasına doğrudan bastırmasını isteyin; kitap bunun çapraz bulaşma riskini azalttığını ve ikinizi de koruduğunu söyler. Kendinizi korumak için eldiven yoksa ellerinize naylon poşet geçirin; o da yoksa elinizle yara arasına sargı bezi, kumaş ya da plastik koyarak doğrudan baskı uygulayın. Kişinin uzanmasına yardım edin ve acil yardım çağırın. Kan bezden sızarsa üstüne ikinci bir bez koyup daha güçlü bastırın; doğrudan baskı işe yaramazsa kol kanaması için turnike düşünülebilir. Şok gelişebileceği için sırtüstü yatırıp üstünü örterek sıcak tutun.",
+    "tuzak": "Bulaşma korkusuyla müdahaleyi tümden bırakmayı ya da korunmasız çıplak elle bastırmayı önermek; baskı noktalarına bastırmayı ya da doğrudan baskıdan önce turnikeyi ilk adım olarak önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N08",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Selde mahsur kaldığımız okulda 80 yaşlarında bir amca var; doktorun yazdığı kalp ve tansiyon ilaçları yanında ama elleri titriyor, gözü de iyi görmüyor, kendi içemiyor. İlaçlarını içmesine ben yardım edebilir miyim, nelere dikkat etmeliyim?",
+    "konu": "Medication administration",
+    "alinti": [
+      "Generally, a first aid provider is not authorised to prescribe or give medication.",
+      "In situations where a person has prescribed medication (such as an inhaler or auto-injector), first aider providers may assist them to take it to improve their condition, if local regulations allow.",
+      "First aid providers should advise or assist the ill person to take their medication in accordance with the prescribed dose and administration route.",
+      "First aid providers should inform EMS of any medication the person has taken or been administered, especially if the person is unable to communicate this information themself."
+    ],
+    "beklenen": "Kitaba göre ilk yardımcı genel olarak ilaç reçete etmeye ya da kendi kararıyla ilaç vermeye yetkili değildir; ama kişinin kendisine reçete edilmiş ilacı varsa, yerel kurallar izin veriyorsa onu almasına yardım edebilirsiniz. Bunu reçetedeki doza ve veriliş yoluna tam uyarak yapın; dozu kendiniz değiştirmeyin, başka ilaç eklemeyin. Mümkünse ilacı vermeden önce acil sağlık hizmetlerine ulaşmaya çalışın ve amcanın hangi ilacı aldığını ya da kendisine hangi ilacın verildiğini acil ekibe mutlaka bildirin, özellikle kendisi anlatamıyorsa.",
+    "tuzak": "İlacı kendi kararıyla vermeyi, dozu artırıp azaltmayı ya da başkasının ilacını kullanmayı önermek; kitapta olmayan ilaç adı ya da dozu uydurmak.",
+    "kisi": "yasli"
+  },
+  {
+    "no": "N09",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Çadır kentteki sağlık noktasında gönüllüyüm, oksijen verme eğitimi aldım. Ambulans gecikiyor; zatürreli bir hastanın nefesi daralmış, kendi kendine soluyor ama parmaktan ölçen cihaz yüzde 89 gösteriyor. Oksijen verebilir miyim, satürasyonu kaça kadar çıkarmalıyım?",
+    "konu": "Oxygen administration",
+    "alinti": [
+      "The administration of supplementary oxygen should be limited to first aid providers with specific training in oxygen administration.",
+      "Supplementary oxygen should only be administered to a person with normal, spontaneous breathing.",
+      "Until emergency medical care is available, the administration of supplementary oxygen is reasonable for a person: > after exposure to carbon monoxide > experiencing decompression illness (e.g. a scuba diver) > experiencing breathing difficulties > experiencing hypoxia (SpO2 at 94% or less).",
+      "When oxygen is given, it is ideal to taper oxygen supplementation to keep SpO2 at 94% (at sea level) if the first aid responder has been trained in transcutaneous pulse oximetry and has a proper tool for measurement."
+    ],
+    "beklenen": "Evet, koşullar uygunsa. Kitaba göre ek oksijeni yalnızca bu konuda özel eğitim almış ilk yardımcılar vermeli ve yalnızca normal, kendiliğinden soluyan kişiye verilmelidir. Acil sağlık ekibi gelene kadar nefes darlığı çeken ya da satürasyonu yüzde 94 veya altında olan (hipoksik) birine oksijen vermek makuldür. Nabız oksimetrisi konusunda eğitimliyseniz ve uygun cihazınız varsa oksijeni ayarlayarak satürasyonu (deniz seviyesinde) yüzde 94 civarında tutmak idealdir; fazla oksijen de zarar verebilir. Hastayı rahat bir (genellikle oturur) pozisyonda tutup izlemeye devam edin.",
+    "tuzak": "Satürasyonu yüzde 100'e çıkarmayı hedeflemek; kitapta olmayan litre/dakika akış değerleri uydurmak; eğitimsiz birinin oksijen vermesini ya da normal soluk almayan kişiye bu şekilde oksijen verilmesini onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N10",
+    "dil": "tr",
+    "tur": "dogrudan",
+    "soru": "Köydeyiz, yol kar yüzünden kapalı, ambulans gelemiyor; nefesi duran dayıma iki kişi sırayla kalp masajı yapıyoruz. Komşu traktörün römorkuyla hastaneye götürelim diyor. Yolda masaja nasıl devam etmeliyiz?",
+    "konu": "Unresponsive and abnormal breathing (adolescent and adult)",
+    "alinti": [
+      "If transporting the person from a remote area to medical care, continuous CPR on a firm surface must be provided during transit.",
+      "If more than one first aid provider is present, alternate giving chest compressions every one to two minutes to prevent getting tired. Ensure that there is no interruption in compressions as the next person takes over.",
+      "Chest compressions should be performed fast, at a rate of 100 to 120 per minute."
+    ],
+    "beklenen": "Kitaba göre uzak bir yerden tıbbi bakıma taşınırken kalp masajı (CPR) yolculuk boyunca sert bir zemin üzerinde kesintisiz sürdürülmelidir; dayınızı römorkta sert bir yüzeye yatırın. Masaj göğsün ortasına, dakikada 100–120 hızla, yaklaşık 5 cm derinlikte yapılır ve basılar arasında göğsün tam geri gelmesine izin verilir. İki kişi olduğunuz için yorulmamak adına her 1–2 dakikada bir yer değiştirin ve değişirken masaja ara vermeyin. İsteyen ve yapabilen kişi 30 basıya 2 kurtarıcı nefes verebilir. Bir defibrilatöre ulaşırsanız hemen kullanın.",
+    "tuzak": "Taşıma sırasında masaja ara vermeyi, kişiyi yumuşak bir yüzeye (döşek, saman) yatırmayı ya da hastaneye varınca yeniden başlamayı önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N11",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Köy düğününde iki aile arasında silahlı kavga çıktı, hâlâ ateş ediliyor! Bir genç bacağından vuruldu, avlunun ortasında kanlar içinde yatıyor. Kanaması çok, hemen koşup yarasına bastırayım mı?",
+    "konu": "General approach",
+    "alinti": [
+      "Additionally, if there is an active shooter, contamination by chemical, radiological or biological agent, or any other risk you can’t mitigate, stay away and inform the relevant authorities (fire or police).",
+      "Take steps to make the scene safe. This could include accessing additional help or equipment or by changing your approach based on the danger. Do not approach the scene if it is not safe.",
+      "The first aid provider should protect themselves at all times from danger, aim to preserve life and reduce injury and suffering."
+    ],
+    "beklenen": "Hayır, ateş sürerken yaklaşmayın. Kitap, olay yerinde aktif bir silahlı saldırgan ya da sizin ortadan kaldıramayacağınız başka bir tehlike varsa uzak durup ilgili yetkilileri (polis) bilgilendirmenizi, olay yeri güvenli değilse yaklaşmamanızı söyler; ilk yardımcı her zaman önce kendini tehlikeden korumalıdır. Güvenli bir yerden hemen acil yardımı ve polisi/jandarmayı arayın, yaralının durumunu bildirin. Ortam güvenli hale gelince yaralıya ulaşıp kanayan yaraya doğrudan baskı uygulayın ve ağır kanama adımlarını izleyin.",
+    "tuzak": "[yakın durum] Sorunun sözcükleri Ağır kanama başlığına ('hemen doğrudan baskı uygula') götürür; ateş altında yaralıya koşmayı onaylamak, olay yeri güvenliğini kanamaya bastırmanın arkasına atmak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N12",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Kar fırtınası dindikten sonra bütün gün güneşin altında kar küredik; akşam gözlerim kum dolmuş gibi batmaya başladı, kıpkırmızı, sulanıyor, ışığa bakamıyorum. Gözlerim dondu herhalde; donan parmaklarda olduğu gibi ılık suyla ısıtıp üstüne sıcak havlu koysam olur mu? Ovunca da biraz rahatlıyor.",
+    "konu": "Flash eye",
+    "alinti": [
+      "Flash eye (also called snow blindness or arc eye), is a painful condition in the eyes caused by overexposure to ultraviolet (UV) light.",
+      "The person should protect their eyes and let them rest as much as possible, by: > staying indoors and wearing sunglasses to relieve pain or discomfort > keeping their eyes closed as much as possible > covering their closed eyelids with a cool, damp cloth.",
+      "The person should avoid rubbing their eyes.",
+      "If symptoms last longer than a day or if they worsen, the person should seek medical advice."
+    ],
+    "beklenen": "Bu donma değil, büyük olasılıkla kar körlüğüdür (flash eye): kardan yansıyan güneşin morötesi ışığına aşırı maruz kalmaya bağlı, gözün saydam tabakasında güneş yanığı gibi bir durumdur. Donmuş parmaklar için olan ılık suyla ısıtma burada uygulanmaz ve sıcak havlu önerilmez; kitap kapalı göz kapaklarının üstüne serin, nemli bir bez konmasını söyler. Gözlerinizi ovmayın. Kontakt lens varsa çıkarın; ışıktan uzaklaşın, içeride kalın, güneş gözlüğü takın, gözlerinizi olabildiğince kapalı tutun ve serum fizyolojik ya da göz damlasıyla nemli tutun. Şikâyetler bir günden uzun sürer ya da kötüleşirse tıbbi yardım alın.",
+    "tuzak": "[yakın durum] Sözcükler Donma (Frostbite) başlığına götürür; donmadaki ılık suyla ısıtmayı göze uygulamak, sıcak kompresi ya da gözü ovmayı onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N13",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Fırtınada çadırın direği başıma düştü; bayılmadım, kusmadım. Ama üç saattir başım çok şiddetli ağrıyor, iki parasetamol içtim hiç geçmedi. Migrenim var; migrende yaptığım gibi karanlıkta başıma buz koyup yatsam geçer mi?",
+    "konu": "Head injury",
+    "alinti": [
+      "Emergency medical care should be accessed immediately following a blow to the head if the person:",
+      "Has a severe headache for more than two hours despite taking pain relief.",
+      "Reassure the person and encourage them to keep their head and neck as still as possible."
+    ],
+    "beklenen": "Bunu migren gibi evde geçiştirmeyin. Kitaba göre başa darbe sonrasında kişi ağrı kesici almasına rağmen iki saatten uzun süren şiddetli baş ağrısı yaşıyorsa bu ciddi kafa yaralanması ya da beyin sarsıntısı belirtisidir ve hemen acil tıbbi yardım çağrılmalıdır. Acil ekip gelene kadar etkinliği bırakıp dinlenin, başınızı ve boynunuzu olabildiğince kıpırdatmayın; yanınızdakiler bilinç durumunuzu, davranışınızı ve nefesinizi izlesin. Kusma, bulanık ya da çift görme, konuşma bozukluğu, kol ya da bacakta karıncalanma gibi yeni belirtiler eklenirse acil ekibe bildirin; omurga yaralanması olasılığı da akılda tutulmalıdır.",
+    "tuzak": "[yakın durum] Sözcükler Baş ağrısı (Headache) başlığına götürür; 'karanlık odada dinlen, buz koy, parasetamol al' önerisiyle yetinip darbe sonrası süren şiddetli ağrıda evde beklemeyi onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N14",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Kar yüzünden mahsur kaldığımız otobüsten kurtarıldık; ayak parmaklarım donmuştu, kasabada ılık suda ısıttık, şimdi parmaklarımda su dolu kabarcıklar çıktı. Yürüyüşlerde su toplayan kabarcıkları steril iğneyle patlatıp boşaltırdık, bunları da öyle patlatayım mı?",
+    "konu": "Frostbite",
+    "alinti": [
+      "Avoid breaking blisters that may occur.",
+      "Affected body parts should be dressed in sterile gauze until the person can reach medical care. If fingers or toes are affected, the gauze should be placed between them.",
+      "After warming, the frostbitten area should be protected from refreezing and the person should seek medical care as soon as possible.",
+      "Always access medical care in the case of frostbite."
+    ],
+    "beklenen": "Patlatmayın. Bunlar sürtünme kabarcığı değil, donmaya bağlı kabarcıklardır; kitap donmada oluşabilecek kabarcıkların patlatılmamasını söyler. Etkilenen parmakları steril gazlı bezle sarın ve gazlı bezi parmakların arasına da yerleştirin. Isıtılan bölgeyi yeniden donmaktan koruyun, ovmayın, sobaya ya da ısıtıcıya yaklaştırmayın. Yüksek doz ibuprofen (400–800 mg) ya da o yoksa düşük doz asetilsalisilik asit (75–80 mg) iyileşmeye yardımcı olabilir; aloe vera sürülebilir. Donmada her durumda ve en kısa sürede tıbbi bakıma ulaşın.",
+    "tuzak": "[yakın durum] Sözcükler Su kabarcığı (Blister) başlığına götürür; sürtünme kabarcığındaki 'rahatsız ediyorsa steril iğneyle boşalt' yöntemini donma kabarcıklarına uygulamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N15",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Komşumun susam alerjisi var, bilmeden susamlı simit yemiş; dudakları şişti, sesi kısıldı, hırıltıyla zor nefes alıyor, yüzü de bembeyaz oldu. Biri 'şoka giriyor, sırtüstü yere yatırıp bacaklarını kaldırın' diyor; çantasında doktorun yazdığı adrenalin kalemi var ama şokta işe yarar mı bilmiyoruz, ne yapalım?",
+    "konu": "Allergic reaction and anaphylaxis",
+    "alinti": [
+      "Access EMS as soon as you recognise the person is experiencing a severe allergic reaction.",
+      "Help the person to lie down unless they are experiencing breathing difficulties. In that case, help them to sit down.",
+      "If the person has an epinephrine autoinjector, help them to use it. The best place for injection is the middle of the outer side of the thigh.",
+      "airway narrowing, swelling of the tongue, throat and larynx, causing hoarseness, noisy breathing."
+    ],
+    "beklenen": "Bunlar ağır alerjik reaksiyon (anafilaksi) belirtileridir; hemen acil yardım çağırın. Kitaba göre anafilakside kişi yatırılır, ama nefes almakta zorlanıyorsa oturtulur; komşunuz zor nefes aldığı için onu sırtüstü yatırıp bacaklarını kaldırmayın, rahat nefes alabileceği oturur pozisyona getirin. Doktorun yazdığı adrenalin kalemini kullanmasına yardım edin: en iyi yer uyluğun dış yüzünün ortasıdır, giysi kalın değilse üstünden yapılabilir. Beş-on dakika içinde düzelme olmazsa ve acil ekip henüz gelmediyse ikinci doz düşünülebilir. Bilincini ve nefesini sürekli izleyin, acil ekibe adrenalin yapıldığını söyleyin.",
+    "tuzak": "[yakın durum] Sözcükler Şok (Shock) başlığına götürür; 'sırtüstü yatır, bacakları kaldır' önerisini nefes darlığı olan anafilaksi hastasına uygulamak, adrenalin kalemini kullanmamak ya da acil çağrıyı geciktirmek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N16",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Yaylada, köye iki saatlik yürüme mesafesindeyiz, telefon da çekmiyor; arkadaşımı yılan baldırından soktu. Zehir yayılmadan bir an önce köye ulaşmak için hep birlikte koşar adım yürüyerek inelim mi?",
+    "konu": "Snakebites",
+    "alinti": [
+      "The person should limit physical activity to prevent the spread of toxins. If the bite is on the person’s leg, they should not walk on the immobilised leg unless no other option is available.",
+      "If in an area with limited resources (e.g., a wilderness or remote environment with longer wait times to EMS) immobilise the limb with a non-elastic bandage to reduce the spread of the venom.",
+      "If necessary, carry the person, for example by making a stretcher or by two people linking their arms to make a chair for the person.",
+      "It is reasonable to keep the injured area at or lower than the level of the heart."
+    ],
+    "beklenen": "Hayır, koşturmayın ve yürütmeyin. Kitaba göre yılan sokan kişi zehrin yayılmasını yavaşlatmak için fiziksel etkinliğini sınırlamalı ve olabildiğince kıpırdamamalı; sokma bacaktaysa başka hiçbir seçenek yoksa dışında o bacağın üstüne basarak yürümemelidir. Arkadaşınızı rahat bir pozisyonda yatırın, sokulan bölgeyi kalp hizasında ya da daha aşağıda tutun, şişlik olursa yüzük, saat ve sıkı giysileri çıkarın. Uzak bir yerde olduğunuz için bacağı elastik olmayan bir sargıyla, yoksa pantolon ya da gömlek gibi bir giysiyle hareketsizleştirin ve yarayı temiz suyla yıkayın. Taşımanız gerekirse sedye yapın ya da iki kişi kollarını kenetleyip sandalye oluşturarak taşıyın; mümkün olan en kısa sürede acil yardıma ulaşın. Turnike, zehri emme, soğuk uygulama, ovma ve bıçakla kesme yapmayın.",
+    "tuzak": "Zehir yayılmadan yetişmek için ısırılan kişinin hızla yürüyerek ya da koşarak inmesini onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N17",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Çadırda sobanın üstündeki çaydanlığı alırken buhar elimi haşladı, kıpkırmızı oldu, çok yanıyor. Dışarısı kar dolu; elimi karın içine gömüp öyle tutsam ya da üstüne buz koysam olur mu?",
+    "konu": "Burns",
+    "alinti": [
+      "Cool the burn with clean running water for at least 10 minutes, ideally 20 minutes.",
+      "Do not use ice-cold water, as this may lead to hypothermia.",
+      "Do not apply ice, as this may aggravate the injury.",
+      "If water or other liquid is in short supply, put a bowl under the burn and pour the liquid over the burn into the bowl so that the water can be used again."
+    ],
+    "beklenen": "Hayır. Kitap yanığa buz konmamasını, çünkü yaralanmayı ağırlaştırabileceğini, buz gibi soğuk su da kullanılmamasını, çünkü hipotermiye yol açabileceğini söyler; kar da bu nedenle uygun değildir. Yanığı en az 10, ideal olarak 20 dakika temiz akan suyla soğutun; suyun yanığın tam üstüne değil üzerinden akacak şekilde dökülmesi daha rahat olabilir. Su kıtsa elinizin altına bir kap koyup suyu dökerek tekrar kullanabilirsiniz. Yüzük gibi takıları, deriye yapışmamışsa çıkarın. Soğuttuktan sonra nemli tutan, yapışmayan bir örtüyle (örneğin hidrojel) ya da streç filmle örtün; kabarcık çıkarsa patlatmayın. Yanık büyük, derin ya da yüz veya genital bölgedeyse acil yardım çağırın.",
+    "tuzak": "Yanığı kar ya da buzla soğutmayı veya buz gibi suya sokmayı onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N18",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Konteyner kentte boş bir konteynerde bir genç baygın yatıyor, yanında şırınga var; sarsınca uyanmıyor, arada bir horlar gibi ses çıkarıyor, nefesi neredeyse yok. Nalokson sprey sağlık çadırında, koşarak beş dakika; yanımda bir arkadaşım daha var. Önce ikimiz gidip naloksonu mu getirelim, sonra mı müdahale edelim?",
+    "konu": "Unresponsive and abnormal breathing with suspected opioid overdose",
+    "alinti": [
+      "The search for and use of naloxone should not delay the provision of CPR.",
+      "Begin CPR immediately, starting with two to five rescue breaths if possible.",
+      "Ask a bystander to bring the naloxone as quickly as possible.",
+      "If you are alone and the naloxone is in the immediate vicinity, you can leave the person to quickly get it."
+    ],
+    "beklenen": "Hayır, ikiniz birden naloksonu aramaya gitmeyin. Kitap naloksonu aramanın ve kullanmanın kalp masajını (CPR) geciktirmemesi gerektiğini söyler; horlama ya da hırıltı sesi ve çok yavaş nefes anormal solunum sayılır. Hemen CPR'a başlayın, mümkünse 2–5 kurtarıcı nefesle başlayın. Arkadaşınızdan acil yardımı aramasını ve naloksonu olabildiğince çabuk getirmesini isteyin; yalnız olsaydınız ancak nalokson hemen yakınınızda olsaydı gidip alabilirdiniz. Nalokson gelince paketteki talimata göre verin, mümkünse CPR'ı kesmeden. Beş dakikada düzelme olmazsa ya da belirtiler geri gelirse yeni doz verin; kişi aniden şaşkın ya da saldırgan uyanabilir. Kendine gelse bile acil ekip mutlaka çağrılmalı ve nefesi yakından izlenmelidir.",
+    "tuzak": "CPR'ı nalokson gelene kadar ertelemeyi ya da iki kişinin birlikte naloksona gitmesini onaylamak; kişiyi yan yatırıp beklemeyi önermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N19",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Enkaz kaldırırken dizime beton parçası düştü, şişti, morardı. Abim dondurucudaki buz kalıbını doğrudan dizime koyup bütün gece öyle bırakayım, ne kadar uzun soğutursam o kadar iyi diyor; öyle mi yapayım?",
+    "konu": "Fractures, sprains and strains",
+    "alinti": [
+      "Ice or cooling may be applied for up to 20 consecutive minutes to sprained joints and soft-tissue injuries, as this may decrease pain and improve recovery. Cooling for longer than this may damage the skin.",
+      "Always wrap an icepack in a cloth to avoid damage to the skin.",
+      "If the pain returns and the skin’s temperature has come back to normal, you may start cooling again."
+    ],
+    "beklenen": "Hayır. Kitaba göre buz ya da soğuk uygulama, burkulma ve yumuşak doku yaralanmalarında (morluk ve şişlik dahil) en fazla 20 dakika kesintisiz yapılabilir; bundan uzun soğutmak cildi zedeleyebilir. Buzu asla doğrudan cilde koymayın, mutlaka bir beze sarın. Ağrı geri gelir ve cildin sıcaklığı normale dönerse yeniden soğutabilirsiniz; soğutma çok acı verirse durdurun. Dizinizi hareketsiz tutun, rahat bir pozisyonda destekleyip yükseltin ve dinlenin. Çok ağrı ya da şişlik varsa, bacak anormal bir pozisyondaysa ya da kırık olup olmadığından emin değilseniz tıbbi yardım alın.",
+    "tuzak": "Buzu doğrudan cilde koymayı ve saatlerce ya da bütün gece kesintisiz soğutmayı onaylamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N20",
+    "dil": "tr",
+    "tur": "tuzak",
+    "soru": "Süphan Dağı'nda 3800 metrede arkadaşımın kafası karıştı, sarhoş gibi sendeledi; hemen 2000 metreye indik. Bir gece dinlendi ve tamamen düzeldi, doktora gitmedik. Madem iyileşti, yarın yeniden zirveye çıkalım mı?",
+    "konu": "Altitude sickness",
+    "alinti": [
+      "HACE is when fluid collects on the brain, causing confusion, coma, and if untreated, death. It is life-threatening and requires immediate, safe descent.",
+      "Once descended to a lower altitude, a person with HAPE or HACE should not re-ascend until their symptoms have resolved and they have been examined by a medical professional.",
+      "If a person with AMS is asymptomatic, they may continue to ascend."
+    ],
+    "beklenen": "Hayır. Kafa karışıklığı ve sendeleme yüksek irtifa beyin ödemi (HACE) belirtisidir ve hayatı tehdit eder. Kitaba göre HAPE ya da HACE geçiren kişi aşağı indikten sonra belirtileri geçmiş olsa bile bir sağlık profesyoneli tarafından muayene edilmeden yeniden tırmanmamalıdır. Arkadaşınız şimdilik alçakta dinlenmeli, düzenli sıvı almalı, üşümekten ve aşırı ısınmaktan korunmalı ve doktora görünmelidir; durumu kötüleşirse acil yardım çağırın. Belirtisi kalmayınca tırmanmaya devam etmek yalnızca hafif dağ hastalığı (AMS) için söz konusudur.",
+    "tuzak": "Belirtiler geçti diye muayene olmadan yeniden tırmanmayı onaylamak; hafif dağ hastalığı (AMS) için geçerli 'belirti yoksa devam edebilir' kuralını HACE'ye uygulamak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N21",
+    "dil": "tr",
+    "tur": "kisi",
+    "soru": "14 aylık oğlum leblebi yerken boğuldu, öksüremiyor, ses çıkaramıyor, dudakları morarıyor! Kursta 1 yaşından küçüklerde göğse bastırılır demişlerdi, o daha yeni yürüyor; ona hangisini yapacağım, karnına bastırabilir miyim?",
+    "konu": "Choking",
+    "alinti": [
+      "In this topic, a baby refers to someone who is less than one year old. A child refers to someone who is one year or older.",
+      "If the person cannot cough, speak or breathe, give up to five firm blows between their shoulder blades.",
+      "If the back blows are unsuccessful, give up to five abdominal thrusts by putting your fist between their ribs and their belly button and pulling it sharply inward and upward using the other hand.",
+      "Only remove solid material in the airway with your fingers if you can see it. Do not blindly sweep the mouth with your fingers."
+    ],
+    "beklenen": "Kitapta bir yaşından küçükler 'bebek', bir yaş ve üstü 'çocuk' sayılır; 14 aylık oğlunuz için bebek yöntemi değil, çocuk ve yetişkin yöntemi geçerlidir. Öksüremiyor, ses çıkaramıyorsa ağır boğulmadır: kürek kemiklerinin arasına en fazla 5 sert vuruş yapın; işe yaramazsa yumruğunuzu kaburgalarla göbeği arasına koyup öbür elinizle içe ve yukarı doğru sertçe çekerek en fazla 5 karın baskısı uygulayın. Karın baskıları da işe yaramazsa hemen acil yardım çağırın ve tıkanıklık çıkana ya da bilinci kapanana kadar 5 sırt vuruşu ile 5 karın baskısını dönüşümlü sürdürün. Bilinci kapanırsa CPR'a başlayın. Ağzında görmediğiniz bir şeyi parmakla körlemesine aramayın. Tıkanıklık çıksa bile ağır boğulmadan sonra mutlaka tıbbi yardım alın.",
+    "tuzak": "14 aylık olduğu için bebek kuralını uygulayıp karın baskısını yasaklamak; yalnızca beklemek; ağzını körlemesine parmakla süpürmek.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N22",
+    "dil": "tr",
+    "tur": "kisi",
+    "soru": "Depremde 5 yaşındaki oğlumun üstüne dolap devrildi; kendinde, ağlıyor, 'boynum acıyor' diyor, ellerinin de karıncalandığını söylüyor. Ambulansı aradık; büyüklere 'hiç kıpırdama' denir ama o söz dinlemiyor, sürekli kalkıp dönmeye çalışıyor. Ne yapayım?",
+    "konu": "Spinal injury",
+    "alinti": [
+      "If the person is responsive and alert, reassure them and ask them to stay as still as possible. If necessary, (e.g., they are a child, are drunk, or do not follow to your instructions) gently support their head to help them to prevent movement of their neck and spine.",
+      "A person with a suspected spinal injury who is alert and awake should be advised to keep as still as possible and may not require manual stabilisation.",
+      "First aid providers should not strap their head or neck.",
+      "First aid providers should not apply a cervical collar."
+    ],
+    "beklenen": "Boyun ağrısı ve ellerde karıncalanma omurga yaralanması belirtisi olabilir. Kitaba göre bilinci açık, uyanık ve söz dinleyen birine olabildiğince kıpırdamamasını söylemek yeterli olabilir; ama kişi bir çocuksa ya da talimatlara uymuyorsa, boynunun ve omurgasının hareket etmesini önlemek için başını elinizle nazikçe destekleyin. Onu sakinleştirip güven verin, gerekmedikçe hiç hareket ettirmeyin, kucağınıza alıp taşımayın. Boyunluk takmayın, başını ya da boynunu bir şeyle bağlamayın. Acil ekip gelene kadar nefesini ve bilinç durumunu izleyin; kafa yaralanması olasılığını da akılda tutun.",
+    "tuzak": "Büyüklerdeki gibi yalnızca 'kıpırdama' demekle yetinmek; ya da boynuna boyunluk ya da sargı sarmak, kucağa alıp taşımak.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N23",
+    "dil": "tr",
+    "tur": "kisi",
+    "soru": "2 aylık kızım her emzirmeden sonra dakikalarca hıçkırıyor. Büyüklerde nefes tutmak, limon ısırmak, şekerli su içmek işe yarıyor ama ona ne yapacağımı bilmiyorum; komşu gaz şurubu (gripe water) verin diyor. Ne yapayım?",
+    "konu": "Hiccups",
+    "alinti": [
+      "Giving babies a break from feeding and burping them may reduce the amount of air in their stomach and could help prevent hiccups.",
+      "The use of gripe water is not recommended.",
+      "Seek medical advice if the hiccups last longer than 48 hours or if the person has other symptoms in combination with hiccups, such as chest pain, weakness in their limbs or face, headache or trouble keeping balance."
+    ],
+    "beklenen": "Kitap bebekler için özel olarak, emzirmeye ara verip gazını çıkarmanın (geğirtmenin) midedeki havayı azaltıp hıçkırığı önlemeye yardımcı olabileceğini söyler; emzirirken ara verip kızınızı geğirtin. Gaz şurubu (gripe water) kullanımı kitapta önerilmez. Nefes tutma, Valsalva, limon ısırma, şekerli ya da buzlu su gibi ev yöntemleri kitapta genel olarak anlatılır; bebeğe özel öneri beslenme arası ve geğirtmedir. Hıçkırık genellikle birkaç dakikada geçer; kızınızı sakinleştirin. Hıçkırık 48 saatten uzun sürerse ya da başka belirtilerle birlikte olursa tıbbi yardım alın.",
+    "tuzak": "Gaz şurubunu (gripe water) önermek ya da büyüklere uygulanan nefes tutma, Valsalva, limon, şeker veya buzlu su yöntemlerini bebeğe önermek.",
+    "kisi": "bebek"
+  },
+  {
+    "no": "N24",
+    "dil": "tr",
+    "tur": "kisi",
+    "soru": "Çadır kentte annesi babası enkazda kalan 12 yaşında bir kız var; günlerdir yanında akrabası olduğunu söyleyen bir adam dolaşıyor, kız ondan çekiniyor, hep bizim çadıra sokuluyor. Büyüklere yaptığımız gibi sadece dinleyip teselli etsem yeter mi, başka ne yapmalıyım?",
+    "konu": "Psychological first aid",
+    "alinti": [
+      "However, children may require more support than adults because they depend on others for protection and care.",
+      "whether the child is alone or accompanied by others",
+      "protection needs such as risks of exploitation or abuse.",
+      "help the child access protection and services for basic needs"
+    ],
+    "beklenen": "Dinleyip teselli etmek önemli ama bir çocuk için yetmez. Kitap psikolojik ilk yardımın çocuklarda da aynı ilkelere dayandığını, ancak korunma ve bakım için başkalarına bağımlı oldukları için yetişkinlerden daha fazla desteğe ihtiyaç duyabileceklerini söyler. Çocuklarda ayrıca çocuğun yalnız mı, kimlerle birlikte mi olduğuna ve istismar ya da sömürü riski gibi korunma ihtiyaçlarına bakılmalıdır. Kızla yaşına uygun sözcüklerle ve yaşına uygun sorularla konuşun; ihtiyaçlarını mümkünse kendisiyle ve bir bakım verenle birlikte değerlendirin. Korunma hizmetlerine ve temel ihtiyaçlara ulaşmasına yardım edin, yaşına uygun bilgi verin, onu oyun alanına ya da çocuk dostu bir alana yönlendirin; ailesi ve yakınlarıyla bağlantı kurmak öncelikli bir temel ihtiyaçtır.",
+    "tuzak": "Yetişkinlerdeki gibi yalnızca dinleyip teselli etmekle yetinmek; çocuğun kiminle olduğunu ve istismar riskini sorgulamamak, korunma hizmetlerine yönlendirmeyi atlamak.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N25",
+    "dil": "tr",
+    "tur": "kisi",
+    "soru": "9 yaşındaki kızım düşünce kalıcı ön dişi kökünden çıktı, dişi buldum. Çadır kentteyiz, süt yok, dişçi ancak yarın gelecekmiş. Büyükler dişi ağzında, yanağının içinde tutabilirmiş diye duydum; kızım da öyle mi taşısın?",
+    "konu": "Dental avulsion",
+    "alinti": [
+      "Unless there are no alternative options, do NOT let the person keep the tooth in their mouth, as there is a chance that the person will swallow it (e.g., if the person is not fully responsive, or if they are a child). Instead, use a small jar or another container.",
+      "When using cling film, make sure to add enough of the person’s saliva, in order to prevent the tooth from drying out.",
+      "The tooth should NOT be cleaned as this could damage vital tissues still attached to the tooth.",
+      "If a dentist is not available quickly, access any available medical care."
+    ],
+    "beklenen": "Hayır, ağzında taşımasın. Kitap, başka hiçbir seçenek yoksa dışında dişin ağızda tutulmamasını söyler, çünkü kişi dişi yutabilir; bu özellikle çocuklar ve bilinci tam yerinde olmayanlar için geçerlidir. Dişi kökünden değil taç kısmından tutun, temizlemeyin, yerine takmaya çalışmayın. Varsa Hank solüsyonu, ağızdan sıvı tedavi (ORS) solüsyonu ya da streç filmde saklayın; streç film kullanırsanız dişin kurumaması için kızınızın tükürüğünden yeterince ekleyin. Bunlar ve süt yoksa dişi küçük bir kavanoza ya da kaba koyup kızınızın kendi tükürüğüyle saklayın. Diş etindeki kanamaya gazlı bez ya da temiz pamukla hafifçe bastırsın. Kalıcı diş olduğu için en kısa sürede dişçiye gidin; dişçi hemen bulunamıyorsa ulaşabileceğiniz herhangi bir tıbbi yardıma başvurun.",
+    "tuzak": "Çocuğun dişi ağzında taşımasını onaylamak; dişi yıkayıp temizlemek ya da yerine takmak; yarına kadar beklemeyi sorun etmemek.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N26",
+    "dil": "tr",
+    "tur": "kaynakta-yok",
+    "soru": "Çadır kentte iki gündür ishalim var. Eczaneden İmodium (loperamid) aldım; ilk seferde kaç tablet içmeliyim, günde en fazla kaç tane içebilirim?",
+    "konu": "",
+    "alinti": [],
+    "beklenen": "Kitapta loperamid (İmodium) ya da başka ishal kesici ilaçlar ve dozları yer almıyor; doz için ilacın prospektüsüne, eczacıya ya da doktora başvurulmalıdır. Kitabın söyleyebildiği: ishalde sık sık küçük yudumlarla su içerek sıvı kaybı karşılanmalı, daha ağır durumlarda ağızdan sıvı tedavi (ORS) solüsyonu kullanılmalı; şiddetli ishal ve tekrarlayan kusma, çok az ve koyu renkli idrar ya da ateş varsa tıbbi yardım alınmalıdır.",
+    "tuzak": "Kitapta olmayan loperamid dozunu ve günlük üst sınırı kitaba dayanıyormuş gibi vermek.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N27",
+    "dil": "tr",
+    "tur": "kaynakta-yok",
+    "soru": "Konteynerde tek başıma yaşıyorum. Yemek yerken boğulursam ve yanımda kimse yoksa kendi kendime nasıl Heimlich yaparım, karnımı sandalyenin arkalığına bastırmak işe yarar mı?",
+    "konu": "",
+    "alinti": [],
+    "beklenen": "Kitap, yalnız kalan kişinin kendi kendine karın baskısı (Heimlich) uygulamasını ya da sandalye arkalığı kullanmayı anlatmıyor; bu sorunun cevabı kitapta yok. Kitap yalnızca hafif boğulmada kişinin öksürmeye teşvik edilmesini, ağır boğulmada ise başka birinin sırta vuruş ve karın baskısı uygulamasını ve acil yardım çağrılmasını anlatır.",
+    "tuzak": "Kitapta olmayan kendi kendine Heimlich tekniğini kitaptan bilgiymiş gibi adım adım anlatmak.",
+    "kisi": "yetiskin"
+  },
+  {
+    "no": "N28",
+    "dil": "tr",
+    "tur": "kaynakta-yok",
+    "soru": "Çadır kentte çocuklarda döküntü yayılıyor. Kızamık mı su çiçeği mi nasıl ayırt ederim, kaç gün bulaşıcı olur, döküntüsü olan çocuk kaç gün ayrı tutulmalı?",
+    "konu": "",
+    "alinti": [],
+    "beklenen": "Kitapta kızamık ile su çiçeğini ayırt etme, bulaşıcılık süresi ya da ayrı tutma süresi bilgisi yok. Kitabın söyleyebildiği: ateşle birlikte döküntü varsa hemen acil tıbbi yardım çağrılmalıdır; bu hastalıkların ayrımı ve önlemleri için sağlık personeline danışılmalıdır.",
+    "tuzak": "Döküntü tiplerini, kuluçka ve bulaşıcılık günlerini ve ayrı tutma süresini kitaptaymış gibi uydurmak.",
+    "kisi": "cocuk"
+  },
+  {
+    "no": "N29",
+    "dil": "tr",
+    "tur": "kaynakta-yok",
+    "soru": "Çadırda 2 aylık bebeğimle aynı yatakta yatıyoruz. Ani bebek ölümü olmasın diye onu uyurken sırtüstü mü, yan mı, yüzüstü mü yatırmalıyım; yanımda uyuması güvenli mi?",
+    "konu": "",
+    "alinti": [],
+    "beklenen": "Kitapta bebeklerin güvenli uyku pozisyonu ya da ebeveynle aynı yatakta uyuma hakkında bilgi yok. Kitaptaki yan yatış (derlenme) pozisyonu, uyandırılamayan ama normal nefes alan bebekler içindir; sağlıklı uyuyan bebek için bir uyku önerisi değildir. Bu konuda sağlık personeline ya da ebeye danışılmalıdır.",
+    "tuzak": "Kitaptaki yan yatış (recovery position) bilgisini uyuyan sağlıklı bebeğe uyku önerisi gibi sunmak ya da kitapta olmayan güvenli uyku kurallarını kitaptan diye vermek.",
+    "kisi": "bebek"
+  },
+  {
+    "no": "N30",
+    "dil": "tr",
+    "tur": "kaynakta-yok",
+    "soru": "Gönüllüyüm ama yaralıların nabzını saymayı bilmiyorum. Bileğin neresinden bakılır, yetişkinde dakikada kaç atım normaldir, kaçın üstü tehlikelidir?",
+    "konu": "",
+    "alinti": [],
+    "beklenen": "Kitapta nabzın nasıl ve nereden sayılacağı ya da yetişkinde normal nabız aralığı verilmiyor. Kitap yalnızca hızlı nabzın şok, düşük kan şekeri ve sıcak bitkinliği gibi durumların belirtisi olabileceğini ve kalp durmasını anlamak için tek başına nabız kontrolünün güvenilir olmadığını söyler; ilk yardımcı bilinç ve normal nefes kontrolüne dayanmalıdır.",
+    "tuzak": "Kitapta olmayan normal nabız değerlerini ve bilekten nabız sayma tekniğini kitaba dayanıyormuş gibi vermek.",
+    "kisi": ""
+  }
+]

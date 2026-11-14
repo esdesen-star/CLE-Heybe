@@ -2,6 +2,7 @@
 // metin_ek.js'teki her dilin seçilen anahtarlarını birleştirip sayfanın dil algılayıcısıyla (dilTahmin) okur.
 // İkinci ölçü (07.11, Sırpça dersi): Latin olmayan alfabeli dilde Latin harfli gerçek kelime var mı (alfabe karışması).
 // Kullanım: node olcum/kopru/arayuz_denetle.cjs [anahtar,anahtar,…] [metin_ek.js yolu]   (anahtar verilmezse bütün metinler)
+// 13.11 (§123): SAYFA=harita → harita_metin_ek.js (HEYBE_HARITA_EK), korunan adlar harita.html'in METIN.en'ine karşı
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -11,8 +12,9 @@ const a = sayfa.indexOf('  const SIK = {'), b = sayfa.indexOf('  async function 
 const dilTahmin = new Function(sayfa.slice(a, b) + '; return dilTahmin;')();
 const c = { window: {} };
 vm.createContext(c);
-vm.runInContext(fs.readFileSync(process.argv[3] || path.join(HEYBE, 'metin_ek.js'), 'utf8'), c);
-const EK = c.window.HEYBE_METIN_EK;
+const HARITA = process.env.SAYFA === 'harita';
+vm.runInContext(fs.readFileSync(process.argv[3] || path.join(HEYBE, HARITA ? 'harita_metin_ek.js' : 'metin_ek.js'), 'utf8'), c);
+const EK = HARITA ? c.window.HEYBE_HARITA_EK : c.window.HEYBE_METIN_EK;
 const ANAHTAR = (process.argv[2] || '').split(',').filter((x) => x && x !== 'hepsi');
 const duz = (o) => (o && typeof o === 'object' ? Object.values(o).flatMap(duz) : typeof o === 'string' ? [o] : []);
 const AYRI = new Set(['pa', 'zu']);   // sayfada yok (çevirmen yazamıyor)
@@ -49,8 +51,9 @@ karisik.forEach((x) => console.log('  ' + x));
 const { eksikAdlar } = require('./alfabe.cjs');
 const vm2 = { METIN: null, SATIR: '\n' };
 vm.createContext(vm2);
-const ma = sayfa.indexOf('const METIN = {'), mb = sayfa.indexOf('\n  };\n', ma);
-vm.runInContext(sayfa.slice(ma, mb + 5).replace('const METIN =', 'METIN ='), vm2);
+const kaynakSayfa = HARITA ? fs.readFileSync(path.join(HEYBE, 'harita.html'), 'utf8') : sayfa;
+const ma = kaynakSayfa.indexOf('const METIN = {'), mb = kaynakSayfa.indexOf(HARITA ? '\n};\n' : '\n  };\n', ma);
+vm.runInContext(kaynakSayfa.slice(ma, mb + (HARITA ? 3 : 5)).replace('const METIN =', 'METIN ='), vm2);
 const yollar = (o, p = '') => (o && typeof o === 'object' ? Object.entries(o).flatMap(([k, v]) => yollar(v, p + k + '.'))
   : [[p.slice(0, -1), typeof o === 'function' ? o('{0}', '{1}', '{2}') : String(o)]]);
 const al = (o, p) => p.split('.').reduce((x, k) => x && x[k], o);

@@ -601,7 +601,7 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
   console.log(`— yol sorusu dişi: ${yDogru}/${YOL_ORNEK.length} —`);
 }
 
-// ---- 13.11 (§114): karşıt ortam bekçisi — sıcak ortam sorusuna yalnız soğuk bölümü (ya da tersi) atıflı cevap durur ----
+// ---- 13.11 (§114, §120): karşıt ortam bekçisi — sıcak ortam sorusuna soğuk bölümüne (ya da tersi) atıflı cevap durur ----
 {
   const b = (...ad) => ad.map((makale) => ({ makale }));
   const ORTAM_ORNEK = [
@@ -610,7 +610,9 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
     ['karda titreyen, sıcak çarpması', 'Karda mahsur kaldık, eşim titriyor', 'tr', b('Hyperthermia'), true],
     ['sıcakta, sıcak çarpması: doğru', 'Güneşte çalışan babam yığıldı', 'tr', b('Hyperthermia'), false],
     ['iki ortam birden: denetlenmez', 'Güneşli ama karlı dağda arkadaşım üşüyor', 'tr', b('Hypothermia'), false],
-    ['karışık atıf: denetlenmez', 'Öğle sıcağında bitkin düştü', 'tr', b('Hypothermia', 'Hyperthermia'), false],
+    ['karışık atıf: tek karşıt atıf yeter (§120)', 'Öğle sıcağında bitkin düştü', 'tr', b('Hypothermia', 'Hyperthermia'), true],
+    ['J02 geniş arama: hipotermi + psikolojik ilk yardım (§120)', 'Öğle sıcağında yük boşaltırken gönüllü bitkin düştü', 'tr', b('Hypothermia', 'Psychological first aid'), true],
+    ['sıcakta, karşıt atıf yok', 'Öğle sıcağında bitkin düştü', 'tr', b('Hyperthermia', 'Dehydration'), false],
     ['sıcak su yanığı, yanık bölümü', 'Sıcak su döküldü, eli yandı', 'tr', b('Burns'), false],
     ['İngilizce', 'He collapsed while working in the heat', 'en', b('Frostbite'), true],
     ['sözlüksüz dil', 'Zkolaboval v horku', 'cs', b('Hypothermia'), false],
@@ -679,4 +681,29 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
     if ((r.length > 0) === beklenen) d++; else console.log(`  YANLIŞ (§116): ${ad} → ${JSON.stringify(r)}`);
   }
   console.log(`— §116 kural dişi: ${d}/${E.length} —`);
+}
+
+// ---- 13.11 (§122): konu uyumu bekçisi — cevabın o kitaba atıflarının çoğu bağımsız aramanın birinci makalesinin dışındaysa ----
+{
+  const a = (...x) => x.map(([makale, sayi]) => ({ makale, sayi }));
+  const KONU_ORNEK = [
+    ['H11: karbonmonoksite karın ağrısı + hipotermi', a(['Abdominal pain', 4], ['Hypothermia', 2]), 'Disaster context', true],
+    ['J02: hepsi hipotermi, tahmin hipertermi', a(['Hypothermia', 6]), 'Hyperthermia', true],
+    ['çoğu doğru makaleden', a(['Burns', 4], ['Cuts and grazes', 1]), 'Burns', false],
+    ['yarı yarıya: uyar', a(['Burns', 2], ['Cuts and grazes', 2]), 'Burns', false],
+    ['bire iki dışarıda: uymaz', a(['Burns', 1], ['Cuts and grazes', 1], ['Shock', 1]), 'Burns', true],
+    ['atıf yok: denetlenmez', [], 'Burns', false],
+  ];
+  let kDogru = 0;
+  for (const [ad, atif, tahmin, beklenen] of KONU_ORNEK) {
+    if (H.konuUymaz(atif, tahmin) === beklenen) kDogru++; else console.log(`  YANLIŞ (konu): ${ad}`);
+  }
+  // adres yoksa (yardımcısız sayfa) bekçi susar, model istemez (erken dönüş; dönmese de liste alınamaz → yine susar)
+  const eski = H.AYAR.makaleler;
+  H.AYAR.makaleler = '';
+  H.konuDenetle('q', 'Cool the burn [1].', [{ makale: 'Hypothermia', kitap: 'k', kaynak: 'kiwix' }]).then((r) => {
+    H.AYAR.makaleler = eski;
+    if (r.length === 0) kDogru++; else console.log('  YANLIŞ (konu): adres yokken çalıştı');
+    console.log(`— konu dişi: ${kDogru}/${KONU_ORNEK.length + 1} —`);
+  });
 }

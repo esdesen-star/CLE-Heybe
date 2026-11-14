@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.11 (13.11.2026, dönüş yasakları)"
+const surum = "1.12 (13.11.2026, küçük kitabın makale listesi)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string
@@ -86,7 +86,18 @@ func main() {
 	rotaDene := flag.String("rota-dene", "", "deneme: \"enlem,boylam;enlem,boylam;yaya|arac\" ya da \"ara:metin\"")
 	haritaKutu := flag.String("harita-kutu", "", "yalnız bu alan: \"batı,güney,doğu,kuzey\" (derece); -harita-hazirla ve -harita-kes ile")
 	haritaKes := flag.String("harita-kes", "", "harita görüntüsünü kes: PMTiles adresi ya da \"son\" (Protomaps'in son yapımı); -harita-kutu ve -harita-cikti ile")
+	// 13.11 (§122): küçük kitabın makale listesi JSON olarak (sınav düzeni yardımcısız koşar: olcum/banka/olc_banka.cjs MAKALELER=…)
+	zimListe := flag.String("makaleler", "", "bu .zim dosyasının makale listesini JSON yaz, sonra çık")
 	flag.Parse()
+	if *zimListe != "" {
+		l, err := zimMakaleleri(*zimListe)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		_ = json.NewEncoder(os.Stdout).Encode(l)
+		return
+	}
 	if *haritaPbf != "" || *rotaDene != "" || *haritaKes != "" {
 		os.Exit(haritaKomut(*haritaPbf, *haritaCikti, *haritaTarih, *rotaDene, *haritaKutu, *haritaKes))
 	}
@@ -152,6 +163,7 @@ func main() {
 	mux.HandleFunc("/api/yanlis", apiYanlis)                // "bu cevap yanlış" kayıtları (Ö18, 07.11): bellekte kalır
 	mux.HandleFunc("/api/ayar", apiAyar)                    // açılış dili (07.11 gece): bellekte, bilgisayardan bağımsız
 	mux.HandleFunc("/api/kip", apiKip)                      // okuma kipi (10.11): başlatıcılar okur, büyük model açılmaz
+	mux.HandleFunc("/api/makaleler", apiMakaleler)          // küçük kitabın makale listesi (13.11, konu uyumu bekçisi)
 	mux.HandleFunc("/api/modeller", apiModeller)            // ilk kurulum (08.11): eksik modelleri indirir ve açar
 	// 09.11: çevrim dışı harita (8i): görüntü dosyası, rota ve yer arama
 	mux.Handle("/harita/", http.StripPrefix("/harita/", dosyaSun(haritaDir(), false)))

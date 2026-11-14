@@ -1,0 +1,590 @@
+{
+ "de": {
+  "bilgiYok": {
+   "ceviri": "Die Informationen, die ich habe, enthalten diese Angaben nicht.",
+   "geri": "Sahip olduğum bilgilerde bu detaylar yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe hat diese Antwort abgebrochen: Es wird etwas empfohlen, das seine Quelle jedoch verbietet. Bitte lesen Sie die folgenden Quellen.",
+   "geri": "Heybe, bu cevabı yarıda bırakmıştır: Bazı öneriler sunulmakta, ancak bunların kaynağına aykırı olduğunu belirtmektedir. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "Die Antwort scheint eine Empfehlung auszusprechen, die jedoch laut der Quelle nicht befolgt werden sollte. Aus Sicherheitsgründen zeige ich dies nicht. Bitte lesen Sie die folgenden Quellen.",
+   "ilkGeri": "Bu yanıt, bir tavsiye içeriyor gibi görünse de, kaynağa göre bu tavsiye takip edilmemeli. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun."
+  }
+ },
+ "ar": {
+  "bilgiYok": {
+   "ceviri": "المعلومات التي لدي لا تتضمن هذه التفاصيل.",
+   "geri": "Sahip olduğum bilgilerde bu detaylar yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "يبدو أن الإجابة تقترح شيئًا، ولكن مصدرها يوضح أنه يجب عدم القيام به. لأسباب تتعلق بالسلامة، لن أقدم هذه الإجابة. يرجى الاطلاع على المصادر أدناه.",
+   "geri": "Görünüşe göre bu yanıt bir öneri sunuyor, ancak kaynağı, bu önerinin uygulanmaması gerektiğini belirtiyor. Güvenlik nedenleriyle, bu yanıtı sunmuyorum. Lütfen aşağıdaki kaynaklara başvurun.",
+   "deneme": 1
+  }
+ },
+ "bg": {
+  "bilgiYok": {
+   "ceviri": "Моите източници не съдържат тази информация.",
+   "geri": "Benim kaynaklarımda bu bilgi bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Отговорът изглежда, че препоръчва нещо, което източният му източник твърди, че не трябва да се прави. За моя безопасност, не го представям. Моля, прочетете източниците по-долу.",
+   "geri": "Görünüşe göre, bu tavsiye, kaynağının önerdiği bir şeyin tersine, yapılmaması gerektiğini belirtiyor. Güvenliğim için, bu tavsiyeyi paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "bn": {
+  "bilgiYok": {
+   "ceviri": "আমার কাছে এই তথ্য নেই।",
+   "geri": "Bu konuda benim bilgim yok.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "এই উত্তরটি এখানে বন্ধ করে দেওয়া হলো: এটি এমন কিছু সুপারিশ করছে যা এর উৎস সমর্থন করে না। অনুগ্রহ করে নিচের উৎসগুলো পড়ুন।",
+   "geri": "Bu yanıt burada sonlandırılıyor: Bu, kaynağını desteklemediği bazı önerilerde bulunuyor. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "এই উত্তরটি এমন কিছু প্রস্তাব করছে বলে মনে হচ্ছে, যা তার উৎস অনুযায়ী করা উচিত নয়। নিরাপত্তার খাতিরে, আমি এটি প্রকাশ করছি না। অনুগ্রহ করে নিচের উৎসগুলো দেখুন।",
+   "ilkGeri": "Bu yanıt, kaynaklarına göre uygun olmayan bazı öneriler içeriyor gibi görünüyor. Güvenlik nedeniyle, bunları paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "ca": {
+  "bilgiYok": {
+   "ceviri": "Les fonts que tinc no contenen aquesta informació.",
+   "geri": "Sahip olduğum kaynaklarda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "La resposta sembla recomanar alguna cosa que la seva font diu que no s'ha de fer. Per seguretat, no la mostraré. Si us plau, consulteu les fonts següents.",
+   "geri": "Bu yanıt, kaynağının söylediğine göre yapılmaması gereken bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmayacağım. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "da": {
+  "bilgiYok": {
+   "ceviri": "Mine kilder indeholder ikke denne information.",
+   "geri": "Kullanılan kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Svaret virker til at anbefale noget, som kilden påstår, man ikke må gøre. Af hensyn til sikkerheden viser jeg det ikke. Se venligst de nedenstående kilder.",
+   "geri": "Bu yanıt, kaynağın tavsiye etmediği bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynaklara bakın.",
+   "deneme": 1
+  }
+ },
+ "el": {
+  "bilgiYok": {
+   "ceviri": "Οι πηγές μου δεν περιέχουν αυτές τις πληροφορίες.",
+   "geri": "Bilgilerim bu konuda herhangi bir şey içermiyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Η απάντηση φαίνεται να προτείνει κάτι που, σύμφωνα με την πηγή της, δεν πρέπει να γίνεται. Για λόγους ασφαλείας, δεν το παρουσιάζω. Παρακαλώ, διαβάστε τις πηγές που αναφέρονται παρακάτω.",
+   "geri": "Bu yanıt, kaynağının belirttiği gibi, yapılmaması gereken bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu burada sunmuyorum. Lütfen aşağıda belirtilen kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "es": {
+  "bilgiYok": {
+   "ceviri": "Según mis fuentes, esta información no está disponible.",
+   "geri": "Bilgilerime göre, bu bilgiye ulaşmak mümkün değil.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "La respuesta parece recomendar algo que, según su fuente, no se debe hacer. Por motivos de seguridad, no lo estoy mostrando. Por favor, consulte las fuentes que se indican a continuación.",
+   "geri": "Bu yanıt, kaynaklarına göre yapılmaması gereken bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynaklara başvurun.",
+   "deneme": 1
+  }
+ },
+ "et": {
+  "bilgiYok": {
+   "ceviri": "Minu allikad ei sisalda seda teavet.",
+   "geri": "Benim kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Vastus näib soovitavat midagi, mida selle allikas ütleb, et ei tohi teha. Ohutuse huvides ma seda ei näita. Palun vaadake allolevaid allikaid.",
+   "geri": "Bu yanıt, kaynağın \"yapılmaması gereken bir şey\" olduğunu söylediğini gösteriyor. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "fa": {
+  "bilgiYok": {
+   "ceviri": "منابع من این اطلاعات را ندارند.",
+   "geri": "Benim sahip olduğum kaynaklar bu bilgileri sağlamıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "به نظر می‌رسد این پاسخ، اقدامی را پیشنهاد می‌دهد که منبع آن، این کار را ممنوع می‌داند. به دلیل مسائل ایمنی، من این پیشنهاد را ارائه نمی‌کنم. لطفاً منابع زیر را مطالعه کنید.",
+   "geri": "Bu yanıt, bir eylemi önermekte olup, bu eylemin yasak olduğunu belirtmektedir. Güvenlik nedenleriyle, bu öneriyi kabul etmiyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "fi": {
+  "bilgiYok": {
+   "ceviri": "Minulla ei ole tästä tiedosta.",
+   "geri": "Bu konuda bilgim yok.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Vastaus vaikuttaa suosittelevan jotain, mikä sen lähteen mukaan ei saa tehdä. Turvallisuuden vuoksi en näytä sitä. Ole hyvä ja lue alla olevat lähteet.",
+   "geri": "Bu yanıt, kaynaklarına göre yapılmasına izin verilmemesi gereken bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "fil": {
+  "bilgiYok": {
+   "ceviri": "Ang mga mapagkukunan ko ay walang impormasyong ito.",
+   "geri": "Kaynaklarım bu bilgiyi sağlamıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Hinihinala na ang sagot na ito ay nagrerekomenda ng isang bagay na ipinagbabawal ng pinagmulan nito. Mangyaring basahin ang mga pinagmulan sa ibaba.",
+   "geri": "Bu yanıtın, kaynağı tarafından yasaklanan bir şeyi önerdiği düşünülüyor. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "Ang sagot ay tila nagrerekomenda ng isang bagay na sinasabi ng pinagmulan nito na hindi dapat gawin. Para sa kaligtasan, hindi ko ito ipapakita. Mangyaring basahin ang mga pinagmulan sa ibaba.",
+   "ilkGeri": "Cevap, kaynağının söylediğine göre yapılması gereken bir şeyi öneriyor gibi duruyor. Güvenlik nedeniyle, bunu paylaşmayacağım. Lütfen aşağıdaki kaynakları okuyun."
+  }
+ },
+ "fr": {
+  "bilgiYok": {
+   "ceviri": "Les sources que j'ai consultées ne contiennent pas ces informations.",
+   "geri": "Benim incelediğim kaynaklarda bu bilgiler yer almamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "La réponse semble recommander quelque chose que sa source indique qu'il ne faut pas faire. Pour des raisons de sécurité, je ne la présente pas. Veuillez consulter les sources ci-dessous.",
+   "geri": "Bu yanıt, kaynağının önerdiği şeyi yapmamayı tavsiye ettiği gibi görünmektedir. Güvenlik nedenleriyle, bu yanıtı sunmuyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "gu": {
+  "bilgiYok": {
+   "ceviri": "મારા સ્ત્રોતોમાં આ માહિતી નથી.",
+   "geri": "Bu bilgiyi kaynaklarımda bulamıyorum.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "હેબે આ જવાબ પર અટકાવ્યું: તે એવી વસ્તુની ભલામણ કરે છે જે તેના સ્ત્રોત દ્વારા પ્રતિબંધિત છે. કૃપા કરીને નીચેના સ્ત્રોતો વાંચો.",
+   "geri": "\"Bu cevaba müdahale etti: Kaynağı tarafından yasaklanan bir ürünün tavsiye edildiğini belirtiyor. Lütfen aşağıdaki kaynakları okuyun.\"",
+   "deneme": 2,
+   "ilk": "આ જવાબ એ સૂચવે છે કે તેના સ્ત્રોત દ્વારા કહેવામાં આવ્યું છે કે આ કરવું જોઈએ નહીં. સલામતી માટે, હું તેને દર્શાવતો નથી. કૃપા કરીને નીચેના સ્ત્રોતો વાંચો.",
+   "ilkGeri": "Bu yanıt, kaynağın bu yapılmasına karşı olduğunu belirtmektedir. Güvenlik nedeniyle, bu bilgiyi paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "he": {
+  "bilgiYok": {
+   "ceviri": "המקורות שלי אינם כוללים מידע זה.",
+   "geri": "Kullanılan kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "הייב הפסיק את התשובה הזו: הוא ממליץ על משהו שמקורו אוסר עליו. אנא קראו את המקורות המופיעים בהמשך.",
+   "geri": "Hayb, bu cevabı sonlandırdı: O, kendisine yasak olan bir şeyden bahseden bir öneride bulunuyor. Lütfen, daha sonra belirtilen kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "התשובה נראית כאילו היא ממליצה על משהו, אך המקור ממנו היא הגיעה טוען שזה אסור לעשות. מתוך זהירות, אני לא מציג את זה. אנא קראו את המקורות שמופיעים בהמשך.",
+   "ilkGeri": "Bu yanıt, bir öneri gibi görünse de, kaynağına dayanan bilgi, bu yapılmasına izin verilmediğini belirtiyor. Güvenlik nedeniyle, bu bilgiyi doğrudan sunmuyorum. Lütfen daha sonra belirtilen kaynakları okuyun."
+  }
+ },
+ "hi": {
+  "bilgiYok": {
+   "ceviri": "मेरे पास इस जानकारी की कोई जानकारी नहीं है।",
+   "geri": "Bu konuda herhangi bir bilgim yok.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "हेबे ने इस उत्तर को रोक दिया: यह एक ऐसी चीज की सिफारिश कर रहा है जिसे इसके स्रोत ने प्रतिबंधित किया है। कृपया नीचे दिए गए स्रोतों को पढ़ें।",
+   "geri": "हेबे, bu cevabı durdurdu: Bu, kaynağı tarafından yasaklanan bir ürünün tavsiyesini içeriyor. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "प्रतिक्रिया ऐसा प्रतीत होती है कि यह कुछ ऐसा करने की सलाह दे रही है, जिसके बारे में इसका स्रोत कहता है कि ऐसा नहीं करना चाहिए। सुरक्षा के लिए, मैं इसे प्रदर्शित नहीं कर रहा हूँ। कृपया नीचे दिए गए स्रोतों को पढ़ें।",
+   "ilkGeri": "Bu yanıt, bir şey yapılması gerektiği yönünde bir tavsiye veriyor gibi görünse de, kaynağına göre bu yapılması gereken bir şey olmadığını belirtiyor. Güvenlik nedeniyle, bu yanıtı paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun."
+  }
+ },
+ "hr": {
+  "bilgiYok": {
+   "ceviri": "Moje izvori ne sadrže ovu informaciju.",
+   "geri": "Bilgilerim bu konuda herhangi bir şey söylemiyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Odgovor izgleda kao da preporučuje nešto, ali izvor navodi da to ne bi trebalo raditi. Iz sigurnosnih razloga, neću to prikazati. Molim vas, pročitajte izvori u nastavku.",
+   "geri": "Bu yanıt, bir öneri gibi görünse de, kaynak belirtiyor ki bu yapılmamalı. Güvenlik nedenlerinden dolayı, bunu paylaşmayacağım. Lütfen, aşağıda belirtilen kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "hu": {
+  "bilgiYok": {
+   "ceviri": "A rendelkezésemre álló források nem tartalmaznak erről az információt.",
+   "geri": "Esnin eline geçen kaynaklarda bu konuda herhangi bir bilgi bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe elmondta: ez a válasz azt javasolja, amit a forrása tilt. Kérjük, olvassa el az alábbi forrásokat.",
+   "geri": "Heybe şöyle dedi: Bu yanıt, kaynağının yasakladığı bir öneriyi ima ediyor. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "A válasz úgy tűnik, hogy azt javasolja, amit a forrása szerint nem szabad megtenni. Biztonsági okokból nem mutatok rá. Kérlek, olvassa el a következő forrásokat.",
+   "ilkGeri": "Görüş, kaynaklarına göre yapılmasına karşı önerdiği bir şey olduğunu gösteriyor. Güvenlik nedenleriyle bunu belirtmiyorum. Lütfen aşağıdaki kaynakları okuyun."
+  }
+ },
+ "id": {
+  "bilgiYok": {
+   "ceviri": "Sumber-sumber yang saya miliki tidak mencantumkan informasi tersebut.",
+   "geri": "Sahip olduğum kaynaklarda bu bilgi yer almamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Jawaban tersebut tampaknya menyarankan sesuatu yang menurut sumbernya tidak boleh dilakukan. Untuk alasan keamanan, saya tidak akan menunjukkannya. Mohon baca sumber-sumber di bawah ini.",
+   "geri": "Bu cevap, aslında bir kaynağa göre yapılmaması gereken bir şeyi öneriyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmayacağım. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "is": {
+  "bilgiYok": {
+   "ceviri": "Mitt upplýsingamál inniheldur ekki þessa upplýsingu.",
+   "geri": "Bu bilgi, benim sağladığım bilgilerde yer almamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Svarið virðast benda til að gera eitthvað, en þeir sem veita upplýsingar segja að það sé ekki hægt. Til að tryggja öryggi, sýni ég það ekki. Vinsamlegast athugðu upplýsingarnar hér að neðan.",
+   "geri": "Görünüşe göre bir şeyler yapılması planlanıyor, ancak bilgi sağlayan kişiler bunun mümkün olmadığını belirtiyor. Güvenliği sağlamak adına, bunu göstermiyorum. Lütfen aşağıdaki bilgileri inceleyin.",
+   "deneme": 1
+  }
+ },
+ "it": {
+  "bilgiYok": {
+   "ceviri": "Le mie fonti non contengono queste informazioni.",
+   "geri": "Bilgilerim bu konuda herhangi bir şey içermiyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "La risposta sembra suggerire qualcosa che la sua fonte afferma debba essere evitato. Per motivi di sicurezza, non lo mostrerò. Si prega di consultare le fonti riportate di seguito.",
+   "geri": "Bu yanıt, kaynağının uyardığı bir şeyi önermeye benziyor. Güvenlik nedeniyle, bunu paylaşmayacağım. Lütfen aşağıda belirtilen kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "ja": {
+  "bilgiYok": {
+   "ceviri": "私の情報源には、この情報が含まれていません。",
+   "geri": "Bilgi kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "この回答は、情報源が「行うべきではない」と述べている内容と矛盾しているように見えます。安全のため、この情報は公開しません。以下の情報源をご確認ください。",
+   "geri": "Bu yanıt, kaynakların \"yapılmaması gereken\" olarak belirttiği konularla çelişiyor gibi görünüyor. Güvenlik nedeniyle, bu bilgiyi paylaşmamak daha doğru olacaktır. Aşağıdaki kaynakları inceleyebilirsiniz.",
+   "deneme": 1
+  }
+ },
+ "kn": {
+  "bilgiYok": {
+   "ceviri": "ನಾನು ಹೊಂದಿರುವ ಮಾಹಿತಿಯಲ್ಲಿ ಇದು ಕಂಡುಬರುವುದಿಲ್ಲ.",
+   "geri": "Bu, sahip olduğum bilgilerde yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "ಈ ಉತ್ತರವು, ಅದರ ಮೂಲವು ಹೇಳುವಂತೆ, ಇದನ್ನು ಮಾಡಬಾರದು ಎಂದು ಹೇಳುತ್ತಾ, ಯಾವುದನ್ನ ಸೂಚಿಸುತ್ತಿದೆ. ಸುರಕ್ಷತೆಯ ದೃಷ್ಟಿಯಿಂದ, ನಾನು ಇದನ್ನು ಪ್ರದರ್ಶಿಸುವುದಿಲ್ಲ. ದಯವಿಟ್ಟು ಕೆಳಕಂಡ ಮೂಲಗಳನ್ನು ಓದಿ.",
+   "geri": "Bu yanıt, orijinal metinde belirtildiği gibi, belirli bir şeyi yapmamayı öneriyor. Güvenlik açısından, bu bilgiyi paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "ko": {
+  "bilgiYok": {
+   "ceviri": "제 소스에는 이 정보가 포함되어 있지 않습니다.",
+   "geri": "Bu bilgi, benim kaynaklarımda bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "제공된 답변은, 출처에서 명시적으로 금지하는 행위를 추천하는 것처럼 보입니다. 안전을 위해 해당 내용을 공개하지 않겠습니다. 아래의 출처를 참고해 주시기 바랍니다.",
+   "geri": "Verilen yanıt, kaynaklarda açıkça yasaklanan eylemleri tavsiye eden gibi görünmektedir. Güvenlik nedeniyle bu bilgiyi paylaşmamayı tercih ediyorum. Aşağıdaki kaynaklara başvurabilirsiniz.",
+   "deneme": 1
+  }
+ },
+ "lt": {
+  "bilgiYok": {
+   "ceviri": "Mano turimi duomenys šios informacijos neįtraukia.",
+   "geri": "Sahip olduğum verilere göre, bu bilgiler yer almamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe sustabdė šią atsaką: jis rekomenduoja kažką, ką jo šaltinis uždrauda. Prašome perskaityti žemiausius šaltinius.",
+   "geri": "Heybe, bu yanıtı durdurdu: Kaynağı, bu öneriyi desteklemiyor. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "Atrodo, kad atsakymas rekomenduoja veikimą, kurį šaltinis nurodo, kad neturėtų būti vykdomas. Už saugumo, aš neįtraukiu šio informavimo. Prašau, perskaitykite žemiau pateiktus šaltinius.",
+   "ilkGeri": "Görünüşe göre, bu yanıt, kaynağın uygulamaması gerektiğini belirttiği bir eylem öneriyor. Güvenlik açısından, bu bilgiyi dahil etmiyorum. Lütfen aşağıda belirtilen kaynakları inceleyin."
+  }
+ },
+ "lv": {
+  "bilgiYok": {
+   "ceviri": "Man pieejamajā informācijā šāda informācija nav.",
+   "geri": "Mevcut bilgilerime göre, böyle bir bilgi bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": null,
+   "ilk": "Atbilde šķiet, ka ieteiktu veikt kādu darbību, kuru, atbilstoši avotam, nedrīkst veikt. Lai nodrošinātu drošību, es to neizdarīšu. Lūdzu, izlasiet zemāk esošos avotus.",
+   "ilkGeri": "Bu yanıt, kaynaklara göre, belirli bir eylemi gerçekleştirmeyi öneriyor gibi görünüyor. Ancak, güvenliği sağlamak adına bu eylemi gerçekleştirmeyeceğim. Lütfen aşağıdaki kaynakları okuyun.",
+   "ikinci": "Šis atbildes veids tika pārtraukts: tā ieteikts kaut ko, ko tā avots aizlieg. Lūdzu, izlasiet zemāk esošos avotus.",
+   "ikinciGeri": "Bu türden yanıtlar artık kullanılmıyor: Bu tür yanıtların kaynağı, bu tür yanıtların verilmesini engelliyor. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "ml": {
+  "bilgiYok": {
+   "ceviri": "നിങ്ങൾ ചോദിച്ച വിവരങ്ങൾ, എന്റെ വിവരങ്ങൾക്കു കീഴിലില്ല.",
+   "geri": "Sorduğunuz bilgiler, benim bilgilerim kapsamında değildir.",
+   "deneme": 2,
+   "ilk": "എനിക്ക് ലഭിച്ച വിവരങ്ങളില്‍ ഇത് ഉള്‍പ്പെടുന്നില്ല.",
+   "ilkGeri": "Bu bilgilerin, benim sahip olduğum bilgilerle çelişiyor."
+  },
+  "aktarmaDur": {
+   "ceviri": "ഈ ഉത്തരം, അതിന്റെ ഉറവിടം പറയുന്ന കാര്യങ്ങൾക്ക് വിരുദ്ധമായി, ഒരു കാര്യം ചെയ്യാൻ ഉപദേശിക്കുന്നു എന്ന് തോന്നുന്നു. സുരക്ഷാ കാരണങ്ങളാൽ, ഞാൻ ഇത് പ്രദർശിപ്പിക്കുന്നില്ല. താഴെ നൽകിയിരിക്കുന്ന ഉറവിടങ്ങൾ വായിക്കുക.",
+   "geri": "Bu yanıt, kaynak olarak belirtilen bilgilere ters düşüyor gibi görünüyor. Güvenlik nedenleriyle, bu bilgiyi paylaşmıyorum. Aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "mr": {
+  "bilgiYok": {
+   "ceviri": "माझ्याकडील माहितीमध्ये हे तपशील उपलब्ध नाहीत.",
+   "geri": "Elimdeki bilgilere göre, bu detaylar bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "या उत्तरामध्ये, त्याचा स्रोत काय आहे, ते सांगत आहे की हे केले जाऊ नये, अशाच प्रकारे काहीतरी सुचवले आहे. सुरक्षिततेसाठी, मी हे दर्शवत नाही. कृपया खाली दिलेल्या माहितीचा संदर्भ घ्या.",
+   "geri": "Bu yanıt, kaynağının ne olduğunu, bunun yapılmaması gerektiğini belirtiyor. Güvenlik açısından, bunu vurgulamıyorum. Lütfen aşağıda verilen bilgileri inceleyin.",
+   "deneme": 1
+  }
+ },
+ "nl": {
+  "bilgiYok": {
+   "ceviri": "De informatie die ik heb, bevat deze gegevens niet.",
+   "geri": "Sahip olduğum bilgilerde bu veriler yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Het antwoord lijkt een aanbeveling te geven die volgens de bron niet mag worden gedaan. Om veiligheid te waarborgen, zal ik dit niet tonen. Lees de bronnen hieronder.",
+   "geri": "Bu yanıt, kaynağa göre yapılmaması gereken bir tavsiye gibi görünmektedir. Güvenliği sağlamak adına, bu bilgiyi paylaşmayacağım. Aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "no": {
+  "bilgiYok": {
+   "ceviri": "Mine kilder inneholder ikke denne informasjonen.",
+   "geri": "Kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Svaret virker til å anbefale noe som kilden hevder ikke bør gjøres. Av sikkerhetshensyn viser jeg det ikke. Vennligst les kildene nedenfor.",
+   "geri": "Bu yanıt, kaynağın önerdiği şeyi yapmamayı tavsiye ediyor gibi görünüyor. Güvenlik nedeniyle, bunu paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "pl": {
+  "bilgiYok": {
+   "ceviri": "Moje źródła nie zawierają tej informacji.",
+   "geri": "Bilgilerim bu konuda bir şey söylemiyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Odpowiedź wydaje się sugerować coś, co, według źródła, nie powinno się robić. Z uwagi na bezpieczeństwo, nie publikuję tego. Proszę, zapoznać się z poniższymi źródłami.",
+   "geri": "Bu yanıt, kaynağa göre, yapılmaması gereken bir şeyi ima ediyor gibi görünüyor. Güvenlik nedeniyle, bu bilgiyi yayınlamıyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "pt": {
+  "bilgiYok": {
+   "ceviri": "As fontes que tenho não contêm essa informação.",
+   "geri": "Sahip olduğum kaynaklarda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "A resposta parece indicar algo que sua fonte afirma que não deve ser feito. Por questões de segurança, não vou apresentar essa informação. Por favor, consulte as fontes abaixo.",
+   "geri": "Bu yanıt, kaynağınızın belirttiği bir şeyi yapmamalısınız şeklinde bir şey ifade ediyor gibi görünüyor. Güvenlik nedeniyle, bu bilgiyi paylaşmayacağım. Lütfen aşağıdaki kaynaklara danışın.",
+   "deneme": 1
+  }
+ },
+ "ro": {
+  "bilgiYok": {
+   "ceviri": "Sursele mele nu conțin această informație.",
+   "geri": "Benim bildiğim kaynaklarda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Răspunsul pare să recomande o acțiune, dar sursa sa indică faptul că această acțiune nu trebuie efectuată. Din motive de siguranță, nu o voi prezenta. Vă rugăm să consultați sursele de mai jos.",
+   "geri": "Bu yanıt, bir eylem öneriyor gibi görünse de, kaynağı bu eylemin yapılmaması gerektiğini belirtiyor. Güvenlik nedeniyle, bu eylemi burada sunmuyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "ru": {
+  "bilgiYok": {
+   "ceviri": "В моих источниках эта информация отсутствует.",
+   "geri": "Bu konuda, mevcut kaynaklarımda herhangi bir bilgi bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Ответ, похоже, предлагает что-то, но его источник утверждает, что это делать нельзя. В целях безопасности я не буду это демонстрировать. Пожалуйста, ознакомьтесь с источниками, указанными ниже.",
+   "geri": "Görünüşe göre, bu yanıt bir şey öneriyor, ancak kaynağı bunun mümkün olmadığını belirtiyor. Güvenlik nedeniyle, bunu göstermeyeceğim. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "sk": {
+  "bilgiYok": {
+   "ceviri": "Informácie, ktoré ste požadovali, sa v mojich zdrojoch nenachádzajú.",
+   "geri": "Talep ettiğiniz bilgiler, mevcut kaynaklarımda bulunmamaktadır.",
+   "deneme": 2,
+   "ilk": "Informácie, ktoré mám k dispozícii, toto neobsahujú.",
+   "ilkGeri": "Sahip olduğum bilgilere göre, bu durum söz konusu değil."
+  },
+  "aktarmaDur": {
+   "ceviri": "Odpoveď zrejme naznačuje postup, ktorý podľa zdroja, z ktorého pochádza, by nemal byť vykonávaný. Z bezpečnostných dôvodov ho neuvádzaj. Prosím, prečítajte si zdroje nižšie.",
+   "geri": "Bu yanıt, kaynak tarafından belirtilen ve uygulanmaması gereken bir yöntemi ima ediyor gibi görünüyor. Güvenlik nedenleriyle bu yöntemi açıklama. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "sl": {
+  "bilgiYok": {
+   "ceviri": "Moje vire ne vsebujejo te informacije.",
+   "geri": "Kullanılmış kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Odgovor se zdi, da predlaga nekaj, kar pa po navedbah njegovega izvora ne smemo storiti. Iz varnosti razloga ga ne bom objavljal. Prosim, preberite spodnje vire.",
+   "geri": "Bu yanıt, aslında yapmamız gereken bir şeyi öneriyor gibi görünse de, kaynaklarına göre bunu yapmamamız gerektiğini belirtiyor. Güvenlik nedeniyle bu bilgiyi paylaşmayacağım. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "sr": {
+  "bilgiYok": {
+   "ceviri": "Моји извори не садрже ове информације.",
+   "geri": "Kaynaklarımda bu bilgilerin yer almadığını görüyorum.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe је зауставио одговор: препоручује нешто што извор не дозвољава. Молимо, прочитајте извори испод.",
+   "geri": "Heybe, cevabı durdurdu: Kaynak, önerdiği şeyi kabul etmiyor. Lütfen, aşağıdaki kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "Одговор изгледа као да предлаже нешто, али његов извор указује да то не треба да се ради. Из безбедносних разлога, нећу да га прикажем. Молим вас, прочитајте изворе испод.",
+   "ilkGeri": "Bu yanıt, bir öneri gibi görünse de, kaynağı bu önerinin uygulanmaması gerektiğini belirtiyor. Güvenlik nedenleriyle, bu yanıtı paylaşamıyorum. Lütfen aşağıdaki kaynakları okuyun."
+  }
+ },
+ "sv": {
+  "bilgiYok": {
+   "ceviri": "Informationen finns inte i mina källor.",
+   "geri": "Bu bilgi, kullandığım kaynaklarda yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Svaret verkar rekommendera något som dess källa säger att man inte bör göra. Av säkerhetsskäl visar jag det inte. Vänligen läs källorna nedan.",
+   "geri": "Verilen cevap, kaynağının önerdiği şeyi yapmamayı tavsiye ediyor gibi görünüyor. Güvenlik nedenleriyle, bunu doğrudan göstermiyorum. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "sw": {
+  "bilgiYok": {
+   "ceviri": "Taarifa ambazo umulizwa hazipo katika vyanzo vyangu.",
+   "geri": "Belirtilen bilgilerin, benim kaynaklarımda bulunmamaktadır.",
+   "deneme": 2,
+   "ilk": "Maelezo haya siyo kwenye majimbo yangu.",
+   "ilkGeri": "Bu bilgiler benim kişisel bilgim değildir."
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe alisimama na kukosoa jibu hilo: lina kueleza jambo ambalo chanzo lake linakatazika. Tafadhali soma vyanzo vilivyo hapa chini.",
+   "geri": "Heybe, cevabı eleştirdi: Bu, kaynağın reddettiği bir durumu açıkça ifade ediyor. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "Jibu hilo inaonekana kuelekea kuelekea kwenye jambo ambalo chanzo chake kinasema kwamba si lazima kutenda. Kwa ajili ya usalama, sina hakika kuhusu hilo. Tafadhali soma vyanzo vilivyo hapa chini.",
+   "ilkGeri": "Bu yanıt, kaynağının belirttiği gibi, belirli bir eylemi yapmak zorunda olmadığımız yönünde bir çıkarım içeriyor. Güvenlik açısından, bu konuda şüphelerim var. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "ta": {
+  "bilgiYok": {
+   "ceviri": "எனது ஆதாரங்களில் இந்தத் தகவல் இல்லை.",
+   "geri": "Bu bilgiyi kaynaklarımda bulamadım.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "இந்த பதில், அதன் மூலம் பெறப்பட்ட தகவல்களின்படி, ஒரு குறிப்பிட்ட செயலை செய்யக்கூடாது என்று கூறுகிறது. பாதுகாப்பு காரணங்களுக்காக, நான் அதை இங்கு குறிப்பிடவில்லை. இருப்பினும், கீழே உள்ள ஆதாரங்களை நீங்கள் படிக்கலாம்.",
+   "geri": "Bu yanıt, elde edilen bilgilere göre, belirli bir eylemin yapılmaması gerektiğini belirtmektedir. Güvenlik nedenleriyle, bunu burada açıklamamış oldum. Ancak, aşağıda belirtilen kaynakları inceleyebilirsiniz.",
+   "deneme": 1
+  }
+ },
+ "te": {
+  "bilgiYok": {
+   "ceviri": "నా వద్ద ఉన్న సమాచారం లో ఈ వివరాలు లేవు.",
+   "geri": "Elimdeki bilgilere göre, bu detaylar bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "సమాధానం, దాని మూలం చెప్పినట్లుగా, ఒక పని చేయకూడదని సూచిస్తున్నట్లుగా ఉంది. భద్రత దృష్ట్యా, నేను దానిని ప్రదర్శించడం లేదు. దయచేసి దిగువ పేర్కొన్న మూలాలను చదవండి.",
+   "geri": "Cevap, kaynakında belirtildiği gibi, bir eylemin yapılmaması gerektiğini gösteriyor. Güvenlik açısından, bu bilgiyi paylaşmıyorum. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 1
+  }
+ },
+ "th": {
+  "bilgiYok": {
+   "ceviri": "แหล่งข้อมูลของฉันไม่ได้มีข้อมูลนี้",
+   "geri": "Kullanılan kaynaklarımda bu bilgi bulunmamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "เฮย์บีหยุดคำตอบนี้: แนะนำสิ่งที่แหล่งข้อมูลของเขาห้ามทำ โปรดอ่านแหล่งข้อมูลด้านล่าง",
+   "geri": "Heybi, bu yanıtı reddediyor: Kaynağının kesinlikle yapmaması gerektiğini belirttiği şeyleri okuyun. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "คำตอบที่ปรากฏดูเหมือนจะแนะนำสิ่งที่ไม่ควรทำ ซึ่งแหล่งข้อมูลที่อ้างอิงระบุไว้ว่าไม่ควรทำ เพื่อความปลอดภัย ฉันจึงไม่ได้แสดงคำแนะนำนั้น โปรดอ่านแหล่งข้อมูลด้านล่าง",
+   "ilkGeri": "Sunulan cevap, aslında yapılması gerekenlerden ziyade, dikkat edilmesi gerekenlerden bahsediyor gibi duruyor. Güvenlik açısından, bu öneriyi ben doğrudan belirtmiyorum. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "uk": {
+  "bilgiYok": {
+   "ceviri": "Мої джерела не містять цієї інформації.",
+   "geri": "Kaynaklarımda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Відповідь, здається, рекомендує щось, але її джерело стверджує, що це не можна робити. З міркувань безпеки я не публікую цю інформацію. Будь ласка, ознайомтеся з джерелами нижче.",
+   "geri": "Görünüşe göre, bu yanıt bir öneri sunuyor, ancak kaynağı bu önerinin uygulanmasının mümkün olmadığını belirtiyor. Güvenlik nedeniyle, bu bilgiyi paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 1
+  }
+ },
+ "ur": {
+  "bilgiYok": {
+   "ceviri": "میں کے ذرائع میں یہ معلومات موجود نہیں ہے۔",
+   "geri": "Bu bilgiyi kaynaklarımda bulamıyorum.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "ہیبی نے اس جواب کو روک دیا: یہ اس کے ذریعہ تجویز کر رہا ہے جو اس کا ذریعہ منع کر رہا ہے۔ براہ کرم نیچے دیے گئے ذرائع پڑھیئے۔",
+   "geri": "ہیبی, bu cevabı engelledi: Bu, kendi kaynaklarından önerdiği bir şeydir ve bu kaynak zaten engellenmektedir. Lütfen aşağıda belirtilen kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "جواب میں ایسا تجویز کیا گیا ہے جو اس کے منبع کے مطابق نہیں ہونا چاہیے۔ حفاظتی مقاصد کے لیے، میں اسے ظاہر نہیں کر رہا ہوں۔ براہ کرم نیچے دیے گئے منبع کو پڑھیں۔",
+   "ilkGeri": "Cevap olarak, kaynakla uyuşmayan bir öneri sunulmuştur. Güvenlik amaçları doğrultusunda, bunu belirtmiyorum. Lütfen aşağıda belirtilen kaynağı okuyun."
+  }
+ },
+ "vi": {
+  "bilgiYok": {
+   "ceviri": "Các nguồn thông tin tôi có không chứa thông tin này.",
+   "geri": "Sahip olduğum kaynaklarda bu bilgi yer almıyor.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe đã dừng lại ở đây: nội dung này đề xuất một điều mà nguồn thông tin của nó cấm. Vui lòng đọc các nguồn bên dưới.",
+   "geri": "Heybe burada duruyor: Bu içerik, kaynağının yasakladığı bir şeyi öneriyor. Lütfen aşağıdaki kaynakları okuyun.",
+   "deneme": 2,
+   "ilk": "Câu trả lời dường như đề xuất một điều gì đó, nhưng nguồn thông tin của nó lại nói rằng điều đó không nên làm. Vì vấn đề an toàn, tôi sẽ không trình bày nó. Vui lòng đọc các nguồn thông tin bên dưới.",
+   "ilkGeri": "Bu yanıt, sanki bir öneri sunuyor gibi görünse de, kaynaklar bu önerinin uygulanmaması gerektiğini belirtiyor. Güvenlik nedeniyle, bu bilgiyi paylaşmıyorum. Lütfen aşağıdaki kaynakları inceleyin."
+  }
+ },
+ "zh": {
+  "bilgiYok": {
+   "ceviri": "我掌握的信息中没有包含这些内容。",
+   "geri": "Elimdeki bilgilere göre, bu konular yer almamaktadır.",
+   "deneme": 1
+  },
+  "aktarmaDur": {
+   "ceviri": "Heybe 停止了这段回答，因为它推荐了一种内容，而其来源却禁止这种内容。请阅读以下来源。",
+   "geri": "\"Heybe\", bu yanıtı durdurdu çünkü bir içeriyi öneriyordu, ancak bu içeriğin kaynağı da bu tür bir içeriyi yasaklıyordu. Lütfen aşağıdaki kaynakları inceleyin.",
+   "deneme": 2,
+   "ilk": "似乎，这个答案推荐了一种做法，但其来源明确表示这种做法是不应该采取的。为了安全起见，我没有展示这个做法。请参考以下来源。",
+   "ilkGeri": "Bu yanıt, bir yöntem öneriyor gibi görünse de, kaynak açıkça bu yöntemin uygulanmaması gerektiğini belirtmektedir. Güvenlik nedeniyle, bu yöntemi göstermedim. Lütfen aşağıdaki kaynaklara bakın."
+  }
+ }
+}

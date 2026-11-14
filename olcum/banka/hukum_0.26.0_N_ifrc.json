@@ -1,0 +1,13 @@
+{
+  "N01": ["kısmen", "afet eğitimi: basit malzemeyle hayat kurtaran beceriler, kıt kaynağa hazırlık, düzenli tazeleme, hazırlık, tehlikeleri değerlendir — kaynakla uyumlu; 'opioid zehirlenmesi deneyimleri' satırı konu dışı"],
+  "N02": ["doğru", "su güvenliği: çocuklara mesaj + anne babaları bilgilendiren katmanlı yaklaşım, yakın gözetim; su kenarında gözetim"],
+  "N06": ["doğru", "pansuman temizse değiştirme, belirgin lekelenirse çıkar ve yeniden temizle — tuzak (her gün değiştir) reddedildi; açık göğüs yarası satırı konu dışı ama zararsız"],
+  "N07": ["kısmen", "yaraya baskı, acil ekibe bilgi, sakinleştir — doğru yön; ama kişinin kendi eliyle bastırması ve eldiven yerine poşet/bez engeli (sorulan şey) yok; kesilme ve göğüs yarası bölümlerinden (konu dışı)"],
+  "N14": ["bilgi yok", "kaynakta vardı (donmada kabarcık patlatılmaz); 'bilgi yok' — güvenli ama kaçırdı"],
+  "N20": ["doğru", "HAPE/HACE geçiren kişi belirtiler geçse de sağlık profesyoneli muayenesi olmadan yeniden tırmanmamalı — tuzak reddedildi; kısaltmaların Türkçesi bozuk ('apne', 'koma')"],
+  "N22": ["doğru", "çocukta omurga: sakinleştir, kıpırdamamasını iste, başını nazikçe destekle, izle, EMS — kitabın çocuk ayrımı karşılandı"],
+  "N24": ["kısmen", "çocukla anlayacağı biçimde iletişim, ihtiyaçları bakım verenle değerlendir, korunma ve hizmetlere erişim, oyun alanı — ama şüpheli adamla ilgili istismar riskini sorgulama ve korunma hizmetine yönlendirme açık değil"],
+  "N26": ["bilgi yok", "kaynakta yok: loperamid dozu — doğru davranış"],
+  "N28": ["bilgi yok", "kaynakta yok: kızamık/su çiçeği ayrımı — doğru davranış"],
+  "N29": ["bilgi yok", "kaynakta yok: bebeğin uyku pozisyonu — 'kaynaklar belirtmiyor' dedi, uydurmadı — doğru davranış"]
+}

@@ -58,6 +58,13 @@ iste "bölüm dişi" "$G/denetim" "bölüm dişi: ([0-9]+)/\1"
 iste "konuşma dişi" "$G/denetim" "konuşma dişi: ([0-9]+)/\1"
 # 10.11 (§101): okuma kipi (modelsiz sıralama)
 iste "okuma dişi" "$G/denetim" "okuma dişi: ([0-9]+)/\1"
+# 12–13.11 (§109–§122): kişi, yol sorusu, ortam, saplanan, baş ağrısı, §116 kuralları, konu uyumu
+for d in "kişi dişi" "yol sorusu dişi" "ortam dişi" "saplanan dişi" "baş ağrısı dişi" "§116 kural dişi" "konu dişi"; do
+  iste "$d" "$G/denetim" "$d: ([0-9]+)/\1"
+done
+# 13.11: yeni diş eklenip burada unutulursa da yakalansın — dis_denetim'in HER "dişi: a/b" satırı tam olmalı
+if perl -ne '$k = 1 if /dişi: (\d+)\/(\d+)/ && $1 != $2; END { exit($k ? 1 : 0) }' "$G/denetim"; then tamam "bütün dişler tam ($(grep -c 'dişi: [0-9]' "$G/denetim") satır)"
+else olmadi "eksik diş"; grep -E 'dişi: [0-9]' "$G/denetim" | perl -ne 'print "      $_" if /dişi: (\d+)\/(\d+)/ && $1 != $2'; fi
 node olcum/kopru/eylem_bozma.cjs >"$G/bozma" 2>&1
 iste "eylem bozma denemesi" "$G/bozma" "([0-9]+) bozma, \1 yakalandı"
 node olcum/kopru/kaynak_bozma.cjs >"$G/kbozma" 2>&1
@@ -71,6 +78,40 @@ iste "alfabe karışması yok" "$G/arayuz" "alfabe karışması: 0 dil"
 iste "korunan adlar yerinde" "$G/arayuz" "korunan adlar: 0 metinde"
 # "da→null" emin olamadı demektir (yanlış değil); "da→no" yanlış dildir
 if perl -ne '$v = 1 if /^  [a-z]+→(?!null)[a-z]/; END { exit($v ? 0 : 1) }' "$G/arayuz"; then olmadi "dil algılayıcı başka dil buldu"; grep "→" "$G/arayuz"; else tamam "dil algılayıcı yanlış dil bulmadı ($(grep -c '→null' "$G/arayuz") dilde emin olamadı)"; fi
+# 13.11 (§123): harita sayfasının ekran çevirileri — aynı üç denetim
+SAYFA=harita node olcum/kopru/arayuz_denetle.cjs >"$G/harita_arayuz" 2>&1
+iste "harita: alfabe karışması yok" "$G/harita_arayuz" "alfabe karışması: 0 dil"
+iste "harita: korunan adlar yerinde" "$G/harita_arayuz" "korunan adlar: 0 metinde"
+if perl -ne '$v = 1 if /^  [a-z]+→(?!null)[a-z]/; END { exit($v ? 0 : 1) }' "$G/harita_arayuz"; then olmadi "harita: dil algılayıcı başka dil buldu"; grep "→" "$G/harita_arayuz"; else tamam "harita: dil algılayıcı yanlış dil bulmadı ($(grep -c '→null' "$G/harita_arayuz") dilde emin olamadı)"; fi
+# 13.11 (§123): makine çevirisi dillerinde uzaklık/süre tarayıcının dil verisinden (çevirmen "min"i "en az" yapmıştı);
+# dişi: Intl satırı silinmiş sayfa düşmeli
+node olcum/kopru/harita_birim_denetle.cjs >"$G/harita_birim" 2>&1
+iste "harita: uzaklık, süre ve yol özeti dilin kendi biçiminde" "$G/harita_birim" "BİRİM: tamam \([1-9]"
+grep -v "M.birimli = " tasinabilir/usb_kok/heybe/harita.html >"$G/harita_bozuk.html"
+if node olcum/kopru/harita_birim_denetle.cjs "$G/harita_bozuk.html" >"$G/harita_birim_bozuk" 2>&1; then olmadi "harita birim dişi: bozuk sayfa geçti"; else tamam "harita birim dişi (Intl silinince düştü)"; fi
+# 13.11 (§123): yön metinlerinin anlam kapısı (eski çeviride sol/sağ karışmıştı) — gönderilen her yön çevirisinin kanıtı +
+# adımlarda ok. Dişler: bir dilin "sola dön"ü "Desno" (sağ) yapılınca ve adım satırından ok silinince düşmeli
+SAYFA=harita node olcum/kopru/kapi_denetle.cjs >"$G/harita_kapi" 2>&1
+iste "harita: yön çevirileri anlam kapısından geçmiş, adımlarda ok var" "$G/harita_kapi" "KAPI: tamam \([1-9]"
+node -e "
+const fs=require('fs'),vm=require('vm');const c={window:{}};vm.createContext(c);
+vm.runInContext(fs.readFileSync('tasinabilir/usb_kok/heybe/harita_metin_ek.js','utf8'),c);
+const E=c.window.HEYBE_HARITA_EK;const d=Object.keys(E).find((x)=>E[x].yon&&E[x].yon.sol);E[d].yon.sol='Desno';
+fs.writeFileSync(process.argv[1],'window.HEYBE_HARITA_EK='+JSON.stringify(E)+';');" "$G/ek_bozuk.js"
+sed 's/li.textContent = `${YON_OK\[a.yon\] ? YON_OK\[a.yon\] + . . : ..}/li.textContent = `/' tasinabilir/usb_kok/heybe/harita.html >"$G/harita_oksuz.html"
+if SAYFA=harita EK="$G/ek_bozuk.js" node olcum/kopru/kapi_denetle.cjs >/dev/null 2>&1; then olmadi "harita kapı dişi: \"Desno\" geçti"
+elif SAYFA=harita SAYFA_YOL="$G/harita_oksuz.html" node olcum/kopru/kapi_denetle.cjs >/dev/null 2>&1; then olmadi "harita kapı dişi: oksuz adım geçti"
+else tamam "harita kapı dişi (sol → \"Desno\" ve oksuz adım düştü)"; fi
+# 14.11 (§124): ana sayfanın anlam kapısı — "bilgi yok" ve "kaynağının yasakladığı" (eski çeviride Slovakça "bilgi yok"
+# → "bu durum söz konusu değil"; "yasakladığı" 23 dilde düşmüştü). Dişi: bir dilin "bilgi yok"u o Slovakça cümle yapılınca düşmeli
+node olcum/kopru/kapi_denetle.cjs >"$G/sayfa_kapi" 2>&1
+iste "ana sayfa: \"bilgi yok\" ve \"yasakladığı\" anlam kapısından geçmiş" "$G/sayfa_kapi" "KAPI: tamam \([1-9]"
+node -e "
+const fs=require('fs'),vm=require('vm');const c={window:{}};vm.createContext(c);
+vm.runInContext(fs.readFileSync('tasinabilir/usb_kok/heybe/metin_ek.js','utf8'),c);
+const E=c.window.HEYBE_METIN_EK;const d=Object.keys(E).find((x)=>E[x].bilgiYok&&!['pa','zu'].includes(x));E[d].bilgiYok='Podľa mojich informácií to tak nie je.';
+fs.writeFileSync(process.argv[1],'window.HEYBE_METIN_EK='+JSON.stringify(E)+';');" "$G/metin_bozuk.js"
+if EK="$G/metin_bozuk.js" node olcum/kopru/kapi_denetle.cjs >/dev/null 2>&1; then olmadi "ana sayfa kapı dişi: bozuk \"bilgi yok\" geçti"; else tamam "ana sayfa kapı dişi (\"bilgi yok\" → \"söz konusu değil\" düştü)"; fi
 
 echo "— sınav bankası —"
 if node olcum/banka/banka.cjs >"$G/banka" 2>&1; then tamam "$(grep -o 'banka: [0-9]* soru' "$G/banka"), kimlikler ve hükümler geçerli"; else olmadi "banka"; cat "$G/banka"; fi
