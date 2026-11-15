@@ -12,13 +12,23 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.26.0).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.39.0).
+
+## What's new in 0.31–0.39
+
+- **Emergency symptom card** *(0.32)*. If the question itself describes an emergency sign right now — trouble breathing, chest pain, signs of stroke, bleeding that will not stop, a severed body part *(0.37)* and more — Heybe writes no answer. It says "call the emergency number now" and shows passages to read until help arrives. Word patterns, plus a one-word check by the small model when no pattern matches. Three unseen sets: dangerous answers that passed went from 11 to 0; the cost was a false alarm on 10 of 48 non-emergency questions.
+- **One line that never closes** *(0.37)*. Above the emergency card: "If you are in danger, call 112 now. If you cannot get through, ask people nearby for help; what Heybe tells you is only for the time until help arrives." The number follows the browser's region.
+- **Choices instead of guesses** *(0.33)*. When the closest chapters are too close to call, Heybe asks "which is closer to your situation?" and shows each chapter with the words that set it apart. In a human test, a person picked the right chapter in 12 of 15 cases; the machine alone found it in 5 of 17.
+- **My notebook** *(0.34–0.35)*. Save an answer, or write your own note, in groups. The notebook is stored encrypted with your password (PBKDF2 + AES-GCM), with a printable recovery code. "This answer is wrong" reports are encrypted the same way *(0.39)*. The emergency card stays readable on purpose, for rescuers.
+- **Question topic** *(0.36)*. Optional topic buttons (Medical, Fire and safety, Maps and roads …) tell the translator which meaning a word has — "ateş" is both fever and fire. On an unseen set the right meaning survived translation in 22 of 40 questions instead of 13.
+- **Safety round** *(0.37–0.39)*. New guards stop: loosening a tourniquet at intervals; suction devices, or "no antivenom needed", for snake bites; fleeing a wildfire uphill or onto a ridge (a ridge passes only when the sentence says it is rocky or bare). Questions typed without Turkish letters ("yilan isirdi") are recognised. Five unseen sets by separate authors: the word-pattern guard caught 62–80 % of the dangerous suggestions, and every new set found a new tail.
+- **The source matters** *(0.38–0.39)*. "The more reliable and accurate the source, the more accurate and helpful the answer." This is said at setup, at the top of the library guide and in the read-me files. Each source is labelled "forum — anyone can post" or "wiki — written by volunteers".
 
 ## Download and install
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.26.0.zip` (about 325 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.39.0.zip` (about 330 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -61,7 +71,7 @@ If you try one, please report it in an issue — that is the help we need most. 
   If a checker trips, the answer is not shown; the user reads the sources instead.
 - **Reading mode** *(0.21–0.22)*. You can ask as soon as the library is open: while the AI is starting, when it is not installed, or when it fails, Heybe writes no answer and shows the most relevant passages from the books in the source's own words. A setting ("Library & settings → Reading mode") keeps the large AI switched off for good on a weak computer or to save battery; all three launchers then skip it. On a computer with less than about 8 GB of memory Heybe suggests reading mode (the threshold is an estimate). Measured with English questions and only the IFRC book: the correct passage was among the six shown for 45/75, 42/75 and 43/70 quotes with the small search model, and 16/75, 27/75 and 26/70 with no model at all.
 - **The library belongs to the user.** The package carries only the core (programs, page); models are downloaded at first setup. Books come from ready-made lists or links the user chooses; the user can also add their own files (PDF, text).
-- **Personal data stays on the stick.** "This answer is wrong" reports and the emergency card stay on the stick and are never sent anywhere.
+- **Personal data stays on the stick.** "This answer is wrong" reports, My notebook and the emergency card stay on the stick and are never sent anywhere. The notebook and the reports are encrypted with your password *(0.35, 0.39)*; the emergency card is readable on purpose, for rescuers.
 
 ## Conversation translator *(new in 0.20.2)*
 
@@ -105,6 +115,8 @@ For every release: the wrong and dangerous answers Heybe gave **without stopping
 | 0.25.0 | J (separate author, source fidelity; 10 traps, 5 "which person") | 0 (+2 partly) | 22 | 1 (off-topic) | **2** (heat exhaustion answered from the hypothermia chapter; "carry on with your day" for clear fluid from the nose after a head injury) — fixed in 0.26 by turning the warning boxes off and adding guards; the fixes were made on J, so the next unseen set is the honest test |
 
 The sets differ, so rows compare only roughly. Exam questions and graded notes with reasons are in `olcum/banka/`. The F, G, H, I and J sets quote short passages from the IFRC *International first aid, resuscitation, and education guidelines 2020* (IFRC Global First Aid Reference Centre), which allows non-commercial copies with the source acknowledged; these quotations are not covered by this repository's Apache 2.0 licence.
+
+**0.32–0.39 were measured differently.** Emergency card: in three unseen sets, dangerous answers that passed went from 11 to 0 (false alarm on 10 of 48). Answer level: 110 questions written on purpose around two-meaning words, on a real library layout (Turkish Wikipedia, an English medicine wiki, Wikivoyage, Outdoors Stack Exchange), graded by a blind grader. Answers that reached the user: 17 correct, 14 wrong or mixed, **4 dangerous**. All four came from the sources themselves — an old Wikipedia tourniquet sentence, forum advice on snake bites and wildfires — and all four are stopped since 0.37. This was a deliberately hard set; it is not a general success rate.
 
 ## Roadmap — for developers
 
@@ -157,13 +169,23 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.26.0).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.39.0).
+
+## 0.31–0.39'da yeni
+
+- **Acil belirti kartı** *(0.32)*. Sorunun kendisi şu anda acil bir belirti anlatıyorsa — nefes darlığı, göğüs ağrısı, inme belirtisi, durmayan kanama, uzuv kopması *(0.37)* ve başkaları — Heybe cevap yazmaz. "Beklemeden acil numarayı ara" der ve yardım gelene kadar okunacak bölümleri gösterir. Kelime kalıpları; kalıp bulamazsa küçük modelin tek kelimelik denetimi. Üç görülmemiş sette durdurulmadan geçen tehlikeli cevap 11'den 0'a indi; bedeli, 48 acil olmayan sorunun 10'unda boş alarm.
+- **Hiç kapanmayan satır** *(0.37)*. Acil kartının üstünde: "Tehlikedeysen hemen 112'yi ara. Ulaşamıyorsan yakındakilerden yardım iste; Heybe'nin bilgisi yardım gelene kadar içindir." Numara tarayıcının bölgesine göre.
+- **Tahmin yerine şık** *(0.33)*. En yakın bölümler birbirine çok yakınsa Heybe "hangisi senin durumuna daha yakın?" diye sorar; her bölüm, onu öbürlerinden ayıran kelimelerle gösterilir. İnsan sınavında kişi 15 vakanın 12'sinde doğru bölümü seçti; makine tek başına 17'de 5.
+- **Defterim** *(0.34–0.35)*. Bir cevabı ya da kendi notunu gruplar hâlinde kaydet. Defter parolanla şifreli durur (PBKDF2 + AES-GCM), kâğıda basılabilen bir kurtarma kodu vardır. "Bu cevap yanlış" kayıtları da aynı biçimde şifrelenir *(0.39)*. Acil kartı kurtarıcı okuyabilsin diye bilerek şifresiz kalır.
+- **Sorunun konusu** *(0.36)*. İsteğe bağlı konu düğmeleri (Tıbbi, Yangın ve güvenlik, Harita ve yol …) çevirmene kelimenin hangi anlamda olduğunu söyler — "ateş" hem vücut ateşi hem yangındır. Görülmemiş sette doğru anlam çeviride 40 sorunun 13'ü yerine 22'sinde korundu.
+- **Güvenlik turu** *(0.37–0.39)*. Yeni bekçiler şunları durdurur: takılan turnikeyi ara ara gevşetmek; yılan ısırığında emme aleti ya da "panzehir gerekmez" demek; orman yangınında yokuş yukarı ya da sırta kaçmak (sırt ancak cümle kayalık ya da çıplak dediğinde geçer). Türkçe harfsiz yazılan soru ("yilan isirdi") tanınır. Ayrı yazarların beş görülmemiş setinde kelime kalıplı bekçi tehlikeli önerilerin %62–80'ini yakaladı; her yeni set yeni bir kuyruk buldu.
+- **Kaynak önemlidir** *(0.38–0.39)*. "Kaynak ne kadar güvenilir ve doğruysa cevap da o kadar doğru ve yardımcı olur." Bu cümle kurulumda, kitaplık kılavuzunun başında ve beni oku dosyalarında yazar. Her kaynağın yanında türü görünür: "forum — herkes yazabilir", "viki — gönüllüler yazar".
 
 ## İndir ve kur
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.26.0.zip` dosyasını (yaklaşık 325 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.39.0.zip` dosyasını (yaklaşık 330 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -206,7 +228,7 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
   Bekçi takılırsa cevap gösterilmez; kullanıcı kaynakları kendisi okur.
 - **Okuma kipi** *(0.21–0.22)*. Kütüphane açılır açılmaz soru sorulabilir: yapay zekâ açılırken, kurulmamışken ya da cevap veremezse Heybe cevap yazmaz, kitaplardaki en ilgili bölümleri kaynağın kendi sözleriyle gösterir. Bir ayar ("Kitaplık ve ayarlar → Okuma kipi") zayıf bilgisayarda ya da pil için büyük yapay zekâyı hep kapalı tutar; üç başlatıcı da onu açmaz. Belleği yaklaşık 8 GB'tan az bilgisayarda Heybe okuma kipini önerir (eşik tahmindir). İngilizce sorularla ve yalnız IFRC kitabıyla ölçüldü: doğru bölüm, gösterilen altı bölümün içinde küçük arama modeliyle 45/75, 42/75 ve 43/70 alıntıda; hiç model yokken 16/75, 27/75 ve 26/70 alıntıda.
 - **Kitaplık kullanıcınındır.** Pakette yalnız çekirdek (program, sayfa) gelir; modeller ilk kurulumda iner. Kitapları kullanıcı hazır listelerden ya da kendi seçtiği bağlantılardan indirir. Kendi dosyalarını (PDF, metin) da ekleyebilir.
-- **Kişisel veri bellekte kalır.** "Bu cevap yanlış" kayıtları ve acil kart yalnız bellekte durur, hiçbir yere gönderilmez.
+- **Kişisel veri bellekte kalır.** "Bu cevap yanlış" kayıtları, Defterim ve acil kart yalnız bellekte durur, hiçbir yere gönderilmez. Defter ve kayıtlar parolanla şifrelidir *(0.35, 0.39)*; acil kart kurtarıcı okuyabilsin diye bilerek şifresizdir.
 
 ## Konuşma çevirisi *(0.20.2'de yeni)*
 
@@ -250,6 +272,8 @@ Her sürümde, o sürümün sınavında Heybe'nin **durdurmadan verdiği** yanl�
 | 0.25.0 | J (başka yazar, kaynağa sadakat; 10 tuzak, 5 "hangi kişi") | 0 (+2 kısmen) | 22 | 1 (konu dışı) | **2** (sıcaktan bitkine hipotermi bölümü; başa darbeden sonra burundan berrak sıvıya "gününe devam et") — 0.26'da uyarı kutuları kapatılıp bekçiler eklenerek düzeltildi; düzeltmeler J'de yapıldı, dürüst sınav bir sonraki görülmemiş set |
 
 Setler birbirinden farklı olduğu için satırlar yaklaşık karşılaştırılır. Sınav soruları ve gerekçeli notlar `olcum/banka/` içinde. F, G, H, I ve J setleri IFRC *International first aid, resuscitation, and education guidelines 2020*'den (IFRC Global First Aid Reference Centre) kısa alıntılar içerir; kaynak belirtilerek ticari olmayan kopyaya izin verilir. Bu alıntılar deponun Apache 2.0 lisansına girmez.
+
+**0.32–0.39 başka biçimde ölçüldü.** Acil kartı: üç görülmemiş sette durdurulmadan geçen tehlikeli cevap 11'den 0'a indi (48'de 10 boş alarm). Cevap düzeyi: bilerek iki anlamlı kelimeler etrafında yazılmış 110 soru, gerçek bir kitaplık düzeninde (Türkçe Vikipedi, İngilizce tıp vikisi, Wikivoyage, Outdoors Stack Exchange), kör bir hakemle notlandı. Kullanıcıya ulaşan cevaplar: 17 doğru, 14 yanlış ya da karışık, **4 tehlikeli**. Dördü de kaynağın kendisinden geliyordu — Vikipedi'deki eski bir turnike cümlesi, yılan ısırığı ve orman yangını üzerine forum tavsiyeleri — ve 0.37'den beri dördü de duruyor. Bu bilerek zor bir setti; genel bir başarı oranı değildir.
 
 ## Yol haritası — geliştiriciler için
 

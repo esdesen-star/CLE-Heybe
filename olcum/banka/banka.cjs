@@ -38,18 +38,25 @@ function sorular() {
         tur: q.tur || q.konu || '', soru: q.soru, beklenen: q.beklenen || '', tuzak: q.tuzak || '' });
     }
   }
+  // 14.11 (§133): yeni setin harfi eski bir setinkiyle çakıştı (W) — iki set birlikte koştu, notlar aynı kimliklere yazıldı.
+  // Aynı kimlik iki kez geçerse hiçbir araç çalışmaz.
+  const gorulen = new Map();
+  for (const q of liste) {
+    if (gorulen.has(q.kimlik)) throw new Error(`banka: ${q.kimlik} iki sette var (${gorulen.get(q.kimlik)} ve ${q.dosya}) — yeni sete boş bir harf ver`);
+    gorulen.set(q.kimlik, q.dosya);
+  }
   return liste;
 }
 
 // iz: cevabın ne gösterdiği — sonuç türü + boşlukları sadeleşmiş cevap metni (kaynak numaraları dahil)
 const sade = (m) => String(m || '').split(/\s+/).join(' ').trim();
-function sonucTuru(r) { return r.durdur ? 'durdu' : r.bilgiYok ? 'bilgiYok' : 'cevap'; }
+function sonucTuru(r) { return r.acil ? 'kart' : r.durdur ? 'durdu' : r.bilgiYok ? 'bilgiYok' : 'cevap'; }   // §133 kart: acil numara + kaynak, cevap yok
 function iz(r) { return crypto.createHash('sha256').update(sonucTuru(r) + '\n' + sade(r.cevap)).digest('hex').slice(0, 16); }
 
 function notlar() { return fs.existsSync(NOTLAR) ? JSON.parse(fs.readFileSync(NOTLAR, 'utf8')) : {}; }
 function notlariYaz(n) { fs.writeFileSync(NOTLAR, JSON.stringify(n, null, 1) + '\n'); }
 // hüküm: doğru · kısmen · bilgi yok · durdu · yanlış · tehlikeli  (karne: durmadan geçen yanlış ve tehlikeli)
-const HUKUMLER = ['doğru', 'kısmen', 'bilgi yok', 'durdu', 'yanlış', 'tehlikeli'];
+const HUKUMLER = ['doğru', 'kısmen', 'bilgi yok', 'durdu', 'kart', 'yanlış', 'tehlikeli'];   // kart (§133): kendiliğinden
 function notBul(n, kimlik, izi) { return (n[kimlik] || []).find((x) => x.iz === izi) || null; }
 
 module.exports = { sorular, iz, sonucTuru, sade, notlar, notlariYaz, notBul, HUKUMLER, NOTLAR };

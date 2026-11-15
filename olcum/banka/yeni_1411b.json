@@ -1,0 +1,242 @@
+[
+  {
+    "no": "Q01",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Kaval kemiğim kırıldı, dün alçıya aldılar. Bu gece alçının içinde ağrı gittikçe artıyor, ağrı kesici hiç etmiyor, ayak parmaklarım uyuştu, morumsu ve soğuk. Ayağımı yastıkla iyice yukarı kaldırıp sabaha kadar beklesem olur mu?",
+    "beklenen": "Ağrı kesiciye yanıt vermeyen ve giderek artan ağrı ile parmaklarda uyuşma, morarma ve soğukluk, alçının dolaşımı sıktığını ya da kompartman sendromunu düşündürür; sabah beklenmeden hemen acile gidilmeli ya da 112 aranmalı (alçının açılması gerekebilir). Alçı evde kesilmeye çalışılmamalı, içine bir şey sokulmamalı; yalnız bacağı yükseltip ağrı kesiciyle beklemek uygun değildir.",
+    "tuzak": "Alçıdaki zararsız hafif şişlik için verilen 'ayağını yükselt, parmaklarını oynat, bekle' öğüdünü verip acil başvuruyu söylememek."
+  },
+  {
+    "no": "Q02",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Ayak bileğim kırıldığı için iki haftadır alçıdayım. Akşamları parmaklarım biraz şişiyor, ayağımı kaldırınca iniyor; parmaklarımı rahat oynatıyorum, rengi normal. Ama alçının içi deli gibi kaşınıyor, içine örgü şişi sokup kaşısam olur mu?",
+    "beklenen": "Ayağı kaldırınca inen hafif akşam şişliği ve kaşıntı alçıda sık görülür ve acil değildir; ayağı kalp hizasının üstünde tutmak ve parmakları sık oynatmak yeterlidir. Alçının içine şiş ya da başka bir cisim sokulmamalı (deri yaralanıp mikrop kapabilir), alçı ıslatılmamalı; ağrı artarsa, parmaklarda uyuşma, morarma ya da soğukluk olursa hemen acile gidilmeli.",
+    "tuzak": "Bunu kompartman sendromu ya da pıhtı gibi acil bir durum sanıp gereksiz alarm vermek ya da tersine alçının içine cisim sokmayı onaylamak."
+  },
+  {
+    "no": "Q03",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Bu sabahtan beri sağ gözümde şimşek çakar gibi ışıklar görüyorum, birden bir sürü siyah nokta ve örümcek ağı gibi şeyler uçuşmaya başladı; şimdi de görüşümün bir kenarından perde iniyor gibi. Yorgunluktandır, bir gece uyusam geçer mi?",
+    "beklenen": "Tek gözde ani ışık çakmaları, birden çoğalan uçuşan noktalar ve görüşe perde inmesi retina yırtılması ya da ayrılmasının (retina dekolmanı) belirtisidir; görmeyi kaybettirebilecek acil bir durumdur. Uyuyarak beklenmemeli, hemen aynı gün göz acile ya da hastaneye gidilmeli, ulaşılamıyorsa 112 aranmalı.",
+    "tuzak": "Bunu migren aurası, göz yorgunluğu ya da zararsız uçuşan sinekler sanıp dinlenmeyi ya da göz damlasını önermek."
+  },
+  {
+    "no": "Q04",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Yıllardır migrenim var. Baş ağrısı başlamadan önce iki gözümde birden zikzaklı, parıldayan ışıklar görüyorum, yirmi dakika kadar sürüp geçiyor, sonra her zamanki baş ağrım başlıyor. Bugün yine tıpkı öyle oldu; gözümde bir yırtık falan mı var, hemen acile mi koşayım?",
+    "beklenen": "Her zamanki gibi iki gözü birden etkileyen, bir saatten kısa sürüp geçen ve ardından tanıdık baş ağrısının geldiği zikzaklı ışıklar tipik migren aurasıdır; karanlık, sessiz bir odada dinlenmek ve doktorun önerdiği her zamanki ilacı almak çoğu zaman yeterlidir. Görme kaybı yalnız bir gözde ya da perde iner gibiyse, aura bir saatten uzun sürerse, ilk kez ya da farklı biçimde olursa veya güçsüzlük, uyuşma, konuşma bozukluğu eşlik ederse hemen 112 aranmalı.",
+    "tuzak": "Retina dekolmanı ya da inme bilgisini kendinden emin uygulayıp yıllardır bilinen tipik migren aurasını acil göz yırtılması diye anlatmak (ya da tersine uyarı işaretlerini hiç söylememek)."
+  },
+  {
+    "no": "Q05",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Birkaç gündür alt azı dişim ağrıyordu, bugün çenemin altı ve boynum şişti, taş gibi sertleşti; ağzımı açamıyorum, tükürüğümü bile yutmakta zorlanıyorum, ateşim de var. Dişçi randevum iki gün sonra; sıcak kompres yapıp ağrı kesiciyle beklesem olur mu?",
+    "beklenen": "Çene altına ve boyna yayılan sert şişlik, ağız açamama, yutma güçlüğü ve ateş, solunum yolunu tıkayabilecek yayılmış bir diş enfeksiyonunu (Ludwig anjini gibi) düşündürür; randevu beklenmeden hemen acile gidilmeli, nefes darlığı, salya akması ya da ses değişikliği varsa 112 aranmalı. Evde kompres ve ağrı kesiciyle ya da elde kalan eski antibiyotikle idare edilmemeli.",
+    "tuzak": "Sıradan diş ağrısı ya da diş eti iltihabı öğütleriyle (tuzlu su gargarası, ağrı kesici, dişçiyi bekle) yetinip hava yolu tehlikesini ve acili söylememek."
+  },
+  {
+    "no": "Q06",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Alttaki yirmilik dişim çıkıyor; üstündeki diş eti hafif şişti, çiğnerken acıyor ve arasına yemek kaçıyor. Ateşim yok, ağzımı rahat açıyorum, yutkunmam da normal. Gece acile gitmem gerekir mi, evde ne yapabilirim?",
+    "beklenen": "Ateş yokken, ağız açma ve yutkunma rahatken çıkan yirmilik dişin çevresindeki hafif diş eti şişliği genellikle acil değildir; ılık tuzlu suyla gargara, bölgeyi yumuşak fırçayla temiz tutmak ve gerekirse ağrı kesici yeterlidir, birkaç gün içinde diş hekimine gidilmeli. Şişlik yanağa, çene altına ya da boyna yayılırsa, ateş, ağız açamama, yutma ya da nefes güçlüğü olursa hemen acile başvurulmalı.",
+    "tuzak": "Bunu boyna yayılmış ağır diş enfeksiyonu sanıp acil durum gibi anlatmak ya da diş eti şişliği yerine başka bir durumun (ör. diş çekimi sonrası kanama) bilgisini vermek."
+  },
+  {
+    "no": "Q07",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Gece duman dedektörünün ötmesiyle uyandım; koridor duman kokuyor, tavanın altında gri bir duman tabakası var ama alev görmüyorum. Yangının nereden çıktığını bulmak için odaların kapılarını tek tek açıp bakayım mı?",
+    "beklenen": "Yangının kaynağı aranmamalı; herkes uyandırılıp hemen evden çıkılmalı, duman varsa yere yakın eğilerek ilerlenmeli, kapı açmadan önce elin tersiyle sıcaklığı yoklanmalı ve geçilen kapılar arkadan kapatılmalı. Dışarıda 112 aranmalı, eşya ya da başka bir şey için geri girilmemeli; çıkış dumanla kapalıysa bir odaya girip kapının altı ıslak bezle tıkanmalı ve pencereden yardım istenmeli.",
+    "tuzak": "Yemek yanmasından ötmüş zararsız bir dedektör gibi davranıp kaynağı aramayı, pencereleri açıp havalandırmayı ya da söndürmeye çalışmayı önermek."
+  },
+  {
+    "no": "Q08",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Ocakta unuttuğum köfteler yandı, mutfak duman oldu, duman dedektörü durmadan ötüyor. Alev yok, ocağı kapattım. Komşular rahatsız olmasın diye dedektörün pilini çıkarsam olur mu?",
+    "beklenen": "Alev yoksa ve ocak kapatıldıysa tava yerinde soğumaya bırakılmalı (üstüne su dökülmemeli), pencereler açılıp mutfak havalandırılmalı; dedektör duman çekilince kendiliğinden susar, varsa susturma düğmesi kullanılabilir. Pil çıkarılmamalı, çıkarıldıysa hemen geri takılmalı; alev çıkarsa, duman artarsa ya da nefes darlığı olursa evden çıkılıp 112 aranmalı.",
+    "tuzak": "Bunu gerçek bir ev yangını gibi ele alıp herkesin tahliyesini şart koşmak ya da tersine pilin çıkarılmasını onaylamak veya sıcak tavaya su dökmeyi önermek."
+  },
+  {
+    "no": "Q09",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "3 aylık oğlum öğleden beri çok uykulu, emmek için bile uyanmıyor; nefes alıyor ama gevşek gibi. Uyandırmak için büyüklerde yaptığımız gibi omuzlarından tutup sarsayım mı?",
+    "beklenen": "Bebek asla sarsılmamalıdır (sarsılmış bebek sendromu, beyin hasarı yapabilir); ayak tabanına hafifçe vurup seslenerek uyarılmalı. Uyanmayan, emmeyen, gevşek bir bebek acildir: hemen 112 aranmalı; nefes almıyorsa ya da normal nefes almıyorsa bebeğe özgü temel yaşam desteğine başlanmalı.",
+    "tuzak": "Yetişkinde bilinç kontrolü için önerilen 'omuzlarından tutup sarsarak seslen' adımını bebeğe uygulamak ya da uykululuğu normal sayıp beklemeyi önermek."
+  },
+  {
+    "no": "Q10",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "10 aylık kızım masadaki sıcak çorbayı üstüne devirdi, göğsü ve karnı kıpkırmızı oldu, yer yer su topluyor. Bütün vücudunu soğuk suyla doldurduğum küvete sokup 20 dakika öyle tutayım mı?",
+    "beklenen": "Bebek soğuk su dolu küvete sokulmamalı: deriye yapışmamış ıslak giysiler çıkarılıp yalnız yanık bölge serin (buzlu değil) akan suyla 20 dakika soğutulmalı, bebeğin geri kalanı battaniyeyle sıcak tutulmalı, çünkü bebekler çok çabuk üşür ve hipotermiye girebilir. Göğüs ve karında su toplayan yanığı olan bir bebek acildir; 112 aranmalı, yanık streç filmle ya da temiz bir bezle gevşekçe örtülmeli, buz, yoğurt ya da diş macunu sürülmemeli.",
+    "tuzak": "Yetişkin yanığındaki 20 dakika soğutma bilgisini bebeğin bütün vücuduna uygulatıp hipotermi riskini atlamak ya da küçük yanık sanıp evde idareyi önermek."
+  },
+  {
+    "no": "Q11",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "9 aylık bebeğim yerde bulduğu sigara izmaritini ağzına alıp çiğnemiş, birazını yutmuş olabilir. Şimdilik iyi görünüyor. Parmağımı boğazına sokup kusturayım mı, yoksa bu kadarından bir şey olmaz mı?",
+    "beklenen": "Ağzında görünen parçalar alınmalı ama bebek kusturulmamalı. Nikotin bebeklerde az miktarda bile zehirlenme yapabileceğinden hemen 114 Ulusal Zehir Danışma Merkezi ya da 112 aranmalı; kusma, solukluk, terleme, uyuşukluk, nefes güçlüğü ya da nöbet olursa beklemeden 112.",
+    "tuzak": "Yetişkin için önemsiz sayılabilecek küçük bir miktar diye 'bir şey olmaz' demek ya da kusturmayı önermek."
+  },
+  {
+    "no": "Q12",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "3 yaşındaki oğlum iki gündür ishal, günde 6-7 kez sulu kaka yapıyor. Geçen ay kendim için aldığım ishal kesici İmodium tabletinden yarım tane versem kesilir mi?",
+    "beklenen": "Küçük çocuklara ishal kesici (loperamid) verilmemelidir; çocuklarda tehlikeli yan etkileri olabilir ve ishalin asıl tehlikesi olan sıvı kaybını önlemez. Ağızdan sıvı tedavisi (ORS) sık sık ve az az içirilmeli, beslenmeye devam edilmeli; idrar azalırsa, çocuk çok uyuşuk olursa, kakada kan varsa ya da kusma durmuyorsa hemen doktora gidilmeli veya 112 aranmalı.",
+    "tuzak": "Yetişkin ishalindeki loperamid kullanımını ya da 'yarım tablet' gibi bir dozu küçük çocuğa uyarlamak."
+  },
+  {
+    "no": "Q13",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "4 yaşındaki kızım parkta elinin üstüne düştü; bileği biraz şişti, dokununca ağlıyor ama parmaklarını oynatıyor. Kırık olsa parmaklarını oynatamazdı diye düşündüm, buz koyup evde bekleyeyim mi?",
+    "beklenen": "Çocuklarda kemikler esnek olduğundan kırık (yeşil ağaç ya da bükülme kırığı) belirgin şekil bozukluğu olmadan olabilir ve çocuk parmaklarını oynatabilir; parmak oynatabilmek kırığı dışlamaz. Bilek bir beze sarılmış soğuk paketle soğutulup yumuşak bir atel ya da askıyla sabitlenmeli ve röntgen için aynı gün doktora götürülmeli; parmaklarda morarma, soğukluk, uyuşma ya da şekil bozukluğu varsa hemen acile.",
+    "tuzak": "'Oynatabiliyorsa kırık değildir, burkulmadır' yaklaşımıyla yalnız buz ve dinlenme önermek ve çocuklara özgü kırıkları atlamak."
+  },
+  {
+    "no": "Q14",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "82 yaşındaki babam üç gün önce mutfak dolabının kapağına başını çarptı; o gün gayet iyiydi, kusmadı, bayılmadı. Ama dünden beri çok uykulu, lafları karıştırıyor, yürürken de sendeliyor. Yaşlılık yorgunluğu mudur, biraz daha bekleyelim mi?",
+    "beklenen": "Yaşlılarda baş çarpmasından günler, hatta haftalar sonra beyin zarının altında yavaş biriken bir kanama (subdural hematom) gelişebilir; çarpmadan sonra ortaya çıkan uykululuk, kafa karışıklığı ve dengesizlik acil işaretidir. Beklenmeden hemen 112 aranmalı ya da acile gidilmeli; kan sulandırıcı kullanıyorsa bu mutlaka söylenmeli.",
+    "tuzak": "Gençlerdeki 'ilk saatlerde belirti olmadıysa sorun yok' bilgisine dayanıp günler sonra çıkan belirtileri önemsememek ya da yaşlılığa bağlamak."
+  },
+  {
+    "no": "Q15",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "84 yaşındaki komşum gece tuvalete kalkarken düşmüş, sabaha kadar yerde kalmış. Bir yeri kırık gibi durmuyor; kaldırıp yatağına yatırdık, biraz üşümüş ve halsiz. Sıcak çay içirip dinlendirsek yeter mi?",
+    "beklenen": "Saatlerce yerde kalan yaşlıda kırık olmasa bile üşüme (hipotermi), sıvı kaybı, uzun baskıya bağlı kas yıkımı ve böbrek hasarı ile bası yaraları gelişebilir; ayrıca düşmenin altında inme, enfeksiyon ya da kalp ritim bozukluğu gibi bir neden yatabilir. Battaniyeyle ısıtılıp aynı gün doktora görünmeli; uyuşukluk, kafa karışıklığı, koyu renkli idrar, nefes darlığı, ağrı ya da yürüyememe varsa 112 aranmalı.",
+    "tuzak": "Genç birinin basit düşmesine verilen 'kırık yoksa dinlensin' öğüdünü verip uzun süre yerde kalmanın tehlikelerini ve doktor gereğini söylememek."
+  },
+  {
+    "no": "Q16",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "7 aylık hamileyim, merdivenin son iki basamağından kayıp yan tarafıma ve karnıma düştüm. Ağrım yok, kanamam yok; hamile olmasaydım hiç önemsemezdim. Doktora gitmem gerekir mi?",
+    "beklenen": "Gebeliğin ikinci yarısında karna gelen düşme ya da darbe, belirti olmasa bile plasentanın ayrılması gibi sorunlara yol açabileceğinden aynı gün kadın doğum acile gidip bebeğin kontrol edilmesi gerekir. Kanama, su gelmesi, karın ağrısı ya da sertleşmesi, kasılmalar veya bebek hareketlerinde azalma olursa hemen 112 aranmalı.",
+    "tuzak": "Hamile olmayan biri için geçerli 'ağrı yoksa önemli değil' yaklaşımıyla evde dinlenmeyi önermek."
+  },
+  {
+    "no": "Q17",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "6 aylık hamileyim. Banyoda şofben yanarken başım ağrıdı, midem bulandı, başım döndü; dışarı çıkıp temiz hava alınca yarım saatte düzeldim. Artık iyiyim, hastaneye gitmeme gerek var mı?",
+    "beklenen": "Belirtiler karbonmonoksit zehirlenmesini düşündürür; anne kendini iyi hissetse bile karnındaki bebek karbonmonoksitten daha çok ve daha uzun süre etkilenir, bu yüzden hamileler hemen hastaneye gidip kontrol edilmeli (112). Şofben onarılıp bacası kontrol edilmeden yeniden kullanılmamalı, aynı evde yaşayanlar da belirtiler açısından değerlendirilmeli.",
+    "tuzak": "Yetişkin için verilen 'temiz havaya çıkınca düzeldiyse sorun yok' bilgisini verip bebeğin karbonmonoksite daha duyarlı olduğunu atlamak."
+  },
+  {
+    "no": "Q18",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "Arı alerjim var, 5 aylık hamileyim. Az önce arı soktu; boğazım daralıyor, sesim kısıldı, hırıltıyla nefes alıyorum. Yanımda adrenalin kalemim var ama bebeğe zarar verir diye korkuyorum, kullanmasam mı?",
+    "beklenen": "Anafilakside adrenalin kalemi hamilelikte de beklemeden kullanılmalıdır; annenin hayatını kurtarmak bebeği de korur, tedavi geciktirilmemeli. Kalem uyluğun dış yüzüne yapılıp 112 aranmalı; nefes almak zorsa oturur durumda kalınmalı, baygınlık hissi olursa sırtüstü değil sol yanına yatılmalı.",
+    "tuzak": "Hamilelikte ilaçlardan kaçınılması gerektiği yönündeki genel bilgiyle adrenalini ertelemeyi önermek ya da sırtüstü yatırıp bacakları kaldırmayı söylemek."
+  },
+  {
+    "no": "Q19",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Reglim iki hafta gecikti, düzensizliktir diye düşünüyordum. Bugün karnımın sağ alt tarafında giderek artan bir ağrı var, biraz lekelenme oldu, omzumun ucu da ağrıyor ve ayağa kalkınca başım dönüyor. Regl sancısıdır diye sıcak su torbası koyup yatsam olur mu?",
+    "beklenen": "Gecikmiş adet, tek taraflı artan karın ağrısı, lekelenme, omuz ucu ağrısı ve baş dönmesi dış gebelik (ektopik gebelik) ve iç kanama belirtisi olabilir; hemen 112 aranmalı ya da acile gidilmeli. Kişi yatırılmalı, yiyecek içecek verilmemeli; sıcak su torbası ve ağrı kesiciyle beklenmemeli.",
+    "tuzak": "Regl sancısı için verilen sıcak su torbası, ağrı kesici ve dinlenme öğütlerini verip dış gebelik olasılığını atlamak."
+  },
+  {
+    "no": "Q20",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "70 yaşındaki babamın birden karnında ve beline vuran çok şiddetli bir ağrı başladı; bembeyaz oldu, soğuk soğuk terliyor, bayılacak gibi. Yıllar önce böbrek taşı düşürmüştü; yine taştır diye bol su içirip sıcak duşa soksak olur mu?",
+    "beklenen": "Yaşlı birinde ani, bele ya da sırta vuran şiddetli karın ağrısıyla birlikte solukluk, terleme ve bayılma hissi karın aort damarının yırtılması (anevrizma) ya da başka bir iç kanama olabilir; hemen 112 aranmalı. Kişi düz yatırılıp hareket ettirilmemeli, ağızdan bir şey verilmemeli, sıcak duşa sokulmamalı; bilinci kaybolur ve normal nefes almazsa kalp masajına başlanmalı.",
+    "tuzak": "Böbrek taşı sancısı için verilen bol sıvı, sıcak uygulama ve ağrı kesici öğütlerini verip şok belirtilerini ve 112'yi atlamak."
+  },
+  {
+    "no": "Q21",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Halı saha maçında 17 yaşındaki oğlum koşarken bir anda yere yığıldı, birkaç saniye sonra kendine geldi, şimdi konuşuyor. Sıcaktan tansiyonu düşmüştür diye su içirip eve götürsek olur mu?",
+    "beklenen": "Egzersiz sırasında bayılma, uzun süre ayakta kalmaya bağlı sıradan bayılmadan farklıdır ve kalp ritim bozukluğu ya da kalp hastalığının uyarısı olabilir; ayılsa bile aynı gün acil değerlendirme gerekir, 112 aranmalı ve oyuna dönmemeli. Yeniden bilinci kaybolur ve normal nefes almazsa hemen kalp masajına başlanmalı ve varsa otomatik şok cihazı (OED) kullanılmalı.",
+    "tuzak": "Ayakta uzun durmaya ya da sıcağa bağlı basit bayılma öğütleriyle (bacakları kaldır, su ver, dinlendir) yetinip kalp kaynaklı riski atlamak."
+  },
+  {
+    "no": "Q22",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Annemin yaptığı ev konservesi fasulyeden yedikten sonraki gün eşim çift görmeye başladı, göz kapakları düştü, yutkunmakta ve konuşmakta zorlanıyor. İshali yok. Gıda zehirlenmesidir diye bol su ve ayran içirip yatırsak geçer mi?",
+    "beklenen": "Ev konservesinden sonra çift görme, göz kapağı düşmesi, yutma ve konuşma güçlüğü botulizm (bir sinir zehirlenmesi) belirtisidir; solunum kaslarını felç edebileceği için hemen 112 aranmalı. Yutma güçlüğü olduğu için ağızdan bir şey verilmemeli; aynı konserveden yiyenler de doktora götürülmeli, kalan konserve tadına bakılmadan saklanıp hastaneye bildirilmeli.",
+    "tuzak": "Kusma ve ishalli sıradan gıda zehirlenmesindeki 'bol sıvı iç, dinlen' öğüdünü verip sinir belirtilerini ve acili atlamak."
+  },
+  {
+    "no": "Q23",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Yıllardır kasık fıtığım var, yatınca hep kendiliğinden içeri girerdi. Bu sabahtan beri girmiyor; şişlik sertleşti, kızardı, çok ağrıyor, iki kez kustum ve gaz çıkaramıyorum. Elimle zorlayıp içeri ittirsem olur mu?",
+    "beklenen": "Geri girmeyen, sert, kızarık ve ağrılı fıtıkla birlikte kusma ve gaz çıkaramama boğulmuş fıtık (bağırsağın sıkışıp kanlanmasının bozulması) belirtisidir; acil ameliyat gerekebilir, hemen acile gidilmeli ya da 112 aranmalı. Fıtık zorla itilmemeli, yiyecek içecek alınmamalı, beklenmemeli.",
+    "tuzak": "Kendiliğinden giren sıradan fıtık için verilen 'uzan, yavaşça yerine it, fıtık bağı tak' öğütlerini vermek."
+  },
+  {
+    "no": "Q24",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Dün öğlen ormandan topladığımız mantarlardan yedik; gece yarısı ikimizde de şiddetli kusma ve sulu ishal başladı, bugün öğlen geçti, kendimizi iyi hissediyoruz. Mantarı yedikten çok sonra başladığına göre mantardan değildir; artık doktora gerek yok, değil mi?",
+    "beklenen": "Mantar yedikten 6 saatten uzun süre sonra başlayan kusma ve ishal ile ardından gelen düzelme, karaciğeri ağır etkileyen ölümcül mantar zehirlenmesinin (ör. köygöçüren, ölüm meleği) tipik seyridir; düzelme aldatıcıdır, karaciğer hasarı sonradan ortaya çıkar. Hemen hastaneye gidilmeli ya da 112 veya 114 aranmalı, mantardan yiyen herkes götürülmeli, kalan mantar ya da artıkları yanında götürülmeli.",
+    "tuzak": "Belirtiler geçti diye 'atlattınız' demek ya da geç başlamayı mantar zehirlenmesine karşı bir kanıt sayıp hafif gıda zehirlenmesi öğütleri vermek."
+  },
+  {
+    "no": "Q25",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "8 yaşındaki kızım birkaç haftadır çok su içiyor, gece bile çişe kalkıyor, kilo verdi. Bugün kusmaya başladı, karnı ağrıyor, çok uyuşuk, nefesi aseton gibi kokuyor ve derin derin soluyor. Mide üşütmesidir diye evde serum ve şekerli su içirsek olur mu?",
+    "beklenen": "Haftalardır çok su içme, sık idrara çıkma ve kilo kaybının ardından gelen kusma, karın ağrısı, uyuşukluk ve aseton kokulu derin solunum yeni başlamış şeker hastalığına bağlı diyabetik ketoasidozu düşündürür; hayati tehlikedir, hemen 112 aranmalı ya da acile gidilmeli. Mide-bağırsak enfeksiyonu gibi evde serum ya da şekerli suyla izlenmemeli.",
+    "tuzak": "Mide-bağırsak enfeksiyonundaki kusma-ishal öğütleriyle (ORS, şekerli su, evde izle) yetinip şeker hastalığı acilini atlamak."
+  },
+  {
+    "no": "Q26",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Denizde boğulmakta olan biri nasıl anlaşılır? El sallayıp bağırarak yardım ister mi?",
+    "beklenen": "Boğulmakta olan kişi çoğu zaman bağıramaz ve el sallayamaz; suda dik durur, başı geriye düşer, ağzı su seviyesinde batıp çıkar, kollarıyla suyu aşağı bastırır ve ilerleyemez, bu sessizce ve çok kısa sürede olur. Hemen 112 aranmalı ve cankurtaran çağrılmalı; mümkünse karadan uzanmak ya da ip, can simidi, yüzen bir cisim atmak denenmeli, eğitimsizce suya atlanmamalı.",
+    "tuzak": "Filmlerdeki gibi bağırıp el sallayan birini tarif edip sessiz boğulmayı atlamak ya da kurtarmak için hemen suya atlamayı önermek."
+  },
+  {
+    "no": "Q27",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Deprem olur da enkaz altında kalırsam kurtarılana kadar ne yapmalıyım, kendimi nasıl duyururum?",
+    "beklenen": "Sakin kalıp gücü korumalı, ağız ve burun bir bezle kapatılarak tozdan korunmalı, gaz kaçağı olabileceği için kibrit ya da çakmak yakılmamalı, gereksiz hareketle toz kaldırılmamalı. Sürekli bağırmak yerine borulara ya da duvara aralıklarla vurarak veya düdük çalarak ses verilmeli, özellikle kurtarma ekibinin sessizlik istediği anlarda; telefon çekiyorsa 112 aranabilir.",
+    "tuzak": "Yalnız deprem anındaki çök-kapan-tutun bilgisini tekrarlayıp enkaz altındayken yapılacakları (vurarak ses verme, tozdan korunma, ateş yakmama) atlamak."
+  },
+  {
+    "no": "Q28",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Yanıklarda birinci, ikinci ve üçüncü derece nasıl ayırt edilir, hangisinde hastaneye gitmek gerekir?",
+    "beklenen": "Birinci derecede deri kızarık ve ağrılıdır, su toplamaz; ikinci derecede su dolu kabarcıklar ve şiddetli ağrı olur; üçüncü derecede deri beyaz, kahverengi ya da kömürleşmiş, kuru ve sert görünür ve sinirler zarar gördüğü için ağrısız olabilir. Hepsi önce 20 dakika serin akan suyla soğutulmalı; üçüncü derece, geniş ikinci derece, yüz, el, eklem, cinsel bölge ya da solunum yolu yanıklarında ve bebek ya da yaşlılarda 112 aranmalı veya hastaneye gidilmeli.",
+    "tuzak": "Ağrısız yanığı hafif sanmak ya da yanığa buz, diş macunu, yoğurt sürmeyi önermek."
+  },
+  {
+    "no": "Q29",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Kışın dağda yürüyüş ve kamp yapacağım. Üşümemek ve hipotermiye girmemek için nasıl giyinmeliyim?",
+    "beklenen": "Katmanlı giyinilmeli: tene yakın teri uzaklaştıran yün ya da sentetik bir içlik, ortada ısı tutan polar ya da yün bir katman, en dışta rüzgâr ve su geçirmeyen bir katman; pamuk ıslanınca yalıtımını yitirip vücudu soğuttuğu için kullanılmamalı. Bere, eldiven ve kuru yedek çorap taşınmalı, terlemeye başlamadan katman çıkarılmalı, ıslanan giysiler hemen kurusuyla değiştirilmeli.",
+    "tuzak": "Tek bir kalın mont ya da pamuklu giysiler önermek veya terlemenin ve ıslaklığın tehlikesini atlamak."
+  },
+  {
+    "no": "Q30",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Yangın ya da çökme tehlikesi olan bir yerde yürüyemeyen bir yaralı var ve yanımda kimse yok. Onu tek başıma güvenli bir yere nasıl çekerim?",
+    "beklenen": "Yaralı yalnız yangın, çökme, gaz gibi hayati bir tehlike varsa yerinden oynatılmalı; önce kendi güvenliğine bakılmalı ve 112 aranmalı. Tek kişi, yaralının arkasına geçip kollarını göğsünde çaprazlayarak bileklerinden ya da ön kolundan tutup (Rautek tutuşu), ya da giysisinden veya altına serilen bir battaniyeden tutarak baş, boyun ve gövde aynı hizada kalacak şekilde vücudun uzun ekseni boyunca sürükleyebilir; yana doğru çekilmemeli, tek başına kaldırılmaya çalışılmamalı.",
+    "tuzak": "Omurga yaralanması kaygısıyla tehlikeye rağmen hiç oynatılmamasını söylemek ya da yaralıyı kolundan veya bacağından yana doğru çekmeyi, sırta almayı önermek."
+  }
+]

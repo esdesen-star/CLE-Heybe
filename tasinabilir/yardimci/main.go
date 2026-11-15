@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.12 (13.11.2026, küçük kitabın makale listesi)"
+const surum = "1.16 (15.11.2026, yanlış cevap kaydı yalnız şifreli yazılır — K7)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string
@@ -88,6 +88,7 @@ func main() {
 	haritaKes := flag.String("harita-kes", "", "harita görüntüsünü kes: PMTiles adresi ya da \"son\" (Protomaps'in son yapımı); -harita-kutu ve -harita-cikti ile")
 	// 13.11 (§122): küçük kitabın makale listesi JSON olarak (sınav düzeni yardımcısız koşar: olcum/banka/olc_banka.cjs MAKALELER=…)
 	zimListe := flag.String("makaleler", "", "bu .zim dosyasının makale listesini JSON yaz, sonra çık")
+	rotaYeni := flag.String("rota-yenile", "", "eski .rota dosyasını bugünkü sürüme çevir: \"eski.rota,yeni.rota\" (yol ağı aynen taşınır, karşılaştırılıp yazılır)")
 	flag.Parse()
 	if *zimListe != "" {
 		l, err := zimMakaleleri(*zimListe)
@@ -96,6 +97,22 @@ func main() {
 			os.Exit(1)
 		}
 		_ = json.NewEncoder(os.Stdout).Encode(l)
+		return
+	}
+	if *rotaYeni != "" {
+		p := strings.SplitN(*rotaYeni, ",", 2)
+		if len(p) != 2 {
+			fmt.Fprintln(os.Stderr, "kullanım: -rota-yenile eski.rota,yeni.rota")
+			os.Exit(2)
+		}
+		bas := time.Now()
+		if err := rotaYenile(p[0], p[1]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		a, _ := os.Stat(p[0])
+		b, _ := os.Stat(p[1])
+		fmt.Printf("rota yenilendi: %d → %d bayt (%.0f sn), yol ağı birebir aynı\n", a.Size(), b.Size(), time.Since(bas).Seconds())
 		return
 	}
 	if *haritaPbf != "" || *rotaDene != "" || *haritaKes != "" {
@@ -155,6 +172,7 @@ func main() {
 	mux.HandleFunc("/api/benim-sil", apiBenimSil)
 	mux.HandleFunc("/api/cevirmen", apiCevirmen)      // çevirmen gerekince açılır (06.11)
 	mux.HandleFunc("/api/acil-kart", apiAcilKart)     // açılışta görünen acil kart (Ö14, 06.11)
+	mux.HandleFunc("/api/defter", apiDefter)          // §145 Heybe defteri: kayıtlı cevaplar ve notlar, gruplar
 	mux.HandleFunc("/api/liste", apiListe)            // kullanıcının kitap listesi (Ö11, 07.11)
 	mux.HandleFunc("/api/liste-durum", apiListeDurum) // listedekiler bellekte mi, yeni sürüm var mı (internet gerekir)
 	mux.HandleFunc("/api/liste-uygula", apiListeUygula)

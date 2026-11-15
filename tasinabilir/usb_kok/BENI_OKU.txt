@@ -8,6 +8,13 @@ Heybe bir bilgisayar gibidir. Bellekte iki şey hazır gelir: soruları
 cevaplayan Heybe ve çevirmen. Gerisi senin: belleğin boş yerine istediğin
 kitapları, kendi notlarını, resimlerini koyarsın.
 
+BİLMEN GEREKEN: Heybe'nin cevabı kitaplığı kadar doğrudur. Heybe cevabı
+yalnız buradaki kaynaklardan yazar, kaynağı düzeltemez. Kaynak ne kadar
+güvenilir ve doğruysa cevap da o kadar doğru ve yardımcı olur. Resmî
+kurumların ve ilk yardım kuruluşlarının güncel kılavuzlarını seç;
+ansiklopedi maddeleri, eski kitaplar ve herkesin yazabildiği forumlar
+eskimiş ya da yanlış bilgi taşıyabilir.
+
 AÇMAK
 - Mac: "Heybe_Mac.command" dosyasına çift tıkla.
   İlk kez açarken Mac engellerse: Sistem Ayarları → Gizlilik ve Güvenlik →
@@ -31,6 +38,22 @@ AÇMAK
   numaraları ve senin kendi kartın var. Kartına toplanma yerini,
   ilaçlarını, alerjilerini, yakınlarının numaralarını yaz ("Acil
   kartımı yaz"). Kart bu bellekte kalır, internete gitmez.
+  Kartın üstünde hep aynı satır durur: tehlikedeysen hemen acil numarayı
+  ara; ulaşamıyorsan yakındakilerden yardım iste. Heybe'nin bilgisi yardım
+  gelene kadar içindir.
+- DEFTERİM: bir cevabı adını vererek "Deftere kaydet"; kendi notunu
+  "+ Yeni not" ile yaz. Grupları sen kurarsın, iç içe olabilir (Tıbbi >
+  Ercan, Konaklama). Grubu seçip arama kutusuna yazınca bulur; model
+  gerekmez. Kayıt "senin kaydettiğin" ya da "kendi notun, kitaptan değil"
+  diye görünür. Çevirmen açıkken başka dillerde de saklanır.
+  Defter bu bellekte parolayla şifreli durur; parola bellekte saklanmaz.
+  Defteri ilk açışta parolanı belirlersin ve bir kurtarma kodu alırsın:
+  kâğıda yaz, evde sakla. Parolanı unutursan defteri yalnız bu kod açar.
+  Kurtarıcının bilmesi gerekenleri (alerji, kan grubu) acil kartına yaz:
+  o şifresiz kalır. İkisini de kaybedersen yeni defter açılır; eskisi
+  heybe/benim içinde "defter_kenara_….json" adıyla durur. Kodu sonra
+  bulursan önce o anki defter.json'u başka yere al, sonra eskisinin
+  adını defter.json yap.
 - Kapatmak için siyah pencerede Enter'a / bir tuşa bas. Pencereyi çarpıyla
   kapatma. Belleği çekmeden önce bilgisayarda "çıkar" de.
 
@@ -41,6 +64,13 @@ HEYBE'YE SOR
   dillerdeki kitaplara ve dosyalara bakar, cevabı senin diline çevirir.
   O zaman kaynağın yanında "çevrildi" yazar; özgün cevabı da açıp
   okuyabilirsin. Çeviri hata yapabilir: önemli bilgide kaynağa bak.
+- Çevirmen açıkken soru kutusunun altında konu düğmeleri görünür
+  (Tıbbi, Yangın ve güvenlik, Harita ve yol …). İstersen bir konu seç:
+  soru başka dile çevrilirken kelimeler o anlamda okunur ("ateş" vücut
+  ateşi mi, yangın mı). Konu yalnız o soru içindir, cevap gelince kalkar.
+  Konu çeviriye soruda olmayan bir şey katarsa Heybe konusuz çeviriye
+  döner ve bunu yazar. Konu bir ipucudur; aranan soruyu cevabın üstünde
+  görürsün.
 - Cevaptaki sayıları kaynakla karşılaştırır. Kaynakta olmayan bir sayı
   görürse, ya da çeviri sorunun konusunu kaybederse, cevabı durdurur ve
   kaynakları gösterir.
@@ -48,6 +78,9 @@ HEYBE'YE SOR
   düğmesine bas, istersen doğrusunu yaz. Kayıt yalnız bu bellekte kalır,
   hiçbir yere gönderilmez; Kitaplık sayfasında görürsün, indirip Heybe'yi
   geliştirenlere verebilirsin. Yeni sürümde bu sorular yeniden sorulur.
+  Kayıt soruyu ve cevabı taşır, kişisel bilgi sayılır: Defterim'in
+  parolasıyla şifreli saklanır. Kaydetmek ve görmek için Defterim açık
+  olmalı; açıkken indirirsen dosya açık hâliyle iner.
 
 KİTAPLIK — boş yer senin
 - Açılış sayfasındaki "Kitaplık ve ayarlar" düğmesi. Sayfanın başında bir
@@ -57,6 +90,9 @@ KİTAPLIK — boş yer senin
   ekle. "Kendiliğinden" seçiliyse Heybe internet buldukça eksikleri
   indirir, yeni sürümleri getirir (yenisi doğrulanınca eskisi kaldırılır).
 - Her kitabın yanında sağlık işareti: aranabiliyor mu, okunuyor mu.
+- Kaynağın türü de yazar, cevabın altındaki kaynaklarda da: "forum —
+  herkes yazabilir, kişisel deneyim", "viki — gönüllüler yazar". Önemli
+  bilgide resmî kurum ya da ilk yardım kuruluşu kılavuzuna bak.
 - "Bağlantıdan ekle": başka sitedeki .zim kitabı ya da PDF, metin, resim.
   Kiwix dışından gelen kitap "Kiwix dışı" diye işaretlenir.
 - "Kitaplık" bölümünden internet varken her dilde kitap indirebilirsin.

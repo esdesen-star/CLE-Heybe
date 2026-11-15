@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -95,30 +94,36 @@ func TestDonusYasagi(t *testing.T) {
 	}
 }
 
-// Eski (1. sürüm, yasaksız) rota dosyaları okunmaya devam eder: 2. sürüm dosyadan yasak bölümü çıkarılıp eski biçim kurulur.
+// Eski (1. sürüm, yasaksız) rota dosyaları okunmaya devam eder: bugünkü (3. sürüm) dosyadan yasak bölümü çıkarılıp ara
+// noktalar düz yazılarak eski biçim kurulur (14.11: 3. sürümle 8 sayı ve farkla ara noktalar — test ona göre güncellendi).
 func TestRotaDosyasiEskiSurum(t *testing.T) {
 	on, _ := kisitliHarita(t, [][2]string{{"restriction", "no_left_turn"}})
 	b, _ := os.ReadFile(on + ".rota")
+	if !bytes.HasPrefix(b, []byte(rotaSihir)) {
+		t.Fatal("hazırlık bugünkü sürümü yazmalı")
+	}
+	tam, err := rotaAc(on + ".rota")
+	if err != nil {
+		t.Fatal(err)
+	}
 	p := len(rotaSihir)
 	bj := int(binary.LittleEndian.Uint32(b[p:]))
 	p += 4 + bj
-	var oz hazirlikOzet
-	json.Unmarshal(b[len(rotaSihir)+4:p], &oz)
-	say := make([]uint64, 7)
-	binary.Read(bytes.NewReader(b[p:p+56]), binary.LittleEndian, say)
-	V, H, K, S, A, G, R := say[0], say[1], say[2], say[3], say[4], say[5], say[6]
+	say := make([]uint64, 8)
+	binary.Read(bytes.NewReader(b[p:p+64]), binary.LittleEndian, say)
+	V, H, K, S, A, G := say[0], say[1], say[2], say[3], say[4], say[5]
 	govde := 2*4*V + 8*H + 4*(H+1) + 4*(V+1) + 4*K + 3*4*S + 3*S + 4*S + A + 4*(S+1)
-	bas := uint64(p + 56)
+	bas := uint64(p + 64)
 	var eski bytes.Buffer
 	eski.WriteString(rotaSihirEski)
 	eski.Write(b[len(rotaSihir) : len(rotaSihir)+4+bj])
 	binary.Write(&eski, binary.LittleEndian, say[:6])
 	eski.Write(b[bas : bas+govde])
-	eski.Write(b[bas+govde+13*R:])
-	if uint64(len(b)-eski.Len()) != 8+13*R {
-		t.Fatalf("eski biçim kurulamadı: %d / %d", len(b), eski.Len())
+	binary.Write(&eski, binary.LittleEndian, tam.gLat)
+	binary.Write(&eski, binary.LittleEndian, tam.gLon)
+	if uint64(len(tam.gLat)) != G {
+		t.Fatalf("eski biçim kurulamadı: %d nokta / %d", len(tam.gLat), G)
 	}
-	_ = G
 	yol := filepath.Join(t.TempDir(), "eski.rota")
 	os.WriteFile(yol, eski.Bytes(), 0o644)
 	ag, err := rotaAc(yol)

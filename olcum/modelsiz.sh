@@ -59,7 +59,7 @@ iste "konuşma dişi" "$G/denetim" "konuşma dişi: ([0-9]+)/\1"
 # 10.11 (§101): okuma kipi (modelsiz sıralama)
 iste "okuma dişi" "$G/denetim" "okuma dişi: ([0-9]+)/\1"
 # 12–13.11 (§109–§122): kişi, yol sorusu, ortam, saplanan, baş ağrısı, §116 kuralları, konu uyumu
-for d in "kişi dişi" "yol sorusu dişi" "ortam dişi" "saplanan dişi" "baş ağrısı dişi" "§116 kural dişi" "konu dişi"; do
+for d in "kişi dişi" "yol sorusu dişi" "ortam dişi" "saplanan dişi" "baş ağrısı dişi" "§116 kural dişi" "konu dişi" "acil dişi" "şık dişi" "ayırt dişi" "defter dişi" "soru konusu dişi"; do
   iste "$d" "$G/denetim" "$d: ([0-9]+)/\1"
 done
 # 13.11: yeni diş eklenip burada unutulursa da yakalansın — dis_denetim'in HER "dişi: a/b" satırı tam olmalı

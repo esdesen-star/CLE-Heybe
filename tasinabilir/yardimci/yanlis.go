@@ -8,6 +8,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,7 +17,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -64,7 +64,34 @@ func yanlisYaz(kayitlar []map[string]any) error {
 	if b.Len() > yanlisDosyaSiniri {
 		return errYanlisDolu
 	}
-	return guvenliYaz(yanlisYolu(), b.Bytes())
+	if err := guvenliYaz(yanlisYolu(), b.Bytes()); err != nil {
+		return err
+	}
+	// §158 (K7, sahte bellekte canlı denemede bulundu): güvenli yazma bir önceki sürümü .onceki olarak saklar. Eski şifresiz
+	// kayıtlar şifrelenip silinince o kopya şifresiz soruyu taşımaya devam ediyordu. Dosyada şifresiz kayıt kalmadıysa,
+	// şifresiz kayıt taşıyan önceki sürüm silinir (defterdeki aynı kural: defter.go).
+	if !yanlisSifresizVar(b.Bytes()) {
+		if eski, err := os.ReadFile(yanlisYolu() + ".onceki"); err == nil && yanlisSifresizVar(eski) {
+			_ = os.Remove(yanlisYolu() + ".onceki")
+		}
+	}
+	return nil
+}
+
+// yanlisSifresizVar: dosyada şifresiz (soru taşıyan) bir kayıt var mı
+func yanlisSifresizVar(b []byte) bool {
+	for _, satir := range bytes.Split(b, []byte("\n")) {
+		var k map[string]any
+		if json.Unmarshal(satir, &k) != nil {
+			continue
+		}
+		if _, sifreli := k["sifreli"]; !sifreli {
+			if _, soru := k["soru"]; soru {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 var (
@@ -72,15 +99,43 @@ var (
 	errYanlisGecersiz = errors.New("geçersiz kayıt")
 )
 
-// yanlisEkle: sayfadan gelen kaydı denetler, tarih + sürüm + kimlik ekler, dosyanın sonuna koyar
-func yanlisEkle(kayit map[string]any) (map[string]any, error) {
-	soru, _ := kayit["soru"].(string)
-	soru = strings.TrimSpace(soru)
-	if soru == "" || !utf8.ValidString(soru) || utf8.RuneCountInString(soru) > 2000 {
-		return nil, fmt.Errorf("%w: soru yok ya da çok uzun", errYanlisGecersiz)
+// 15.11.2026 akşam (Özet §158, K7): kayıt soruyu, cevabı ve kullanıcının notunu taşır — kişisel bilgi (sağlık durumu).
+// Sayfa kaydı Defterim'in veri anahtarıyla şifreler (AES-GCM); burada yalnız zarfın biçimi denetlenir, çözülemez.
+// Açıkta yalnız dil ve sonuç kalır (ölçü için). Şifresiz yeni kayıt reddedilir; 0.38.0'a kadarki şifresiz kayıtlar
+// okunur, sayfa defter açılınca onları şifreleyip yerine koyar.
+var yanlisAcikAlan = map[string]bool{"sifreli": true, "sifreliOzet": true, "dil": true, "sonuc": true}
+
+func yanlisKutuGecerli(v any) bool {
+	k, ok := v.(map[string]any)
+	if !ok || len(k) != 2 {
+		return false
 	}
-	if not, ok := kayit["not"].(string); ok && utf8.RuneCountInString(not) > 4000 {
-		return nil, fmt.Errorf("%w: not çok uzun", errYanlisGecersiz)
+	gecerli := func(ad string, en, tam int) bool {
+		s, _ := k[ad].(string)
+		b, err := base64.StdEncoding.DecodeString(s)
+		return err == nil && len(b) >= en && (tam == 0 || len(b) == tam)
+	}
+	return gecerli("iv", 12, 12) && gecerli("veri", 17, 0)
+}
+
+// yanlisEkle: sayfadan gelen şifreli kaydı denetler, tarih + sürüm + kimlik ekler, dosyanın sonuna koyar
+func yanlisEkle(kayit map[string]any) (map[string]any, error) {
+	if _, ok := kayit["sifreli"]; !ok {
+		return nil, fmt.Errorf("%w: K7 — kayıt şifreli olmalı (önce Defterim'i aç)", errYanlisGecersiz)
+	}
+	for alan := range kayit {
+		if !yanlisAcikAlan[alan] {
+			return nil, fmt.Errorf("%w: K7 — şifreli kaydın yanında açık alan olamaz (%s)", errYanlisGecersiz, alan)
+		}
+	}
+	if !yanlisKutuGecerli(kayit["sifreli"]) || !yanlisKutuGecerli(kayit["sifreliOzet"]) {
+		return nil, fmt.Errorf("%w: şifreli kutu geçersiz", errYanlisGecersiz)
+	}
+	if d, _ := kayit["dil"].(string); !utf8.ValidString(d) || len(d) > 12 {
+		return nil, fmt.Errorf("%w: dil geçersiz", errYanlisGecersiz)
+	}
+	if s, ok := kayit["sonuc"].(string); ok && s != "cevap" && s != "durdu" && s != "bilgiYok" {
+		return nil, fmt.Errorf("%w: sonuç geçersiz", errYanlisGecersiz)
 	}
 	simdi := time.Now() // kimlik, tarih ve sürümü sayfa yazamaz: hep burada üstüne yazılır
 	kayit["kimlik"] = strconv.FormatInt(simdi.UnixNano(), 36)
@@ -149,7 +204,7 @@ func apiYanlis(w http.ResponseWriter, r *http.Request) {
 		yanlisKilit.Unlock()
 		for _, k := range kayitlar {
 			o := map[string]any{}
-			for _, alan := range []string{"kimlik", "tarih", "dil", "soru", "not", "sonuc", "surum"} {
+			for _, alan := range []string{"kimlik", "tarih", "dil", "soru", "not", "sonuc", "surum", "sifreliOzet"} { // §158: şifreli özet (sayfa çözer)
 				if v, ok := k[alan]; ok {
 					o[alan] = v
 				}

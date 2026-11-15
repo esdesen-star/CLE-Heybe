@@ -15,6 +15,7 @@ import (
 	"io"
 	"math"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -38,6 +39,7 @@ type rotaAg struct {
 	gOff     []uint32
 	gLat     []int32
 	gLon     []int32
+	kHam     kisitHam // dosyadaki ham dönüş yasakları (rotaYenile yeniden yazar)
 
 	mu      sync.Mutex
 	maliyet []float32
@@ -80,7 +82,7 @@ func rotaOzetOku(yol string) (hazirlikOzet, error) {
 	}
 	defer f.Close()
 	b := make([]byte, len(rotaSihir)+4)
-	if _, err := io.ReadFull(f, b); err != nil || (string(b[:len(rotaSihir)]) != rotaSihir && string(b[:len(rotaSihir)]) != rotaSihirEski) {
+	if _, err := io.ReadFull(f, b); err != nil || rotaSurumu(string(b[:len(rotaSihir)])) == 0 {
 		return oz, errors.New("rota dosyası tanınmadı")
 	}
 	n := binary.LittleEndian.Uint32(b[len(rotaSihir):])
@@ -94,6 +96,19 @@ func rotaOzetOku(yol string) (hazirlikOzet, error) {
 	return oz, json.Unmarshal(bj, &oz)
 }
 
+// rotaSurumu: dosyanın sihirli satırından sürüm (1–3); tanınmazsa 0
+func rotaSurumu(sihir string) int {
+	switch sihir {
+	case rotaSihir:
+		return 3
+	case rotaSihir2:
+		return 2
+	case rotaSihirEski:
+		return 1
+	}
+	return 0
+}
+
 func rotaAc(yol string) (*rotaAg, error) {
 	f, err := os.Open(yol)
 	if err != nil {
@@ -101,11 +116,11 @@ func rotaAc(yol string) (*rotaAg, error) {
 	}
 	sr := &sayacOkuyucu{r: bufio.NewReaderSize(f, 4<<20)}
 	sihir := make([]byte, len(rotaSihir))
-	if _, err := io.ReadFull(sr, sihir); err != nil || (string(sihir) != rotaSihir && string(sihir) != rotaSihirEski) {
+	if _, err := io.ReadFull(sr, sihir); err != nil || rotaSurumu(string(sihir)) == 0 {
 		f.Close()
 		return nil, errors.New("rota dosyası tanınmadı")
 	}
-	yeni := string(sihir) == rotaSihir // 2. sürüm: dönüş yasakları var
+	surum := rotaSurumu(string(sihir)) // 2. sürümden beri dönüş yasakları, 3. sürümden beri farkla ara noktalar
 	var bj uint32
 	if err := binary.Read(sr, binary.LittleEndian, &bj); err != nil || bj > 1<<20 {
 		f.Close()
@@ -121,19 +136,19 @@ func rotaAc(yol string) (*rotaAg, error) {
 	if err := json.Unmarshal(b, &ag.Ozet); err != nil {
 		return nil, err
 	}
-	sayilar := make([]uint64, 6)
-	if yeni {
-		sayilar = make([]uint64, 7)
-	}
+	sayilar := make([]uint64, 5+surum) // 1. sürüm 6 sayı · 2. sürüm +R · 3. sürüm +B
 	if err := binary.Read(sr, binary.LittleEndian, sayilar); err != nil {
 		return nil, err
 	}
 	V, H, K, S, A, G := sayilar[0], sayilar[1], sayilar[2], sayilar[3], sayilar[4], sayilar[5]
-	R := uint64(0)
-	if yeni {
+	R, B := uint64(0), uint64(0)
+	if surum >= 2 {
 		R = sayilar[6]
 	}
-	if V > 1<<31 || S > 1<<30 || K > 1<<31 || G > 1<<31 || A > 1<<31 || H > 1<<31 || R > 1<<26 {
+	if surum >= 3 {
+		B = sayilar[7]
+	}
+	if V > 1<<31 || S > 1<<30 || K > 1<<31 || G > 1<<31 || A > 1<<31 || H > 1<<31 || R > 1<<26 || B > 1<<34 {
 		return nil, errors.New("rota sayıları akıl dışı")
 	}
 	ag.vLat, ag.vLon = make([]int32, V), make([]int32, V)
@@ -155,7 +170,11 @@ func rotaAc(yol string) (*rotaAg, error) {
 			return nil, fmt.Errorf("rota dosyası eksik (dönüş yasakları): %w", err)
 		}
 	}
-	if st, err := f.Stat(); err != nil || st.Size() != sr.n+int64(G)*8 {
+	kalan := int64(G) * 8
+	if surum >= 3 {
+		kalan = int64(B)
+	}
+	if st, err := f.Stat(); err != nil || st.Size() != sr.n+kalan {
 		return nil, errors.New("rota dosyasının boyu tutmuyor (yarım kopyalanmış olabilir)")
 	}
 	if uint64(ag.gOff[S]) != G || uint64(ag.derece[V]) != K {
@@ -163,6 +182,18 @@ func rotaAc(yol string) (*rotaAg, error) {
 	}
 	if err := ag.kisitKur(kVia, kGelen, kGiden, kTur); err != nil {
 		return nil, err
+	}
+	ag.kHam = kisitHam{kVia, kGelen, kGiden, kTur} // dönüştürücü için (rotaYenile); küçük
+	if surum >= 3 {
+		geo := make([]byte, B)
+		if _, err := io.ReadFull(sr, geo); err != nil {
+			return nil, fmt.Errorf("rota dosyası eksik: %w", err)
+		}
+		var err error
+		if ag.gLat, ag.gLon, err = geoCoz(geo, ag.gOff, ag.sA, ag.vLat, ag.vLon); err != nil {
+			return nil, err
+		}
+		return ag, nil
 	}
 	ag.gLat, ag.gLon = make([]int32, G), make([]int32, G)
 	if err := binary.Read(sr, binary.LittleEndian, ag.gLat); err != nil {
@@ -172,6 +203,46 @@ func rotaAc(yol string) (*rotaAg, error) {
 		return nil, fmt.Errorf("rota dosyası eksik: %w", err)
 	}
 	return ag, nil
+}
+
+type kisitHam struct {
+	via, gelen, giden []uint32
+	tur               []uint8
+}
+
+// rotaYenile (14.11): eski sürüm .rota → bugünkü sürüm, haritayı baştan hazırlamadan (yol ağı aynen taşınır).
+// Yeni dosya okunup eskisiyle bütün dizileri karşılaştırılmadan yerine konmaz.
+func rotaYenile(eski, yeni string) error {
+	ag, err := rotaAc(eski)
+	if err != nil {
+		return err
+	}
+	k := ag.kHam
+	if err := rotaYaz(yeni, &ag.Ozet, ag.vLat, ag.vLon, ag.hucreler, ag.hucreBas, ag.derece, ag.komsu, ag.sA, ag.sB, ag.sUz,
+		ag.sBayrak, ag.sHiz, ag.sSinif, ag.sAd, ag.adlar, ag.gOff, k.via, k.gelen, k.giden, k.tur, ag.gLat, ag.gLon); err != nil {
+		return err
+	}
+	ag2, err := rotaAc(yeni)
+	if err != nil {
+		os.Remove(yeni)
+		return fmt.Errorf("yeni dosya okunamadı: %w", err)
+	}
+	if !rotaAyni(ag, ag2) {
+		os.Remove(yeni)
+		return errors.New("yeni dosya eskisiyle aynı değil — yazılmadı")
+	}
+	return nil
+}
+
+// rotaAyni: iki yol ağının dosyadan gelen bütün dizileri aynı mı
+func rotaAyni(a, b *rotaAg) bool {
+	return slices.Equal(a.vLat, b.vLat) && slices.Equal(a.vLon, b.vLon) && slices.Equal(a.hucreler, b.hucreler) &&
+		slices.Equal(a.hucreBas, b.hucreBas) && slices.Equal(a.derece, b.derece) && slices.Equal(a.komsu, b.komsu) &&
+		slices.Equal(a.sA, b.sA) && slices.Equal(a.sB, b.sB) && slices.Equal(a.sUz, b.sUz) && slices.Equal(a.sBayrak, b.sBayrak) &&
+		slices.Equal(a.sHiz, b.sHiz) && slices.Equal(a.sSinif, b.sSinif) && slices.Equal(a.sAd, b.sAd) && slices.Equal(a.adlar, b.adlar) &&
+		slices.Equal(a.gOff, b.gOff) && slices.Equal(a.gLat, b.gLat) && slices.Equal(a.gLon, b.gLon) &&
+		slices.Equal(a.kHam.via, b.kHam.via) && slices.Equal(a.kHam.gelen, b.kHam.gelen) && slices.Equal(a.kHam.giden, b.kHam.giden) &&
+		slices.Equal(a.kHam.tur, b.kHam.tur)
 }
 
 // Kapat: dosya açılışta okunup kapandı; bellek çöp toplayıcıya kalır. (Eski çağrılar bozulmasın diye duruyor.)

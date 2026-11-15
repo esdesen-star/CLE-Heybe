@@ -17,6 +17,7 @@ H.EYLEM.forEach((k, i) => {
   if (k.sonraSerbest) bozmalar.push([`${k.ad} sonraSerbest sil`, () => { k.sonraSerbest = false; return () => { k.sonraSerbest = true; }; }]);
   if (k.kisiYok) bozmalar.push([`${k.ad} kisiYok sil`, () => { const e = k.kisiYok; delete k.kisiYok; return () => { k.kisiYok = e; }; }]);
   if (k.haric) bozmalar.push([`${k.ad} hariç sil`, () => { const e = k.haric; delete k.haric; return () => { k.haric = e; }; }]);
+  if (k.olumsuz) bozmalar.push([`${k.ad} olumsuz cümle bakışı sil`, () => { k.olumsuz = false; return () => { k.olumsuz = true; }; }]);   // §153
 });
 for (const d of ['tr', 'en']) bozmalar.push([`olumsuzluk sayacı ${d} sustur`, () => { const e = H.OLUMSUZ_SAY[d]; H.OLUMSUZ_SAY[d] = () => 0; return () => { H.OLUMSUZ_SAY[d] = e; }; }]);
 const taban = say();

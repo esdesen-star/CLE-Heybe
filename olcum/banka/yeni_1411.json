@@ -1,0 +1,242 @@
+[
+  {
+    "no": "P01",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Sıcakta enkaz kaldırırken susuz kalmayayım diye üç saatte sekiz dokuz litre sade su içtim; şimdi başım ağrıyor, midem bulanıyor, kafam karışık gibi. Susuzluktan herhalde, biraz daha su içeyim mi?",
+    "beklenen": "Kısa sürede çok fazla sade su içmek kandaki sodyumu düşürebilir (su zehirlenmesi, hiponatremi); baş ağrısı, bulantı ve kafa karışıklığı bunun belirtisi olabilir, bu yüzden daha fazla su içilmemeli. Kafa karışıklığı olduğu için 112 aranmalı ya da hemen sağlık kuruluşuna gidilmeli; bilinç bulanıklaşır veya nöbet olursa kişi yan yatırılıp 112 beklenmeli.",
+    "tuzak": "Susuzluk ya da sıcak çarpması bölümüne kayıp 'bol su için' demek, durumu ağırlaştırır."
+  },
+  {
+    "no": "P02",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Selden sonra bodrum katı temizlerken eşimi bir fare elinden ısırdı. Ne yapmalıyız?",
+    "beklenen": "Yara hemen bol akan su ve sabunla en az 15 dakika yıkanmalı, temiz bir bezle kapatılmalı ve aynı gün sağlık kuruluşuna gidilmeli (yara bakımı, tetanoz aşısı durumu ve gerekirse antibiyotik için). Sonraki günlerde ateş, kas ağrısı, yarada kızarıklık ya da şişlik olursa (fare ısırığı ateşi veya selde sık görülen leptospiroz olabilir) hemen doktora başvurulmalı.",
+    "tuzak": "'Fare' kelimesiyle bilgisayar faresi makalesine kayıp alakasız bir cevap vermek ya da ısırığı önemsiz sayıp yalnız yara bandı önermek."
+  },
+  {
+    "no": "P03",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "2 yaşındaki torunum babaannesinin tansiyon haplarından iki tane yutmuş, şu an oynuyor, iyi görünüyor. Babaannesi her gün içiyor, zararsız bir haptır; bekleyip izlesek olur mu?",
+    "beklenen": "Hayır; yetişkinin her gün içtiği bir iki tansiyon ya da kalp hapı küçük çocukta ağır zehirlenme yapabilir ve belirtiler saatler sonra başlayabilir. Belirti beklenmeden hemen 114 Ulusal Zehir Danışma Merkezi ya da 112 aranmalı, ilacın kutusu yanınıza alınmalı; çocuk kusturulmamalı.",
+    "tuzak": "İlacın yetişkindeki genel kullanımını anlatan bölümden 'zararsız bir ilaç, evde izleyin' demek ve küçük çocuktaki riski atlamak."
+  },
+  {
+    "no": "P04",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Babam bahçedeki eski kuyuyu temizlemek için merdivenle aşağı indi, dipte birden yığıldı, seslenince cevap vermiyor. Hemen inip onu yukarı çekeyim mi?",
+    "beklenen": "Hayır, kuyuya kimse inmemeli: dipte zehirli gaz ya da oksijensiz hava olabilir ve inen kurtarıcı da saniyeler içinde bayılır. Hemen 112 aranıp kuyuda gaz olabileceği söylenmeli; yukarıda kalınarak seslenilmeli ve itfaiye, AFAD gibi solunum cihazlı ekipler beklenmeli.",
+    "tuzak": "Boğulma ya da bayılma bölümüne kayıp 'hemen inip çıkarın, kalp masajına başlayın' demek; kurtarıcının da gazdan ölmesine yol açar."
+  },
+  {
+    "no": "P05",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Dün akşamki yemekten sonra evde üç kişi kusmaya ve ishal olmaya başladı. Gıda zehirlenmesinde evde ne yapmalıyız, ne zaman doktora gitmeliyiz?",
+    "beklenen": "Kaybedilen sıvı sık sık küçük yudumlarla su ya da ağızdan sıvı tedavisi (ORS) ile yerine konmalı, eller sık yıkanmalı ve hasta olanlar yemek hazırlamamalı. Sıvı tutulamıyorsa, idrar çok azaldıysa, dışkıda kan, yüksek ateş, şiddetli karın ağrısı, kafa karışıklığı, çift görme veya yutma güçlüğü varsa ya da hasta bebek, yaşlı veya hamileyse doktora gidilmeli; ağır durumda 112 aranmalı.",
+    "tuzak": "Tuzaksız soru; yanlış cevap sıvı kaybını önemsemeyip doktora gitmeyi gerektiren uyarı işaretlerini atlamak olur."
+  },
+  {
+    "no": "P06",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Kayalıkta yüzerken bir deniz kestanesine bastım, ayak tabanıma bir sürü siyah diken battı. Ne yapmalıyım?",
+    "beklenen": "Dışarıda kalan, görünen dikenler cımbızla nazikçe çekilip çıkarılmalı, derine kazınmamalı; ayak sabunlu suyla yıkanıp yakmayacak kadar sıcak suya yarım saat ile bir buçuk saat arası batırılabilir. Diken derine ya da eklem yakınına battıysa, çıkarılamıyorsa veya kızarıklık, şişlik, akıntı gibi enfeksiyon belirtileri olursa doktora gidilmeli; nefes darlığı gibi alerji belirtisinde 112 aranmalı.",
+    "tuzak": "'Kestane' kelimesiyle yenilen kestane ya da kestane ağacı makalesine kayıp alakasız bilgi vermek."
+  },
+  {
+    "no": "P07",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "16 yaşındaki oğlum prize tornavida sokunca çarpıldı, hemen kurtuldu. Şimdi iyi görünüyor, sadece parmağında küçük, kararmış bir yanık izi var; yanık kremi sürüp evde dinlense olur mu?",
+    "beklenen": "Elektrik çarpmasında dıştaki küçük iz içerideki doku hasarını ve kalp ritim bozukluğu riskini göstermez; kişi iyi görünse de hastaneye götürülüp kontrol edilmeli (EKG gerekebilir), bilinç kaybı, göğüs ağrısı, çarpıntı ya da nefes sorunu varsa 112 aranmalı. Yanık bölge serin akan suyla soğutulup temiz, yapışmayan bir örtüyle kapatılabilir; krem sürüp evde beklenmemeli.",
+    "tuzak": "Sıradan ısı yanığı bölümünden 'küçük yanık, krem sürün, evde izleyin' demek ve iç yaralanma ile ritim bozukluğu riskini atlamak."
+  },
+  {
+    "no": "P08",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "Sıcak hava dalgası var, 3 aylık kızım sadece anne sütü alıyor ve çok terliyor. Susuz kalmasın diye arada biberonla su vereyim mi?",
+    "beklenen": "Yalnız anne sütüyle beslenen 6 aydan küçük bebeğe sıcakta bile ayrıca su verilmesi önerilmez; anne sütü gereken sıvıyı sağlar, bebek daha sık emzirilmelidir. Bebek serin tutulmalı ve ince giydirilmeli; ıslak bez sayısı azalır, bıngıldak çöker, uyuşukluk ya da emmeme olursa hemen doktora veya acile başvurulmalı.",
+    "tuzak": "Yetişkinler için sıcak hava önerilerindeki 'bol su için' bölümünü bebeğe uygulamak."
+  },
+  {
+    "no": "P09",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Banyoyu temizlerken tuz ruhuyla çamaşır suyunu karıştırdım; keskin bir koku çıktı, öksürüyorum, gözlerim yanıyor. Ne yapmalıyım?",
+    "beklenen": "Bu karışım zehirli klor gazı çıkarır: hemen temiz havaya çıkılmalı, içeri tekrar girilmemeli, gözler bol akan suyla 15 dakika yıkanmalı. 114 Ulusal Zehir Danışma Merkezi aranmalı; nefes darlığı, hırıltı ya da göğüs sıkışması varsa veya artarsa 112 aranmalı, çünkü belirtiler saatler sonra ağırlaşabilir.",
+    "tuzak": "'Tuz' kelimesiyle sofra tuzu makalesine ya da çamaşır suyuyla su dezenfeksiyonu bölümüne kayıp gaz zehirlenmesini atlamak."
+  },
+  {
+    "no": "P10",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "14 yaşındaki oğlum gece birden testisinde çok şiddetli bir ağrıyla uyandı, kusuyor; bir yere çarpmadı. Kasık incinmesidir diye ağrı kesici verip sabah doktora götürsem olur mu?",
+    "beklenen": "Çarpma olmadan aniden başlayan şiddetli testis ağrısı ve kusma testis dönmesi (torsiyon) olabilir; testisin kurtarılması için ilk saatler önemlidir. Sabah beklenmemeli, ağrı kesiciyle geçiştirilmemeli, hemen acile gidilmeli ya da 112 aranmalı.",
+    "tuzak": "Kasık incinmesi, kas çekmesi ya da kabakulak bölümünden 'dinlenme, buz, ağrı kesici' önerip sabaha bırakmak."
+  },
+  {
+    "no": "P11",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Arkadaşım bisikletten omzunun üstüne düştü, köprücük kemiği kırık gibi duruyor, kolunu kaldıramıyor. Hastaneye götürene kadar kolunu nasıl sabitlerim?",
+    "beklenen": "Kişi oturtulup kolu dirsekten bükülü olarak göğsüne yaslanmalı, kol üçgen sargıyla ya da büyük bir bez veya eşarpla boyna asılmalı (kol askısı), gerekirse ikinci bir bezle gövdeye sarılabilir. Kemik yerine oturtulmaya çalışılmamalı, bezle sarılmış buz konabilir; kolda uyuşma veya morarma, deriden çıkan kemik ya da nefes darlığı varsa 112 aranmalı, yoksa hastaneye götürülmeli.",
+    "tuzak": "Genel kırık bölümünden omza uymayan düz tahta atel bağlamayı ya da kemiği yerine oturtmayı önermek."
+  },
+  {
+    "no": "P12",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Depremden beri bir haftadır çadırda neredeyse hiç kıpırdamadan yatıyorum; sağ baldırım şişti, kızardı, ılık ve dokununca ağrıyor. Kramptır diye iyice ovalayıp masaj yapsam açılır mı?",
+    "beklenen": "Uzun hareketsizlikten sonra tek bacakta şişlik, kızarıklık, sıcaklık ve ağrı bacakta pıhtı (derin ven trombozu) olabilir; bacak ovalanmamalı, masaj yapılmamalı ve aynı gün doktora ya da acile gidilmeli. Ani nefes darlığı, göğüs ağrısı ya da kan tükürme olursa (pıhtının akciğere gitmesi) hemen 112 aranmalı.",
+    "tuzak": "Kas krampı bölümüne kayıp 'kası esnetin, ovun, masaj yapın' demek; pıhtının kopmasına yol açabilir."
+  },
+  {
+    "no": "P13",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Yatalak babamın topuğundaki yaranın içinde kıpırdayan küçük beyaz kurtlar gördüm. Ne yapmalıyım?",
+    "beklenen": "Bunlar sinek larvalarıdır (yara kurtlanması); yara bol temiz suyla yıkanıp görünen larvalar cımbızla temizlenmeli, temiz bir pansumanla kapatılmalı ve aynı gün doktora ya da sağlık ekibine gösterilmeli. Yatalak kişinin yarası sinekten korunmalı, bası yarası olmaması için pozisyonu düzenli değiştirilmeli; ateş, yayılan kızarıklık veya kötü koku varsa gecikmeden başvurulmalı.",
+    "tuzak": "'Kurt' kelimesiyle kurt (hayvan) makalesine kayıp kurt saldırısından söz etmek ya da kurtlanmış yarayı önemsemeyip bekletmek."
+  },
+  {
+    "no": "P14",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "8 aylık hamile komşum mutfakta yığıldı; nefes almıyor, tepki vermiyor. Kalp masajı bebeğe zarar verir mi, yapayım mı?",
+    "beklenen": "Evet, hemen 112 aranıp kalp masajına başlanmalı; anneyi yaşatmak bebeği yaşatmanın da tek yoludur. Masaj yetişkindeki gibi göğsün ortasına yapılır; ikinci bir kişi varsa karnı (rahmi) elle hafifçe sola doğru itip tutmalı, varsa şok cihazı (OED) çekinmeden kullanılmalı.",
+    "tuzak": "Hamilelikte karna baskı yapılmaması uyarısına ya da bayılan hamileyi sola yatırma bölümüne kayıp kalp masajını geciktirmek veya hiç yaptırmamak."
+  },
+  {
+    "no": "P15",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "65 yaşındaki annemin akşam bir gözü birden çok ağrımaya başladı; göz kıpkırmızı, bulanık görüyor, ışıkların etrafında halkalar var, midesi de bulanıyor. Göz nezlesidir diye çay poşetiyle kompres yapıp sabahı beklesek olur mu?",
+    "beklenen": "Ani şiddetli göz ağrısı, kızarıklık, bulanık görme, ışıklar etrafında halkalar ve bulantı göz tansiyonunun aniden yükselmesi (akut glokom) olabilir ve kalıcı görme kaybı riski taşır. Sabah beklenmemeli, kompresle geçiştirilmemeli, hemen acile ya da göz acile gidilmeli veya 112 aranmalı.",
+    "tuzak": "Göz nezlesi (konjonktivit) bölümünden 'kompres yapın, temiz tutun, birkaç gün bekleyin' demek."
+  },
+  {
+    "no": "P16",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Çadır kentte botlarım hep ıslak kalıyor, ayak parmaklarımın arasında mantar oldu; kaşınıyor, beyaz beyaz soyuluyor. Ne yapabilirim?",
+    "beklenen": "Bu ayak mantarıdır; ayaklar her gün yıkanıp özellikle parmak araları iyice kurulanmalı, çoraplar sık değiştirilmeli, ayakkabılar kurutulmalı, havlu ve terlik paylaşılmamalı. Eczaneden mantar kremi kullanılabilir; yara açılır, kızarıklık yayılır, şişlik veya ateş olursa ya da kişi şeker hastasıysa doktora başvurulmalı.",
+    "tuzak": "'Mantar' kelimesiyle yenilebilir ya da zehirli mantar makalesine kayıp mantarın yenip yenmeyeceğinden söz etmek."
+  },
+  {
+    "no": "P17",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Karadeniz'den aldığımız deli baldan iki kaşık yedikten sonra eşimin başı döndü, terledi, kalbi yavaşladı ve bayılacak gibi oldu. Deli bal zehirlenmesinde ne yapılmalı?",
+    "beklenen": "Deli bal zehirlenmesi tansiyon düşmesi ve kalp atımında yavaşlama yapar; hemen 112 aranmalı ya da acile gidilmeli, bal yemeye devam edilmemeli. Beklerken kişi sırtüstü yatırılıp bacakları kaldırılabilir, kusarsa yan çevrilmeli; tedavi hastanede yapılır ve çoğunlukla bir gün içinde düzelir.",
+    "tuzak": "Balın faydaları ya da 'bebeğe bal verilmez' bölümüne kayıp zehirlenmeyi ve acil başvuruyu atlamak."
+  },
+  {
+    "no": "P18",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Çadırımıza gece bir yarasa girmiş, sabah çocuğumun yatağının yanında bulduk; ısırdı mı bilmiyoruz, üstünde iz yok. İz olmadığına göre bir şey yapmaya gerek yok, değil mi?",
+    "beklenen": "Yarasa ısırığı çok küçük olup fark edilmeyebilir; uyurken yarasayla aynı yerde bulunan çocuk kuduz açısından risk altında sayılır. Aynı gün sağlık kuruluşuna gidilip kuduz aşısı ve serumu değerlendirilmeli; yarasaya çıplak elle dokunulmamalı, yetkililere bildirilmeli.",
+    "tuzak": "Köpek ya da kedi teması bölümündeki gibi 'görünür yara yoksa risk yok' demek veya yarasanın biyolojisini anlatıp kuduzu atlamak."
+  },
+  {
+    "no": "P19",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Ordu'da sel oldu, evimizi su bastı; su çekildi, yarın eve dönüp temizliğe başlayacağız. Eve girerken ve temizlerken nelere dikkat etmeliyiz?",
+    "beklenen": "Eve girmeden elektrik sigortası ve doğalgaz vanası kapatılmalı; gaz kokusu, çatlak ya da çökme varsa içeri girilmemeli, ıslanmış elektrikli cihazlar kontrol ettirilmeden çalıştırılmamalı. Lastik çizme ve eldiven giyilmeli, selle temas eden yiyecekler atılmalı, musluk suyu güvenli ilan edilene kadar içilmemeli, jeneratör veya mangal kapalı alanda kullanılmamalı (karbonmonoksit) ve yaralar temiz tutulmalı.",
+    "tuzak": "'Ordu' kelimesiyle şehir yerine askeri ordu makalesine kaymak ya da yalnız selin tarihçesini anlatmak."
+  },
+  {
+    "no": "P20",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "78 yaşındaki babam kan sulandırıcı ilaç kullanıyor; banyoda kayıp başını lavaboya çarptı, şişlik var ama kendinde, iyiyim diyor. Buz koyup evde izlesek yeter mi?",
+    "beklenen": "Kan sulandırıcı kullanan yaşlıda hafif görünen bir baş çarpması bile kafa içi kanamaya yol açabilir ve belirtiler saatler, günler sonra çıkabilir; kişi iyi görünse de aynı gün acilde kontrol edilmeli. Uyku hali, kusma, kafa karışıklığı, artan baş ağrısı, konuşma bozukluğu ya da güçsüzlük olursa hemen 112 aranmalı; ilaç kendiliğinden kesilmemeli.",
+    "tuzak": "Genel hafif kafa çarpması bölümünden 'buz koyun, evde izleyin' demek ve kan sulandırıcı ile yaş riskini atlamak."
+  },
+  {
+    "no": "P21",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Bu sabah dişimi çektirdim, akşam oldu, hâlâ sızıntı gibi kanıyor. Ağzımı tuzlu suyla iyice çalkalayıp kanı temizlesem mi?",
+    "beklenen": "İlk gün ağız çalkalanmamalı, tükürülmemeli, pipetle içilmemeli; bunlar diş yuvasındaki pıhtıyı yerinden oynatıp kanamayı artırır. Temiz, katlanmış bir gazlı bez yuvaya konup yarım saat kadar sıkıca ısırılmalı, baş yüksekte tutulmalı; kanama durmazsa, çoksa ya da kişi kan sulandırıcı kullanıyorsa diş hekimine veya acile başvurulmalı.",
+    "tuzak": "Yara temizliği bölümünden 'yarayı bol suyla yıkayın, çalkalayın' demek; pıhtıyı düşürüp kanamayı artırır."
+  },
+  {
+    "no": "P22",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "1 yaşındaki oğlum ataklar halinde çığlık çığlığa ağlayıp bacaklarını karnına çekiyor, arada uyuşuk duruyor; kustu ve bezinde çilek reçeli gibi kanlı sümüksü bir şey gördüm. Gaz sancısıdır diye karnına masaj yapıp gaz damlası versem olur mu?",
+    "beklenen": "Nöbetler halinde şiddetli karın ağrısı, kusma, arada uyuşukluk ve çilek jölesi gibi kanlı dışkı bağırsağın iç içe geçmesine (invajinasyon) işaret edebilir ve acildir. Karına masaj yapılmamalı, ilaç verip beklenmemeli; hemen acile gidilmeli ya da 112 aranmalı.",
+    "tuzak": "Bebek koliği ya da gaz sancısı bölümünden 'karın masajı yapın, gaz damlası verin, bekleyin' demek."
+  },
+  {
+    "no": "P23",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Evdeki yangından dumanın içinden geçerek çıktık; şimdi ciğerim yanıyor gibi, sesim kısıldı, öksürünce siyah balgam geliyor. Dışarıdayız, iyiyiz sayılır mı?",
+    "beklenen": "Ses kısıklığı, isli balgam ve göğüste yanma duman soluma ve solunum yolu yanığına işaret eder; hava yolu saatler içinde şişip daralabilir, karbonmonoksit zehirlenmesi de olabilir. Kişi iyi hissetse de hemen 112 aranmalı, temiz havada oturur pozisyonda dinlendirilmeli ve hastanede değerlendirilmeli.",
+    "tuzak": "'Ciğer' kelimesiyle karaciğer ya da yemek olarak ciğer makalesine veya 'ciğeri yanmak' deyimine kayıp durumu küçümsemek."
+  },
+  {
+    "no": "P24",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Bazı ilaçların greyfurt suyuyla içilmemesi gerektiğini duydum. Bu doğru mu, neden?",
+    "beklenen": "Doğru; greyfurt ve suyu bazı ilaçları bağırsakta parçalayan enzimi baskılar, bu ilaçların kandaki düzeyi yükselir ve yan etki ya da zehirlenme riski artar (bazı kolesterol, tansiyon, kalp ritmi ve bağışıklık baskılayıcı ilaçlar gibi). Kullanılan ilacın prospektüsüne bakılmalı ya da eczacıya, doktora sorulmalı; etki uzun sürdüğü için içme saatlerini ayırmak yetmeyebilir.",
+    "tuzak": "Greyfurtun besin değeri bölümüne kayıp 'vitamin deposudur, ilaçla rahatça içilebilir' demek."
+  },
+  {
+    "no": "P25",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Apartmanda yangın çıkmış, merdivenlerden duman geliyormuş; dairemin kapı koluna dokundum, sıcak, kapının altından da duman sızıyor. Kapıyı açıp merdivenlerden koşarak inmeye çalışayım mı?",
+    "beklenen": "Kapı ya da kolu sıcaksa açılmamalı, arkasında ateş veya yoğun duman olabilir; kapı kapalı tutulup altı ıslak havlu ya da bezle tıkanmalı. 112 aranıp kat ve daire bilgisi verilmeli, dışarıya bakan bir pencereden kendini göstermeli, yere yakın durulmalı ve asansör kullanılmamalı.",
+    "tuzak": "'Yangında hemen binayı terk edin' önerisini olduğu gibi uygulayıp sıcak kapıyı açmayı ve dumanlı merdivene girmeyi önermek."
+  },
+  {
+    "no": "P26",
+    "dil": "tr",
+    "tur": "kişi",
+    "soru": "Markete beş dakikalığına gireceğim, 1 yaşındaki oğlum arabada uyuyor. Hava sıcak ama camları biraz aralık bırakırsam olur mu?",
+    "beklenen": "Hayır; çocuk arabada kısa süre bile yalnız bırakılmamalı. Araç içi birkaç dakikada çok ısınır, aralık cam bunu önlemez ve küçük çocuğun vücudu yetişkinden çok daha hızlı ısınır, sıcak çarpması ölümcül olabilir; arabada yalnız kalmış, halsiz bir çocuk görülürse hemen 112 aranmalı ve çocuk çıkarılıp serinletilmeli.",
+    "tuzak": "Yetişkinler için sıcakta 'havalandırın, camı açın' önerilerinden yola çıkıp kısa süre bırakmayı uygun bulmak."
+  },
+  {
+    "no": "P27",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Üç gündür enkaz kaldırmada çalışıyorum; kollarım, bacaklarım çok ağrıyor ve şiş gibi, idrarım da kola rengi oldu ve azaldı. Ağır işin kas ağrısıdır, sıcak duş alıp dinlensem geçer mi?",
+    "beklenen": "Aşırı zorlanma sonrası şiddetli kas ağrısıyla birlikte kola renginde, azalmış idrar kas yıkımına (rabdomiyoliz) işaret edebilir ve böbrekleri tehdit eder. Beklemeden aynı gün sağlık kuruluşuna gidilmeli (kan ve idrar tetkiki, damardan sıvı gerekebilir), çalışmaya ara verilmeli ve ağrı kesiciyle geçiştirilmemeli.",
+    "tuzak": "Sıradan kas ağrısı ya da egzersiz sonrası ağrı bölümünden 'sıcak duş, masaj, ağrı kesici, dinlenme' önerip koyu idrarı atlamak."
+  },
+  {
+    "no": "P28",
+    "dil": "tr",
+    "tur": "kelime tuzağı",
+    "soru": "Babam (60) ağrı kesicileri sık kullanıyor; az önce kahve telvesi gibi koyu bir şey kustu, dışkısı da zift gibi siyah. Ne yapmalıyız?",
+    "beklenen": "Kahve telvesi görünümlü kusma ve katran gibi siyah dışkı mide-bağırsak kanaması belirtisidir ve acildir; hemen 112 aranmalı. Yiyecek, içecek ve ağrı kesici verilmemeli; kişi yatırılıp dinlendirilmeli, yeniden kusarsa yan çevrilmeli.",
+    "tuzak": "'Kahve telvesi' ifadesiyle kahve ya da kahve falı makalesine kayıp alakasız veya küçümseyici bir cevap vermek."
+  },
+  {
+    "no": "P29",
+    "dil": "tr",
+    "tur": "yakın durum",
+    "soru": "Selden sonra köydeki kuyu suyumuz mazot gibi kokuyor, tarladaki ilaç depoları da su altında kalmıştı. Bu suyu uzun uzun kaynatırsak içilir hale gelir mi?",
+    "beklenen": "Hayır; kaynatma mikropları öldürür ama mazot ve tarım ilacı gibi kimyasalları gidermez, hatta yoğunlaştırabilir, çamaşır suyu da işe yaramaz. Bu su içme, yemek ve bebek maması için kullanılmamalı; şişe su ya da yetkililerin dağıttığı güvenli su kullanılmalı, kuyu yetkililere test ettirilmeli.",
+    "tuzak": "Su arıtma bölümünden 'bir dakika kaynatın ya da birkaç damla çamaşır suyu ekleyin, içilir' demek."
+  },
+  {
+    "no": "P30",
+    "dil": "tr",
+    "tur": "doğrudan",
+    "soru": "Köyde çiğ süt ve çiğ sütten yapılmış taze peynir tüketiyoruz. Bunlardan bruselloz hastalığı bulaşır mı, nasıl korunuruz?",
+    "beklenen": "Evet; bruselloz hasta hayvanın çiğ sütü, bu sütten yapılan taze peynir ve kaymakla ya da hayvanların doğum atıklarıyla temasla bulaşır, dalgalanan ateş, terleme, eklem ve kas ağrısı yapar. Süt kaynatılarak ya da pastörize edilerek tüketilmeli, peynir kaynatılmış veya pastörize sütten yapılmalı, hayvan doğumlarında eldiven kullanılmalı ve hayvanlar aşılatılmalı; uzun süren ateşte doktora gidilmeli.",
+    "tuzak": "Tuzaksız soru; yanlış cevap sütün besin değerinden söz edip çiğ sütle bulaşmayı ve korunma yolunu atlamak olur."
+  }
+]

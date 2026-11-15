@@ -4,7 +4,9 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -33,49 +35,58 @@ func yanlisIstek(t *testing.T, yontem, govde string) (int, map[string]any) {
 	return w.Code, v
 }
 
+// §158 (K7): sayfa kaydı Defterim'in anahtarıyla şifreler — burada içerik rastgele baytlar, yardımcı yalnız biçimi denetler
+func testKutu(n int) string {
+	b := func(k int) string { return base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{'x'}, k)) }
+	return `{"iv":"` + b(12) + `","veri":"` + b(n) + `"}`
+}
+func testYanlis(n int) string {
+	return `{"kayit": {"dil": "tr", "sonuc": "cevap", "sifreli": ` + testKutu(n) + `, "sifreliOzet": ` + testKutu(40) + `}}`
+}
+
 func TestYanlisKaydet(t *testing.T) {
 	yanlisOrtami(t)
 	_ = os.MkdirAll(benimDir, 0o755)
-	kod, v := yanlisIstek(t, http.MethodPost, `{"kayit": {"soru": "Su kaç dakika kaynatılır?", "dil": "tr", "not": "bir dakika yazmalıydı",
-		"gosterilen": "10 dakika [1]", "parcalar": [{"kitap": "x", "metin": "1 dakika"}], "kimlik": "sahte", "surum": "0.0.1"}}`)
+	kod, v := yanlisIstek(t, http.MethodPost, strings.Replace(testYanlis(200), `"sonuc"`, `"kimlik": "sahte", "surum": "0.0.1", "sonuc"`, 1))
+	if kod != 400 {
+		t.Fatalf("sayfanın yazamayacağı açık alan (kimlik) reddedilmeli: %d %v", kod, v)
+	}
+	kod, v = yanlisIstek(t, http.MethodPost, testYanlis(200))
 	if kod != 200 || v["kimlik"] == nil {
 		t.Fatalf("kayıt olmadı: %d %v", kod, v)
-	}
-	if v["kimlik"] == "sahte" {
-		t.Fatal("sayfa kimlik yazabildi")
 	}
 	kayitlar := yanlisOku()
 	if len(kayitlar) != 1 {
 		t.Fatalf("1 kayıt beklenirdi: %d", len(kayitlar))
 	}
 	k := kayitlar[0]
-	if k["surum"] != "9.9.9" || k["yardimci"] != surum || k["tarih"] == "" {
-		t.Fatalf("sürüm/tarih eksik ya da sayfadan geldi: %v", k)
-	}
-	if p, _ := k["parcalar"].([]any); len(p) != 1 {
-		t.Fatal("kaynak parçaları kaydolmadı")
+	if k["surum"] != "9.9.9" || k["yardimci"] != surum || k["tarih"] == "" || k["sifreli"] == nil {
+		t.Fatalf("sürüm/tarih/zarf eksik: %v", k)
 	}
 	// ikinci kayıt sona eklenir, ilki kalır
-	yanlisIstek(t, http.MethodPost, `{"kayit": {"soru": "Yılan soktu ne yapmalıyım?"}}`)
+	yanlisIstek(t, http.MethodPost, testYanlis(300))
 	if n := len(yanlisOku()); n != 2 {
 		t.Fatalf("2 kayıt beklenirdi: %d", n)
 	}
-	// liste özeti kaynak parçalarını taşımaz
+	// liste özeti tam zarfı taşımaz, şifreli özeti taşır (sayfa çözer)
 	kod, v = yanlisIstek(t, http.MethodGet, "")
 	ozet, _ := v["kayitlar"].([]any)
 	if kod != 200 || len(ozet) != 2 {
 		t.Fatalf("liste: %d %v", kod, v)
 	}
-	if _, var_ := ozet[0].(map[string]any)["parcalar"]; var_ {
-		t.Fatal("özet kaynak parçalarını taşımamalı")
+	o0 := ozet[0].(map[string]any)
+	if _, var_ := o0["sifreli"]; var_ {
+		t.Fatal("özet tam zarfı taşımamalı")
+	}
+	if _, var_ := o0["sifreliOzet"]; !var_ {
+		t.Fatal("özet şifreli kısa özeti taşımalı")
 	}
 	// silme: yalnız o kayıt gider
-	kimlik := ozet[0].(map[string]any)["kimlik"].(string)
+	kimlik := o0["kimlik"].(string)
 	if kod, _ := yanlisIstek(t, http.MethodPost, `{"sil": "`+kimlik+`"}`); kod != 200 {
 		t.Fatalf("silinemedi: %d", kod)
 	}
-	kalan := yanlisOku()
-	if len(kalan) != 1 || kalan[0]["soru"] != "Yılan soktu ne yapmalıyım?" {
+	if kalan := yanlisOku(); len(kalan) != 1 || kalan[0]["kimlik"] == kimlik {
 		t.Fatalf("yanlış kayıt silindi: %v", kalan)
 	}
 	if kod, _ := yanlisIstek(t, http.MethodPost, `{"sil": "yok"}`); kod != 404 {
@@ -83,21 +94,53 @@ func TestYanlisKaydet(t *testing.T) {
 	}
 }
 
+func TestYanlisEskiSifresiz(t *testing.T) {
+	// 0.38.0'a kadar yazılmış şifresiz kayıt okunur ve listelenir (sayfa defter açılınca şifreleyip yerine koyar)
+	yanlisOrtami(t)
+	_ = os.MkdirAll(benimDir, 0o755)
+	_ = os.WriteFile(yanlisYolu(), []byte(`{"kimlik":"eski","soru":"Su kaç dakika kaynatılır?","not":"bir dakika"}`+"\n"), 0o644)
+	kod, v := yanlisIstek(t, http.MethodGet, "")
+	ozet, _ := v["kayitlar"].([]any)
+	if kod != 200 || len(ozet) != 1 || ozet[0].(map[string]any)["soru"] != "Su kaç dakika kaynatılır?" {
+		t.Fatalf("eski kayıt okunmadı: %d %v", kod, v)
+	}
+	// sayfa taşır: şifreli hâlini ekler, eskisini siler — önceki sürüm kopyasında şifresiz soru kalmamalı (K7)
+	if kod, _ := yanlisIstek(t, http.MethodPost, testYanlis(200)); kod != 200 {
+		t.Fatalf("taşınan kayıt yazılamadı: %d", kod)
+	}
+	if kod, _ := yanlisIstek(t, http.MethodPost, `{"sil": "eski"}`); kod != 200 {
+		t.Fatalf("eski kayıt silinemedi: %d", kod)
+	}
+	for _, yol := range []string{yanlisYolu(), yanlisYolu() + ".onceki"} {
+		if b, err := os.ReadFile(yol); err == nil && strings.Contains(string(b), "kaynatılır") {
+			t.Fatalf("taşımadan sonra şifresiz soru kaldı: %s", filepath.Base(yol))
+		}
+	}
+}
+
 func TestYanlisGecersiz(t *testing.T) {
 	yanlisOrtami(t)
 	_ = os.MkdirAll(benimDir, 0o755)
+	gecerli := testYanlis(200)
 	for ad, govde := range map[string]string{
-		"soru yok":   `{"kayit": {"dil": "tr"}}`,
-		"boş soru":   `{"kayit": {"soru": "   "}}`,
-		"kayıt yok":  `{"soru": "x"}`,
-		"bozuk json": `{"kayit": `,
-		"uzun soru":  `{"kayit": {"soru": "` + strings.Repeat("a", 2001) + `"}}`,
+		"şifresiz (K7)":        `{"kayit": {"soru": "Annem nefes alamıyor", "dil": "tr"}}`,
+		"şifreli yanında soru": strings.Replace(gecerli, `"dil": "tr"`, `"dil": "tr", "soru": "Annem nefes alamıyor"`, 1),
+		"özet yok":             `{"kayit": {"dil": "tr", "sifreli": ` + testKutu(200) + `}}`,
+		"iv kısa":              strings.Replace(gecerli, base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{'x'}, 12)), "eHg=", 1),
+		"base64 değil":         strings.Replace(gecerli, base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{'x'}, 200)), "%%%", 1),
+		"sonuç uydurma":        strings.Replace(gecerli, `"sonuc": "cevap"`, `"sonuc": "harika"`, 1),
+		"kayıt yok":            `{"soru": "x"}`,
+		"bozuk json":           `{"kayit": `,
 	} {
 		if kod, _ := yanlisIstek(t, http.MethodPost, govde); kod != 400 {
 			t.Errorf("%s: 400 beklenirdi, %d", ad, kod)
 		}
 	}
-	if kod, _ := yanlisIstek(t, http.MethodPost, `{"kayit": {"soru": "x", "not": "`+strings.Repeat("b", yanlisKayitSiniri)+`"}}`); kod != 413 {
+	// şifresiz kayıt kendi gerekçesiyle reddedilir (açık alan kuralına bırakılmaz)
+	if _, v := yanlisIstek(t, http.MethodPost, `{"kayit": {"dil": "tr", "sonuc": "cevap"}}`); !strings.Contains(fmt.Sprint(v["hata"]), "şifreli olmalı") {
+		t.Errorf("şifresiz kayıt K7 gerekçesiyle reddedilmeli: %v", v)
+	}
+	if kod, _ := yanlisIstek(t, http.MethodPost, testYanlis(yanlisKayitSiniri)); kod != 413 {
 		t.Errorf("çok büyük kayıt 413 vermeli: %d", kod)
 	}
 	if n := len(yanlisOku()); n != 0 {
@@ -114,7 +157,7 @@ func TestYanlisDolu(t *testing.T) {
 	if err := os.WriteFile(yanlisYolu(), dolu, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	kod, _ := yanlisIstek(t, http.MethodPost, `{"kayit": {"soru": "`+strings.Repeat("y", 1500)+`"}}`)
+	kod, _ := yanlisIstek(t, http.MethodPost, testYanlis(1500))
 	if kod != http.StatusInsufficientStorage {
 		t.Fatalf("dolu dosya 507 vermeli: %d", kod)
 	}

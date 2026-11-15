@@ -34,6 +34,11 @@
     // torbası; ikisi yanlış bölümden). Güvenlik önce: kapalı. `okuma`: okuma kipinde (cevap yazılmaz, bölüm gösterilir)
     // aynı arama AÇIK — kaynak cümlesi F 46 → 48, G 42 → 44/75 (anlam modeliyle), kelimeyle F 16 → 18, G 27 → 28.
     kucukKitap: { sinir: 0, konu: 5, okuma: 5000 },
+    // 15.11 (§150) deney: sorunun konusu kendi dilindeki başlık önerisine de önek olsun mu ("Tıbbi: Ateş düşürme").
+    // Ölçülmedi → kapalı; ürün konuyu yalnız çeviride kullanır (konuluCevir). olcum/kopru/konu_uctan_olc.cjs açar.
+    konuBaslik: false,
+    // §150 deney 2: konu anlam sıralamasının sorgusuna da önek olsun mu (kendi dilinde ve köprüde). Ölçülmedi → kapalı.
+    konuSorgu: false,
     // 12.11 (§111): en iyi makalenin uyarı kutuları (Key action · NOTE · CAUTION) makale başına sınıra takılmadan en çok
     // bu kadar eklenir. Görülmüş F+G+H'de kaçan alıntıların 57'si makale sınırında kalmıştı ("Do not apply ice", "Do not
     // make the person vomit"); en iyi makaleden ≤2 kutu: alıntı 109 → 116/223. Görülmemiş I'de işe yarar cevap 4 → 6.
@@ -48,9 +53,20 @@
     // `makaleler`: yardımcı programın küçük kitap makale listesi (/api/makaleler); boşsa bekçi çalışmaz. 0: kapalı.
     konuBekci: { sinir: 500 },
     makaleler: '',
+    // 14.11 (§133): acil belirti kartı — soruda şu anda acil bir belirti varsa cevap yazılmaz, acil numara + kaynaklar
+    acilKart: true,
+    acilHakem: true,   // §133: kalıp bulamazsa sohbet modeline sorulur
+    // §135 şıklar: ilk iki aday bölümün anlam puanı farkı bundan küçükse Heybe sorar (0: kapalı). KAPALI (14.11): görülmemiş A'da
+    // (gerçek kütüphane) 30 sorunun 16'sında soruldu, 6'sı açık/bilgi sorusuydu; şıklar makale başlığı — çoğu durum değil konu
+    // ("Rigor mortis", "Mastit", tarihî depremler); taklit kullanıcı uymayanı da seçti. Kötü geçen 3 → 1 ama işe yarar 10 → 8:
+    // kazanç doğru bölümden değil susmaktan. Ölçüm için 0.03 (etiketli IFRC'de ayarlandı).
+    // 14.11 gece (§143) AÇILDI: şıklar artık bölüm adı + ayırt eden kelimeler (§142: insan 15'te 12); geri dönüş sayfada
+    secenek: { esik: 0.03 },
   };
 
   const PARCA_SAYISI = 6;       // modele giden paragraf sayısı
+  const SECENEK_EN_COK = 4;     // §135 şıklar: en çok kaç bölüm sunulur
+  const ANLAM_AYRIMI = /\((anlam ayrımı|disambiguation|rozcestník)\)\s*$/iu;
   const PARCA_UZUNLUK = 900;    // her paragraf en çok bu kadar harf
   const MAKALE_BASINA = 3;      // bir makaleden en çok kaç paragraf
   const KARDES_BAKIS = 12;      // kişi kuralı (§109): kardeş makale için sıralamanın ilk kaç paragrafına bakılır
@@ -457,6 +473,52 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
     return yanit.content.trim();
   }
 
+  // ---- 15.11 (Özet §149–§150) sorunun konusu (Ercan: "kullanıcı sorusu hangi konu ile ilgili başlık atsın"; "bir insana da
+  //      sorsan mesleğine göre algılar"). Kullanıcı isterse soruyu sorarken bir konu seçer; soru başka dile çevrilirken konu
+  //      önek olur ("Tıbbi: Ateş düşürme" → "Medical: Fever reduction"), önekten sonrası alınır. Kodu görmeyen bir yazarın iki
+  //      anlamlı 40 kısa sorusunda (konu_baslik_1511) doğru anlam 14 → 28, konusuz çeviride bir çiftin ikisi birden hiç doğru
+  //      olamıyordu (0 → 10/20). Konu yalnız ipucudur: acil kalıpları, arama ve cevabın denetimleri özgün soruyla kalır.
+  //      Karışma kapısı: konunun çevrilmiş adındaki bir kelime çeviride geçiyor ama konusuz çeviride yoksa konu soruya
+  //      olmayan bir durum katmıştır ("Kurt varsa ne yapmalıyım" + Yangın → "yangın var ve biri mahsur kaldıysa") →
+  //      konusuz çeviri kullanılır. Önek ayrılamazsa ya da soruda iki nokta varsa da konusuz (bugünkü yol).
+  //      Bilinen sınır (§149): "nöbet = vardiya" gibi güçlü önyargıyı konu yenemiyor; konu yanlış anlamı da seçebilir
+  //      ("Tulum" + Barınak → çadır) — kapı yalnız konunun kendi kelimesinin sızmasını görür. ----
+  const BOSLUKSUZ_YAZI = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Thai}\p{Script=Lao}\p{Script=Khmer}\p{Script=Myanmar}]/u;
+  // konu adının ayırt edici kelimeleri: 4 harf ve üstü ("and", "und", "ve" gibi bağlaçlar düşer); boşluksuz yazıda 2 ve üstü
+  const soruKonuKelime = (etiket) => (String(etiket || '').toLowerCase().match(/\p{L}[\p{L}\p{M}]*/gu) || [])
+    .filter((w) => w.length >= 4 || (BOSLUKSUZ_YAZI.test(w) && w.length >= 2));
+  // kelime başında eşleşir ("fire" → "fire", "fires"); boşluksuz yazıda alt dize
+  function soruKonuGecer(kelime, metin) {
+    const m = String(metin || '').toLowerCase();
+    if (BOSLUKSUZ_YAZI.test(kelime)) return m.includes(kelime);
+    return new RegExp(`(^|[^\\p{L}\\p{M}])${kelime.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'u').test(m);
+  }
+  // çevirmenin cevabından önek ile gövde: ilk dolu satır, ilk iki noktaya kadar (önek kısa olmalı)
+  function soruKonuAyir(ham, konu) {
+    const satir = ceviriAyikla(String(ham || ''));   // ilk dolu satır, "Translation:" öneki ve tırnaklar atılmış
+    const i = satir.search(/[:：]/);
+    if (i <= 0 || i > Math.max(40, String(konu || '').length * 3)) return null;
+    const govde = ceviriAyikla(satir.slice(i + 1));
+    return govde ? { etiket: satir.slice(0, i).trim(), govde } : null;
+  }
+  // konunun adı gövdeye sızdı mı: gövdede geçen ama konusuz çeviride geçmeyen konu kelimeleri
+  const soruKonuSizdi = (etiket, govde, yalin) => soruKonuKelime(etiket)
+    .filter((w) => soruKonuGecer(w, govde) && !soruKonuGecer(w, yalin));
+  // dönüş: { metin, konu, konuDustu? } — konuDustu: 'ayrilmadi' | 'karisti' (konusuz çeviri kullanıldı).
+  // ceviren: çeviri işlevi (ürün cevir; modelsiz diş sahte çevirmen verir)
+  async function konuluCevir(soru, konu, kaynak, hedef, uzunluk = 80, ceviren = cevir) {
+    const yalin = async () => ceviriAyikla(await ceviren(soru, kaynak, hedef, uzunluk));
+    const k = String(konu || '').trim();
+    if (!k) return { metin: await yalin(), konu: '' };
+    if (/[:：]/.test(soru)) return { metin: await yalin(), konu: k, konuDustu: 'ayrilmadi' };
+    const ayri = soruKonuAyir(await ceviren(`${k}: ${soru}`, kaynak, hedef, uzunluk + 16), k);
+    if (!ayri) return { metin: await yalin(), konu: k, konuDustu: 'ayrilmadi' };
+    // konusuz çeviri yalnız konunun bir kelimesi gövdede geçince istenir (çoğu soruda ek çeviri yok)
+    if (!soruKonuKelime(ayri.etiket).some((w) => soruKonuGecer(w, ayri.govde))) return { metin: ayri.govde, konu: k };
+    const y = await yalin();
+    return soruKonuSizdi(ayri.etiket, ayri.govde, y).length ? { metin: y, konu: k, konuDustu: 'karisti' } : { metin: ayri.govde, konu: k };
+  }
+
   // ---- Ö22 ikinci göz (07.11, Özet §45): cevap sorulan duruma mı ait? ----
   // Görülmemiş 30 soruda geçen 7 kötü cevabın 5'i başka durumun paragrafından (yılan sargısı köpeğe, Heimlich dumanlı
   // odaya), biri alakasız köprü cevabıydı (Ankara'nın havası → COVID yasağı). Aynı model, kısa bir hakem sorusuyla:
@@ -496,8 +558,23 @@ ANSWER: ${a}`;
     { ad: 'turnike', kod: 'turnike',   // sıkı bağ: yalnız durdurulamayan uzuv kanamasında ya da kopmada
       izin: { tr: /(?<!\p{L})(kan|kanı|kana|kanam\p{L}*|kanıyor\p{L}*|kanlı\p{L}*|kopm\p{L}*|kopa[nr]\p{L}*|kopu[kğ]\p{L}*|kopt\p{L}*|amput\p{L}*|uzuv\p{L}*|uzv\p{L}*)(?!\p{L})/u,
         en: /\b(bleed\w*|blood\w*|amputat\w*|sever\w*)/ },
-      tr: /turnike|(dakikada bir|dakika sonra|saatte bir)(\s+\p{L}+){0,3}\s+(gevşet|açıl|açın|aç)|şerit(\s+\p{L}+){0,4}\s+sık|boğma işlem|yara ile kalp arasın|kalp ile yara arasın/u,
-      en: /tourniquet|constricting band|between the (wound|bite) and the heart|loosen\w* (it )?every \d+/ },
+      tr: /turnike|şerit(\s+\p{L}+){0,4}\s+sık|boğma işlem|yara ile kalp arasın|kalp ile yara arasın/u,
+      en: /tourniquet|constricting band|between the (wound|bite) and the heart/ },
+    // 15.11 akşam (§153, Özet §152'nin açığı): "Kol koptu ne yapmalı" — soru kopmayı andığı için turnikeye izin vardı ve
+    // Vikipedi'nin "her yedi dakikada bir … gevşetilerek" cümlesi geçti. Bugünkü kılavuzlar (IFRC 2020, ERC 2021): takılan
+    // turnike sağlık görevlisi gelene kadar gevşetilmez. Aralıklı gevşetme izinden bağımsız kendi kuralı oldu (turnike
+    // kuralındaki eski hâli buraya taşındı). Sağlık görevlisinin gevşetmesini anlatan cümle hariç.
+    // 15.11 akşam (§153, Özet §152'nin açığı): "Kol koptu ne yapmalı" — soru kopmayı andığı için turnikeye izin vardı ve
+    // Vikipedi'nin "her yedi dakikada bir … gevşetilerek" cümlesi geçti. Bugünkü kılavuzlar (IFRC 2020, ERC 2021): takılan
+    // turnike sağlık görevlisi gelene kadar gevşetilmez. Aralıklı gevşetme izinden bağımsız kendi kuralı oldu (turnike
+    // kuralındaki eski hâli buraya taşındı). Fiilin yalnız olumlu biçimleri yazılı ("gevşetmeyin" girmez); bu yüzden kural
+    // olumsuz cümlelere de bakar ("saat başı gevşetmeyi unutmayın" olumsuz sayılıyordu). Sağlık görevlisinin işi hariç.
+    // hariç: gevşetmeyi sağlık ekibine bırakan cümle ("hastaneye ulaşamayacaksanız … gevşetin" hariç DEĞİL — §153 ikinci set)
+    { ad: 'takılan turnikeyi ara ara gevşetmek', kod: 'turnikeGevset', olumsuz: true,
+      haric: { tr: /(yalnız|sadece|ancak)\s+(\p{L}+\s+){0,2}(sağlık|doktor|hekim|hastane|ambulans)\p{L}*|(sağlık (görevli|personel|ekib|çalışan)|doktor|hekim|ambulans ekib|hastanede)\p{L}*\s+(\p{L}+\s+){0,3}(gevşet|aç|çöz|çıkar|karar)\p{L}*|(sağlık (görevli|personel|ekib)|ambulans|doktor)\p{L}*\s+(\p{L}+\s+){0,2}(gelene|ulaşana|devralana) kadar/u,
+        en: /(only|just) (\w+ ){0,2}(medical|doctors?|paramedics?|hospital|trained)|(medical (staff|personnel|professionals?|team)|paramedics?|doctors?|trained (staff|personnel)|emergency (services|personnel|staff))\b.{0,30}\b(loosen|release|remove|decide)|until (medical|emergency|trained|professional)/ },
+      tr: /(dakikada bir|dakika(da)? sonra|saatte bir|saat başı|ara ara|aralıklarla|belirli aralık\p{L}*|zaman zaman|arada bir|(?<!\p{L})her\s+[\p{L}\d–-]+\s+(dakika|saat)\p{L}*)([\s,(–-]+[\p{L}\d]+){0,6}[\s,()–-]+(gevşet(in|iniz|ip|ilip|erek|ilerek|ilmeli\p{L}*|meli\p{L}*|mek|meyi|mesi|ilir|ir|ilmesi|meniz|tikten|ilsin)|arala(yın|yınız|yıp|yarak|mak|mayı|nmalı\p{L}*|nır)|aç(ıp|ın|ınız|ılmalı\p{L}*|arak|mak|mayı|ılır|ılsın)|bırak(ıp|ın|ınız|arak|mak|mayı|ılmalı\p{L}*|ılır)|açık bırak\p{L}*|serbest bırak\p{L}*|(açıl|gevşetil|çözül|bırakıl)ması\p{L}*|gevşetme\s+(yapıl|yapın|gerek)\p{L}*|(açmak|açılmak|gevşetmek|çözmek|bırakmak)\s+gerek\p{L}*|çöz(ün|ünüz|üp|erek|ülmeli\p{L}*|mek|meyi|ülür)|(gevşetil|açıl|bırakıl|çözül|aralan)(ip|ıp|üp|arak|erek|ır|ir|ür|sın|sin|sün))(?!\p{L})|turnike\p{L}*(\s+\p{L}+){0,4}\s+(gevşet(in|iniz|ip|ilip|erek|ilerek|ilmeli\p{L}*|meli\p{L}*|mek|meyi|mesi|ilir|ir|ilmesi|meniz|tikten|ilsin)|arala(yın|yınız|yıp|yarak|mak|mayı|nmalı\p{L}*|nır)|aç(ıp|ın|ınız|ılmalı\p{L}*|arak|mak|mayı|ılır|ılsın)|bırak(ıp|ın|ınız|arak|mak|mayı|ılmalı\p{L}*|ılır)|açık bırak\p{L}*|serbest bırak\p{L}*|(açıl|gevşetil|çözül|bırakıl)ması\p{L}*|gevşetme\s+(yapıl|yapın|gerek)\p{L}*|(açmak|açılmak|gevşetmek|çözmek|bırakmak)\s+gerek\p{L}*|çöz(ün|ünüz|üp|erek|ülmeli\p{L}*|mek|meyi|ülür)|(gevşetil|açıl|bırakıl|çözül|aralan)(ip|ıp|üp|arak|erek|ır|ir|ür|sın|sin|sün))(?!\p{L})|(gevşet(in|iniz|ip|ilip|erek|ilerek|ilmeli\p{L}*|meli\p{L}*|mek|meyi|mesi|ilir|ir|ilmesi|meniz|tikten|ilsin)|arala(yın|yınız|yıp|yarak|mak|mayı|nmalı\p{L}*|nır)|aç(ıp|ın|ınız|ılmalı\p{L}*|arak|mak|mayı|ılır|ılsın)|bırak(ıp|ın|ınız|arak|mak|mayı|ılmalı\p{L}*|ılır)|açık bırak\p{L}*|serbest bırak\p{L}*|(açıl|gevşetil|çözül|bırakıl)ması\p{L}*|gevşetme\s+(yapıl|yapın|gerek)\p{L}*|(açmak|açılmak|gevşetmek|çözmek|bırakmak)\s+gerek\p{L}*|çöz(ün|ünüz|üp|erek|ülmeli\p{L}*|mek|meyi|ülür)|(gevşetil|açıl|bırakıl|çözül|aralan)(ip|ıp|üp|arak|erek|ır|ir|ür|sın|sin|sün))(?!\p{L})(\s+\p{L}+){0,3}\s+turnike\p{L}*|(gevşet(in|iniz|ip|ilip|erek|ilerek|ilmeli\p{L}*|meli\p{L}*|mek|meyi|mesi|ilir|ir|ilmesi|meniz|tikten|ilsin)|arala(yın|yınız|yıp|yarak|mak|mayı|nmalı\p{L}*|nır)|aç(ıp|ın|ınız|ılmalı\p{L}*|arak|mak|mayı|ılır|ılsın)|bırak(ıp|ın|ınız|arak|mak|mayı|ılmalı\p{L}*|ılır)|açık bırak\p{L}*|serbest bırak\p{L}*|(açıl|gevşetil|çözül|bırakıl)ması\p{L}*|gevşetme\s+(yapıl|yapın|gerek)\p{L}*|(açmak|açılmak|gevşetmek|çözmek|bırakmak)\s+gerek\p{L}*|çöz(ün|ünüz|üp|erek|ülmeli\p{L}*|mek|meyi|ülür)|(gevşetil|açıl|bırakıl|çözül|aralan)(ip|ıp|üp|arak|erek|ır|ir|ür|sın|sin|sün))(?!\p{L})(\s+\p{L}+){0,4}\s+(kan dolaşım|dolaşım|kan akış|kanın dolaş|dokulara kan|uzva kan)\p{L}*|(gevşet|aç)\p{L}*([\s,]+\p{L}+){0,5}[\s,]+(yeniden|tekrar)\s+sık\p{L}*|(kan dolaşım|dolaşım|kanın dolaş|dokular\p{L}*|kangren)\p{L}*(\s+\p{L}+){0,6}\s+(gevşet(in|iniz|ip|ilip|erek|ilerek|ilmeli\p{L}*|meli\p{L}*|mek|meyi|mesi|ilir|ir|ilmesi|meniz|tikten|ilsin)|arala(yın|yınız|yıp|yarak|mak|mayı|nmalı\p{L}*|nır)|aç(ıp|ın|ınız|ılmalı\p{L}*|arak|mak|mayı|ılır|ılsın)|bırak(ıp|ın|ınız|arak|mak|mayı|ılmalı\p{L}*|ılır)|açık bırak\p{L}*|serbest bırak\p{L}*|(açıl|gevşetil|çözül|bırakıl)ması\p{L}*|gevşetme\s+(yapıl|yapın|gerek)\p{L}*|(açmak|açılmak|gevşetmek|çözmek|bırakmak)\s+gerek\p{L}*|çöz(ün|ünüz|üp|erek|ülmeli\p{L}*|mek|meyi|ülür)|(gevşetil|açıl|bırakıl|çözül|aralan)(ip|ıp|üp|arak|erek|ır|ir|ür|sın|sin|sün))(?!\p{L})/u,
+      en: /loosen\w*( it| the \w+)? every \d+|(periodically|every few minutes|every \d+( ?(to|-|–) ?\d+)? ?(minutes|min|mins|hours?)|every (hour|half hour)|once (an|every|a) (hour|half hour)|hourly|from time to time|at intervals)([\s,]+\w+){0,6}[\s,]+(loosen|release|relax|undo|open|untie)\w*|(loosen|release|relax|undo)\w*(\s+\w+){0,6}\s+(periodically|every few minutes|every \d+( ?(to|-|–) ?\d+)? ?(minutes|min|mins|hours?)|every (hour|half hour)|once (an|every|a) (hour|half hour)|hourly|from time to time|at intervals)|(loosen|release|undo)(s|ing|ed)? (the |a |your )?tourniquet|(loosen|release|relax|undo|untie)(s|ing|ed)?\b.{0,40}(restore|allow|let|return|gets?|receive)\w*.{0,20}(blood|circulation)/ },
     { ad: 'karın baskısı', kod: 'karin',   // Heimlich: yalnız yutulan cisimle tıkanmada, bebekte hiç (bebekte sırta vurma + göğüs baskısı)
       izin: { tr: /boğaz\p{L}*|lokma\p{L}*|(?<!\p{L})yut(tu|muş|kun|an|ar)\p{L}*|nefes borus|soluk borus|yabancı cisim|tıkan\p{L}*|kaçtı|kaçan|kaçmış|takıldı|takılan/u,
         en: /chok\w*|airway|windpipe|throat|lodged|foreign (body|object)|swallow\w*|stuck/ },
@@ -537,10 +614,20 @@ ANSWER: ${a}`;
       en: /butter|toothpaste|\boil\b|grease|\bice\b|egg white|(pop|burst|break)\w* (the )?blisters?/ },
     { ad: 'yılan ısırığını kesmek, emmek ya da buzlamak', kod: 'yilan',
       soru: { tr: /yılan\p{L}*|engerek\p{L}*/u, en: /snake\w*|viper\w*|\badder/ },
-      tr: /(?<!\p{L})(em(erek|ip|ilmeli|ilir|mek|ilerek)|emme yöntem\p{L}*)(?!\p{L})|ağz\p{L}* ile (em|çek)|(yara|ısırı[kğ]|deri)\p{L}*(\s+\p{L}+){0,2}\s+kes\p{L}*|kesik at\p{L}*|çentik|(?<!\p{L})buz(?!\p{L})|(?<!\p{L})buz(la|lu|u|a)(?!\p{L})|soğuk (kompres|paket|uygula)\p{L}*/u,
+      // 15.11 akşam (§153): emme seti / pompası da emmektir (Outdoors'tan "Sawyer seti … zaman kazandırır" geçti, §152)
+      tr: /(?<!\p{L})(em(erek|ip|ilmeli|ilir|mek|ilerek|erseniz|ersen|ersek|dikten|ebilirsiniz|melisiniz|meli|elim|ebilir)|emilme\p{L}*|emme yöntem\p{L}*)(?!\p{L})|(emme|vakum|emici)\p{L}*\s+(\p{L}+\s+)?(set|pompa|alet|cihaz|kit|aparat|kab|kap|bardak|şırınga|şişe)\p{L}*|hacamat\p{L}*|zehir\s+pompa\p{L}*|zehi?r\p{L}*\s+(\p{L}+\s+)?(çekil|emil|çıkarıl)\p{L}*|vakum\p{L}*\s+(\p{L}+\s+){0,2}(çek|al|çıkar)\p{L}*|zehir\p{L}*\s+(çekme|emme|çıkarma)\s+(set|pompa|alet|cihaz|kit|aparat)\p{L}*|zehr\p{L}*\s+(\p{L}+\s+){0,2}(dışarı|emerek|çekerek|çek(in|ip))\p{L}*|sawyer|ekstraktör|extractor|aspivenin|ağz\p{L}* ile (em|çek)|(yara|ısırı[kğ]|deri)\p{L}*(\s+\p{L}+){0,2}\s+kes\p{L}*|kesik at\p{L}*|çentik|(?<!\p{L})buz(?!\p{L})|(?<!\p{L})buz(la|lu|u|a)(?!\p{L})|soğuk (kompres|paket|uygula)\p{L}*/u,
       // 09.11 (F10, 0.19.0 ölçümü, görülmüş, §86): model kaynağın "cold compress should not be applied"ını "Apply a cold
       // compress" yazdı, Türkçesi geçti (tehlikeli) — soğuk kompres ve soğuk paket de buzlamaktır
-      en: /\bsuck\w*|incision|cut (into|across|open)|\bice\b|cold (compress|pack)|electric shock/ },
+      en: /\bsuck\w*|suction|extractor|venom pump|vacuum (pump|device)|sawyer|aspivenin|incision|cut (into|across|open)|\bice\b|cold (compress|pack)|electric shock/ },
+    // 15.11 akşam (§153): "kobra … genellikle antivenin gerektirmez" (Outdoors, §152) — panzehiri ya da hastaneyi gereksiz
+    // göstermek kişiyi yolda bekletir. Tehlike cümlenin olumsuzluğunda olduğu için bu kural olumsuz cümlelere de bakar
+    // (olumsuz: true); "yanlış / efsane" gibi uyaran cümleler ve kararı hekime bırakan cümleler yine hariç.
+    { ad: 'yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', kod: 'yilanPanzehir', olumsuz: true,
+      soru: { tr: /yılan\p{L}*|engerek\p{L}*/u, en: /snake\w*|viper\w*|\badder/ },
+      haric: { tr: /(doktor|hekim|sağlık (personeli|görevlisi|ekibi)|hastanede)\p{L}*(\s+\p{L}+){0,3}\s+(karar|değerlendir|belirle)\p{L}*/u,
+        en: /(doctor|physician|medical (staff|team)|clinician)s? (will |can |should )?(decide|determine|assess)/ },
+      tr: /(panzehir|antivenin|antivenom|antiserum|serum)\p{L}*([\s(),]+\p{L}+){0,4}[\s(),]+(gerek(mez|miyor|tirmez|meyebilir|li değil|siz)|gerek yok|gerek kalmaz|gerek kalmayabilir|gerek olmayabilir|gereksiz\p{L}*|şart değil|lazım değil|lüzum yok)|(hastane|doktor|hekim|sağlık kuruluş|acil servis)\p{L}*(\s+\p{L}+){0,4}\s+(gerek(mez|miyor|yok)|gerek yok|gerek kalmaz|gerek kalmayacak|gerek kalmayabilir|gerek olmayabilir|gerekmeyebilir|şart değil|lazım değil)|(bekle|dinlen|izle)\p{L}*\s+(\p{L}+\s+){0,2}yeter\p{L}*|gerek(mez|miyor|tirmez)(\s+\p{L}+){0,2}\s+(panzehir|antivenin|antivenom)\p{L}*/u,
+      en: /(antivenom|antivenin|anti-venom)s?( is| are)? (not|rarely|seldom|usually not|generally not|often not) (needed|required|necessary)|(don'?t|do not|doesn'?t|does not|rarely|seldom|usually|generally) (\w+ ){0,3}(need|require)\w* (\w+ ){0,2}(antivenom|antivenin|anti-venom|hospital|medical)|no need (to|for) (\w+ ){0,3}(hospital|antivenom|antivenin|doctor|medical)|(hospital|antivenom|antivenin|doctor)\w*( visits?)?( and (a |an )?\w+)? (is|are) (usually |generally |often |mostly )?(unnecessary|not (needed|necessary|required))|(doctor|hospital|antivenom)\w* (is|are)n'?t (necessary|needed|required)|(simply |just )?wait and (watch|see)( at home)?/ },
     { ad: 'nöbette ağza bir şey koymak ya da tutmak', kod: 'nobet',   // nöbette çevre güvenli yapılır, baş korunur, kişi tutulmaz
       soru: { tr: /nöbet\p{L}*|(?<!\p{L})sara(?!\p{L})|saralı|epilep\p{L}*|havale\p{L}*|kasıl\p{L}*/u, en: /seizure\w*|convuls\w*|epilep\w*|\bfits?\b/ },
       tr: /ağz\p{L}*(\s+\p{L}+){0,3}\s+(koy|sok|yerleştir|tıka)\p{L}*|dil\p{L}*\s+(\p{L}+\s+)?(tut|çek)\p{L}*|(kişiyi|hastayı|onu|kol\p{L}*|bacak\p{L}*)\s+(sıkıca|zorla)\s+tut\p{L}*|zaptet\p{L}*|soğan\p{L}*|kolonya\p{L}*/u,
@@ -589,18 +676,70 @@ ANSWER: ${a}`;
       sonraSerbest: true,
       tr: /(su|suyu|sıvı|ila[çc]\p{L}*|yiyece[kğ]\p{L}*|yemek|şeker\p{L}*|şerbet|çay|kahve|alkol\p{L}*)\s+(\p{L}+\s+)?(ver|içir|yedir)\p{L}*/u,
       en: /(giv|offer)\w* (\w+ ){0,2}(water|food|drinks?|fluids|liquids|anything|sugar)|\bdrink\w* (\w+ ){0,2}(water|liquids|fluids)|(water|drinks?|fluids|liquids)[\s,]+(\w+[\s,]+){0,3}(may|can|should) be (used|given|offered|drunk)/ },
+    // 14.11 (§129): görülmemiş P setinin yakın durum çiftleri (gerçek kütüphane; P artık görüldü). Kurallar yaygın ilk yardım
+    // bilgisinden (Kızılay / Kızılhaç / ERC), yalnız soru o durumu açıkça anlatınca bakılır. Dürüst ölçüsü sonraki görülmemiş set.
+    // P12: hareketsizlikten sonra tek bacakta şişlik + kızarıklık + ağrı = bacakta pıhtı olabilir; kompartman sendromu bölümünden
+    // "ısıtmak gevşetir" geçti. Pıhtılı bacak ovulmaz, ısıtılmaz; aynı gün doktor.
+    { ad: 'hareketsizlikten sonra şişen bacağa masaj ya da ısı', kod: 'pihti',
+      soru: { tr: /^(?=[\s\S]*(baldır|bacak|bacağ)\p{L}*[\s\S]{0,80}(şiş|kızar)\p{L}*)(?=[\s\S]*(hareketsiz|kıpırda|yatıyor|yatıyorum|yatalak|yatağa bağlı|uzun (yol|uçuş|otobüs)|ameliyat|doğum(dan)? sonra|çadırda yat)\p{L}*)/u,
+        en: /^(?=[\s\S]*\b(calf|leg)\b[\s\S]{0,80}\b(swollen|swelling|red)\w*)(?=[\s\S]*\b(immobil\w*|bed ?rest|bedridden|lying (still|in bed)|long (flight|drive|trip|journey)|after (an )?(operation|surgery|childbirth|giving birth)|not moving)\b)/ },
+      tr: /masaj\p{L}*|ovala\p{L}*|(?<!\p{L})ov(un|ma|arak|uştur)\p{L}*|ısıt\p{L}*|ısı (uygula|ver)\p{L}*|sıcak (uygula|kompres|su torba|havlu|tut)\p{L}*|esnet\p{L}*/u,
+      en: /massag\w*|\brub\w*|\bheat\w*|\bwarm\w* (\w+ ){0,2}(leg|calf|area|compress)|heating pad|hot (pack|compress|water bottle)|\bstretch\w*/ },
+    // P15: akut glokom (ani şiddetli göz ağrısı, kızarıklık, ışık çevresinde halka, bulantı) — göz nezlesi bölümünden "çay poşeti
+    // kompresi geçici rahatlatabilir" geçti, sabahı beklememek söylenmedi. Saatler içinde kalıcı görme kaybı: hemen acil.
+    { ad: 'ani şiddetli göz ağrısını kompresle geçiştirmek ya da sabahı beklemek', kod: 'glokom',
+      // ağrı GÖZDE (göz … ağrı yakın): "baş ağrısı … gözlerim bulanık" (G08, gebelikte) bu kural değil
+      soru: { tr: /^(?=[\s\S]*göz\p{L}*[^.?!]{0,40}(ağrı|ağrıy|sızl)\p{L}*)(?=[\s\S]*(hale|halka|halkalar|bulanık|bulan(dı|ıyor)|kus|ışıkların etrafında)\p{L}*)/u,
+        en: /^(?=[\s\S]*(\beyes?\b[^.?!]{0,40}\b(pain\w*|hurts?|aching)\b|\b(pain|ache)\w* in (my|his|her|the|one) eyes?\b))(?=[\s\S]*\b(halos?|rings? around (the )?lights|blurr\w*|nause\w*|vomit\w*)\b)/ },
+      tr: /kompres\p{L}*|çay poşet\p{L}*|(sabah\p{L}*|yarın\p{L}*)[^.]{0,40}(bekle|kadar)\p{L}*|(evde )?bekle(yin|yebilir\p{L}*|mek yeter\p{L}*|yip gör\p{L}*)/u,
+      en: /compress\w*|tea ?bags?|wait\w* (until|till) (the )?(morning|tomorrow)|wait and see|warm (water|cloth|towel)/ },
+    // P21: diş çekiminden sonra aynı gün süren kanamaya "tuzlu suyla çalkalamak yardımcı olabilir" — pıhtı düşer, kanama artar.
+    // İlk gün çalkalanmaz, tükürülmez, pipet kullanılmaz; gazlı bez ısırılır. "24 saat sonra çalkalayın" serbest (sonraSerbest).
+    { ad: 'diş çekiminden sonra ilk gün ağzı çalkalamak, tükürmek ya da pipet', kod: 'dis',
+      soru: { tr: /^(?=[\s\S]*diş\p{L}*[\s\S]{0,40}(çek|çıkar)\p{L}*)(?=[\s\S]*kan\p{L}*)/u,
+        en: /^(?=[\s\S]*\b(tooth|teeth|wisdom)\b[\s\S]{0,40}\b(extract\w*|pulled|removed|out)\b|[\s\S]*\bextraction\b)(?=[\s\S]*\bbleed\w*)/ },
+      sonraSerbest: true,
+      tr: /çalkala\p{L}*|gargara\p{L}*|tükür\p{L}*|pipet\p{L}*|ağ[zı]\p{L}*\s+(\p{L}+\s+){0,2}(yıka|temizle)\p{L}*/u,
+      en: /\brins\w*|mouthwash|gargl\w*|\bspit\w*|\bstraws?\b|\bswish\w*/ },
+    // P25 (hafif kardeş): yangında kolu sıcak kapı + kapının altından duman → yangın kapısı makalesinden "en hızlı tahliye";
+    // kapıyı açmamak, altını tıkamak, 112 yok. Sıcak kapının arkasında ateş ya da yoğun duman olabilir.
+    { ad: 'yangında kolu sıcak kapıyı açmak ya da dumanlı merdivenden kaçmak', kod: 'sicakkapi',
+      soru: { tr: /^(?=[\s\S]*(kapı|kapının|kolu|tokma)\p{L}*[\s\S]{0,40}(sıcak|ısın|kızgın|yanıyor)\p{L}*)(?=[\s\S]*(yangın|duman|alev)\p{L}*)/u,
+        en: /^(?=[\s\S]*\b(door|handle|knob)\w*[\s\S]{0,40}\b(hot|warm)\b)(?=[\s\S]*\b(fire|smoke|flames?)\b)/ },
+      tr: /kapı\p{L}*\s+(\p{L}+\s+){0,2}aç\p{L}*|merdiven\p{L}*[^.]{0,40}(in|koş|kaç|çık)\p{L}*|(binayı|daireyi|evi)\s+(hemen\s+)?(terk|boşalt)\p{L}*|tahliye\p{L}*|dışarı(ya)? (çık|kaç|koş)\p{L}*/u,
+      en: /open\w* (\w+ ){0,2}door|(run|go|escape|evacuat)\w* (\w+ ){0,3}(stairs|outside|out of the building)|leave the building|evacuat\w*/ },
+    // 15.11 akşam (§153): "Yangın çıkarsa nereye kaçmalıyım?" — Outdoors'tan "yangın bariyerlerine (yollar, tepe üstleri …)"
+    // geçti (§152). Yangın yokuş yukarı hızlanır, sırt ve tepe kaçış yeri değildir (kaçış: yokuş aşağı, yanmış alan, açıklık).
+    // Ercan 15.11: "eğer tepe kayılıksa mesela Norveç gibi bir yerde çözüm doğru ama Karadeniz Türkiye gibi bol ormanlık ise
+    // cevap hatalı" — bağlama göre doğru: yanacak bir şey olmayan (kayalık, ağaçsız) tepe kaçış yeri olabilir. Heybe yeri
+    // bilmez; koşulsuz "tepeye kaç" durur, koşulu cümlede söyleyen geçer (haric).
+    { ad: 'yangında yokuş yukarı, sırta ya da tepeye kaçmak', kod: 'yanginYukari',
+      haric: { tr: /kayalık\p{L}*|ağaçsız\p{L}*|bitkisiz\p{L}*|çıplak\p{L}*|bitki örtüsü\p{L}*\s+(olmayan|yok)|yanacak (bir şey|madde\p{L}*)\s+(olmayan|yok)|yanıcı (madde|bitki)\p{L}*\s+(olmayan|yok)|(?<!\p{L})(ateş|yangın|alev|duman|sıcak hava|ısı)(ler|lar)?(\s+\p{L}+){0,3}\s+(yokuş yukarı|yukarı|tepeye|sırta|yamaçtan yukarı)(\s+\p{L}+){0,5}\s+(ilerl|tırman|çıkar|yüksel|yayıl|hızlan|gid|koş|gel)(er|ar|ir|ır|ur|ür|iyor|ıyor|uyor|üyor|erken|arken|irken|ırken)?(?!\p{L})|en tehlikeli|ölüm tuzağı/u,
+        en: /\brocky\b|\bbare (rock|ground|soil)|treeless|no (fuel|vegetation)|without (fuel|vegetation)|above the tree ?line|nothing (left )?to burn|(fire|flames?|smoke|heat)\s+(\w+\s+){0,3}(travel|move|spread|run|climb|burn|rise|go|race)(s|es)?\b.{0,30}\b(uphill|upslope|up the|toward the ridge)|puts? you in (its|the fire'?s?) path|most dangerous|death trap/ },
+      soru: { tr: /yangın\p{L}*|(?<!\p{L})alev\p{L}*|(?<!\p{L})ateş\p{L}*(?!\s+(ed|aç)\p{L}*)|(?<!\p{L})duman\p{L}*|(?<!\p{L})yan(ıyor|ıyo|dı|ıp|maya|ma)\p{L}*/u, en: /\bfires?\b|wildfire|bushfire|forest fire|\bblaze|\bflames?\b|\bsmoke\b/ },
+      tr: /(tepe\p{L}*|zirve\p{L}*|sırt(a|lara|ın)(?!\p{L}))\s+(doğru|üst\p{L}*|başı\p{L}*)|(yamaç|yamac)\p{L}*\s+(\p{L}+\s+)?(yukarı|üst\p{L}*)|(tepe\p{L}*|zirve\p{L}*|sırt(a|lara|ı|ın)(?!\p{L})|yamaç\p{L}*|yamac\p{L}*)\s+(\p{L}+\s+){0,2}((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})|yokuş yukarı\s+(\p{L}+\s+)?((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})|yukarı(ya)?[\s,]+((doğru|yönde|yöne)\s+)?(\p{L}+\s+)?((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})|(tepe|zirve|sırt)\p{L}*([\s,]+\p{L}+){0,6}[\s,]+güvenli\s+(yer|nokta|bölge|alan|toplanma)\p{L}*|(en\s+)?üst\s+(nokta|kat)\p{L}*[\s,]+(\p{L}+[\s,]+){0,2}((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})|(çatı|teras)\p{L}*\s+(\p{L}+\s+)?((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})|yüksek (bir )?(yer|nokta|alan|tepe|zemin)\p{L}*(\s+\p{L}+){0,2}\s+((çık|kaç|koş|tırman|git|ilerle|yönel|uzaklaş|yürü|sığın|geç|var|ulaş)(ın|ınız|un|unuz|abilirsiniz|ebilirsiniz|malısınız|melisiniz|malı|meli|mak|mek|mayı|meyi|maya|meye|ıp|ip|up|arak|erek|ılmalı|ilmeli|ılması|ilmesi|ılır|ilir|tım|tik|tık|dım|dık|ın\.|)|gid(in|iniz|ip|erek|ilmeli))(?!\p{L})/u,
+      en: /ridge ?tops?|hill ?tops?|top of (the|a) (hill|ridge|mountain|slope)|\bupslope\b|(run|go|head|climb|move|get|escape|flee|walk|hike)\w* (\w+ ){0,3}(uphill|up the (hill|slope|ridge|mountain)|high ground|higher ground|the hill|a hill|the ridge|a ridge|the summit|the top|the highest (point|ground|spot|place)|the roof)|\bsummits?\b|(ridges?|ridge ?tops?|hill ?tops?|summits?)\b.{0,40}\bsafe/ },
   ];
+  // karşıtlık bağlacı: yan cümleler ayrı tartılır (§129, P15)
+  // §153: virgülle eklenen yasak da ayrı tartılır — "hemen yukarı çıkın, sakın aşağıda kalmayın" tümüyle uyarı sayılıyordu
+  // gerekçe yan cümlesi de ayrı ("…zirveye varın, orada alevler size ulaşmaz" — olumsuzluk gerekçede, önerinin değil)
+  const KARSIT = { tr: /,?\s+(?:ancak|ama|fakat|lakin|yine de|ne var ki)\s+|,\s+(?=(?:sakın|asla|orada|böylece|çünkü|zira)\s)/u, en: /,?\s+(?:but|however|although|though|yet)\s+|,\s+(?=(?:never|do not|don't|there|so|because)\s)/ };
   // "sonra / kendine gelince" — eylem o cümlede sonraki an için söyleniyor
   const SONRA = { tr: /sonra\p{L}*|geçince|geçtikten|bittikten|bitince|durunca|durduktan|kendine gel\p{L}*|ayıl\p{L}*|uyan\p{L}*/u,
     en: /\bafter\w*|\bonce\b|when (the shaking|they wake|they are awake)|regain\w*/ };
   // uyaran cümle ("kusturmak yanlıştır", "eskiden önerilirdi") eylemi önermez
   // "X yerine Y" X'i önermez (07.11 X10: "chest thrusts instead of abdominal thrusts")
-  const UYARI = { tr: /yanlış|zararlı|tehlikeli|önerilmez|sakınca\p{L}*|kaçın\p{L}*|yasak|asla|efsane|halk arasında|eskiden|(?<!\p{L})yerine(?!\p{L})/u,
-    en: /wrong|harmful|dangerous|myth|outdated|no longer|discourag\w*|contraindicat\w*|never|should be avoided|old advice|instead of|rather than/ };
+  // 15.11 akşam (§153): "ısırık yerine emme kabını yerleştirin" — "yerine" burada yer bildirir ("o yere"), "X yerine Y" değil
+  // §155: eski bilgiyi aktaran cümle de uyarıdır ("askerde … açın diyorlardı ama o bilgi eskidi", "geçmişte … tavsiye edilmiş")
+  const UYARI = { tr: /yanlış|zararlı|tehlikeli|önerilmez|sakınca\p{L}*|kaçın\p{L}*|yasak|asla|efsane|halk arasında|eskiden|geçmişte|eskidi|eskimiş|diyorlard\p{L}*|derlerdi|denirdi|söylenirdi|önerilirdi|tavsiye edilirdi|öğretilirdi|(?<!\p{L})(?<!(ısırık|ısırığın|ısırılan|yara|yaranın|sokma|sokulan|kesik|yanık|iğne|şişlik|şişen|ağrıyan|kanayan|kırık|incinen|burkulan)\s+)yerine(?!\p{L})/u,
+    en: /wrong|harmful|dangerous|myth|outdated|no longer|discourag\w*|contraindicat\w*|never|should be avoided|old advice|instead of|rather than|older (manuals|guidance|guidelines|advice|books|texts)|used to (recommend|advise|say|tell)|was once (recommended|advised)|in the past/ };   // §153: "Older manuals told you to release…"
   // olumsuz KOŞUL olumsuzluk sayılmaz ("ulaşılamıyorsa", "if the person cannot cough, …") — eylem bekçisi ve aktarma denetimi
   const KOSULSUZ = {
-    tr: (m) => m.replace(/\p{L}*(m[ıiuü]yors[ae]|m[ae]zs[ae]|m[ae]d[ıi]ys[ae])(?!\p{L})|(?<!\p{L})(yoksa|değilse)(?!\p{L})/gu, ' '),
-    en: (m) => m.replace(/\b(if|when|unless)\b[^,;.]*?\b(not|cannot|unable|no)\b[^,;.]*[,;]|\b(if|when)\b[^,;.]*?n't\b[^,;.]*[,;]/g, ' '),
+    // 15.11 akşam (§153): kişi ekli biçim de koşul — "Araçla yola çıkamıyorsanız … sırta çıkın" olumsuz sayılıp öneri geçiyordu
+    // §153 dördüncü set: acele bildiren olumsuz emir yasak değil ("sırta varana kadar durmayın" = devam edin).
+    // "beklemeyin" denendi, çıkarıldı: göz ağrısı kuralında tehlikeli eylem beklemenin kendisi ("sabahı beklemeyin" gerçek yasak)
+    tr: (m) => m.replace(/\p{L}*(m[ıiuü]yors[ae]|m[ae]zs[ae]|m[ae]d[ıi]ys[ae])(n[ıiuü]z|m|k|n)?(?!\p{L})|(?<!\p{L})(yoksa|değilse)(?!\p{L})|\p{L}+m[ae](mak|mek|ması|mesi)\s+için|(?<!\p{L})(durma(y[ıi]n|y[ıi]n[ıi]z|dan)|vazgeçme(yin|yiniz|den)|vazgecme(yin|yiniz|den)|duraksama(y[ıi]n|dan)|tereddüt etme(yin|den)|(vakit|zaman) kaybetme(yin|den))(?!\p{L})/gu, ' '),
+    en: (m) => m.replace(/\b(if|when|unless)\b[^,;.]*?\b(not|cannot|unable|no)\b[^,;.]*[,;]|\b(if|when)\b[^,;.]*?n't\b[^,;.]*[,;]|\b(don'?t|do not) (stop|hesitate)\b|without (stopping|delay)/g, ' '),
   };
   function eylemDenetle(soru, cevap, dil) {
     if (dil !== 'tr' && dil !== 'en') return [];
@@ -612,7 +751,7 @@ ANSWER: ${a}`;
     // olumsuz sayılıp atlandı, boğulana karın basısı geçti (W15). Koşul eki sayılmadan önce silinir; asıl uyarı ("vermeyin") kalır.
     const kosulsuz = KOSULSUZ[dil];
     const uyaran = (m) => OLUMSUZ_SAY[dil](kosulsuz(m)) > 0 || UYARI[dil].test(m);
-    const birimler = [];
+    const birimler = [], hamBirimler = [];   // ham: olumsuz cümleler de (olumsuz: true kurallar — tehlike olumsuzluğun kendisinde)
     let uyaranBaslik = false;
     for (const ham of String(cevap || '').replace(/\[[\d,\s]+\]/g, '').split(/\r\n|\r|\n/)) {
       const madde = /^\s*([*•\-–]|\d+[.)])\s+/.test(ham);
@@ -623,16 +762,260 @@ ANSWER: ${a}`;
       if (uyaranBaslik) continue;
       const iki = satir.indexOf(':');
       if (iki > 0 && iki < 80 && uyaran(satir.slice(0, iki))) continue;
-      for (const c of satir.split(/(?<=[.!?])\s+/)) if (c.trim() && !uyaran(c)) birimler.push(c);
+      // 14.11 (§129): karşıtlık bağlacından da bölünür — "çay poşeti kompresi rahatlatabilir, ancak nedeni ele almaz" (P15)
+      // cümlesindeki "almaz" bütün cümleyi uyarı saydırıyor, öneri geçiyordu. Her yan cümle ayrı tartılır.
+      // 15.11 akşam (§153): noktalı virgül de sınır — "Vadide kalmak tehlikelidir; … zirveye doğru çıkın" uyarı sayılıyordu
+      for (const c of satir.split(/(?<=[.!?;])\s+/)) for (const y of c.split(KARSIT[dil])) {
+        if (!y.trim()) continue;
+        if (!uyaran(y)) birimler.push(y);
+        if (!UYARI[dil].test(y)) hamBirimler.push(y);
+      }
     }
     const sorun = [];
+    // §153: soru Türkçe harfsiz yazılmışsa ("yilan isirdi") soru ve izin kalıpları katlanmış biçimle de bakılır
+    const harfsiz = dil === 'tr' && !TR_HARF.test(String(soru || '')), qk = harfsiz ? harfKatla(q) : q;
+    const soruda = (re) => re[dil].test(q) || (harfsiz && katlaDerin(re[dil]).test(qk));
     for (const k of EYLEM) {
-      if (k.soru && !k.soru[dil].test(q)) continue;
-      if (k.izin && k.izin[dil].test(q) && !(k.kisiYok && k.kisiYok.some((x) => kisi.has(x)))) continue;
-      const bulunan = birimler.find((b) => k[dil].test(b) && !(k.sonraSerbest && SONRA[dil].test(b)) && !(k.haric && k.haric[dil].test(b)));
+      if (k.soru && !soruda(k.soru)) continue;
+      if (k.izin && soruda(k.izin) && !(k.kisiYok && k.kisiYok.some((x) => kisi.has(x)))) continue;
+      // §153 dördüncü set: forum cevabı da Türkçe harfsiz olabilir ("ara ara gevsetme yapilmali") — cümlede Türkçe harf yoksa
+      // kural ve istisnası katlanmış biçimle bakar. Olumsuz cümlelere de bakan kuralda eşleşmeden SONRA gelen olumsuzluk
+      // ("Turnike açmak sizin iş değil") öneriyi düşürür; "… gevşetmeyi unutmayın" olumsuz sayılmaz.
+      const bulunan = (k.olumsuz ? hamBirimler : birimler).find((b) => {
+        const harfsizB = dil === 'tr' && !TR_HARF.test(b), bb = harfsizB ? harfKatla(b) : b;
+        const R = harfsizB ? katlaDerin(k[dil]) : k[dil];
+        const m = bb.match(R);
+        if (!m) return false;
+        if (k.sonraSerbest && SONRA[dil].test(b)) return false;
+        if (k.haric && (harfsizB ? katlaDerin(k.haric[dil]) : k.haric[dil]).test(bb)) return false;
+        const sonrasi = bb.slice(m.index + m[0].length).split(/\s+(?:ve|ama|ancak|fakat|and|but)\s+|[;)]/u)[0];
+        if (k.olumsuz && OLUMSUZ_SAY[dil](KOSULSUZ[dil](sonrasi.replace(/unutma\p{L}*|forget\w*/gu, ' '))) > 0) return false;
+        return true;
+      });
       if (bulunan) sorun.push(`eylem: ${k.ad}`);
     }
     return sorun;
+  }
+
+  // ---- 14.11 (§133) acil belirti kartı — Ercan: "Acil belirti kartı". Soruyu soranın KENDİ SÖZLERİNDE şu anda acil
+  //      yardım gerektiren bir belirti varsa Heybe cevap yazmaz: önce acil numarayı, sonra kaynakları gösterir. Neden:
+  //      kötü cevapların çoğu doğru kaynağın yanlış durumdan gelen sayfası (§132: su zehirlenmesine susuzluk bölümünden
+  //      "bol sıvı", baş çarpmasından günler sonra uykulu yaşlıya hafif darbe notundan "dinlensin") — sayfa seçimine
+  //      bağlı her bekçi aynı sayfanın içinden bakıyor. Kart sayfaya bakmaz, soruya bakar.
+  //      Belirtiler IFRC 2020 ilk yardım kılavuzunun "acil sağlık hizmetine başvur" (access EMS) ölçütlerinden; gebelik
+  //      tehlike işaretleri yaygın kılavuz bilgisinden. Kalıplar görülmüş cevaplardan değil, bu listeden yazıldı; hüküm
+  //      görülmemiş T setiyle (§133). Diller: tr ve en kendi sözüyle; öbür dillerde soru çevirmenle İngilizceye çevrilip bakılır.
+  //      Şu anki durum değilse kart çıkmaz: belirtinin olmadığı ("ateşi yok"), geçtiği ("geçti"), koşullu ("olursa"),
+  //      bilgi sorusu ("belirtileri nelerdir"), mecaz ("gülmekten nefesim kesildi"), neredeyse ("bayılacaktım").
+  const ACIL_BELIRTI = [
+    { kod: 'nefes',
+      tr: /(?<!\p{L})(nefes|solu[kğ])\p{L}*\s+(\p{L}+\s+)?(al(a|e)m[ıi]y\p{L}*|alam\p{L}*|almakta zorlan\p{L}*|almakta güçlük\p{L}*|dar(al|lı)\p{L}*|kesil\p{L}*|tıkan\p{L}*|yetmi\p{L}*)|(?<!\p{L})(nefes darlığ|solunum (güçlüğ|sıkıntı|durm|yetmez))\p{L}*|(?<!\p{L})(nefes almıyor|solumuyor)|(?<!\p{L})(dudak|dil|tırnak|ağz\p{L}* çevres|yüz)\p{L}*\s+(\p{L}+\s+)?(mor|mavi|lacivert|morar|morumsu)\p{L}*/u,
+      en: /\b(can'?t|cannot|unable to|struggling to|fighting to|trouble|difficulty|hard to|problems?)\s+(breath\w*|get(ting)? (his|her|my|their)? ?breath|catch(ing)? (his|her|my|their) breath)|short(ness)? of breath|gasping|(isn'?t|not|stopped) breathing|(lips?|face|tongue|mouth) (is |are |look(s|ing)? |went |gone |turn(ed|ing)? )?(blue|purple|grey|gray|bluish)|turning blue/ },
+    { kod: 'bilinc',
+      tr: /(?<!\p{L})bilin[cç]\p{L}*\s+(kapa|kayb|bulan|gid|yerinde değil|açık değil)\p{L}*|(?<!\p{L})kendine\s+(gelmi?y\p{L}*|gelem\p{L}*|gelmedi\p{L}*)|uyandır(am|amı)\p{L}*|(?<!\p{L})uyanmı?yor\p{L}*|(tepki|cevap|karşılık)\s+vermi?yor\p{L}*|(?<!\p{L})(kafası|aklı)\s+karış\p{L}*|(?<!\p{L})kafam\s+(çok\s+)?karışık\s+gibi|laf\p{L}*\s+(birbirine\s+)?karış\p{L}*|(?<!\p{L})(saçmal|sayıkl)\p{L}*|(kimseyi|bizi|beni|annesini|babasını)\s+tanımı?yor\p{L}*|(aşırı|çok|anormal|tuhaf)\s+(uykulu|uyuşuk|durgun)\p{L}*|(?<!\p{L})uyuşuk\p{L}*|(?<!\p{L})gözler\p{L}*\s+(kay|dön)\p{L}*|(?<!\p{L})baygın\p{L}*/u,
+      en: /unresponsive|unconscious|(won'?t|can'?t|couldn'?t|doesn'?t|isn'?t|not) (wake|waking|respond\w*)|confus\w*|disoriented|not making sense|talking nonsense|(very|unusually|extremely|really) (drowsy|sleepy|lethargic)|lethargic|floppy|doesn'?t recogni[sz]e/ },
+    { kod: 'gogus',
+      tr: /(?<!\p{L})göğ(üs|s)\p{L}*\s+(\p{L}+\s+){0,2}(ağrı|ağır|sıkış|bastır|baskı|bası|yanma|batma|batıyor|ezil|daral|sıkıl|otur|çök|basınç)\p{L}*|(?<!\p{L})göğ(üs|s)\p{L}*.{0,30}(fil|taş|mengene)(?!\p{L})|kalp krizi (geçir|ol)\p{L}*|(kol|çene|sırt)\p{L}*\s+(\p{L}+\s+)?(vuran|yayılan)\s+(bir\s+)?ağrı/u,
+      en: /chest (pain|pressure|tightness|is tight|feels tight|hurts|discomfort|heaviness|is heavy|feels heavy)|pain in (my|his|her|their) chest|(elephant|weight) (sitting )?on (my|his|her|their) chest|(having|had) a heart attack|pain (spreading|radiating) (to|into|down) (my|his|her|their) (left )?(arm|jaw)/ },
+    { kod: 'inme',
+      tr: /(?<!\p{L})(yüz(?!\s*üst)|ağz|ağız|dudağ|dudak)\p{L}*\s+(\p{L}+\s+){0,2}(kay|yamul|çarpıl|sark|eğril|düş)\p{L}*|(birden|aniden|bir anda|ansızın)\s+(\p{L}+\s+){0,3}(kol|bacak|el|ayak)\p{L}*\s+(\p{L}+\s+){0,3}(tutmu?yor|tutmaz|kaldıram|güçsüz|kuvvetsiz|hissizleş|düştü)\p{L}*|(?<!\p{L})(kol|bacak|el|ayak)\p{L}*\s+(\p{L}+\s+){0,3}(tutmu?yor|tutmaz|kaldıram|güçsüz|kuvvetsiz|hissizleş)\p{L}*.{0,40}(birden|aniden|bir anda|ansızın)|(?<!\p{L})(kol|bacak|el|ayak)\p{L}*\s+(birden|aniden|bir anda|ansızın)\s+(\p{L}+\s+)?(tutmu?yor|tutmaz|kaldıram|güçsüz|kuvvetsiz|hissizleş|düştü)\p{L}*|(konuşma|konuşması|dil|dili)\s+(\p{L}+\s+)?(bozul|anlaşılmı?yor|peltekleş|dolaş|ağırlaş)\p{L}*|felç\s+(oldu|geçir|kal|gibi)\p{L}*|(?<!\p{L})inme\s+(geçir|indi)\p{L}*/u,
+      en: /face (is |was |seems )?(droop\w*|lopsided|twisted)|droop\w* on one side|one side of (his|her|my|their|the) face|(arm|leg|hand) (is |went |feels |suddenly )?(weak|numb|limp|dead)\b|can'?t (lift|raise|move) (his|her|my|their) (arm|leg)|slurr\w*|(speech|words) (is |are )?(garbled|slurred|jumbled)|having a stroke/ },
+    { kod: 'nobet',
+      tr: /(?<!\p{L})nöbet\p{L}*\s+(geçir|başla|gel)\p{L}*|(?<!\p{L})havale\p{L}*\s+(geçir|geldi|oldu)\p{L}*|(?<!\p{L})sara\s+(kriz|nöbet)\p{L}*|ağz\p{L}*\s+(\p{L}+\s+)?köpük\p{L}*|(kasıl|katılaş|titre)\p{L}*.{0,40}(gözler\p{L}*\s+(kay|dön)|bilin|kendinde değil|tepki)/u,
+      en: /seizure|convuls\w*|having a fit|(jerking|shaking) (uncontrollably|all over)|foaming at the mouth/ },
+    { kod: 'kanama',
+      tr: /(?<!\p{L})(kan|kanı|kanama\p{L}*)\s+(\p{L}+\s+){0,3}(durmu?yor|dinmi?yor|kesilmi?yor|fışkır|boşal)\p{L}*|(?<!\p{L})kan\p{L}*\s+(\p{L}+\s+){0,2}(doldu|gölü|su gibi|musluk gibi)\p{L}*|(çok|bol|şiddetli|fazla|durmadan|sürekli)\s+(kan(ıyor|ama|dı|a|ı)\p{L}*)|(?<!\p{L})(kan|kanlı)\s+kus\p{L}*|kahve telvesi gibi\s+(\p{L}+\s+)?kus\p{L}*|(?<!\p{L})kus(tu|uyor|ma|muk|tuğ)\p{L}*.{0,30}(kan|kahve telvesi)(?!\p{L})|(dışkı|kaka|bez|tuvalet)\p{L}*.{0,30}(kan|kanlı|siyah|katran)(?!\p{L})|(?<!\p{L})kanlı\s+(dışkı|kaka|ishal)\p{L}*|(hamile|gebe)\p{L}*.{0,60}(kana|kan gel|lekelen)\p{L}*|kanama.{0,40}(hamile|gebe)\p{L}*/u,
+      en: /(bleeding|blood) (\w+ )?(won'?t|doesn'?t|will not|isn'?t) stop|(won'?t|doesn'?t) stop bleeding|bleeding (heavily|a lot|badly|profusely)|(heavy|severe|lots of) bleeding|spurting|soaked through|vomit(ing|ed|s)? (up )?blood|coughing up blood|blood in (his|her|my|their|the)? ?(stool|poo|poop|diaper|nappy|vomit)|black,? tarry|pregnant.{0,60}(bleed|blood)|(bleed|blood).{0,40}pregnan/ },
+    // 15.11 akşam (§153, Özet §152): "Kol koptu ne yapmalı" kartı açmadı — kopma yoktu, kanama kalıbı yalnız "kan durmuyor"u arıyor,
+    // hakem de "hayır" dedi. Uzuv kopması her zaman acildir (IFRC 2020: amputasyon → access EMS). Vücut parçası + kopma sözü
+    // ya da makineye kaptırma; eşyanın kolu, sapı (kapı kolu, oyuncak) yan cümlede geçiyorsa sayılmaz (haric).
+    // 15.11 akşam (§153, Özet §152): "Kol koptu ne yapmalı" kartı açmadı — kopma yoktu, kanama kalıbı yalnız "kan durmuyor"u arıyor,
+    // hakem de "hayır" dedi. Uzuv kopması her zaman acildir (IFRC 2020: amputasyon → access EMS). Vücut parçası (ya da "ucu")
+    // + kopma sözü (virgül aşılabilir: "parmağı kapıya sıkıştı, ucu kopmuş"), parçası yerde, makineye kaptırma. Türkçe harfsiz
+    // yazım da ("parmagim kopuyo"). Eşyanın kolu, sapı, kayışı ("kapının kolu", "saatimin kayışı koptu") sayılmaz (haric).
+    { kod: 'kopma',
+      tr: /(?<!\p{L})(parma[kğg](?!l[ıi]k)\p{L}*|el(i|im|in|ini|imi|leri|lerim|ler)?(?!\p{L})|kol(u|um|un|unu|umu|lar[ıi]\p{L}*)?(?!\p{L})|bacak(?!\p{L})|baca[ğg]\p{L}*|ayak(?!\p{L})|aya[ğg]\p{L}*|kulak(?!\p{L})|kula[ğg]\p{L}*|burun(?!\p{L})|burn\p{L}*|uzuv|uzv\p{L}*|bilek(?!\p{L})|bile[ğg]\p{L}*|dirse[kğg]\p{L}*|meme\p{L}*|omuz\p{L}*|omz\p{L}*|dudak(?!\p{L})|duda[ğg]\p{L}*|uc(u|unu)(?!\p{L}))[\s,()]+([\p{L}\d]+[\s,()]+){0,4}(kop(tu|muş|mu[sş]|uk|acak|ac|uyor|uyo|mak üzere|tı|ar gibi)\p{L}*|kopar(dı|mış|ıldı|ılmış)\p{L}*|kesilip\s+(düştü|ayrıldı|gitti|koptu)|kes(ti|ildi) gitti|tamamen kesil\p{L}*|ayr[ıi]l(dı|mış|mi[sş])\p{L}*|(elinde|elimde|içinde) kaldı|yerde duruyo\p{L}*|yerinde yok|yerinde değil\p{L}*|yok ol(muş|du)\p{L}*|ezil(ip|di|miş)\s+(git|ayrıl|kop)\p{L}*|(aşağısı|altı|ötesi)\s+yok|parça parça|(içinde|arasında) kal(dı|mış)\p{L}*|sallan[ıi]yo\p{L}*|sark[ıi]yo\p{L}*|(deri(yle|ye)|deri\s+parças[ıi]yla|deri\s+parcas[ıi]yla|derisiyle|etiyle|etle)\s+(\p{L}+\s+)?(ba[ğg]l[ıi]|as[ıi]l[ıi]|tutunuyo\p{L}*|duruyo\p{L}*|sallan\p{L}*))|(?<!\p{L})(parma[kğg](?!l[ıi]k)\p{L}*|el(i|im|in|ini|imi|leri|lerim|ler)?(?!\p{L})|kol(u|um|un|unu|umu|lar[ıi]\p{L}*)?(?!\p{L})|bacak(?!\p{L})|baca[ğg]\p{L}*|ayak(?!\p{L})|aya[ğg]\p{L}*|kulak(?!\p{L})|kula[ğg]\p{L}*|burun(?!\p{L})|burn\p{L}*|uzuv|uzv\p{L}*|bilek(?!\p{L})|bile[ğg]\p{L}*|dirse[kğg]\p{L}*|meme\p{L}*|omuz\p{L}*|omz\p{L}*|dudak(?!\p{L})|duda[ğg]\p{L}*|uc(u|unu)(?!\p{L}))\s+(ucu\s+|parças[ıi]\s+|parçalar[ıi]\s+)?(yerde|yere düş\p{L}*)(?!\p{L})|(?<!\p{L})kop(an|muş|uk)\s+(\p{L}+\s+)?(parma[kğg](?!l[ıi]k)\p{L}*|el(i|im|in|ini|imi|leri|lerim|ler)?(?!\p{L})|kol(u|um|un|unu|umu|lar[ıi]\p{L}*)?(?!\p{L})|bacak(?!\p{L})|baca[ğg]\p{L}*|ayak(?!\p{L})|aya[ğg]\p{L}*|kulak(?!\p{L})|kula[ğg]\p{L}*|burun(?!\p{L})|burn\p{L}*|uzuv|uzv\p{L}*|bilek(?!\p{L})|bile[ğg]\p{L}*|dirse[kğg]\p{L}*|meme\p{L}*|omuz\p{L}*|omz\p{L}*|dudak(?!\p{L})|duda[ğg]\p{L}*|uc(u|unu)(?!\p{L}))|(makine|testere|pres|kıyma|tırpan|balta|motor|matkap|freze|çark|dişli|parçalayıcı|biçerdöver|konveyör|hızar|kesici)\p{L}*\s+(\p{L}+\s+){0,2}([kg]aptır|gir(di|miş)|sıkış(tı|mış)|kopar)\p{L}*/u,
+      en: /\b(fingers?|thumbs?|toes?|hands?|arms?|legs?|foot|feet|ears?|nose)\b.{0,30}\b(cut off|chopped off|severed|ripped off|torn off|came off|amputated|sliced off|hanging (on )?by)|\b(severed|amputated|cut-off|torn-off|chopped-off)\b.{0,20}\b(fingers?|thumbs?|toes?|hands?|arms?|legs?|foot|feet|ears?)\b|(caught|stuck|pulled) in (a|the) (machine|saw|press|meat grinder|auger|conveyor|chipper)/,
+      haric: { tr: /(kapı|çanta|bavul|valiz|sandalye|koltu[kğ]|dola[pb]|çekmece|tencere|tava|kova|vites|gözlük|şemsiye|araba|bisiklet|heykel|robot|kukla|maket|masa|bardak|fincan|kupa|termos|sürahi|kulaklı[kğ])\p{L}*?(n[ıiuü]n|[ıiuü]n)\s+(\p{L}+\s+){0,3}(kol|kulp|sap|ayağ|ayak|bacağ|bacak|kulağ|kulak|el|kafa)\p{L}*|(ağac|ağaç|dal|fidan)\p{L}*\s+(\p{L}+\s+){0,2}kol\p{L}*|(gömle[kğ]|ceket|kazak|elbise|mont|tişört|hırka|kaban|palto|bluz|kıyafet)\p{L}*\s+(\p{L}+\s+){0,2}(kol|ask|yaka|cep|kulp)\p{L}*|(kabu[kğ]|tırna[kğ]|saç|kıl|kirpik|nasır|siğil)\p{L}*\s+(\p{L}+\s+)?((da|de)\s+)?(kop|ayrıl|düş)\p{L}*|oyunca[kğ]\p{L}*\s+(\p{L}+\s+)?(kol|bacak|bacağ|kafa|el|kulak|kulağ)\p{L}*|(kapı|çanta|bavul|valiz|sandalye|koltuk|dolap|çekmece|tencere|tava|kova|vites|bardak|fincan|kupa|termos|masa|şemsiye|araba|bisiklet)\s+(kol|kulp|sap|ayağ|bacağ|kulağ)\p{L}*|(kayış|ip|bağ|askı|düğme|fermuar|sap|kulp|tutamak|zincir|kordon|kablo|tel|kopça|toka)\p{L}*\s+(kop|kesil|ayrıl)\p{L}*/u,
+        en: /\b(doll|toy|chair|door|bag|suitcase|statue|robot|mug|cup|pot|pan)'?s? (arm|leg|handle|ear|head)|\b(strap|handle|button|zipper|string|cord|cable|chain)\b.{0,15}\b(came off|broke|snapped)/ } },
+    { kod: 'alerji',
+      tr: /(?<!\p{L})(dudak|dil|boğaz)\p{L}*\s+(\p{L}+\s+)?(şiş|kabar)\p{L}*|(?<!\p{L})boğaz\p{L}*\s+(\p{L}+\s+)?(kapan|tıkan|daral|sıkış)\p{L}*|(?<!\p{L})yutkun(am|amıyor|makta zorlan)\p{L}*|(vücud|her yan|her yer|tüm vücud|bütün vücud)\p{L}*\s+(\p{L}+\s+){0,3}(kabar|kaşın|şiş|kızar|kurdeşen)\p{L}*.{0,80}(göz\p{L}*\s+karar|ayakta duram|bayıl|baş\p{L}* dön|nefes\p{L}*\s+(daral|alam)|yutkun|dudak\p{L}*\s+şiş|dil\p{L}* şiş)\p{L}*|anafilaksi\p{L}*|alerjik şok\p{L}*|(arı|böcek|fıstık|fındık|ilaç|iğne|alerji)\p{L}*.{0,60}(yüz|göz)\p{L}*\s+(\p{L}+\s+)?(şiş|kabar)\p{L}*/u,
+      en: /(lips?|tongue|throat|mouth) (is |are |started |starting |getting |began )?(swell\w*|puff\w*)|swollen (lips?|tongue|throat)|throat (is )?(closing|tight\w*|swelling)|can'?t swallow|anaphyla\w*|allergic shock|(sting|peanut|nut|allerg\w*|bee|wasp|medicine).{0,60}(face|eyes?) (is |are |started )?swell/ },
+    { kod: 'zehir',
+      tr: /(çamaşır suyu|kezzap|tuz ruhu|deterjan|tablet|kapsül|lavabo açıcı|zehir|zehr|tarım ilac|böcek ilac|fare zehr|antifriz|metanol|sahte içki|kolonya|pil|mıknatıs)\p{L}*\s+(\p{L}+\s+){0,4}(içti|içmiş|yuttu|yutmuş|yedi|yemiş|ağzına aldı|çiğnedi|çiğnemiş)\p{L}*|(ilaç|hap|tablet)\p{L}*\s+(\p{L}+\s+){0,3}(yuttu|yutmuş)\p{L}*|(fazla|çok|bir kutu|bütün|avuç|birkaç kutu)\s+(\p{L}+\s+)?(ilaç|hap|tablet)\p{L}*\s+(\p{L}+\s+)?(içti|içmiş|almış|aldı|yuttu)\p{L}*|(bir kutu|kutusunun|kutunun|avuç dolusu|bütün|hepsini|tamamını)\s+(\p{L}+\s+){0,2}(ilaç|hap|tablet|şurub|şurup)\p{L}*.{0,30}(iç|yut|al(d|m))\p{L}*|(parasetamol|aspirin|ibuprofen|antidepresan|uyku ilac|tansiyon ilac|şeker ilac|kalp ilac|demir ilac|sakinleştirici|morfin|eroin|uyuşturucu)\p{L}*.{0,60}(hepsini|tamamını|kutusunu|kutusunun|bir kutu|yarısını|fazla(sını)?\s+(iç|al|yut)|çok fazla|yuttu|yutmuş|yuttuğunu)\p{L}*|(?<!\p{L})mantar\p{L}*.{0,80}(kus|ishal|bulantı)\p{L}*|karbon ?monoksit\p{L}*|(soba|şofben|kombi|mangal)\p{L}*.{0,80}(baş ağrı|bulantı|bayıl|uyku|sersem|baş dön)\p{L}*/u,
+      en: /(swallowed|drank|drunk|ate|eaten|ingested|chewed|got into)\s+(\w+\s+){0,6}(bleach|detergent|pods?|drain cleaner|caustic|pills|tablets|medicine|medication|poison|pesticide|antifreeze|methanol|battery|batteries|magnets?)|overdose\w*|carbon monoxide|mushroom.{0,80}(vomit|diarrh)/ },
+    { kod: 'karin',
+      tr: /(?<!\p{L})(karın|karn)\p{L}*\s+(\p{L}+\s+){0,2}(şiddetli|dayanılmaz|çok kötü|bıçak|kıvran|taş gibi|tahta gibi|sertleş)\p{L}*|(şiddetli|dayanılmaz|ani|bıçak gibi)\s+(bir\s+)?(karın|kasık)\s+ağrı\p{L}*|(karın|karn)\p{L}*.{0,30}kıvranıyor/u,
+      en: /(severe|sudden|sharp|unbearable|excruciating|stabbing|worst) (\w+ )?(abdominal|stomach|belly|tummy) (pain|ache)|(abdomen|stomach|belly|tummy) (is )?(rigid|hard as|board.like)|doubled over/ },
+    { kod: 'basagrisi',
+      tr: /(ani|aniden|şiddetli|dayanılmaz|hayatımın en kötü|hayatının en kötü|çok kötü|müthiş)\s+(bir\s+)?baş\s+ağrı\p{L}*|(?<!\p{L})baş\p{L}*\s+(çatlıyor|patlıyor|patlayacak)\p{L}*|(?<!\p{L})çift\s+gör\p{L}*|(görme\p{L}*|gözü|gözleri)\s+(aniden\s+)?(kayb|gitti|görmüyor)\p{L}*|aniden\s+göremi?yor\p{L}*/u,
+      en: /(worst|sudden|severe|thunderclap|excruciating) (\w+ )?headache|double vision|seeing double|(sudden(ly)?|lost) (\w+ )?(vision|sight)|suddenly can'?t see/ },
+    { kod: 'ates',
+      tr: /(?<!\p{L})ateş\p{L}*.{0,80}(döküntü|lekeler|ense|boyn|ışığa|uyandıram|uyuşuk|nöbet|havale|kafası karış)\p{L}*|(döküntü|lekeler)\p{L}*.{0,60}ateş\p{L}*|(?<!\p{L})(([1-9]|1[0-9]|bir|iki|üç|dört|beş|altı|yedi|on)\s+(günlük|haftalık)|(1|2|bir|iki)\s+aylık|yeni ?doğan|lohusa)\p{L}*.{0,80}ateş\p{L}*|(?<!\p{L})ateş\p{L}*\s+(\p{L}+\s+)?(4[0-2]|39[,.][5-9])(?![0-9])|bastırınca (geçmeyen|kaybolmayan|solmayan)|cam testi/u,
+      en: /fever.{0,80}(rash|spots|stiff neck|light hurts|sensitive to light|floppy|won'?t wake|confus|seizure|fit\b)|(rash|spots).{0,60}fever|(newborn|\b([1-9]|1[0-9])[- ](day|week)s?[- ]old|\b(one|two|1|2)[- ]months?[- ]old).{0,80}(fever|temperature)|(fever|temperature) of (4[0-2]|10[4-9])/ },
+    { kod: 'sok',
+      tr: /(?<!\p{L})(soğuk|nemli|yapış)\p{L}*\s+(soğuk\s+)?(ter|terle)\p{L}*|(soluk|bembeyaz|kül gibi|kireç gibi)\p{L}*.{0,30}(soğuk|terli|nabız)\p{L}*|nabz\p{L}*\s+(\p{L}+\s+)?(çok hızlı|zayıf|alınamı?yor|hissedilmi?yor)\p{L}*/u,
+      en: /cold,? (and )?clammy|clammy|pale,? (and )?(cold|sweaty)|weak,? (and )?rapid pulse|cold sweat/ },
+    { kod: 'yanik',
+      tr: /(büyük|geniş|derin|kocaman|kömürleş|beyazlaş)\p{L}*\s+(\p{L}+\s+)?yanık\p{L}*|(?<!\p{L})yanık\p{L}*.{0,40}(büyük|geniş|derin|kocaman|avuç\p{L}* (içinden|kadar)|her yer)|(kimyasal|kezzap|asit|kireç|lavabo açıcı)\p{L}*.{0,40}(yandı|yanık|döküldü|sıçradı)\p{L}*|(alev|ateş)\p{L}*\s+(\p{L}+\s+)?(aldı|sardı)\p{L}*|(alev|patlama|tüp|kızgın yağ|kaynar)\p{L}*.{0,40}(yüz|boğaz|ağz)\p{L}*\s+(\p{L}+\s+)?yan(dı|mış)\p{L}*/u,
+      en: /(large|deep|big|huge|severe|extensive) (\w+ )?burns?\b|burns? (to|on) (his|her|my|their|the) (face|mouth|throat|genitals|whole)|(chemical|acid|lye) (burn|splash\w*)|clothes (caught|on) fire/ },
+    { kod: 'elektrik',
+      tr: /(?<!\p{L})elektrik\p{L}*\s+(\p{L}+\s+)?(çarp|akım)\p{L}*|(priz|kablo|fiş|saç kurutma|elektrikli|sigorta|şalter|makine)\p{L}*.{0,80}(?<!\p{L})çarp(ıldı|ılmış|tı|mış)\p{L}*|(?<!\p{L})akım\p{L}*\s+kapıl\p{L}*|yıldırım\p{L}*\s+(\p{L}+\s+)?çarp\p{L}*/u,
+      en: /electric(al)? shock|electrocut\w*|struck by lightning|got (a )?shock from/ },
+    { kod: 'sicak',
+      tr: /(?<!\p{L})(sıcak|güneş)\p{L}*.{0,80}(bilin|kafası karış|saçmal|terlemi?yor|terlemesi (kesil|dur)|bayıl|kendine gel|nöbet|havale)\p{L}*|terleme\p{L}*\s+(durdu|kesildi)|sıcak çarpması geçir\p{L}*/u,
+      en: /heat ?stroke|stopped sweating|(heat|sun|hot).{0,80}(confus|collapsed|passed out|not making sense|seizure)/ },
+    { kod: 'soguk',
+      tr: /titreme\p{L}*\s+(durdu|kesildi)|(?<!\p{L})(soğuk|buz|kar|don|soğukta|ayaz)\p{L}*.{0,80}(bilin|kafası karış|saçmal|uyuşuk|kendine gel|uyandıram)\p{L}*|hipotermi\p{L}*/u,
+      en: /hypotherm\w*|stopped shivering|(cold|snow|ice|freezing).{0,80}(confus|slurr|not making sense|drowsy|won'?t wake)/ },
+    { kod: 'kafa',
+      tr: /(?<!\p{L})(baş|kafa)\p{L}*\s+(\p{L}+\s+){0,4}(çarp|vur|darbe)\p{L}*.{0,120}(kus(tu|uyor|ma)\p{L}*|uykulu|uyuşuk|sersem|kafası karış|bayıl|nöbet|havale|kulağ\p{L}*\s+(\p{L}+\s+)?(kan|sıvı)|burn\p{L}*\s+(\p{L}+\s+)?(berrak|su gibi|sıvı)|sendel|denge|bulanık gör|çift gör|tuhaf davran|saldırgan|durgun|oynamıyor)\p{L}*|(düş|yuvarlan)\p{L}*.{0,60}(baş|kafa)\p{L}*.{0,80}(kus|uykulu|sendel|kafası karış|bayıl|durgun)\p{L}*/u,
+      en: /(hit|bump\w*|bang\w*|knock\w*|struck|blow|fell|fall\w*)\b.{0,60}\bhead\b.{0,120}(vomit\w*|drowsy|sleepy|confus\w*|passed out|blacked out|seizure|clear fluid|blood (from|coming out of) (his|her|the|my) ear|unsteady|balance|slurr\w*|acting (strange|odd)|very quiet)/ },
+    { kod: 'kirik',
+      tr: /(?<!\p{L})kemi\p{L}*\s+(\p{L}+\s+)?(dışarı|deri\p{L}*\s+(dışına|delip|yırtıp)|görünüyor|çıktı)\p{L}*|(?<!\p{L})(kol|bacak|ayak|bilek|parmak|dirsek|diz|omuz|kalça|uyluk)\p{L}*\s+(\p{L}+\s+){0,3}(ters|garip|tuhaf|anormal|yamuk|eğri)\s+(\p{L}+\s+)?(dur|açı|şekil|yön|bük)\p{L}*|(?<!\p{L})bacağ\p{L}*\s+(\p{L}+\s+)?(dışa dönük|kısal)\p{L}*|(sırt|bel|boyun|omurga)\p{L}*.{0,60}(düş|çarp|kaza)\p{L}*.{0,60}(bacak\p{L}*\s+(\p{L}+\s+)?(hissetmi?y|kıpırdatam|oynatam)|uyuş)\p{L}*/u,
+      en: /bone (is )?(sticking out|poking out|visible|through the skin)|(arm|leg|ankle|wrist|finger|elbow|knee|shoulder|hip) .{0,30}(odd|weird|wrong|unnatural|strange) (angle|shape|position)|can'?t (feel|move) (his|her|my|their) legs/ },
+    { kod: 'bogulma',
+      tr: /(lokma|yemek|şeker|fındık|üzüm|bilye|oyuncak|kemik|parça)\p{L}*\s+(\p{L}+\s+){0,3}(kaç|takıl|tıkan)\p{L}*.{0,60}(nefes\p{L}*\s+(alam|almakta zorlan)|nefessiz|konuşam|öksürem|morar|ses çıkaram|ağlayam)\p{L}*|boğazına\s+(\p{L}+\s+)?(kaçtı|takıldı)\p{L}*.{0,60}(nefes\p{L}*\s+(alam|almakta zorlan)|nefessiz|konuşam|öksürem|morar|ses çıkaram|ağlayam)\p{L}*|(suda|denizde|havuzda|gölde|derede|küvette|kovada)\s+(\p{L}+\s+){0,3}(boğul|bat|çırpın)\p{L}*|(?<!\p{L})sudan\s+(\p{L}+\s+){0,2}(baygın|bilinçsiz|hareketsiz|nefessiz)\p{L}*|(ip|kordon|kablo|şal|atkı|eşarp|kemer|perde ipi|zincir)\p{L}*.{0,40}(boyn|boğaz)\p{L}*\s+(\p{L}+\s+)?(dolan|sarıl|sıkış|takıl|geçmiş)\p{L}*|(boyn|boğaz)\p{L}*.{0,20}(ip|kordon|kablo|şal|atkı)\p{L}*\s+(\p{L}+\s+)?(dolan|sarıl|sıkış)\p{L}*|asılı (buldu|halde)\p{L}*|kendini as\p{L}*/u,
+      en: /chok(ing|ed)\b.{0,60}(can'?t|cannot|not|unable)|(can'?t|cannot) (breathe|talk|cough|cry).{0,40}chok|(something|food|piece|grape|candy|toy) (\w+ ){0,3}stuck in (his|her|my|their) (throat|windpipe)|drowning|(pulled|dragged|rescued) (\w+ ){0,2}(out of|from) the (water|pool|sea|lake)/ },
+    { kod: 'gebelik',
+      tr: /(?<!\p{L})(hamile|gebe)\p{L}*.{0,100}(kanama|kan gel|lekelen|şiddetli baş ağrı|bulanık gör|görme\p{L}* bulanık|yüz\p{L}*\s+(\p{L}+\s+)?şiş|el\p{L}*\s+(\p{L}+\s+)?şiş|su\p{L}*\s+(geldi|gelmeye)|bebe\p{L}*\s+(\p{L}+\s+){0,2}(kıpırda|hareket|tekme)\p{L}*\s+(\p{L}+\s+){0,2}(azal|yok|durdu|hissedemi?y|hissetmi?y|hissetmed|kesildi)|(kıpırdamı?yor|kıpırdamadı|hareket etmi?yor|hareket etmedi|tekme (atmı?yor|atmadı)|tekme\p{L}*\s+(\p{L}+\s+)?hissetmed)|şiddetli karın|havale|nöbet)\p{L}*/u,
+      en: /pregnan\w*.{0,100}(bleed\w*|spotting|severe headache|blurr\w* vision|swollen (face|hands)|face (is )?swollen|water(s)? (broke|has broken)|baby (is )?(not moving|moving less|stopped moving)|seizure)/ },
+  ];
+  // şu anki durum değil: bilgi ya da hazırlık sorusu (bütün soru; "şimdi / şu an" geçiyorsa sayılmaz)
+  const ACIL_BILGI = { tr: /merak (ed|et)\p{L}*|(okumak|öğrenmek|bilmek) istiyorum|(sınav|ödev)\p{L}* için|sınava çalış\p{L}*|(sebebi|nedeni) ne(dir)?(?!\p{L})|belirti\p{L}*\s+(ne|neler|nedir|nelerdir)\b|belirtisi\s+(mi|mı)\b|nasıl\s+(anla|fark ed|ayırt|önlen|korun|hazırlan)\p{L}*|(önlemek|korunmak|hazırlanmak|hazırlıklı olmak)\s+için|(?<!\p{L})ne\s+demek(?!\p{L})/u,
+    en: /what are the (signs|symptoms)|how (do|can|would|should) (i|you|we|one) (tell|know|recogni[sz]e|spot|prevent|prepare)|how to (tell|recogni[sz]e|prevent|prepare)|what does .{0,30} mean/ };
+  const ACIL_SIMDI = { tr: /(?<!\p{L})(şu an|şu anda|şimdi|şuan|az önce|biraz önce|demin|hemen şimdi)(?!\p{L})/u, en: /\b(right now|now|just now|currently|at the moment)\b/ };
+  // yan cümle sınırı: noktalama ve bağlaçlar (karşıtlık, "ve")
+  const ACIL_SINIR = { tr: /[.!?;,:]+|\s+(?:ama|fakat|ancak|lakin|ve|ya da|veya|yine de)\s+/u, en: /[.!?;,:]+|\s+(?:but|however|although|though|and|or|yet)\s+/ };
+  // yan cümlede şu anki durum olmadığını söyleyen sözler (eşleşmenin ARDINDA): olumsuz, geçmiş, düzelmiş
+  const ACIL_DEGIL = { tr: /(?<!\p{L})(yok|yoktu|değil|olmadı|olmuyor|olmamış|hiç olmadı|sandım|sanmıştım|sandık|zannettim|zannetmiştim)(?!\p{L})/u,
+    en: /\b(no longer|not anymore)\b/ };
+  // geçmiş ve düzelmiş: cümlenin geri kalanında ("dün göğsüm ağrıdı ama geçti" — bağlaçtan sonra gelir)
+  const ACIL_GECTI = { tr: /(?<!\p{L})(geçti|geçmiş|geçmişti|düzeldi|iyileşti|iyileşmiş|kalmadı|toparlandı|kendine geldi|şimdi iyi\p{L}*)(?!\p{L})(?!\s*(mi|mı|mu|mü|sayılır|sayılmaz|diye)(?!\p{L}))/u,
+    en: /\b(went away|has gone|is gone|resolved|passed|is fine now|better now|fine now|came to)\b/ };
+  // eşleşen kelimenin olumsuz eki ("daralmıyor", "ağrımadı") belirtiyi siler; ama belirtinin kendisi olumsuz biçimse
+  // ("alamıyor", "kendine gelmiyor", "durmuyor", "tutmuyor") silmez — kalıplarda bu biçimler açıkça yazılı
+  const ACIL_EK = /\p{L}{2,}(m[ıiuü]y|m[ae]d[ıi]|m[ae]z(?!\p{L})|m[ae]m[ıi]ş)/u;
+  const ACIL_OLUMSUZ_BELIRTI = /(a|e)m[ıi]y|(a|e)m[ae]z(?!\p{L})|(a|e)m[ae]d[ıi]|^(gelmi|gelmedi|durmu|dinmi|kesilmi|vermi|tutmu|tutmaz|uyanmı|tanımı|terlemi|hissetmi|hissedilmi|solumu|almıyor|oynamı|görmü)/u;
+  // eşleşmenin ÖNÜNDE (yan cümlede): koşul, mecaz, neredeyse
+  const ACIL_ONCE = { tr: /(?<!\p{L})(gülmekten|sevinçten|meraktan|neredeyse|eğer)(?!\p{L})/u,
+    en: /\b(no|not|without|never|denies|neither|nor|if|in case|what if|when someone|laughing|almost|nearly)\b|n't\b/ };
+  // eşleşmenin yan cümlesinin tamamında: koşul eki ("daralırsa", "olursa", "geçirirse"), "-acaktım" (neredeyse), mecaz
+  const ACIL_KOSUL = { tr: /\p{L}(ı|i|u|ü|a|e)?rs[ae](?!\p{L})|\p{L}+(acak|ecek)(tım|tim|tık|tik)(?!\p{L})|(?<!\p{L})(durumunda|halinde|hâlinde|ihtimaline|olasılığına)(?!\p{L})|gülmekten/u,
+    en: /\b(if|in case|whenever|laughing so hard|took my breath away)\b/ };
+
+  // §133 ikinci tur (V'nin boş alarmları): yan cümlede geçmiş hikâye ("iki yıl önce kalp krizi geçirdim", "dedem gençliğinde")
+  // §153: her sayı sözü ("yirmi yıl önce") de geçmiş hikâye. -mıştı denendi, geri alındı: az önceki olay da böyle anlatılır
+  // ("dudakları morarmıştı", "ip boynuna sarılmıştı" — kayıtlı üç acil kartı susturdu)
+  const ACIL_GECMIS = { tr: /(?<!\p{L})((\d+|\p{L}+)\s+(yıl|sene|ay)\s+önce|geçen\s+(yıl|sene)|yıllar önce|gençliğinde|çocukluğunda|çocukken|eskiden|rahmetli|bir zamanlar)(?!\p{L})/u,
+    en: /\b((\d+|a|one|two|three|several|many) (years?|months?) ago|last year|when (i|he|she) was (young|a child)|years ago|late (grand)?(father|mother|grandpa|grandma))\b/ };
+  // eşleşen kelime geniş zamanda: varsayım ("fıstık yer de dudakları şişer") — şu anki durum değil
+  const ACIL_GENIS = /\p{L}{2,}(ar|er|ır|ir|ur|ür)(?!\p{L})/u;
+  const ACIL_GENIS_DEGIL = /(yor|dır|dir|dur|dür|tır|tir|tur|tür|lar|ler|ğer|aklar|akar)$/u;
+  function acilBelirtiT(soru, dil, T) {
+    if (dil !== 'tr' && dil !== 'en') return [];
+    const q = (dil === 'tr' ? kucuk(String(soru || '')) : String(soru || '').toLowerCase()).replace(/[’`]/g, "'").replace(/\s+/g, ' ');
+    if (T.ACIL_BILGI[dil].test(q) && !T.ACIL_SIMDI[dil].test(q)) return [];
+    if (dil === 'tr' && /(?<!\p{L})(yaralı|yaralanan)\s+(\p{L}+\s+)?yok|kimse yaralanmadı/u.test(q)) return [];   // §153: "şu an yaralı yok, sınav için soruyorum"
+    // yan cümlelerin sınırları
+    const sinirlar = [0];
+    for (const m of q.matchAll(new RegExp(T.ACIL_SINIR[dil].source, T.ACIL_SINIR[dil].flags + 'g'))) sinirlar.push(m.index, m.index + m[0].length);
+    sinirlar.push(q.length);
+    const yanCumle = (i) => {
+      let bas = 0, son = q.length;
+      for (let k = 0; k < sinirlar.length; k++) { if (sinirlar[k] <= i) bas = sinirlar[k]; else { son = sinirlar[k]; break; } }
+      return [bas, son];
+    };
+    const bulunan = [];
+    for (const b of T.ACIL_BELIRTI) {
+      const re = new RegExp(b[dil].source, b[dil].flags.includes('g') ? b[dil].flags : b[dil].flags + 'g');
+      for (const m of q.matchAll(re)) {
+        const bitis = m.index + m[0].length;
+        const [bas] = yanCumle(m.index), [, son] = yanCumle(Math.max(m.index, bitis - 1));
+        const once = q.slice(bas, m.index), sonra = q.slice(bitis, son), butun = q.slice(bas, son);
+        // eşleşmenin son kelimesi (kelimenin sonuna kadar) — "daralmıyor" kalıba bütünüyle girer, ek orada aranır
+        const kelime = (m[0].split(/\s+/).pop() + (q.slice(bitis).match(/^\p{L}*/u) || [''])[0]);
+        if (dil === 'tr' && T.ACIL_EK.test(kelime) && !T.ACIL_OLUMSUZ_BELIRTI.test(kelime)) continue;
+        if (dil === 'tr' && T.ACIL_GENIS.test(kelime) && !T.ACIL_GENIS_DEGIL.test(kelime)) continue;
+        if (T.ACIL_GECMIS[dil].test(butun)) continue;
+        const cumleSonu = (() => { const k = q.slice(bitis).search(/[.!?]/); return k < 0 ? q.length : bitis + k; })();
+        if (T.ACIL_DEGIL[dil].test(sonra) || T.ACIL_GECTI[dil].test(q.slice(bitis, cumleSonu)) || T.ACIL_ONCE[dil].test(once) || T.ACIL_KOSUL[dil].test(butun)) continue;
+        if (b.haric && b.haric[dil].test(butun)) continue;   // §153: belirtinin kendi istisnası (kopma: eşyanın kolu)
+        bulunan.push(b.kod);
+        break;
+      }
+    }
+    return bulunan;
+  }  // §153 (15.11 akşam, ikinci görülmemiş set): Türkçe harfsiz yazım — "parmagim kopuyo", "yilan isirdi", "yangin geliyo".
+  // Panikte telefonda böyle yazılır; kalıplar Türkçe harfle yazılı olduğu için hiç tutmuyordu. Soruda Türkçe harf yoksa
+  // soru da kalıplar da harfsiz biçime katlanıp (ı→i, ğ→g, ş→s, ç→c, ö→o, ü→u) bir kez daha bakılır. Katlanmış kalıp
+  // her çağrıda kaynağından kurulur (bozma denemesi kaynağı değiştirince katlanmış olan da değişsin).
+  const TR_HARF = /[çğıöşüÇĞİÖŞÜâîû]/;
+  const KATLA = { 'ı': 'i', 'İ': 'i', 'ğ': 'g', 'Ğ': 'g', 'ş': 's', 'Ş': 's', 'ç': 'c', 'Ç': 'c', 'ö': 'o', 'Ö': 'o', 'ü': 'u', 'Ü': 'u', 'â': 'a', 'î': 'i', 'û': 'u' };
+  const harfKatla = (s) => String(s || '').replace(/[ıİğĞşŞçÇöÖüÜâîû]/g, (h) => KATLA[h]);
+  function katlaDerin(x) {
+    if (x instanceof RegExp) return new RegExp(harfKatla(x.source), x.flags);
+    if (Array.isArray(x)) return x.map(katlaDerin);
+    if (x && typeof x === 'object') { const o = {}; for (const [k, v] of Object.entries(x)) o[k] = katlaDerin(v); return o; }
+    return x;
+  }
+  const acilTablo = () => ({ ACIL_BILGI, ACIL_SIMDI, ACIL_SINIR, ACIL_BELIRTI, ACIL_EK, ACIL_OLUMSUZ_BELIRTI, ACIL_GENIS, ACIL_GENIS_DEGIL,
+    ACIL_GECMIS, ACIL_DEGIL, ACIL_GECTI, ACIL_ONCE, ACIL_KOSUL });
+  function acilBelirti(soru, dil) {
+    // harfsiz soruda yalnız katlanmış biçim: istisnalar da katlanmalı ("kapinin kolu koptu" — asıl "kapı" istisnası tutmaz)
+    if (dil !== 'tr' || TR_HARF.test(String(soru || ''))) return acilBelirtiT(soru, dil, acilTablo());
+    return acilBelirtiT(harfKatla(kucuk(String(soru || ''))), dil, katlaDerin(acilTablo()));
+  }
+
+
+  // §133 aciliyet hakemi: kalıplar her yeni sette yeni bir kuyruk verdi (T 7/13, V 9/15) — sohbet modeline yalnız SORU
+  // gösterilir, "bu kişi şu anda acil yardım mı istiyor?" T+V'de (görülmemiş, ilk yazılan istem): acilin 19/28'i,
+  // boş alarm 2/32. Kalıp bulamazsa sorulur (~1 sn). Model yoksa (okuma kipi) yalnız kalıp.
+  const ACIL_HAKEM = (q) => `You are triaging a message sent to an offline first-aid helper. Does the person described need emergency medical help RIGHT NOW (call the emergency number or go to the emergency department immediately)?
+Answer NO if the message only asks for information or preparation, describes something in the past that is over, is hypothetical ("if ..."), uses a figure of speech, or describes a minor or expected problem.
+Reply with exactly one word: YES or NO.
+
+MESSAGE: ${q}`;
+  async function acilHakem(soru) {
+    if (!AYAR.acilHakem || !AYAR.sohbet) return false;
+    try {
+      const icerik = AYAR.kalip === 'sablon' ? await sablonla([{ role: 'user', content: ACIL_HAKEM(soru) }], 4)
+        : String((await (await getir(`${AYAR.sohbet}/completion`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: `<start_of_turn>user\n${ACIL_HAKEM(soru)}<end_of_turn>\n<start_of_turn>model\n`,
+            n_predict: 4, temperature: 0, cache_prompt: true, stop: ['<end_of_turn>'] }),
+        })).json()).content || '');
+      return /^\W*yes\b/i.test(icerik.trim());
+    } catch (e) { return false; }   // hakem yoksa yalnız kalıp
+  }
+  // sorunun dili tr/en değilse çevirmenle İngilizceye çevrilip kalıba bakılır; hakem çeviriyle (yoksa özgün soruyla) sorulur
+  async function acilBak(soru, dil, hakemli = true) {
+    if (!AYAR.acilKart) return [];
+    let metin = soru, md = dil;
+    if (dil !== 'tr' && dil !== 'en' && AYAR.cevirmen) { try { metin = await cevir(soru, dil, 'en', 160); md = 'en'; } catch (e) { /* özgün soru */ } }
+    const kalip = acilBelirti(metin, md);
+    if (kalip.length) return kalip;
+    // §135 denendi, geri alındı: köpeğin kusmasına hakem 112 kartı çıkardı. (1) İsteme "hayvansa hayır" eklemek T+V+E'de acili
+    // yakalamayı 31 → 22'ye düşürdü; (2) hayvan kelimesi geçince hakemi atlamak 10 gerçek acili susturacaktı ("atıyor", "pet
+    // şişe", "kuş gibi", atın tekmelediği çocuk — kurban insan). Bilinen kusur: evcil hayvan sorusunda ara sıra 112 kartı.
+    return hakemli && await acilHakem(metin) ? ['hakem'] : [];
+  }
+
+  // kart: cevap yazılmaz; cevap yolunun aramasıyla kaynaklar bulunur (kendi dilinde yoksa köprüyle) ve okuma gibi gösterilir
+  async function acilSonuc(soru, bildir, dil, secenek, belirti) {
+    const t0 = Date.now();
+    const { yedekDiller, cevap: _c, ...geri } = secenek;
+    const yalniz = { ...geri, acilBakildi: true, yalnizKaynak: true };
+    let r = await sor(soru, bildir, dil, yalniz);
+    if (!(r.parcalar || []).length && yedekDiller) {
+      const liste = yedekDiller === 'hepsi' ? await mevcutDiller(dil) : yedekDiller;
+      if (liste.length) { bildir('kopru', liste); r = await sor(soru, bildir, dil, { ...yalniz, kaynakDilleri: liste }); }
+    }
+    const parcalar = r.parcalar || [];
+    const kitapVar = dildekiler(await kitaplik(), dilAl(dil)).length > 0;
+    return { soru, dil, basliklar: r.basliklar || [], parcalar, cevap: '', eksik: [], durdur: false, bilgiYok: parcalar.length === 0,
+      okuma: true, anlam: true, acil: { belirti }, kitapVar, ...(r.gruplar ? { gruplar: r.gruplar } : {}),
+      toplam_sn: Math.round((Date.now() - t0) / 100) / 10 };
   }
 
   // ---- 09.11 (Özet §90): cevabın geldiği bölüm — cevaptaki kaynak numaralarından en çok atıf alan makaleler (eşitlikte
@@ -863,7 +1246,64 @@ ANSWER: ${a}`;
       .filter(([puan]) => puan > 0).sort((a, b) => b[0] - a[0]);
   }
 
-  async function kaynakBul(soru, basliklar, dil = 'tr', gruplar = null, sorguMetni = soru) {
+  // §135/§143 aday bölümler (kural tek yerde — cevap yolu ve okuma kipi): sıralamadaki ilk farklı makaleler, en iyi paragraf
+  // puanıyla; anlam ayrımı sayfası ve aynı ana başlık tek şık; her birinin ilk gerçek paragrafı ve AYIRT EDEN KELİMELERİ
+  // (§142 insan sınavı: Ercan bu kelimelerle doğru bölümü 15'te 12 seçti, makine 17'de 5) — modelsiz sayım
+  function adayBolumler(puanli, ham, dil) {
+    const ilkParagraf = new Map(), metinler = new Map();
+    // ilk gerçek paragraf: menü artığı ("• Sorular • Etiketler • Kullanıcılar") ve çok kısa satır atlanır
+    const menuMu = (m) => String(m || '').length < 40 || (String(m).match(/•/g) || []).length >= 3;
+    for (const p of ham) {
+      const k = p.kitap + '|' + p.ad;
+      if (!ilkParagraf.has(k) && !menuMu(p.metin)) ilkParagraf.set(k, p.metin);
+      if (!menuMu(p.metin)) metinler.set(k, (metinler.get(k) || '') + ' ' + p.metin);
+    }
+    const adaylar = [], gorulenM = new Set(), gorulenTaban = new Set();
+    for (const [puan, p] of puanli) {
+      const k = p.kitap + '|' + p.ad;
+      if (p.kaynak !== 'kiwix' || gorulenM.has(k)) continue;
+      gorulenM.add(k);
+      // anlam ayrımı sayfası şık olmaz; aynı ana başlık ("Ateş" · "Ateş (ocak)") tek şıktır — ilk geleni
+      if (ANLAM_AYRIMI.test(p.ad)) continue;
+      const taban = kucuk(String(p.ad).replace(/\s*\([^)]*\)\s*$/, '').trim());
+      if (gorulenTaban.has(taban)) continue;
+      gorulenTaban.add(taban);
+      adaylar.push({ ad: p.ad, kitap: p.kitap, yol: p.yol, dil: p.dil || dil, puan: Math.round(puan * 10000) / 10000, ilk: ilkParagraf.get(k) || '',
+        anahtar: k });
+      if (adaylar.length === SECENEK_EN_COK) break;
+    }
+    const kelimeler = ayirtKelimeler(adaylar.map((a) => metinler.get(a.anahtar) || a.ilk || ''), adaylar.map((a) => a.ad));
+    adaylar.forEach((a, i) => { a.kelimeler = kelimeler[i]; delete a.anahtar; });
+    return adaylar;
+  }
+  // ayırt eden kelimeler: her metinde geçip ÖBÜR adaylarda hiç geçmeyen tam kelimeler, sıklığa göre; boş kelimeler,
+  // rakamlı ve 4 harften kısa kelimeler atılır, aynı kökten (ilk 5 harf) tek kelime, başlıkta geçen kelime alınmaz
+  const AYIRT_BOS = new Set(('olarak için veya gibi daha kadar ancak fakat çünkü sonra önce olan olur olması olduğu olduğunu olabilir edilir edilen ' +
+    'yapılır yapılan bulunan genellikle bazı diğer kendi aynı arasında üzerinde içinde göre şekilde zaman sırasında halinde durumunda durumda ' +
+    'bunun bunlar şeklinde ayrıca birlikte değil olan oldu olarak ilgili yönelik nedeniyle kişinin kişiler tarafından üzere içerir bulunur ' +
+    'which there their about after before would could should these those other because being where while with from that this have will your ' +
+    'what when into than then them they were been also more most such only over some very just like make made does each even much many must ' +
+    'here same both well used using usually often might within without between through during under around another following however ' +
+    'include includes including known called first second three years people person patients patient cases case cause causes caused').split(' '));
+  function ayirtKelimeler(metinler, adlar = [], adet = 5) {
+    const kelime = (m) => (String(m).toLocaleLowerCase('tr').match(/[\p{L}]{4,}/gu) || []).filter((w) => !AYIRT_BOS.has(w));
+    const sayimlar = metinler.map((m) => { const c = new Map(); for (const w of kelime(m)) c.set(w, (c.get(w) || 0) + 1); return c; });
+    const kokler = sayimlar.map((c) => new Set([...c.keys()].map((w) => w.slice(0, 5))));
+    return sayimlar.map((c, i) => {
+      const baslik = new Set(kelime(adlar[i] || '').map((w) => w.slice(0, 5)));
+      const oburleri = new Set(kokler.flatMap((k, j) => (j === i ? [] : [...k])));
+      const secilen = [], gorulen = new Set();
+      for (const [w] of [...c].sort((x, y) => y[1] - x[1] || y[0].length - x[0].length)) {
+        const k = w.slice(0, 5);
+        if (oburleri.has(k) || gorulen.has(k) || baslik.has(k)) continue;
+        gorulen.add(k); secilen.push(w);
+        if (secilen.length === adet) break;
+      }
+      return secilen;
+    });
+  }
+
+  async function kaynakBul(soru, basliklar, dil = 'tr', gruplar = null, sorguMetni = soru, secilen = null) {
     // gruplar (dil köprüsü): [{ dil, soru, basliklar }] — her dil kendi kitaplarında kendi sorusuyla aranır.
     // Verilmezse tek grup: sorunun dili (ölçülmüş yol).
     const D = dilAl(dil);
@@ -879,19 +1319,29 @@ ANSWER: ${a}`;
     let sirali = await anlamSirala(ham, sorguMetni);
     const kardes = await kardesMakaleler(sirali.slice(0, KARDES_BAKIS).map((x) => x[1]), kisi, ham);
     if (kardes.length) sirali = await anlamSirala([...ham, ...kardes], sorguMetni);   // anlam vektörleri önbellekte: yalnız yeniler hesaplanır
-    const puanli = kisiSirala(sirali, kisi);
+    let puanli = kisiSirala(kisiParagraf(sirali, kisi, dil), kisi);
     if (AYAR.aramaGozlem) AYAR.aramaGozlem({ soru, dil, sorguMetni, puanli });   // yalnız ölçüm (olcum/kopru/arama_olc.cjs, olcum/sadakat/makale_olc.cjs)
+    // §135 şıklar: kullanıcı bir bölüm seçtiyse yalnız o makalenin paragrafları (makale bütünüyle adaydadır)
+    if (secilen) {
+      puanli = puanli.filter(([, p]) => p.kitap === secilen.kitap && p.ad === secilen.ad);
+      const sec = parcaSec(puanli, secilen.kitap + '|' + secilen.ad, PARCA_SAYISI);
+      sec.adaylar = [];
+      return sec;
+    }
+    const adayMakaleler = adayBolumler(puanli, ham, dil);
     // konu makalesi: en iyi paragrafın makalesi; küçük kitaptaysa ondan AYAR.kucukKitap.konu paragraf gelebilir
     // 13.11 (§120) denendi, geri alındı: öndeki makalelerin başlıklarını sohbet modeline seçtirmek ("kişinin durumu
     // hangisi?"). 150 etiketli soruda doğru makale en başta 114 → 104 (3–6 aday): 17 düzeltti, 27 bozdu.
     const kucukKitap = new Set((await kitaplik()).filter((k) => k.makaleSayisi > 0 && k.makaleSayisi < AYAR.kucukKitap.sinir).map((k) => k.ad));
     const konu = puanli.length && puanli[0][1].kaynak === 'kiwix' && kucukKitap.has(puanli[0][1].kitap)
       ? puanli[0][1].kitap + '|' + puanli[0][1].ad : null;
-    return parcaSec(puanli, konu);
+    const sec = parcaSec(puanli, konu);
+    sec.adaylar = adayMakaleler;
+    return sec;
   }
 
   // sıralanmış paragraflardan gösterilecekler: aynı metin bir kez, makale başına sınır (konu makalesine ayrı sınır), en çok PARCA_SAYISI
-  function parcaSec(puanli, konu = null) {
+  function parcaSec(puanli, konu = null, konuSinir = AYAR.kucukKitap.konu) {
     const secilen = [], sayac = {}, gorulenMetin = new Set();
     for (const [puan, p] of puanli) {
       // 06.11: aynı paragraf iki kitapta (ya da iki kez) varsa bir kez gelir — §27 "Bowline ×2", §31 "Ankara ×3"
@@ -899,7 +1349,7 @@ ANSWER: ${a}`;
       if (gorulenMetin.has(metinAnahtari)) continue;
       gorulenMetin.add(metinAnahtari);
       const anahtar = p.kitap + '|' + p.ad;
-      if ((sayac[anahtar] || 0) < (anahtar === konu ? AYAR.kucukKitap.konu : MAKALE_BASINA)) {
+      if ((sayac[anahtar] || 0) < (anahtar === konu ? konuSinir : MAKALE_BASINA)) {
         sayac[anahtar] = (sayac[anahtar] || 0) + 1;
         secilen.push({ makale: p.ad, bolum: p.bolum, metin: kes(p.metin, PARCA_UZUNLUK), puan: Math.round(puan * 1000) / 1000,
           yol: p.yol, kitap: p.kitap, kaynak: p.kaynak, tur: p.tur, ...(p.dil ? { dil: p.dil } : {}) });
@@ -942,9 +1392,17 @@ ANSWER: ${a}`;
     let sirali = await sirala(ham);
     const kardes = await kardesMakaleler(sirali.slice(0, KARDES_BAKIS).map((x) => x[1]), kisi, ham);
     if (kardes.length) sirali = await sirala([...ham, ...kardes]);
-    const puanli = kisiSirala(sirali, kisi);
+    // paragraf kişisi yalnız anlam puanında (kelime puanının ölçeği başka)
+    const puanli = kisiSirala(secenek.anlam ? kisiParagraf(sirali, kisi, dil) : sirali, kisi);
     if (AYAR.aramaGozlem) AYAR.aramaGozlem({ soru, dil, sorguMetni: soru, puanli, okuma: true });   // yalnız ölçüm
-    return parcaSec(puanli);
+    if (secenek.secilen) {   // §143: kullanıcının seçtiği bölüm — yalnız onun paragrafları
+      const s = parcaSec(puanli.filter(([, p]) => p.kitap === secenek.secilen.kitap && p.ad === secenek.secilen.ad), secenek.secilen.kitap + '|' + secenek.secilen.ad, PARCA_SAYISI);
+      s.adaylar = [];
+      return s;
+    }
+    const sec = parcaSec(puanli);
+    sec.adaylar = adayBolumler(puanli, ham, dil);   // §143: okuma kipinde de bölümler arasında seçim (modelsiz)
+    return sec;
   }
 
   async function oku(soru, bildir = () => {}, dil = 'tr', secenek = {}) {
@@ -952,8 +1410,9 @@ ANSWER: ${a}`;
     const kitapVar = dildekiler(await kitaplik(), dilAl(dil)).length > 0;
     bildir('okuma');
     const parcalar = await okumaKaynak(soru, dil, secenek);
-    return { soru, dil, basliklar: [], parcalar, cevap: '', eksik: [], durdur: false, bilgiYok: parcalar.length === 0, okuma: true,
-      anlam: !!secenek.anlam, kitapVar, toplam_sn: Math.round((Date.now() - t0) / 100) / 10 };
+    const belirti = await acilBak(soru, dil, false);   // §133: okuma kipinde de acil numara önce gösterilir (hakemsiz: model yok)
+    return { soru, dil, basliklar: [], parcalar, adaylar: parcalar.adaylar || [], cevap: '', eksik: [], durdur: false, bilgiYok: parcalar.length === 0, okuma: true,
+      anlam: !!secenek.anlam, kitapVar, ...(belirti.length ? { acil: { belirti } } : {}), toplam_sn: Math.round((Date.now() - t0) / 100) / 10 };
   }
 
   // ---- sayı denetçisi: cevaptaki her "sayı + birim" kaynakta aynen geçiyor mu? ----
@@ -1556,6 +2015,24 @@ ANSWER: ${a}`;
     }
     return ek;
   }
+  // ---- paragraf düzeyinde kişi (14.11.2026, Özet §129 — Planlama 8j-1 "bölüm içindeki kişi ayrımı", I14) ----
+  // Kişi kuralı makale BAŞLIĞINA bakıyor; IFRC'nin çoğu makalesi çocuğu ve yetişkini aynı makalede, ayrı paragraflarda
+  // anlatıyor. I14 (4 yaşında "çok sessiz" = bilinç değişikliği) yetişkin için yazılmış "hafif çarpmada dinlensin,
+  // izlensin" paragrafını aldı; çocuk paragrafı gelmedi. Sorunun kişisi açıkça tek ise paragraf METNİNDE o kişi geçiyorsa
+  // puanına AYAR.kisiParagraf eklenir, yalnız başka kişi geçiyorsa çıkarılır; kişisiz paragraf değişmez. 0 = kapalı.
+  // Yalnız bebek ve çocuk sorusunda (ölçü, 7 set 572 alıntı): kitap çocuk paragrafına "çocuk" der, yetişkinine "yetişkin"
+  // demez — yetişkin sorusunda çocuk paragrafını itmek doğru paragrafı da oynattı (F05, F07, M13 …: −10), çocukta +5.
+  function kisiParagraf(puanli, k, dil) {
+    const t = tekKisi(k), d = AYAR.kisiParagraf || 0;
+    if (!d || !['bebek', 'cocuk'].includes(t)) return puanli;
+    const ESLES = { bebek: ['bebek'], cocuk: ['cocuk'], yetiskin: ['yetiskin', 'yasli'] };
+    return puanli.map(([puan, p]) => {
+      const ks = kisiler(p.metin || '', p.dil || dil);
+      if (!ks || !ks.size) return [puan, p];
+      const uyar = ESLES[t].some((x) => ks.has(x)), baska = [...ks].some((x) => ['bebek', 'cocuk', 'yetiskin', 'yasli'].includes(x) && !ESLES[t].includes(x));
+      return [uyar ? puan + d : baska ? puan - d : puan, p];
+    }).sort((a, b) => b[0] - a[0]);
+  }
   // sıralanmış listede kişisi uymayanlar sona (sıraları korunur): başka kaynak kalmazsa yine gelirler
   function kisiSirala(puanli, k) {
     if (!tekKisi(k)) return puanli;
@@ -1711,17 +2188,19 @@ ANSWER: ${a}`;
     return satir.replace(/^(çeviri|translation|překlad)\s*:\s*/i, '').replace(/^["'“”„«»]+|["'“”„«»]+$/g, '').trim();
   }
 
-  async function koprulu(soru, D, dil, diller, bildir) {
-    // her kaynak dili için: soru o dile çevrilir, başlıklar o dilde önerilir (dil köprüsü, K17)
+  async function koprulu(soru, D, dil, diller, bildir, konu = '') {
+    // her kaynak dili için: soru o dile çevrilir, başlıklar o dilde önerilir (dil köprüsü, K17).
+    // 15.11 (§150): kullanıcı konu seçtiyse çevirmene önek olur (konuluCevir); çevirmen yoksa (sohbet modeliyle çeviri) konu kullanılmaz
     const gruplar = [];
     for (const kd of diller) {
       if (kd === dil) {
         gruplar.push({ dil, soru, basliklar: basliklariAyikla(await sohbet(D.baslik, soru, 60)) });
       } else {
-        const ceviri = ceviriAyikla(AYAR.cevirmen && DIL_ADI[kd] && DIL_ADI[dil]
-          ? await cevir(soru, dil, kd, 80)
-          : await sohbet(CEVIR[kd] || CEVIR.en, soru, 80)) || soru;
-        gruplar.push({ dil: kd, soru: ceviri, basliklar: basliklariAyikla(await sohbet(dilBilgi(kd).baslik, ceviri, 60)) });
+        const c = AYAR.cevirmen && DIL_ADI[kd] && DIL_ADI[dil] ? await konuluCevir(soru, konu, dil, kd, 80)
+          : { metin: ceviriAyikla(await sohbet(CEVIR[kd] || CEVIR.en, soru, 80)), konu: '' };
+        const ceviri = c.metin || soru;
+        gruplar.push({ dil: kd, soru: ceviri, ...(c.konu ? { konu: c.konu } : {}), ...(c.konuDustu ? { konuDustu: c.konuDustu } : {}),
+          basliklar: basliklariAyikla(await sohbet(dilBilgi(kd).baslik, ceviri, 60)) });
       }
     }
     bildir('kaynak', gruplar.flatMap((g) => g.basliklar));
@@ -1749,7 +2228,188 @@ ANSWER: ${a}`;
     return [...diller].filter((d) => (AYAR.cevirmen ? DIL_ADI[d] : DIL[d]));
   }
 
+  // §135 şıklar: ne zaman sorulur — en az iki aday bölüm, ilk ikisinin farkı eşikten küçük; kullanıcı zaten seçtiyse,
+  // "kendi durumunu yaz" ile yeniden sorduysa (sorulmaz) ya da ayar kapalıysa sorulmaz
+  function secenekGerekli(adaylar, secenek = {}) {
+    const S = AYAR.secenek || {};
+    if (!S.esik || secenek.secilen || secenek.sorulmaz || secenek.yalnizKaynak) return false;
+    return adaylar.length >= 2 && adaylar[0].puan - adaylar[1].puan < S.esik;
+  }
+  // şıkkın etiketi (§143): bölümün adı + onu öbürlerinden ayıran kelimeler (kitabın kendi kelimeleri); kitap başka dildeyse
+  // ikisi tek çeviriyle kullanıcının diline çevrilir (çevirmen yoksa kitabın dilinde kalır — modelsiz cihaz)
+  async function secenekEtiketle(adaylar, dil) {
+    const sonuc = [];
+    for (const a of adaylar.slice(0, SECENEK_EN_COK)) {
+      let baslik = a.ad, kelimeler = a.kelimeler || [];
+      if (a.dil && a.dil !== dil && AYAR.cevirmen) {
+        try {
+          const c = String(await cevir(`${a.ad}: ${kelimeler.join(', ')}`, a.dil, dil, 120)).split(/\r?\n/).map((x) => x.trim()).filter(Boolean)[0] || '';
+          const iki = c.indexOf(':');
+          if (iki > 0) { baslik = c.slice(0, iki).trim(); kelimeler = c.slice(iki + 1).split(/\s*[,،，、]\s*/).map((x) => x.trim()).filter(Boolean); }
+        } catch (e) { /* kitabın dilinde kalır */ }
+      }
+      sonuc.push({ ad: a.ad, kitap: a.kitap, dil: a.dil, puan: a.puan, baslik, kelimeler, etiket: kelimeler.length ? `${baslik} — ${kelimeler.join(', ')}` : baslik });
+    }
+    return sonuc;
+  }
+
+  // ---- §145 Heybe defteri (Ercan 14.11: "Heybe hafızası olsa harika olur"; "Tıbbi gruba girdim içerisinde Ercan girdim ve
+  //      arama çubuğunda ateş yazdım"): kayıtlı cevaplar ve kişisel notlar, kullanıcının iç içe gruplarında. Saklama yardımcıda
+  //      (/api/defter); arama ve denetim burada — modelsiz, her cihazda. Kimliği yalnız UID taşır (ad değişebilir).
+  function defterKimlik() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  // bir grubun kendisi ve bütün alt grupları
+  function defterAltGruplar(defter, grupId) {
+    const sonuc = new Set([grupId]);
+    let degisti = true;
+    while (degisti) {
+      degisti = false;
+      for (const g of defter.gruplar || []) if (g.ust && sonuc.has(g.ust) && !sonuc.has(g.id)) { sonuc.add(g.id); degisti = true; }
+    }
+    return sonuc;
+  }
+  // grubun yolu: "Tıbbi › Ercan"
+  function defterYol(defter, grupId) {
+    const ad = [];
+    let g = (defter.gruplar || []).find((x) => x.id === grupId), koruma = 0;
+    while (g && koruma++ < 50) { ad.unshift(g.ad); g = (defter.gruplar || []).find((x) => x.id === g.ust); }
+    return ad;
+  }
+  // arama: sorgunun bütün kelimeleri kaydın adında, sorusunda, cevabında, notunda ya da (dil) çevirisinde geçmeli; grupId
+  // verilirse yalnız o grup ve alt grupları. Türkçe küçük harf; sorgu kelimesinin ilk 5 harfi kaydın bir kelimesinin başı:
+  // "ateş" → "ateşi", "ateşte"; "ateşler" → "ateşle…"
+  function defterAra(defter, sorgu, grupId = null, dil = 'tr') {
+    const kc = (m) => kucuk(String(m || ''));
+    const kokler = [...new Set((kc(sorgu).match(/[\p{L}\p{N}]+/gu) || []).map((w) => w.slice(0, 5)))];   // kelime başı: "ateş" → "ateşte" de
+    const kapsam = grupId ? defterAltGruplar(defter, grupId) : null;
+    return (defter.kayitlar || []).filter((k) => {
+      if (kapsam && !kapsam.has(k.grup)) return false;
+      if (!kokler.length) return true;
+      const c = (k.ceviriler || {})[dil] || {};
+      const metin = kc([k.ad, k.soru, k.cevap, k.metin, c.ad, c.soru, c.cevap, c.metin].join(' '));
+      const kelimeler = metin.match(/[\p{L}\p{N}]+/gu) || [];
+      return kokler.every((x) => kelimeler.some((w) => w.startsWith(x)));
+    });
+  }
+  // kaydın başka dile çevirisi (§145). Kısa ad tek başına çevrilmez: "Ateş düşürme" yalnız "Fire suppression", "Sıcak
+  // çarpması" Almancada "ani ağrı" oldu (14.11 canlı deneme). Ad kendi satırında, altında sorusu ya da notunun tamamı bağlam
+  // olarak çevrilir; ilk satır alınır (4 dilde 16 örnekte satır düzeni korundu, "iki nokta" ayracı 3'ünde düştü). Düzen
+  // bozulursa ya da satır addan çok uzunsa ad özgün dilinde kalır: yanlış ad, çevrilmemiş addan kötüdür.
+  async function defterCevir(k, hedef, cevirici = cevir) {
+    const kaynak = k.dil || 'tr', govdeAlan = k.tur === 'not' ? 'metin' : 'cevap';
+    const c = async (x, n) => (x ? String(await cevirici(x, kaynak, hedef, n)).trim() : '');
+    const sonuc = {};
+    if (k.soru) sonuc.soru = await c(k.soru, 200);
+    sonuc[govdeAlan] = await c(k[govdeAlan], 900);
+    const ilkSatir = (x) => String(x || '').split(/\r?\n/).map((y) => y.trim()).filter(Boolean)[0] || '';
+    if (k.soru && k.ad === ilkSatir(k.soru).slice(0, 120)) { sonuc.ad = ilkSatir(sonuc.soru) || k.ad; return sonuc; }
+    const bag = String(k.soru || k.metin || '').slice(0, 600);
+    sonuc.ad = k.ad;
+    if (!bag) return sonuc;
+    try {
+      const satirlar = String(await cevirici(`${k.ad}\n\n${bag}`, kaynak, hedef, 320)).split(/\r?\n/).map((y) => y.trim()).filter(Boolean);
+      const ad = (satirlar[0] || '').replace(/\s*[:：]\s*$/, '');
+      if (satirlar.length >= 2 && ad && ad.length <= k.ad.length * 3 + 30) sonuc.ad = ad;
+    } catch (e) { /* ad özgün dilinde kalır */ }
+    return sonuc;
+  }
+  // ---- defter kilidi — K7 (15.11.2026, Özet §146–§148). LM: "K7 kararı doğrudan ihlal edilmiştir"; K7: "Kişisel veri standart
+  //      şifrelemeyle korunur, anahtar kullanıcının parolasıdır (USB'de durmaz). Açık bırakılabilen acil durum kartı + kâğıda basılı
+  //      kurtarma kodu." Kendi icadımız değil, standart: Web Crypto — PBKDF2-SHA256 (600 000 tekrar) ile anahtar türetme, AES-GCM-256.
+  //      Defter rastgele bir veri anahtarıyla şifrelenir; o anahtar iki kez sarılır: parolayla ve kurtarma koduyla (125 bit, kâğıtta).
+  //      Parola unutulunca kodla açılır, yeni parola konur; kod değişmez (kâğıt geçerli kalır). Kurtarıcının görmesi gereken bilgi
+  //      (alerji, kan grubu) şifresiz acil kartında (Ö14). Yanlış parola AES-GCM doğrulamasında düşer — sessiz bozuk veri dönmez.
+  const KILIT_TEKRAR = 600000, KILIT_YONTEM = 'PBKDF2-SHA256/AES-GCM-256', PAROLA_EN_KISA = 8;
+  const KURTARMA_ABECE = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';   // Crockford: I, L, O, U yok (karışmasın)
+  const b64Yaz = (u8) => { let s = ''; for (const x of u8) s += String.fromCharCode(x); return btoa(s); };
+  const b64Oku = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  function kriptoVar() { return !!(globalThis.crypto && globalThis.crypto.subtle && globalThis.crypto.getRandomValues); }
+  const rastgele = (n) => globalThis.crypto.getRandomValues(new Uint8Array(n));
+  // parola: baş ve sondaki boşluk atılır (telefon klavyesinin eklediği boşluk kilitlemesin), harfler NFC (aynı harf iki biçimde)
+  const parolaTemiz = (p) => String(p || '').normalize('NFC').trim();
+  // kod: büyük harf, ayraçlar atılır, karışan harfler düzeltilir (O → 0, I/L → 1); 25 harf değilse geçersiz
+  function kurtarmaTemiz(k) {
+    const t = String(k || '').toUpperCase().replace(/[\s\-_.]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+    return t.length === 25 && [...t].every((c) => KURTARMA_ABECE.includes(c)) ? t : null;
+  }
+  function kurtarmaKoduUret() {
+    const t = [...rastgele(25)].map((x) => KURTARMA_ABECE[x & 31]).join('');   // 256, 32'nin katı: eşit dağılım
+    return t.match(/.{5}/g).join('-');
+  }
+  async function sarmaAnahtari(sir, tuz, tekrar) {
+    const k = globalThis.crypto.subtle;
+    const ham = await k.importKey('raw', new TextEncoder().encode(sir), 'PBKDF2', false, ['deriveKey']);
+    return k.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: tuz, iterations: tekrar }, ham, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function aesSifrele(anahtar, veri) {
+    const iv = rastgele(12);
+    return { iv: b64Yaz(iv), veri: b64Yaz(new Uint8Array(await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, anahtar, veri))) };
+  }
+  async function aesCoz(anahtar, kutu) {
+    return new Uint8Array(await globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64Oku(kutu.iv) }, anahtar, b64Oku(kutu.veri)));
+  }
+  const veriAnahtari = (ham) => globalThis.crypto.subtle.importKey('raw', ham, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+  async function anahtarSar(ham, sir, tekrar) {
+    const tuz = rastgele(16);
+    return { tuz: b64Yaz(tuz), ...(await aesSifrele(await sarmaAnahtari(sir, tuz, tekrar), ham)) };
+  }
+  async function anahtarAc(kutu, sir, tekrar) { return aesCoz(await sarmaAnahtari(sir, b64Oku(kutu.tuz), tekrar), kutu); }
+  const defterZarfi = (d) => !!(d && d.sifreli);
+  // ilk kilit: yeni veri anahtarı + yeni kurtarma kodu → { zarf, kod, anahtar }; kod yalnız bir kez döner, saklanmaz
+  async function defterKilitKur(defter, parola, tekrar = KILIT_TEKRAR) {
+    const p = parolaTemiz(parola);
+    if (p.length < PAROLA_EN_KISA) throw new Error('parola kısa');
+    const ham = rastgele(32), kod = kurtarmaKoduUret(), anahtar = await veriAnahtari(ham);
+    const sifreli = { yontem: KILIT_YONTEM, tekrar, parola: await anahtarSar(ham, p, tekrar), kurtarma: await anahtarSar(ham, kurtarmaTemiz(kod), tekrar) };
+    sifreli.defter = await aesSifrele(anahtar, new TextEncoder().encode(JSON.stringify(defter)));
+    ham.fill(0);
+    return { zarf: { surum: 2, sifreli }, kod, anahtar };
+  }
+  // açma: parolayla (kurtarma=false) ya da kurtarma koduyla → { defter, anahtar, ham? }; yanlışsa hata (AES-GCM doğrulaması)
+  async function defterKilitAc(zarf, sir, kurtarma = false) {
+    const s = zarf.sifreli, t = kurtarma ? kurtarmaTemiz(sir) : parolaTemiz(sir);
+    if (!t) throw new Error('kod geçersiz');
+    let ham;
+    try { ham = await anahtarAc(kurtarma ? s.kurtarma : s.parola, t, s.tekrar); } catch (e) { throw new Error(kurtarma ? 'kod yanlış' : 'parola yanlış'); }
+    const anahtar = await veriAnahtari(ham);
+    const defter = JSON.parse(new TextDecoder().decode(await aesCoz(anahtar, s.defter)));
+    return kurtarma ? { defter, anahtar, ham } : (ham.fill(0), { defter, anahtar });
+  }
+  // yazma: içerik aynı anahtarla yeniden şifrelenir, sarılı anahtarlar olduğu gibi kalır
+  async function defterKilitle(defter, zarf, anahtar) {
+    return { surum: 2, sifreli: { ...zarf.sifreli, defter: await aesSifrele(anahtar, new TextEncoder().encode(JSON.stringify(defter))) } };
+  }
+  // §158 (K7): "bu cevap yanlış" kaydı soruyu, cevabı ve notu taşır — kişisel bilgi. Defterim'in veri anahtarıyla şifrelenir;
+  // açıkta yalnız dil ve sonuç (ölçü için). Liste için soru ve notun kısa özeti ayrıca şifreli (tam kayıt çözülmeden gösterilir).
+  async function yanlisSifrele(kayit, anahtar) {
+    const en = (x) => new TextEncoder().encode(JSON.stringify(x));
+    return { dil: kayit.dil || '', sonuc: kayit.sonuc || 'cevap', sifreli: await aesSifrele(anahtar, en(kayit)),
+      sifreliOzet: await aesSifrele(anahtar, en({ soru: kayit.soru || '', not: kayit.not || '', tarih: kayit.tarih || '' })) };
+  }
+  async function yanlisCoz(kutu, anahtar) { return JSON.parse(new TextDecoder().decode(await aesCoz(anahtar, kutu))); }
+  // açık defteri yeniden okumak (yazma hatasından sonra): veri anahtarıyla, parola sormadan
+  async function defterCoz(zarf, anahtar) { return JSON.parse(new TextDecoder().decode(await aesCoz(anahtar, zarf.sifreli.defter))); }
+  // parolamı unuttum: kodla açılır, veri anahtarı yeni parolayla yeniden sarılır; kurtarma sarması aynı kalır (kâğıt geçerli)
+  async function defterParolaYenile(zarf, kod, yeniParola) {
+    const p = parolaTemiz(yeniParola);
+    if (p.length < PAROLA_EN_KISA) throw new Error('parola kısa');
+    const { defter, anahtar, ham } = await defterKilitAc(zarf, kod, true);
+    const yeni = { surum: 2, sifreli: { ...zarf.sifreli, parola: await anahtarSar(ham, p, zarf.sifreli.tekrar) } };
+    ham.fill(0);
+    return { zarf: yeni, defter, anahtar };
+  }
+  // kişisel notun denetimi: eylem bekçisinin kuralları notun kendi sözleriyle (soru = not) — "Bu notta tehlikeli olabilecek
+  // bir öneri var" uyarısı; not kullanıcının, Heybe silmez, yalnız gösterir (K18)
+  function notDenetle(metin, dil = 'tr') {
+    return eylemDenetle(metin, metin, dil).map((x) => (EYLEM.find((k) => `eylem: ${k.ad}` === x) || {}).kod).filter(Boolean);
+  }
+
   async function sor(soru, bildir = () => {}, dil = 'tr', secenek = {}) {
+    // §133 acil belirti kartı: en dıştaki çağrıda bir kez bakılır (köprünün iç çağrıları acilBakildi taşır)
+    if (!secenek.acilBakildi && !secenek.yalnizKaynak && !secenek.secilen) {
+      const belirti = await acilBak(soru, dil);
+      if (belirti.length) return acilSonuc(soru, bildir, dil, secenek, belirti);
+      secenek = { ...secenek, acilBakildi: true };
+    }
     if (secenek.yedekDiller) {
       // önce kendi dilinde (ölçülmüş yol); kaynaklarda yoksa köprüden öbür dillere (K17).
       // yedekDiller: 'hepsi' → bellekte ne varsa (Ercan 06.11: "geri kalan kütüphane kullanıcı tercihi")
@@ -1777,18 +2437,19 @@ ANSWER: ${a}`;
     bildir('baslik');
     let basliklar, parcalar, gruplar = null;
     if (!kopru) {
-      basliklar = basliklariAyikla(await sohbet(D.baslik, soru, 60));
+      basliklar = basliklariAyikla(await sohbet(D.baslik, AYAR.konuBaslik && secenek.konu ? `${secenek.konu}: ${soru}` : soru, 60));
       bildir('kaynak', basliklar);
-      parcalar = await kaynakBul(soru, basliklar, dil);
+      parcalar = await kaynakBul(soru, basliklar, dil, null, AYAR.konuSorgu && secenek.konu ? `${secenek.konu}: ${soru}` : soru, secenek.secilen || null);
     } else {
-      gruplar = await koprulu(soru, D, dil, diller, bildir);
+      gruplar = await koprulu(soru, D, dil, diller, bildir, secenek.konu);
       basliklar = gruplar.flatMap((g) => g.basliklar);
       // anlam sıralamasının sorgusu — varsayılan özgün soru (ölçülmüş yol). 09.11 (§86) seçenek 'ikisi': özgün soru + birinci
       // kaynak dilindeki çevirisi birlikte (puan ortalaması); tanıda (F, IFRC) kaynak cümlesi 48 → 58/75. Küçük kitap
       // aramasıyla birlikte ölçüldü, geçen kötü cevap arttı → varsayılan değil (bkz. AYAR.kucukKitap). secenek.sorgu: 'ceviri' · 'ikisi'
       const ceviri = (gruplar.find((g) => g.dil !== dil) || gruplar[0]).soru;
-      const sorguMetni = secenek.sorgu === 'ceviri' ? ceviri : secenek.sorgu === 'ikisi' ? [soru, ceviri] : soru;
-      parcalar = await kaynakBul(soru, basliklar, dil, gruplar, sorguMetni);
+      const sorguMetni = secenek.sorgu === 'ceviri' ? ceviri : secenek.sorgu === 'ikisi' ? [soru, ceviri]
+        : AYAR.konuSorgu && secenek.konu ? `${secenek.konu}: ${soru}` : soru;   // §150 deney 2
+      parcalar = await kaynakBul(soru, basliklar, dil, gruplar, sorguMetni, secenek.secilen || null);
     }
     const aramaSn = (Date.now() - t0) / 1000;
     if (secenek.yalnizKaynak) return { soru, dil, basliklar, parcalar, gruplar };   // yalnız ölçüm: cevap yazılmaz
@@ -1804,6 +2465,15 @@ ANSWER: ${a}`;
         arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
         ...(gruplar ? { gruplar } : {}) };
     }
+    // §135 şıklar (Ercan 14.11: "doktor gibi sor"): ilk iki aday bölüm birbirine çok yakınsa Heybe tahmin etmez, sorar —
+    // en çok 4 bölüm, kullanıcının dilinde adı ve ilk cümlesiyle; cevap seçilen bölümden yazılır (secenek.secilen).
+    // Etiketli 150 IFRC sorusunda (§135): doğru bölüm 1. sırada 100, 2–4. sırada 13; ilk ikisinin farkı doğru 1.'yken
+    // ortanca 0,084, gerideyken 0,014. Eşik 0,03: sorulan 49 · kurtarılabilen 10 · gereksiz 22.
+    const adaylar = parcalar.adaylar || [];
+    if (secenekGerekli(adaylar, secenek)) {
+      return { soru, dil, basliklar, parcalar, secenekler: await secenekEtiketle(adaylar, dil), diller, cevap: '', eksik: [], durdur: false,
+        bilgiYok: false, kitapVar, ...(gruplar ? { gruplar } : {}), arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10 };
+    }
     bildir('cevap', parcalar);
     // kaynakların hepsi başka dildeyse: tek dilse o dilde, birkaç dilse İngilizce ara dilde yazılır (06.11: Hintçe soruya
     // Türkçe + Çekçe kaynak gelince eski yola düşüp Türkçe cevap verdi)
@@ -1813,7 +2483,8 @@ ANSWER: ${a}`;
       // Çevirmen yarışının kazanan yolu (06.11): cevap önce kaynağın dilinde yazılır, TranslateGemma kullanıcının
       // diline çevirir. Doğrudan Türkçe yazınca model "do not cut" → "kesin" yaptı; bu yolda olumsuzluk korundu.
       const KD = dilBilgi(kd);
-      const g = gruplar.find((x) => x.dil === kd) || { soru: kd === dil ? soru : await cevir(soru, dil, kd, 120) };
+      const g = gruplar.find((x) => x.dil === kd) || { soru: kd === dil ? soru
+        : secenek.konu ? (await konuluCevir(soru, secenek.konu, dil, kd, 120)).metin : await cevir(soru, dil, kd, 120) };   // §150 konu
       const ham = await sohbet(KD.sistem, `${KD.kaynaklar}:\n${kaynakMetni(parcalar, kd)}\n\n${KD.soru}: ${g.soru}`);
       const sure = () => ({ arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10 });
       const ya = yokAyikla(ham, KD.yok);
@@ -1841,11 +2512,11 @@ ANSWER: ${a}`;
       // Ö25: özgün cevap kaynağın dilindeki soruyla, çeviri kullanıcının sorusuyla (tr/en ise) eylem bekçisinden geçer
       denetim.eylem = [...new Set([...eylemDenetle(g.soru, ozgun, kd), ...(kd !== dil ? eylemDenetle(soru, cevap, dil) : [])])];
       denetim.ortam = ortamDenetle(soru, dil, atifBolumleri(ozgun, parcalar));   // §114
-      denetim.konu = await konuDenetle(g.soru, ozgun, parcalar);   // §122: kaynağın dilindeki soruyla
+      denetim.konu = secenek.secilen ? [] : await konuDenetle(g.soru, ozgun, parcalar);   // §122: kaynağın dilindeki soruyla (§135: bölümü kullanıcı seçtiyse sorulmaz)
       const eksik = [...new Set([...denetim.eylem, ...denetim.ozgun, ...denetim.ceviri, ...denetim.terim, ...denetim.yazi, ...denetim.kip, ...denetim.olumsuzluk, ...denetim.gidisDonus, ...denetim.ortam, ...denetim.konu])];
       denetim.ikinciGoz = eksik.length ? [] : await ikinciGoz(soru, cevap);   // Ö22: durmuş cevaba sorulmaz
       eksik.push(...denetim.ikinciGoz);
-      return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: false, kitapVar, gruplar,
+      return { soru, dil, basliklar, parcalar, adaylar: secenek.secilen ? [] : (parcalar.adaylar || []), diller, cevap, eksik, durdur: eksik.length > 0, bilgiYok: false, kitapVar, gruplar,
         bolumler: atifBolumleri(ozgun, parcalar),
         ozgun: { dil: kd, cevap: ozgun, guvenli: denetim.ozgun.length === 0 && !denetim.ikinciGoz.length && !denetim.eylem.length }, denetim, ...sure() };
     }
@@ -1855,17 +2526,31 @@ ANSWER: ${a}`;
     const cevap = ya.metin;
     const sorular = { [dil]: soru };
     for (const x of gruplar || []) sorular[x.dil] = x.soru;
-    const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil), ...ortamDenetle(soru, dil, atifBolumleri(cevap, parcalar)), ...await konuDenetle(soru, cevap, parcalar)]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı · §114 ortam · §122 konu
+    const eksik = [...(ya.yok ? [] : [...eylemDenetle(soru, cevap, dil), ...yaziDenetle(cevap, dil), ...ortamDenetle(soru, dil, atifBolumleri(cevap, parcalar)), ...(secenek.secilen ? [] : await konuDenetle(soru, cevap, parcalar))]), ...denetle(parcalar, cevap, dil), ...baglamDenetle(soru, cevap, dil, parcalar, sorular)];   // Ö25 eylem · Ö27 yazı · §114 ortam · §122 konu
     if (!ya.yok && !eksik.length) eksik.push(...await ikinciGoz(soru, cevap));   // Ö22
-    return { soru, dil, basliklar, parcalar, cevap, eksik, durdur: eksik.length > 0, bilgiYok: ya.yok,
+    return { soru, dil, basliklar, parcalar, adaylar: secenek.secilen ? [] : (parcalar.adaylar || []), diller, cevap, eksik, durdur: eksik.length > 0, bilgiYok: ya.yok,
       bolumler: ya.yok ? [] : atifBolumleri(cevap, parcalar), kitapVar, arama_sn: Math.round(aramaSn * 10) / 10, toplam_sn: Math.round((Date.now() - t0) / 100) / 10,
       ...(gruplar ? { gruplar } : {}) };
   }
 
-  const Heybe = { AYAR, DIL, sor, oku, okumaKaynak, kelimeSirala, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
-    basliklariAyikla, kaynakMetni, cevir, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
+  // §157 (Ercan 15.11: "Kaynak ne kadar güvenilir ve doğru ise cevap o kadar daha doğru ve yardımcı olabilecek şekilde
+  // olacaktır"): kaynağın türü kitabın adından — forum (herkes yazabilir, kişisel deneyim) · viki (gönüllüler yazar).
+  // §152'de ulaşan tehlikeli cümlelerin ikisi forumdan, biri vikiden geliyordu. Türü bilinmeyen kitap etiketsiz kalır.
+  const KAYNAK_TURU = [
+    ['forum', /(^|[._-])(stackexchange|stackoverflow|superuser|serverfault|askubuntu|mathoverflow)([._-]|$)|(^|[._-])(reddit|forum)/i],
+    ['viki', /^(wikipedia|wikivoyage|wikibooks|wikiversity|wiktionary|wikinews|wikiquote|wikisource|wikiskripta|mdwiki|wikihow|vikidia|appropedia|wikem)([._-]|$)/i],
+  ];
+  function kaynakTuru(ad) {
+    const a = String(ad || '').replace(/^.*\//, '').replace(/\.zim$/i, '');
+    for (const [tur, re] of KAYNAK_TURU) if (re.test(a)) return tur;
+    return '';
+  }
+
+  const Heybe = { AYAR, DIL, sor, kaynakTuru, KAYNAK_TURU, yanlisSifrele, yanlisCoz, oku, okumaKaynak, kelimeSirala, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
+    basliklariAyikla, kaynakMetni, cevir, konuluCevir, soruKonuAyir, soruKonuSizdi, soruKonuKelime, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle, konuDenetle, konuUymaz };
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle, konuDenetle, konuUymaz, acilBelirti, ACIL_BELIRTI, acilHakem, acilBak, secenekGerekli, secenekEtiketle, ayirtKelimeler, adayBolumler, defterKimlik, defterAltGruplar, defterYol, defterAra, notDenetle, defterCevir,
+    kriptoVar, kurtarmaTemiz, kurtarmaKoduUret, parolaTemiz, defterZarfi, defterKilitKur, defterKilitAc, defterKilitle, defterParolaYenile, defterCoz, KILIT_TEKRAR, PAROLA_EN_KISA };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

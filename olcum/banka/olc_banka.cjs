@@ -30,6 +30,10 @@ const SORGU = process.env.SORGU || '';   // §47 karşılaştırma: zayıf havuz
 // §58 kardeş modeller: KALIP=sablon (Gemma 3 dışı model kendi şablonuyla) · TEKMODEL=1 (çevirmen yok, köprüde soruyu
 // ve cevabı sohbet modeli çevirir — hafif kardeşin tek model düzeni)
 if (process.env.KALIP) H.AYAR.kalip = process.env.KALIP;
+// §129: KISIP=0.06 paragraf düzeyinde kişi (AYAR.kisiParagraf; bebek ve çocuk sorusunda)
+if (process.env.KISIP) H.AYAR.kisiParagraf = +process.env.KISIP;
+// §133: ACIL=0 acil belirti kartı kapalı (kartın yerine yazılacak cevabı görmek için)
+if (process.env.ACIL === '0') H.AYAR.acilKart = false;
 const TEK = process.env.TEKMODEL === '1';
 if (TEK) H.AYAR.cevirmen = '';
 const SURUM = process.env.SURUM || JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'tasinabilir', 'usb_kok', 'heybe', 'surum.json'), 'utf8')).surum;
@@ -53,8 +57,8 @@ const cikti = path.join(__dirname, '..', 'sonuc', `banka_${SURUM}_${etiket}${pro
     }
     const izi = B.iz(r);
     let onceki = B.notBul(n, q.kimlik, izi);
-    if (!onceki && r.durdur) {   // durmuş cevabın hükmü kendiliğinden "durdu" (içerik kullanıcıya gösterilmez)
-      onceki = { iz: izi, hukum: 'durdu', not: `otomatik: ${r.eksik.join('; ').slice(0, 120)}`, surum: SURUM, sonuc: 'durdu',
+    if (!onceki && (r.durdur || r.acil)) {   // durmuş cevabın hükmü kendiliğinden "durdu" (içerik kullanıcıya gösterilmez); kart: "kart"
+      onceki = { iz: izi, hukum: r.acil ? 'kart' : 'durdu', not: r.acil ? `otomatik kart: ${r.acil.belirti.join(', ')}` : `otomatik: ${r.eksik.join('; ').slice(0, 120)}`, surum: SURUM, sonuc: r.acil ? 'kart' : 'durdu',
         cevap: B.sade(r.cevap).slice(0, 160), tarih: new Date().toISOString().slice(0, 10) };
       // 09.11 (§86): dosya yazmadan hemen önce yeniden okunur — başta okunan kopya, ölçüm sürerken notla.cjs ile yazılan
       // insan hükümlerini eziyordu (0.18.0 ve 0.19.0 G ölçümleri arka arkaya koşarken 0.19.0'ın 8 hükmü silindi)
@@ -68,6 +72,7 @@ const cikti = path.join(__dirname, '..', 'sonuc', `banka_${SURUM}_${etiket}${pro
       sonuc: B.sonucTuru(r), cevap: r.cevap, eksik: r.eksik, ozgun: r.ozgun ? { dil: r.ozgun.dil, cevap: r.ozgun.cevap } : null,
       kaynakDilleri: [...new Set(r.parcalar.map((p) => p.dil || q.dil))],
       parcalar: r.parcalar.map((p) => ({ makale: p.makale, bolum: p.bolum, kitap: p.kitap, dil: p.dil || q.dil, metin: String(p.metin || '').slice(0, 700) })),
+      acil: r.acil || null,   // §133
       ilkDeneme: r.ilkDeneme || null, kopruDenendi: r.kopruDenendi || null, zayifHavuz: r.zayifHavuz || null,   // §47
       toplam_sn: r.toplam_sn, iz: izi, hukum: onceki ? onceki.hukum : null, hukumSurum: onceki ? onceki.surum : null };
     fs.appendFileSync(cikti, JSON.stringify(kayit) + '\n');

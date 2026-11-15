@@ -9,6 +9,13 @@ Heybe je jako počítač. Na disku jsou připravené dvě věci: Heybe, který
 odpovídá na otázky, a překladač. Zbytek je váš: volné místo zaplníte
 knihami, poznámkami a obrázky, které chcete.
 
+DŮLEŽITÉ: odpovědi Heybe jsou jen tak přesné jako její knihovna. Heybe
+píše odpovědi jen ze zdrojů, které tu jsou; zdroj opravit nedokáže. Čím
+spolehlivější a přesnější je zdroj, tím přesnější a užitečnější je
+odpověď. Vybírejte aktuální příručky úředních institucí a organizací první
+pomoci; články z encyklopedií, staré knihy a fóra, kam může psát kdokoli,
+mohou obsahovat zastaralé nebo chybné informace.
+
 SPUŠTĚNÍ
 - Mac: dvakrát klikněte na "Heybe_Mac.command".
   Když ho Mac poprvé zablokuje: Nastavení systému → Soukromí a zabezpečení →
@@ -32,6 +39,24 @@ SPUŠTĚNÍ
   několika zemí a vaši vlastní kartu. Napište si na ni místo setkání, své
   léky, alergie a telefonní čísla blízkých ("Napsat nouzovou kartu"). Karta zůstává
   na tomto disku a nikdy nejde na internet.
+  Nahoře na kartě je vždy stejný řádek: jste-li v nebezpečí, volejte hned
+  tísňové číslo; pokud se nedovoláte, požádejte o pomoc lidi kolem. To, co
+  vám Heybe řekne, je jen na dobu, než dorazí pomoc.
+- MŮJ ZÁPISNÍK: odpověď uložte pod vlastním názvem („Uložit do
+  zápisníku“), nebo napište vlastní poznámku („+ Nová poznámka“). Skupiny
+  si vytváříte sami, i jednu v druhé (Zdraví > Ercan, Přístřeší). Vyberte
+  skupinu a pište do vyhledávání; model není potřeba. Záznam se vždy
+  zobrazí jako „odpověď, kterou jste uložili“ nebo „vaše vlastní poznámka,
+  není z knihy“. Se zapnutým překladačem ho lze uložit i v dalších jazycích.
+  Zápisník je na tomto disku zašifrovaný vaším heslem; heslo se na disku
+  neukládá. Při prvním otevření zápisníku nastavíte heslo a dostanete
+  obnovovací kód: napište si ho na papír a uložte doma. Když heslo
+  zapomenete, zápisník otevře jen tento kód. Co musí vědět záchranář
+  (alergie, krevní skupina), napište na nouzovou kartu: ta zůstává
+  nezašifrovaná. Když ztratíte obojí, otevře se nový zápisník; starý
+  zůstane v heybe/benim jako „defter_kenara_….json“. Když kód později
+  najdete, nejdřív přesuňte aktuální defter.json jinam a pak starý
+  soubor přejmenujte na defter.json.
 - Pro ukončení stiskněte Enter / libovolnou klávesu v černém okně. Okno
   nezavírejte křížkem. Před vytažením disk v počítači bezpečně odeberte.
 
@@ -43,6 +68,12 @@ ZEPTEJTE SE HEYBE
   vašeho jazyka. U zdroje pak stojí "odpověď přeložena" a můžete si otevřít
   původní odpověď. Překlad může chybovat: u důležitých informací se
   podívejte do zdroje.
+- Se zapnutým překladačem se pod polem pro dotaz objeví tlačítka témat
+  (Zdravotní, Požár a bezpečnost, Mapa a cesta …). Můžete jedno vybrat:
+  při překladu dotazu se slova čtou v tomto smyslu. Téma platí jen pro
+  daný dotaz a po odpovědi zmizí. Když téma přidá do překladu něco, co
+  ve vašem dotazu není, Heybe se vrátí k překladu bez tématu a napíše to.
+  Téma je jen nápověda; hledaný dotaz uvidíte nad odpovědí.
 - Čísla v odpovědi porovná se zdroji. Když uvidí číslo, které ve zdrojích
   není, nebo když překlad ztratí téma otázky, odpověď zastaví a ukáže zdroje.
 - Je-li odpověď špatná nebo neúplná, klikněte pod ní na „Tato odpověď je
@@ -50,6 +81,10 @@ ZEPTEJTE SE HEYBE
   jen na tomto disku a nikam se neodesílá; najdete ho na stránce Knihovna,
   můžete ho stáhnout a předat lidem, kteří Heybe vyvíjejí. V další verzi se
   tyto otázky položí znovu.
+  Záznam obsahuje vaši otázku a odpověď, proto se počítá jako osobní
+  údaj: ukládá se zašifrovaný heslem vašeho zápisníku. Pro uložení
+  i zobrazení musí být Můj zápisník otevřený; stáhnete-li ho otevřený,
+  soubor bude čitelný.
 
 KNIHOVNA — volné místo je vaše
 - Tlačítko „Knihovna a nastavení“ na úvodní stránce. Nahoře na té stránce
@@ -59,6 +94,10 @@ KNIHOVNA — volné místo je vaše
   zaškrtnuto „automaticky“, Heybe při připojení stáhne chybějící knihy
   a přinese nové verze (stará se odstraní po ověření nové).
 - U každé knihy je značka stavu: dá se prohledávat, dá se číst.
+- Uvádí se i druh zdroje, také pod každou odpovědí: „fórum — psát může
+  kdokoli; osobní zkušenost“, „wiki — píší dobrovolníci“. U důležitých
+  informací se podívejte do příručky úřední instituce nebo organizace
+  první pomoci.
 - „Přidat z odkazu“: kniha .zim z jiného webu nebo PDF, text, obrázek.
   Kniha mimo Kiwix se označí „mimo Kiwix“.
 - V části "Knihovna" můžete při připojení k internetu stahovat knihy

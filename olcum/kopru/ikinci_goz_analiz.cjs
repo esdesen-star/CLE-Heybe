@@ -40,8 +40,29 @@ VERDICT: YES if the answer gives what the question asks, for the same situation.
 ANSWER: ${a}
 
 Does the ANSWER give the person what the QUESTION asks for? Answer NO if the ANSWER is about a different but related situation, or gives background (history, how something works, general facts) instead of what was asked. Reply with exactly one word: YES or NO.`,
+  // 14.11 (§128, konu dışı): t — cevabın metni değil, dayandığı makale başlıkları (kompartman sendromu, çadırdaki ayı,
+  // yangın kapısı başlık düzeyinde göze batıyor) · d — önce sorudaki büyük olasılıklı sorunu, sonra cevabın neyi ele
+  // aldığını adlandır, sonra karar (c'nin tanı biçimi)
+  t: (q, a, b) => `A person asked an offline first-aid helper this QUESTION. The answer was written from the encyclopedia ARTICLES listed below (title — section).
+
+QUESTION: ${q}
+
+ARTICLES:
+${b}
+
+Is the first article about the person's actual problem? Answer NO if it is about a different condition, object or situation that only shares a word with the question or only looks similar (for example a different illness with similar signs). Reply with exactly one word: YES or NO.`,
+  d: (q, a) => `You check answers of an offline first-aid helper.
+
+QUESTION: ${q}
+
+ANSWER: ${a}
+
+Write exactly three short lines:
+PROBLEM: the most likely medical problem or danger in the question, in a few words (think like a paramedic: what must not be missed?).
+ANSWER TREATS: the problem the answer's advice is written for, in a few words.
+VERDICT: SAME if they are the same problem, DIFFERENT if the answer treats a different or only similar-looking problem.`,
 };
-const NPRED = { a: 4, b: 4, c: 120, e: 4 };
+const NPRED = { a: 4, b: 4, c: 120, e: 4, t: 4, d: 80 };
 async function sor(istem) {
   if (onb[istem] !== undefined) return onb[istem];
   const metin = `<start_of_turn>user\n${istem}<end_of_turn>\n<start_of_turn>model\n`;
@@ -51,7 +72,21 @@ async function sor(istem) {
   fs.writeFileSync(ONB, JSON.stringify(onb));
   return onb[istem];
 }
-const hayir = (c) => (KALIP === 'b' ? /^\W*different/i.test(c) : KALIP === 'c' ? /VERDICT\W*NO\b/i.test(c) : /^\W*no\b/i.test(c));
+const hayir = (c) => (KALIP === 'b' ? /^\W*different/i.test(c) : KALIP === 'c' ? /VERDICT\W*NO\b/i.test(c)
+  : KALIP === 'd' ? /VERDICT\W*DIFFERENT/i.test(c) : /^\W*no\b/i.test(c));
+// t için: cevabın atıf yaptığı makaleler, en çok atıf alan önce ("başlık — bölüm")
+function basliklar(r) {
+  const oz = r.ozgun && r.ozgun.cevap ? r.ozgun.cevap : r.cevap;
+  const say = new Map();
+  for (const g of String(oz).match(/\[([\d,\s]+)\]/g) || []) for (const n of g.match(/\d+/g)) {
+    const p = (r.parcalar || [])[+n - 1];
+    if (!p) continue;
+    const k = `${p.makale}${p.bolum ? ' — ' + p.bolum : ''}`;
+    say.set(k, (say.get(k) || 0) + 1);
+  }
+  const l = [...say.entries()].sort((x, y) => y[1] - x[1]).map(([k]) => '- ' + k);
+  return (l.length ? l : (r.parcalar || []).slice(0, 3).map((p) => `- ${p.makale}${p.bolum ? ' — ' + p.bolum : ''}`)).slice(0, 4).join('\n');
+}
 
 (async () => {
   const n = B.notlar();
@@ -63,7 +98,7 @@ const hayir = (c) => (KALIP === 'b' ? /^\W*different/i.test(c) : KALIP === 'c' ?
       if (!nt) continue;
       if (sonuc.some((x) => x.kimlik === r.kimlik && x.iz === r.iz)) continue;
       const cevap = B.sade(r.cevap).replace(/\[[\d,\s]+\]/g, '').slice(0, 1200);
-      const c = await sor(KALIPLAR[KALIP](r.soru, cevap));
+      const c = await sor(KALIPLAR[KALIP](r.soru, cevap, basliklar(r)));
       sonuc.push({ iz: r.iz, kimlik: r.kimlik, hukum: nt.hukum, karar: c, alarm: hayir(c) });
     }
   }

@@ -14,8 +14,11 @@ const kayitlar = fs.readFileSync(dosya, 'utf8').split('\n').filter((x) => x.trim
   try { return [JSON.parse(x)]; } catch (e) { console.log(`  bozuk satır atlandı: ${x.slice(0, 60)}`); return []; }
 });
 const tek = (m) => String(m || '').split(/\s+/).join(' ');
+const okunur = kayitlar.filter((k) => k.soru);   // §158: şifreli satırların sorusu okunamaz — taslağa ve yeniden soruya girmez
 console.log(`— ${kayitlar.length} kayıt: ${dosya} —`);
 for (const [i, k] of kayitlar.entries()) {
+  // §158 (K7): 0.39.0'dan sonra kayıt Defterim'in anahtarıyla şifreli — okunacak hâli, Heybe'de defter açıkken indirilen dosya
+  if (k.sifreli && !k.soru) { console.log(`${String(i + 1).padStart(3)}. [${k.dil}] 🔒 şifreli kayıt · ${k.sonuc} · ${k.tarih || ''} — açık hâli için Heybe'de Defterim açıkken "Dosyayı indir"`); continue; }
   console.log(`${String(i + 1).padStart(3)}. [${k.dil}] ${k.soru}  · ${k.sonuc} · Heybe ${k.surum || '?'} · ${k.tarih || ''}`);
   if (k.not) console.log(`     NOT: ${tek(k.not)}`);
   console.log(`     GÖSTERİLEN: ${tek(k.gosterilen).slice(0, 300)}`);
@@ -28,7 +31,7 @@ if (process.env.SINAV) {
   const cikti = path.join(__dirname, '..', 'betik', 'sorular_yanlis.json');
   const eski = fs.existsSync(cikti) ? JSON.parse(fs.readFileSync(cikti, 'utf8')) : [];
   const var_ = new Set(eski.map((s) => `${s.dil}|${s.soru}`));
-  const yeni = kayitlar.filter((k) => !var_.has(`${k.dil}|${k.soru}`)).map((k, i) => ({
+  const yeni = okunur.filter((k) => !var_.has(`${k.dil}|${k.soru}`)).map((k, i) => ({
     no: `Y${eski.length + i + 1}`, dil: k.dil, tur: 'kullanici', soru: k.soru, beklenen: '', not: k.not || '',
     kayit: { surum: k.surum, tarih: k.tarih, sonuc: k.sonuc, gosterilen: k.gosterilen },
   }));
@@ -46,7 +49,7 @@ if (process.env.YENIDEN) {
   (async () => {
     fs.writeFileSync(cikti, '');
     console.log('— yeniden soruluyor —');
-    for (const [i, k] of kayitlar.entries()) {
+    for (const [i, k] of okunur.entries()) {
       const r = await H.sor(k.soru, () => {}, k.dil, { yedekDiller: 'hepsi', cevap: 'cevirerek' });
       const sonuc = r.durdur ? 'durdu' : r.bilgiYok ? 'bilgiYok' : 'cevap';
       const ayni = sonuc === k.sonuc && tek(r.cevap) === tek(k.cevap);

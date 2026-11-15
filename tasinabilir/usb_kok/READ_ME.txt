@@ -9,6 +9,13 @@ Heybe is like a computer. Two things come ready on the stick: Heybe, which
 answers questions, and a translator. The rest is yours: you fill the free
 space with the books, notes and pictures you want.
 
+GOOD TO KNOW: Heybe's answers are only as accurate as its library. Heybe
+writes its answers only from the sources here; it cannot correct a source.
+The more reliable and accurate the source, the more accurate and helpful
+the answer. Choose up-to-date guides from official bodies and first-aid
+organisations; encyclopaedia articles, old books and forums that anyone
+can write in may carry outdated or wrong information.
+
 STARTING
 - Mac: double-click "Heybe_Mac.command".
   If the Mac blocks it the first time: System Settings → Privacy & Security →
@@ -32,6 +39,24 @@ STARTING
   several countries and your own card. Write your meeting place, your
   medicines, allergies and your family's phone numbers on it ("Write my
   emergency card"). The card stays on this stick and never goes online.
+  One line always stays on top of the card: if you are in danger, call the
+  emergency number now; if you cannot get through, ask people nearby for
+  help. What Heybe tells you is only for the time until help arrives.
+- MY NOTEBOOK: save an answer under a name you choose ("Save to
+  notebook"), or write your own note ("+ New note"). You make the groups,
+  one inside another if you like (Medical > Ercan, Shelter). Choose a
+  group and type in the search box; no model is needed. An entry always
+  shows "an answer you saved" or "your own note, not from a book". With the
+  translator on, it can also be kept in other languages.
+  The notebook is stored on this stick encrypted with your password; the
+  password is not stored on the stick. When you first open the notebook
+  you set a password and get a recovery code: write it on paper and keep
+  it at home. If you forget the password, only this code opens the
+  notebook. Write what a rescuer must know (allergies, blood group) on the
+  emergency card: it stays unencrypted. If you lose both, a new notebook
+  is opened; the old one stays in heybe/benim as "defter_kenara_….json".
+  If you find the code later, first move the current defter.json
+  elsewhere, then rename the old file to defter.json.
 - To stop, press Enter / any key in the black window. Do not close the
   window with the X. Eject the stick in the computer before pulling it out.
 
@@ -43,6 +68,14 @@ ASK HEYBE
   translates the answer into your language. The source then says
   "translated", and you can open the original answer. Translation can make
   mistakes: for important information, check the source.
+- With the translator on, topic buttons appear under the question box
+  (Medical, Fire and safety, Map and route …). If you like, pick one: when
+  the question is translated, its words are read in that sense ("fever"
+  or "fire" for the Turkish "ateş"). The topic is only for that question
+  and is cleared when the answer comes. If the topic adds something to
+  the translation that is not in your question, Heybe goes back to the
+  translation without the topic and says so. The topic is a hint; the
+  searched question is shown above the answer.
 - It compares the numbers in its answer with the sources. If it sees a
   number that is not in the sources, or if the translation loses the topic
   of your question, it stops the answer and shows the sources instead.
@@ -51,6 +84,10 @@ ASK HEYBE
   stays only on this stick and is not sent anywhere; you can see it on the
   Library page, download it and give it to the people who develop Heybe.
   In the next version these questions are asked again.
+  The record contains your question and the answer, so it counts as
+  personal information: it is stored encrypted with your notebook
+  password. My notebook must be open to save or see it; if you download
+  while it is open, the file is saved in readable form.
 
 LIBRARY — the free space is yours
 - The "Library and settings" button on the start page. A guide is at the
@@ -61,6 +98,10 @@ LIBRARY — the free space is yours
   fetches new versions whenever it is online (the old version is removed
   once the new one is verified).
 - Each book has a health mark: can it be searched, can it be read.
+- The kind of source is shown too, also under each answer: "forum —
+  anyone can post; personal experience", "wiki — written by volunteers".
+  For important information, check a guide from an official body or a
+  first-aid organisation.
 - "Add from a link": a .zim book from another site, or a PDF, text or
   picture. A book from outside Kiwix is marked "not from Kiwix".
 - In "Library" you can download books in any language when you have

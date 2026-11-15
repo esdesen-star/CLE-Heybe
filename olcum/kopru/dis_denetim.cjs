@@ -183,7 +183,7 @@ const EYLEM_ORNEK = [
   ['deprem sırasında yer değiştirmek', 'tr', 'Deprem anında ne yapmalıyım?', 'Deprem anında şunları yapmalısınız: [1] * Sakin kalmaya çalışın. * Koridorda veya açık bir alana doğru hareket edin.'],
   ['karın baskısı', 'tr', 'Boğazına bir şey kaçan bebeğe ne yapılır?', '* Bir el yumruk yapılarak, başparmak çıkıntısı midenin üst kısmına, göğüs kemiği altına gelecek şekilde yerleştirilir.'],
   ['karın baskısı', 'tr', 'Dumanlı bir odadan nasıl çıkılır?', '[4] Hastaya ayaktayken ya da oturur durumda arkadan sarılarak gövdesi kavranır.'],
-  ['turnike', 'tr', 'Köpek ısırığında ne yapılmalı?', '* Sargı 5 dakika sonra açılmalı fakat kol veya bacak yere doğru sallanır bir durumda bırakılmalıdır.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Köpek ısırığında ne yapılmalı?', '* Sargı 5 dakika sonra açılmalı fakat kol veya bacak yere doğru sallanır bir durumda bırakılmalıdır.'],
   ['kusturmak', 'tr', 'Çocuk çamaşır suyu içti, ne yapmalıyım?', 'Hemen kusturun ve bol su içirin.'],
   ['donmuş yeri ovmak ya da sıcakla ısıtmak', 'en', 'What should I do for frostbite on my fingers?', 'Rub the area with snow to bring back circulation.'],
   ['yanığa yağ, macun ya da buz', 'tr', 'Elim yandı, ne sürmeliyim?', 'Yanığın üzerine diş macunu sürün.'],
@@ -277,6 +277,79 @@ const EYLEM_ORNEK = [
   ['ani ve çok şiddetli baş ağrısına ağrı kesici', 'tr', 'Birden çok şiddetli bir baş ağrısı başladı', 'Parasetamol alın ve dinlenin.'],
   ['ani ve çok şiddetli baş ağrısına ağrı kesici', 'en', 'I suddenly got the worst headache of my life', 'Take paracetamol and rest.'],
   ['', 'tr', 'Yorgunluktan başım ağrıyor', 'Parasetamol alabilirsiniz, bol su için.'],
+  // 14.11 (§129): görülmemiş P'nin yakın durum çiftleri (P12, P15, P21, P25 — artık görüldü) + benzer ama farklı durumlar sessiz
+  ['hareketsizlikten sonra şişen bacağa masaj ya da ısı', 'tr', 'Depremden beri bir haftadır çadırda neredeyse hiç kıpırdamadan yatıyorum; sağ baldırım şişti, kızardı, ılık ve dokununca ağrıyor.', 'Isı uygulaması fasyanın gevşemesine yardımcı olabilir.'],
+  ['hareketsizlikten sonra şişen bacağa masaj ya da ısı', 'en', 'After a long flight my left calf is swollen and red and it hurts', 'Massage the calf gently and apply a warm compress.'],
+  ['', 'tr', 'Depremden beri bir haftadır çadırda yatıyorum; sağ baldırım şişti, kızardı.', 'Bacağı ovmayın, masaj yapmayın; aynı gün doktora gidin.'],
+  ['', 'tr', 'Futbolda baldırıma kramp girdi, çok ağrıyor', 'Kası nazikçe esnetin ve masaj yapın.'],
+  ['ani şiddetli göz ağrısını kompresle geçiştirmek ya da sabahı beklemek', 'tr', 'Annemin akşam bir gözü birden çok ağrımaya başladı; göz kıpkırmızı, bulanık görüyor, ışıkların etrafında halkalar var.', 'Çay poşeti kompresi geçici rahatlama sağlayabilir.'],
+  ['ani şiddetli göz ağrısını kompresle geçiştirmek ya da sabahı beklemek', 'tr', 'Annemin gözü birden çok ağrıdı, ışıkların etrafında halkalar var, midesi bulanıyor.', 'Çay torbası kompresi geçici rahatlama sağlayabilir, ancak belirtilerin nedenini ele almaz.'],
+  ['ani şiddetli göz ağrısını kompresle geçiştirmek ya da sabahı beklemek', 'en', 'My eye suddenly hurts a lot, I see halos around lights and feel nauseous', 'Apply a warm compress and wait until morning.'],
+  ['', 'tr', 'Annemin gözü birden çok ağrıdı, ışıkların etrafında halkalar var', 'Hemen acile gidin, sabahı beklemeyin.'],
+  ['', 'tr', 'Gözüm kaşınıyor ve kızardı, çapaklanıyor', 'Ilık kompres yapın, gözü temiz tutun.'],
+  ['', 'tr', '8 aylık hamileyim, birden çok şiddetli bir baş ağrısı başladı, gözlerim de bulanık görüyor', 'Başınıza soğuk kompres uygulayın.'],
+  ['diş çekiminden sonra ilk gün ağzı çalkalamak, tükürmek ya da pipet', 'tr', 'Bu sabah dişimi çektirdim, akşam oldu, hâlâ kanıyor.', 'Ağzınızı tuzlu suyla çalkalamak yardımcı olabilir.'],
+  ['diş çekiminden sonra ilk gün ağzı çalkalamak, tükürmek ya da pipet', 'en', 'I had a tooth extracted this morning and it is still bleeding', 'Rinse your mouth with salt water.'],
+  ['', 'tr', 'Bu sabah dişimi çektirdim, hâlâ kanıyor.', 'Temiz bir gazlı bezi yarım saat sıkıca ısırın; ilk gün ağzınızı çalkalamayın, tükürmeyin.'],
+  ['', 'tr', 'Bu sabah dişimi çektirdim, hâlâ kanıyor.', 'Gazlı bezi ısırın. 24 saat sonra tuzlu suyla çalkalayabilirsiniz.'],
+  ['', 'tr', 'Diş etim kanıyor, fırçalarken', 'Tuzlu suyla çalkalayın ve diş hekimine gidin.'],
+  ['yangında kolu sıcak kapıyı açmak ya da dumanlı merdivenden kaçmak', 'tr', 'Apartmanda yangın çıkmış; dairemin kapı koluna dokundum, sıcak, kapının altından da duman sızıyor.', 'Yangın kapıları insanların dışarıya en hızlı biçimde tahliyesini sağlar.'],
+  ['yangında kolu sıcak kapıyı açmak ya da dumanlı merdivenden kaçmak', 'en', 'There is a fire in my building and the door handle is hot', 'Open the door and run down the stairs.'],
+  ['', 'tr', 'Apartmanda yangın var, kapının kolu sıcak', 'Kapıyı açmayın; altını ıslak havluyla tıkayın, 112yi arayın, pencereden görünün.'],
+  ['', 'tr', 'Mutfakta yangın çıktı, ne yapmalıyım?', 'Hemen binayı terk edin ve 112yi arayın.'],
+  // §153 (15.11 akşam): turnikeyi aralıkla gevşetmek (izinden bağımsız), yılanda emme aleti ve panzehiri küçümsemek, yangında tepeye kaçmak
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Kol koptu ne yapmalı', '* Kopan uzvundan akmakta olan kan, bir bezin şerit haline getirilerek sıkılır.\n* Her yedi dakikada bir boğulan nokta biraz gevşetilerek dokulara kan gitmesi sağlanır.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Kopmuş kolda kemer kullandım, doğru mu?', 'Kemeri sıkıca bağlayın, ancak kangren olmaması için saat başı gevşetmeyi unutmayın.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Turnike ne kadar süre kalabilir?', 'Bu yüzden belli aralıklarla çözülüp kan akışı sağlanmalıdır.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'en', 'How do I use a tourniquet on a severed arm?', '* Twist the windlass until the bleeding stops.\n* Loosen it periodically to restore circulation.'],
+  ['', 'tr', 'Kol koptu ne yapmalı', 'Turnike takıldıysa saat not edilir ve sağlık görevlisi gelene kadar gevşetilmez.'],
+  ['', 'tr', 'Kol koptu ne yapmalı', 'Turnikeyi yalnız sağlık ekibi gevşetir; siz gevşetmeyin.'],
+  ['', 'tr', 'Elimdeki sargı çok sıkı, parmaklarım uyuştu', 'Sargı çok sıkıysa ve parmaklar uyuşuyorsa sargıyı biraz gevşetin.'],
+  ['', 'en', 'How long can a tourniquet stay on?', 'Do not release it yourself; removal should be done by trained medical staff.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'tr', 'Yılan ısırırsa ne yapmalıyım?', 'Sawyer seti, ısırığın şiddetini azaltabilir ve zaman kazanmanıza yardımcı olabilir.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'tr', 'Babamı bahçede yılan ısırdı', 'Isırık yerine emme kabını yerleştirip zehri vakumla dışarı alın.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'en', 'A snake bit me on the hike', 'Use a venom extractor pump over the bite as soon as possible.'],
+  ['yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', 'tr', 'Yılan ısırırsa ne yapmalıyım?', 'Kobra ve su yılanları gibi türler genellikle antivenin (antikor) gerektirmez.'],
+  ['yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', 'tr', 'Yılan ısırdı, hastane uzak', 'Bunu yaptıktan sonra hastaneye gitmeye gerek kalmaz.'],
+  ['yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', 'en', 'Snake bite, what now?', 'Antivenom is usually not needed for most snake bites.'],
+  ['', 'tr', 'Yılan ısırırsa ne yapmalıyım?', 'Emme aletleri kullanmayın; hemen hastaneye gidin, panzehir orada verilir.'],
+  ['', 'tr', 'Yılan ısırırsa ne yapmalıyım?', 'Panzehir gerekmeyebilir, buna hastanede doktor karar verir.'],
+  ['', 'en', 'Snake bite first aid?', 'Suction devices do not work and may cause harm; get to hospital for antivenom.'],
+  ['', 'tr', 'Arı soktu, iğneyi çıkardım, biraz kaşıntı var', 'Belirti hafifse hastaneye gitmeye gerek yok.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Yangın çıkarsa nereye kaçmalıyım?', '* Mevcut yangın bariyerlerine (yollar, tepe üstleri, çakıllı alanlar) doğru ilerleyin.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Kamp alanının etrafı çam ormanı, yangın yaklaşıyor.', 'Araçla yola çıkamıyorsanız kampın üstündeki sırta çıkın; açık sırtlar güvenlidir.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Köyün altındaki vadide yangın başladı', 'Vadide kalmak tehlikelidir; hemen yamaçtan yukarı tırmanarak zirveye doğru çıkın.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'en', 'A grass fire is spreading near my farm. Which way do I run?', 'Run toward the high ground on the hill behind the farm.'],
+  ['', 'tr', 'Orman yangını yaklaşıyor nereye kaçayım?', 'Yakındaki kayalık ve ağaçsız bir tepeye çıkabilirsiniz.'],
+  ['', 'tr', 'Orman yangınında tepeye mi kaçmalıyım?', 'Hayır. Ateş yokuş yukarı çok daha hızlı ilerler ve sıcak hava tepeye doğru yükselir.'],
+  ['', 'tr', 'Silahlı kavga çıktı, ateş ediliyor, biri vuruldu', 'Yaralıyı sırt üstü yatırın ve sıcak tutun.'],
+  ['', 'tr', 'Dere yatağındayız, orman yangını çıktı', 'Geniş ve akan sulu dere yatağında kalın; yangının içinden geçerek bir yere ulaşmaya çalışmayın.'],
+  ['', 'tr', 'Sel geliyor, ne yapmalıyım?', 'Hemen yüksek bir yere, tepeye çıkın.'],
+  ['', 'en', 'Should I run uphill to escape a wildfire?', 'No. Fire travels faster uphill, so heading for the ridge puts you in its path.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'tr', 'yilan isirdi kolumdan koyumuzde ne yapiyoz', 'Yaranın üstünü jiletle çizip kanı emmek gerekir.'],   // harfsiz soru
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'ormandan duman geliyor ne yapalım', 'Siz de hemen yukarı çıkın, sakın aşağıda kalmayın.'],   // virgülle eklenen yasak
+  // §153 dördüncü set (görülmüş): harfsiz cevap, sonraki olumsuzluk, ayraç ve "ve" ile ayrılan yan cümle, acele olumsuzu, gerekçe
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Bacak kopmuş adam, turnike taktık, şimdi ne?', 'Turnike takili olunca ara ara gevsetme yapilmali ki bacak kan alsin.'],
+  ['', 'tr', 'turnike taktik ne zaman acalim', 'Turnike açmak sizin iş değil. Açmayı doktor yapar.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'Bacağına kemerle turnike yaptık', 'Kemeri bağlı tutun (ama arada bir, örneğin 15 dakikada bir, kan gitsin diye birkaç dakika açık bırakın) ve hastayı hareket ettirmeyin.'],
+  ['yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', 'tr', 'yilan isirdi hastaneye gidelim mi', 'Isırılan kişi sakin kalırsa hastaneye gitmesine gerek yoktur, birkaç saat bekleyin, şişlik artmazsa evde dinlenebilir.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Makilikte duman gördük', 'Yamaçtan yukarı doğru uzaklaşın ve sırta varana kadar durmayın.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Kamp alanına yangın yaklaşıyor', 'Dağın en üst noktasına varın, orada alevler size ulaşmaz.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'en', 'Wildfire approaching our hiking trail', '* Climb to the highest point nearby.'],
+  ['yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek', 'en', 'Do I need antivenom for a viper bite?', 'You can simply wait and watch at home.'],
+  // §155 beşinci set (görülmüş): edilgen ve tire, eski bilginin aktarımı, amaç yan cümlesi, forum deneyimi, ateşin yalın öznesi
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'turnike nedir', 'Uzun süre kalması doku ölümüne yol açacağından her 20-30 dakikada bir 1-2 dakikalığına açılması gerekir.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'tr', 'turnike taktim eli mosmor', 'Hastanın eli morarırsa bağı biraz gevşetin, kan gelince yeniden sıkın.'],
+  ['takılan turnikeyi ara ara gevşetmek', 'en', 'bleeding wont stop from leg', '* Every 10-15 minutes, untie the band briefly to restore circulation.'],
+  ['', 'tr', 'askerde 20 dakikada bir açın demişlerdi', 'Askerde bize de 20 dakikada bir açın diyorlardı ama o bilgi eskidi.'],
+  ['', 'tr', 'Turnike neden artık gevşetilmiyor? Kanama durdu', 'Geçmişte turnikenin aralıklı olarak gevşetilmesi tavsiye edilmiş, ancak bu kan kaybını artırıyor.'],
+  ['yılan ısırığını kesmek, emmek ya da buzlamak', 'tr', 'Yılan sokmasında ilk yardım', '3. Yara üzerine emici şişe veya hacamat bardağı kapatılarak zehir çekilir.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'orman yanıyor etrafımız sarıldı', 'Orman yangınında mahsur kalan kimse sırta doğru tırmanmalı, dumanın altında kalmamak için yüksek yerleri tercih etmelidir.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'otelde yangın çıkarsa ne yapmalı', 'Geçen sene ben direkt en üst kata, terasa çıktım, orada hava var.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'orman yangini toplanma noktasi', 'Yangından kaçışta sırtlar ve zirveler, geniş görüş sağladıkları için güvenli toplanma noktaları olarak kabul edilir.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'en', 'caught in wildfire which way do i go', 'If you are caught in a wildfire, head uphill toward the ridge.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Yangın beni yakalarsa nereye gitmeliyim', 'Mümkün olan en yüksek noktaya ulaşmaya çalışın.'],
+  ['yangında yokuş yukarı, sırta ya da tepeye kaçmak', 'tr', 'Yangın yaklaşıyor', 'Yangında herkes yukarı tırmanır, siz de hemen tepeye çıkın.'],   // "yangında" özne değil
 ];
 let eDogru = 0;
 for (const [ad, dil, soru, cevap] of EYLEM_ORNEK) {
@@ -285,6 +358,277 @@ for (const [ad, dil, soru, cevap] of EYLEM_ORNEK) {
   if (tamam) eDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${ad || 'sessiz'}) | ${soru}`);
 }
 console.log(`— eylem dişi: ${eDogru}/${EYLEM_ORNEK.length} —`);
+
+// §133 (14.11) acil belirti kartı: soruda ŞU ANDA acil bir belirti var mı (IFRC "access EMS" ölçütleri). Örnekler kılavuz
+// bilgisinden yazıldı, sınav sorularından değil; olumsuz, geçmiş, koşullu, bilgi, mecaz ve neredeyse hâlleri sessiz kalmalı.
+const ACIL_ORNEK = [
+  ['nefes', 'tr', 'Babam nefes alamıyor, dudakları morardı, ne yapayım?'],
+  ['nefes', 'tr', 'Annemin nefesi çok daraldı, konuşamıyor.'],
+  ['nefes', 'en', 'My son is struggling to breathe and his lips look blue.'],
+  ['bilinc', 'tr', 'Dedemi uyandıramıyoruz, sesleniyoruz tepki vermiyor.'],
+  ['bilinc', 'tr', 'Teyzem bu sabahtan beri saçmalıyor, kimseyi tanımıyor.'],
+  ['bilinc', 'en', 'Grandma is confused and very drowsy since lunch.'],
+  ['gogus', 'tr', 'Eşimin göğsünde baskı var, sol koluna vuran bir ağrı başladı.'],
+  ['gogus', 'en', 'I have crushing chest pain and I am sweating.'],
+  ['inme', 'tr', 'Babamın ağzı bir yana kaydı, sağ kolunu kaldıramıyor.'],
+  ['inme', 'en', 'Her face is drooping on one side and her speech is slurred.'],
+  ['nobet', 'tr', 'Oğlum yerde kasılıyor, gözleri kaydı, ağzından köpük geliyor.'],
+  ['nobet', 'tr', 'Kızım havale geçiriyor, ne yapmalıyım?'],
+  ['kanama', 'tr', 'Bacağındaki yaradan kan fışkırıyor, bastırdım ama durmuyor.'],
+  ['kanama', 'tr', 'Babam kahve telvesi gibi kustu.'],
+  ['kanama', 'en', 'He is vomiting blood.'],
+  ['alerji', 'tr', 'Arı soktu, dudakları şişti ve yutkunamıyor.'],
+  ['alerji', 'en', 'After eating peanuts his throat is closing.'],
+  ['zehir', 'tr', 'Üç yaşındaki oğlum lavabo açıcı içmiş.'],
+  ['zehir', 'tr', 'Kızım düğme pil yuttu.'],
+  ['zehir', 'en', 'My toddler swallowed some of my blood pressure pills.'],
+  ['karin', 'tr', 'Karnımda bıçak saplanır gibi şiddetli bir ağrı var, karnım taş gibi.'],
+  ['basagrisi', 'tr', 'Birden hayatımın en kötü baş ağrısı başladı.'],
+  ['basagrisi', 'tr', 'Annem çift görüyor.'],
+  ['ates', 'tr', 'Kızımın ateşi var ve vücudunda bastırınca solmayan morumsu lekeler çıktı.'],
+  ['ates', 'tr', '3 haftalık bebeğimin ateşi 38.'],
+  ['sok', 'tr', 'Kazadan sonra bembeyaz oldu, soğuk soğuk terliyor.'],
+  ['yanik', 'tr', 'Kızgın yağ döküldü, kolunda kocaman derin bir yanık var.'],
+  ['elektrik', 'tr', 'Oğlumu prizde elektrik çarptı.'],
+  ['sicak', 'tr', 'Tarlada güneşte çalışırken babam saçmalamaya başladı, terlemiyor.'],
+  ['soguk', 'tr', 'Dağda kaldık, arkadaşımın titremesi durdu ve konuşması anlaşılmıyor.'],
+  ['kafa', 'tr', 'Oğlum düşüp başını çarptı, iki kez kustu ve çok uykulu.'],
+  ['kirik', 'tr', 'Düştü, kolunun kemiği deriyi delip dışarı çıktı.'],
+  ['bogulma', 'tr', 'Oğlumun boğazına üzüm kaçtı, nefes alamıyor, ses çıkaramıyor.'],
+  ['bogulma', 'tr', 'Yeğenim havuzda boğuluyordu, sudan baygın çıkardık.'],
+  ['gebelik', 'tr', '32 haftalık hamileyim, bebeğin hareketleri bugün hiç yok.'],
+  ['gebelik', 'en', 'I am 30 weeks pregnant and bleeding.'],
+  // sessiz: olumsuz, geçmiş/düzelmiş, koşullu, bilgi sorusu, mecaz, neredeyse, sıradan
+  ['', 'tr', 'Nefesi daralmıyor, ateşi de yok, sadece öksürüyor.'],
+  ['', 'tr', 'Göğsüm ağrımıyor ama başım dönüyor.'],
+  ['', 'tr', 'Dün göğsümde ağrı oldu ama geçti.'],
+  ['', 'tr', 'Nefesi daralırsa ne yapmalıyım?'],
+  ['', 'tr', 'Kalp krizinin belirtileri nelerdir?'],
+  ['', 'tr', 'İnme nasıl anlaşılır?'],
+  ['', 'tr', 'Gülmekten nefesim kesildi, karnım ağrıyor.'],
+  ['', 'tr', 'Korkudan bayılacaktım.'],
+  ['', 'tr', 'Kolum ağrıyor, dün spor yaptım.'],
+  ['', 'tr', 'Bayıldı ama hemen kendine geldi.'],
+  ['', 'en', 'I had chest pain yesterday but it went away.'],
+  ['', 'en', 'What are the signs of a stroke?'],
+  ['', 'en', 'She has no chest pain and no trouble breathing.'],
+  ['', 'en', 'I almost passed out from laughing.'],
+  ['', 'en', 'If someone is choking, what should I do?'],
+  // kaynak bozmanın bulduğu eksik dişler: yan cümle olumsuzluğu, bilgi sorusu, yan cümle sınırı
+  ['', 'tr', 'Göğüs ağrısı yok, sadece sırtım tutuldu.'],
+  ['', 'tr', 'Nefes darlığı neden olur, belirtileri nelerdir?'],
+  ['', 'en', 'What are the signs that chest pain is a heart attack?'],
+  ['gogus', 'tr', 'Şu an göğsüm sıkışıyor; kalp krizinin belirtileri nelerdir?'],
+  ['gogus', 'tr', 'Babamın göğsü sıkışıyor, ateşi yok.'],
+  // eski bankada kaba boş alarmlar (görülmüş veri; yalnız hata ayıklama): yüzüstü düşmek, nefes alabilen kılçık, siyatik, yıldırım anı
+  ['', 'tr', 'Kızım salıncaktan yüzüstü düştü, ön dişi kökünden çıktı.'],
+  ['', 'tr', 'Annemin boğazına kılçık takıldı, öksürüyor ama konuşabiliyor, nefes alıyor.'],
+  ['', 'tr', 'Bir haftadır belim ağrıyor, ağrı sol bacağıma vuruyor, bacağım güçsüz gibi.'],
+  ['', 'tr', 'Açık arazide yıldırım düşerken ne yapılmalı?'],
+  ['inme', 'tr', 'Babamın sol kolu birden tutmaz oldu.'],
+  ['inme', 'tr', 'Annemin konuşması birden peltekleşti.'],
+  // §133 ikinci tur (T'nin kaçırdığı biçimlerin benzerleri, Can'ın sözleriyle; hüküm görülmemiş V'de)
+  ['kanama', 'tr', 'Elindeki kesikten kan su gibi akıyor, havlu kanla doldu.'],
+  ['zehir', 'tr', 'Oğlum bir kutu aspirinin yarısını içmiş, şimdilik iyi görünüyor.'],
+  ['zehir', 'tr', 'Annem tansiyon ilacından fazla aldığını söyledi.'],
+  ['gebelik', 'tr', '36 haftalık hamileyim, bebek bugün hiç kıpırdamadı.'],
+  ['alerji', 'tr', 'Yediğim karidesten sonra bütün vücudum kabardı, başım dönüyor.'],
+  ['bogulma', 'tr', 'Bebeğimin boynuna battaniyenin ipi dolanmış, hemen çözdüm, morardı.'],
+  ['bogulma', 'tr', 'Oğlumu perdenin ipi boynuna sarılmış halde buldum, kestim.'],
+  ['elektrik', 'tr', 'Kablosu soyulmuş ütüye dokununca çarpıldı.'],
+  ['gogus', 'tr', 'Babamın göğsü ağrıyor, geçti sayılır mı?'],
+  ['', 'tr', 'Bütün gün su içtim, ilaçlarımı da aldım, ne yemeliyim?'],
+  ['', 'tr', 'Her yerim kaşınıyor ama nefesim rahat, dudaklarım da normal.'],
+  ['', 'tr', 'Dün göğsüm ağrıdı, bugün geçti.'],
+  ['', 'tr', 'Parasetamol en fazla ne kadar alınır?'],
+  ['', 'tr', 'Dün baş ağrım için parasetamol içtim, işe yaramadı.'],
+  // §133 ikinci tur boş alarm türleri (V'nin türleri, Can'ın sözleriyle): geçmiş hikâye, varsayım (geniş zaman), "sandım"
+  ['', 'tr', 'İki yıl önce kalp krizi geçirdim, şimdi yürüyüşe nasıl başlarım?'],
+  ['', 'tr', 'Rahmetli babamı gençliğinde elektrik çarpmış, izleri kalmış; neden olur?'],
+  ['', 'tr', 'Kızım arı alerjisi olan biri; sokulursa dudakları şişer, yanımızda ne taşıyalım?'],
+  ['', 'tr', 'Kakam koyu kırmızı geldi, önce kan sandım ama dün pancar yemiştim.'],
+  ['', 'tr', 'Oğlum fıstık yiyince dudakları şişer, bunu nasıl önleriz?'],
+  ['', 'en', 'My late grandfather had a heart attack two years ago; how can I lower my own risk?'],
+  ['kafa', 'tr', 'Oğlum iki hafta önce başını çarptı, dünden beri kusuyor ve çok uykulu.'],
+  ['bilinc', 'tr', 'Annem bir ay önce düştü, bugün kafası karışık, bizi tanımıyor.'],
+  // §153 (15.11 akşam): uzuv kopması — eşyanın kolu, kayışı, merak ve geçmiş sayılmaz
+  ['kopma', 'tr', 'Kol koptu ne yapmalı'],
+  ['kopma', 'tr', 'Yardım edin! Oğlumun parmağı kapıya sıkıştı, ucu kopmuş'],
+  ['kopma', 'tr', 'parmagim kopuyo neredeyse bi deri parcasiyla duruyo napcam'],
+  ['kopma', 'tr', 'Annemin parmağının ucu yerde, kan akıyor'],
+  ['kopma', 'tr', 'Babam elini saman makinesine kaptırdı'],
+  ['kopma', 'tr', 'Çocuk asansör kapısına elini sıkıştırdı parmak ucu koptu'],
+  ['kopma', 'en', "My coworker's hand was cut off by a saw."],
+  ['', 'tr', 'Kapının kolu koptu ne yapmalı'],
+  ['', 'tr', 'Havalimanında bavulumun çekme kolu koptu, tazminat isteyebilir miyim?'],
+  ['', 'tr', 'Kol saatimin kayışı koptu'],
+  ['', 'tr', 'Oyuncak bebeğin kolu koptu'],
+  ['', 'tr', 'Kopan bir uzuv kaç saat içinde dikilebilir, merak ediyorum.'],
+  ['', 'tr', 'On yıl önce parmağım koptu, protezim ağrıyor'],
+  ['', 'tr', 'Denizden çıkarken bacağına denizanası kolları dolanmış, derisine yapışmış duruyor'],
+  ['', 'tr', 'Ayağım kaydı yere düştüm'],
+  ['', 'tr', 'Kulaklığım koptu'],
+  ['gogus', 'tr', 'babamin gogsunde baski var cok agriyor'],   // harfsiz yazım
+  ['', 'tr', 'kapinin kolu koptu ne yapayim'],
+  ['', 'tr', 'Babamın parmağı yirmi yıl önce hızarda kopmuştu, çoktan iyileşti; şimdi soğukta sızlıyor'],
+  ['', 'tr', 'Kopan bir parmak hastaneye nasıl taşınır? Şu an yaralı yok, sınav için soruyorum.'],
+  ['nefes', 'tr', 'Gece 2 aylık kızımı emzirirken uyuyakalmışım; uyandığımda dudakları morarmıştı, nefes almakta zorlanıyor'],   // -mıştı geçmiş değil
+  ['', 'tr', 'banyonun kapı kolu elimde kaldı, nasıl açarım'],
+  ['', 'tr', 'İlk yardım kursunda hoca kopan uzuv nasıl taşınır diye sordu, sınava çalışıyorum'],
+  ['nefes', 'tr', 'Çadırda 4 aylık bebeğim nefes almıyor! Kursta yetişkinlere göre öğrendim, bebekte ne yapacağım?'],   // "kurs" bilgi işareti değil (§155, beş kart susturdu)
+  ['', 'tr', 'Gömleğimin kolu omuz dikişinden ayrıldı'],
+  ['kopma', 'tr', 'Kardeşimin kulağı (kıkırdağıyla beraber) koptu, kan akıyor'],
+];
+let aDogru = 0;
+for (const [kod, dil, soru] of ACIL_ORNEK) {
+  const r = H.acilBelirti(soru, dil);
+  const tamam = kod ? r.includes(kod) : r.length === 0;
+  if (tamam) aDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${kod || 'sessiz'}) | ${soru}`);
+}
+console.log(`— acil dişi: ${aDogru}/${ACIL_ORNEK.length} —`);
+
+// §157 kaynağın türü (Ercan 15.11: "Kaynak ne kadar güvenilir ve doğru ise cevap o kadar daha doğru"): forum · viki · etiketsiz
+const TUR_ORNEK = [['forum', 'outdoors.stackexchange.com_en_all_2026-10'], ['forum', 'stackoverflow.com_en_all.zim'], ['forum', 'askubuntu.com_en_all'],
+  ['viki', 'wikipedia_tr_top_nopic_2026-10'], ['viki', 'wikivoyage_en_all_nopic_2026-09'], ['viki', 'mdwiki_en_all_maxi_2025-11'], ['viki', 'wikiskripta_cs_all_maxi_2026-05'],
+  ['', 'irp.fas.org_en_military-medicine_2026-10'], ['', 'heybe_sinav_tr_2026-11'], ['', 'gutenberg_tr_all'], ['', 'ifrc_first_aid_guidelines_2020']];
+let tDogru = 0;
+for (const [tur, ad] of TUR_ORNEK) { const r = H.kaynakTuru(ad); if (r === tur) tDogru++; else console.log(`  YANLIŞ: ${JSON.stringify(r)} (beklenen ${tur || 'etiketsiz'}) | ${ad}`); }
+console.log(`— kaynak türü dişi: ${tDogru}/${TUR_ORNEK.length} —`);
+
+// §135 şıklar: ne zaman sorulur — ilk iki aday bölüm çok yakınsa; kullanıcı seçtiyse, kendi durumunu yazdıysa ya da tek aday varsa sorulmaz
+const SIK_ORNEK = [
+  [true, [{ puan: 0.612 }, { puan: 0.605 }, { puan: 0.55 }], {}],
+  [true, [{ puan: 0.50 }, { puan: 0.4801 }], {}],
+  [false, [{ puan: 0.70 }, { puan: 0.62 }], {}],
+  [false, [{ puan: 0.61 }], {}],
+  [false, [], {}],
+  [false, [{ puan: 0.61 }, { puan: 0.60 }], { secilen: { kitap: 'k', ad: 'a' } }],
+  [false, [{ puan: 0.61 }, { puan: 0.60 }], { sorulmaz: true }],
+  [false, [{ puan: 0.61 }, { puan: 0.60 }], { yalnizKaynak: true }],
+];
+let sDogru = 0;
+const sikAyar = H.AYAR.secenek; H.AYAR.secenek = { esik: 0.03 };   // üründe kapalı (§135); kural ölçülen eşikle sınanır
+for (const [bek, adaylar, sec] of SIK_ORNEK) { if (H.secenekGerekli(adaylar, sec) === bek) sDogru++; else console.log(`  YANLIŞ şık: ${JSON.stringify(adaylar)} ${JSON.stringify(sec)} (beklenen ${bek})`); }
+{ H.AYAR.secenek = { esik: 0 }; if (H.secenekGerekli([{ puan: 0.61 }, { puan: 0.60 }]) === false) sDogru++; else console.log('  YANLIŞ şık: eşik 0 iken soruldu'); H.AYAR.secenek = sikAyar; }
+console.log(`— şık dişi: ${sDogru}/${SIK_ORNEK.length + 1} —`);
+
+// §143 ayırt eden kelimeler (şıkların etiketi): öbür adayda geçen kelime alınmaz, boş kelime ve başlık kelimesi alınmaz,
+// aynı kökten tek kelime, en çok 5
+{
+  const [su, susuz] = H.ayirtKelimeler([
+    'Su zehirlenmesi aşırı miktarda su içilmesinden kaynaklanır. Sodyum düzeyi düşer; baş ağrısı, kusma ve bilinç bulanıklığı olur. Aşırı su içmek tehlikelidir. Denizde denizde denizden denizden. Kusma kusma kusma.',
+    'Susuzluk vücuttaki sıvı kaybıdır. İshal, kusma ve terleme sıvı kaybına yol açar. Ağız kuruluğu, susama ve koyu idrar görülür. Ayrıca genellikle olarak. Kusma kusma kusma.'],
+    ['Su zehirlenmesi', 'Susuzluk']);
+  const AYIRT_ORNEK = [
+    ['öbüründe geçen "kusma" alınmaz', !su.includes('kusma') && !susuz.includes('kusma')],
+    ['ayırt eden kelime alınır', su.includes('aşırı') && susuz.includes('sıvı')],
+    ['boş kelime alınmaz', !susuz.includes('ayrıca') && !susuz.includes('genellikle') && !susuz.includes('olarak')],
+    ['başlık kelimesi alınmaz', !su.some((w) => w.startsWith('zehir')) && !susuz.some((w) => w.startsWith('susuz'))],
+    ['aynı kökten tek kelime', su.filter((w) => w.startsWith('deniz')).length <= 1],
+    ['en çok 5', su.length <= 5 && susuz.length <= 5],
+  ];
+  let yDogru = 0;
+  for (const [ad, tamam] of AYIRT_ORNEK) { if (tamam) yDogru++; else console.log(`  YANLIŞ ayırt: ${ad} — ${JSON.stringify([su, susuz])}`); }
+  console.log(`— ayırt dişi: ${yDogru}/${AYIRT_ORNEK.length} —`);
+}
+
+// §145 Heybe defteri: grup kapsamında arama (alt gruplar dahil), kelime başı eşleşmesi, çeviride arama, grup yolu, not denetimi
+{
+  const d = { gruplar: [{ id: 'g1', ad: 'Tıbbi' }, { id: 'g2', ad: 'Ercan', ust: 'g1' }, { id: 'g3', ad: 'Konaklama' }], kayitlar: [
+    { id: 'k1', grup: 'g2', ad: 'Alerji', tur: 'not', metin: 'Penisiline alerjisi var. Ateşte ılık duş.' },
+    { id: 'k2', grup: 'g1', ad: 'Yanık', tur: 'cevap', soru: 'Elim yandı', cevap: 'Akan suyla 20 dakika soğut.' },
+    { id: 'k3', grup: 'g3', ad: 'Çadır', tur: 'not', metin: 'Ateş yakarken çadırdan uzak dur.' },
+    { id: 'k4', grup: '', ad: 'Fever', tur: 'cevap', cevap: 'x', ceviriler: { tr: { ad: 'Yüksek ateş', cevap: 'Ilık duş' } } }] };
+  const ids = (l) => l.map((k) => k.id).sort().join(',');
+  const DEFTER_ORNEK = [
+    ['grup kapsamı (alt grup dahil)', ids(H.defterAra(d, 'ateş', 'g1')) === 'k1'],
+    ['bütün defter', ids(H.defterAra(d, 'ateş')) === 'k1,k3,k4'],
+    ['kelime başı ("ateş" → "ateşte")', ids(H.defterAra(d, 'ateş', 'g2')) === 'k1'],
+    ['bütün kelimeler gerekir', ids(H.defterAra(d, 'ateş çadır')) === 'k3'],
+    ['çeviride arama', ids(H.defterAra(d, 'yüksek', null, 'tr')) === 'k4'],
+    ['boş sorgu grubun hepsi', ids(H.defterAra(d, '', 'g1')) === 'k1,k2'],
+    ['grup yolu', H.defterYol(d, 'g2').join(' › ') === 'Tıbbi › Ercan'],
+    ['not denetimi uyarır', H.notDenetle('Yanığa diş macunu sürüyorum.', 'tr').includes('yanik')],
+    ['not denetimi susar', H.notDenetle('Ateşte ılık duş alırım.', 'tr').length === 0],
+    ['kimlik tekil', new Set(Array.from({ length: 50 }, () => H.defterKimlik())).size === 50],
+  ];
+  let dDogru = 0;
+  for (const [ad, tamam] of DEFTER_ORNEK) { if (tamam) dDogru++; else console.log(`  YANLIŞ defter: ${ad}`); }
+  // kaydın çevirisi (sahte çevirmen): ad kendi satırında bağlamıyla çevrilir; düzen bozulursa ad özgün kalır
+  (async () => {
+    const sahte = (cikti) => async (metin) => (metin.includes('\n\n') ? cikti : `«${metin.split('\n')[0]}»`);
+    const not = { ad: 'Ercan ateşlenince', tur: 'not', dil: 'tr', metin: 'Penisiline alerjisi var. Ateş düşmezse ılık duş.' };
+    const cevap = { ad: 'Ateş düşürme', tur: 'cevap', dil: 'tr', soru: 'Ateşi nasıl düşürürüm?', cevap: 'Ilık duş.' };
+    const varsayilan = { ad: 'Ateşi nasıl düşürürüm?', tur: 'cevap', dil: 'tr', soru: 'Ateşi nasıl düşürürüm?\nek', cevap: 'Ilık duş.' };
+    const a1 = await H.defterCevir(not, 'en', sahte('When Ercan has a fever:\n\nHe is allergic to penicillin.'));
+    const a2 = await H.defterCevir(cevap, 'en', sahte('Reducing fever How do I bring a fever down?'));
+    const a3 = await H.defterCevir(cevap, 'en', sahte(`${'x'.repeat(80)}\n\ny`));
+    let cagri = 0;
+    const a4 = await H.defterCevir(varsayilan, 'en', async (m) => { cagri++; return `«${m.split('\n')[0]}»\nadd`; });
+    const CEVIRI_ORNEK = [
+      ['ad bağlamıyla, sondaki iki nokta atılır', a1.ad === 'When Ercan has a fever'],
+      ['notun gövdesi metin alanına', a1.metin === '«Penisiline alerjisi var. Ateş düşmezse ılık duş.»' && !('cevap' in a1)],
+      ['satır düzeni bozulunca ad özgün kalır', a2.ad === 'Ateş düşürme'],
+      ['addan çok uzun satır alınmaz', a3.ad === 'Ateş düşürme'],
+      ['ad soruysa ayrı çeviri yok, sorunun ilk satırı', a4.ad === '«Ateşi nasıl düşürürüm?»' && cagri === 2],
+      ['cevap ve soru çevrilir', a2.cevap === '«Ilık duş.»' && a2.soru === '«Ateşi nasıl düşürürüm?»'],
+    ];
+    for (const [ad, tamam] of CEVIRI_ORNEK) { if (tamam) dDogru++; else console.log(`  YANLIŞ defter çevirisi: ${ad}`); }
+    // K7 defter kilidi (15.11, §146–§148): zarfta düz metin yok; parola ve kurtarma koduyla açılır, yanlışı açmaz; parola yenilenir,
+    // kod geçerli kalır; her yazımda yeni iv; kullanıcının yazım farkları (boşluk, NFC, küçük harf, O/0) aynı anahtar
+    const atar = async (is) => { try { await is(); return false; } catch (e) { return true; } };
+    const T = 100000, ic = d;
+    const { zarf, kod } = await H.defterKilitKur(ic, ' parola ile şifre ', T);
+    const zarfYazi = JSON.stringify(zarf);
+    const acik = await H.defterKilitAc(zarf, 'parola ile şifre');
+    const kodGevsek = kod.toLowerCase().replace(/-/g, ' ').replace(/0/g, 'o').replace(/1/g, 'l');
+    const kodla = await H.defterKilitAc(zarf, kodGevsek, true);
+    const bozukKod = (kod[0] === 'A' ? 'B' : 'A') + kod.slice(1);
+    const yen = await H.defterParolaYenile(zarf, kod, 'yepyeni bir parola');
+    const yaz1 = await H.defterKilitle({ ...ic, kayitlar: [] }, yen.zarf, yen.anahtar), yaz2 = await H.defterKilitle({ ...ic, kayitlar: [] }, yen.zarf, yen.anahtar);
+    const kodlar = Array.from({ length: 50 }, () => H.kurtarmaKoduUret());
+    const KILIT_ORNEK = [
+      ['zarfta düz metin yok', !/Tıbbi|Ercan|ateş/i.test(zarfYazi) && zarf.surum === 2 && zarf.sifreli.tekrar === T],
+      ['parolayla açılır, içerik aynı', JSON.stringify(acik.defter) === JSON.stringify(ic)],
+      ['yanlış parola açmaz', await atar(() => H.defterKilitAc(zarf, 'parola ile şifree'))],
+      ['parola NFC (aynı harfin iki biçimi)', !(await atar(() => H.defterKilitAc(zarf, 'parola ile şifre'.normalize('NFD'))))],
+      ['kısa parola kilit kurmaz', await atar(() => H.defterKilitKur(ic, 'kısa', T))],
+      ['kodla açılır (küçük harf, boşluk, O ve l)', JSON.stringify(kodla.defter) === JSON.stringify(ic)],
+      ['yanlış kod açmaz', await atar(() => H.defterKilitAc(zarf, bozukKod, true))],
+      ['eksik kod geçersiz', H.kurtarmaTemiz(kod.slice(0, -1)) === null],
+      // sabit örnek (15.11): rastgele kodda "0" yoksa O/0 düzeltmesi sınanmıyordu — bozma iki koşunun birinde kaçtı
+      ['kod O → 0, I/L → 1, ayraç ve küçük harf (sabit örnek)', H.kurtarmaTemiz('oO1il 23456-789ab cdefg_hjkmn') === '0011123456789ABCDEFGHJKMN'],
+      ['yeni parola açar, eskisi açmaz', !(await atar(() => H.defterKilitAc(yen.zarf, 'yepyeni bir parola'))) && await atar(() => H.defterKilitAc(yen.zarf, 'parola ile şifre'))],
+      ['parola yenilenince kâğıttaki kod geçerli', !(await atar(() => H.defterKilitAc(yen.zarf, kod, true)))],
+      ['yazınca sarılı anahtarlar aynı, içerik yeni', JSON.stringify(yaz1.sifreli.parola) === JSON.stringify(yen.zarf.sifreli.parola)
+        && (await H.defterKilitAc(yaz1, 'yepyeni bir parola')).defter.kayitlar.length === 0],
+      ['her yazımda yeni iv', yaz1.sifreli.defter.iv !== yaz2.sifreli.defter.iv],
+      ['kod 25 harf Crockford, tekil', kodlar.every((k) => /^[0-9A-HJKMNP-TV-Z]{5}(-[0-9A-HJKMNP-TV-Z]{5}){4}$/.test(k)) && new Set(kodlar).size === 50],
+    ];
+    for (const [ad, tamam] of KILIT_ORNEK) { if (tamam) dDogru++; else console.log(`  YANLIŞ defter kilidi: ${ad}`); }
+    console.log(`— defter dişi: ${dDogru}/${DEFTER_ORNEK.length + CEVIRI_ORNEK.length + KILIT_ORNEK.length} —`);
+  })().catch((e) => console.log(`— defter dişi: 0/1 (${e.message}) —`));
+}
+
+// §158 (K7): "bu cevap yanlış" kaydı Defterim'in anahtarıyla şifrelenir — açık metin zarfa sızmaz, özet ve tam kayıt çözülür,
+// başka anahtarla açılmaz
+(async () => {
+  const anahtar = async () => globalThis.crypto.subtle.importKey('raw', globalThis.crypto.getRandomValues(new Uint8Array(32)), { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+  const k1 = await anahtar(), k2 = await anahtar();
+  const kayit = { soru: 'Annemin nefesi daraldı, penisilin alerjisi var', not: 'yanlış bölüm', dil: 'tr', sonuc: 'cevap', parcalar: [{ metin: 'kaynak' }] };
+  const z = await H.yanlisSifrele(kayit, k1);
+  const atar = async (f) => { try { await f(); return false; } catch (e) { return true; } };
+  const ORNEK = [
+    ['açıkta yalnız dil, sonuç ve iki zarf', JSON.stringify(Object.keys(z).sort()) === JSON.stringify(['dil', 'sifreli', 'sifreliOzet', 'sonuc'])],
+    ['soru ve not zarfa açık metin sızmaz', !/Annemin|penisilin|yanlış bölüm/.test(JSON.stringify(z))],
+    ['özet çözülür', (await H.yanlisCoz(z.sifreliOzet, k1)).soru === kayit.soru],
+    ['tam kayıt çözülür', (await H.yanlisCoz(z.sifreli, k1)).parcalar.length === 1],
+    ['başka anahtarla açılmaz', await atar(() => H.yanlisCoz(z.sifreli, k2))],
+  ];
+  let n = 0;
+  for (const [ad, ok] of ORNEK) { if (ok) n++; else console.log(`  YANLIŞ: ${ad}`); }
+  console.log(`— yanlış kaydı şifre dişi: ${n}/${ORNEK.length} —`);
+})().catch((e) => console.log(`— yanlış kaydı şifre dişi: 0/1 (${e.message}) —`));
 
 // metin kesme (07.11 akşam, §48): n harfte kesilen metin emojinin yarısında kalmamalı — yarım karakter anlam
 // sunucusunda JSON hatası verip soruyu düşürüyordu. Düz slice ile bu örneklerin yarısı bozuk çıkar (diş).
@@ -706,4 +1050,50 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
     if (r.length === 0) kDogru++; else console.log('  YANLIŞ (konu): adres yokken çalıştı');
     console.log(`— konu dişi: ${kDogru}/${KONU_ORNEK.length + 1} —`);
   });
+}
+
+// ---- 15.11 (§150): sorunun konusu — önek ayırma ve karışma kapısı (sabit örnekler; sahte çevirmen) ----
+{
+  const K = [
+    ['önek ayrılır', JSON.stringify(H.soruKonuAyir('Medical: Fever reduction', 'Tıbbi')), JSON.stringify({ etiket: 'Medical', govde: 'Fever reduction' })],
+    ['"Translation:" ve tırnak atılır', (H.soruKonuAyir('Translation: "Medical: How to make a sling?"', 'Tıbbi') || {}).govde, 'How to make a sling?'],
+    ['iki nokta yoksa ayrılmaz', H.soruKonuAyir('How long does the shift last?', 'Tıbbi'), null],
+    ['uzak iki nokta önek değil', H.soruKonuAyir('If the fire gets out of control and the house is burning there: run', 'Tıbbi'), null],
+    ['bağlaç konu kelimesi değil', H.soruKonuKelime('Fire and safety').join(','), 'fire,safety'],
+    ['KB28: konudan yangın uydurması', H.soruKonuSizdi('Fire and safety', 'What should I do if there is a fire and someone is trapped?', 'What should I do if I encounter a bear?').join(','), 'fire'],
+    ['KB02: yangın soruda da var', H.soruKonuSizdi('Fire and safety', 'What should I do if the fire gets out of control?', 'What should I do if the fire gets out of control?').length, 0],
+    ['KK02: su soruda da var', H.soruKonuSizdi('Food and water', 'How can I purify water?', 'How can I purify the water?').length, 0],
+    ['konu kelimesi geçmiyor', H.soruKonuSizdi('Medical', 'How to use the suppository', 'How to use the fitil').length, 0],
+    ['boşluksuz yazı', H.soruKonuSizdi('医疗', '如果发生医疗事故怎么办', '如果遇到狼怎么办').join(','), '医疗'],
+  ];
+  let kd = 0;
+  for (const [ad, r, b] of K) if (r === b) kd++; else console.log(`  YANLIŞ (soru konusu): ${ad} → ${JSON.stringify(r)}`);
+  // sahte çevirmen: kaynak metin → çeviri; kaç çağrı yapıldığı da sayılır (konu kelimesi geçmiyorsa konusuz çeviri istenmez)
+  const SAHTE = {
+    'Tıbbi: Ateş düşürme': 'Medical: Fever reduction', 'Ateş düşürme': 'Fire suppression',
+    'Yangın ve güvenlik: Kurt varsa ne yapmalıyım': 'Fire and safety: What should I do if there is a fire and someone is trapped?',
+    'Kurt varsa ne yapmalıyım': 'What should I do if I encounter a wolf?',
+    'Yangın ve güvenlik: Ateş yükselirse ne yapmalıyım?': 'Fire and safety: What should I do if the fire gets out of control?',
+    'Ateş yükselirse ne yapmalıyım?': 'What should I do if the fire gets out of control?',
+    'Tıbbi: Saat 3:00 ilacı alayım mı': 'At 3:00 should I take the medicine', 'Saat 3:00 ilacı alayım mı': 'Should I take the medicine at 3:00',
+    'Tıbbi: Nöbet ne kadar sürer': 'How long does the shift last?', 'Nöbet ne kadar sürer': 'How long does the shift last?',
+  };
+  let cagri = 0;
+  const ceviren = async (m) => { cagri++; if (!(m in SAHTE)) throw new Error('sahte çevirmende yok: ' + m); return SAHTE[m]; };
+  (async () => {
+    const dene = async (soru, konu) => { cagri = 0; const r = await H.konuluCevir(soru, konu, 'tr', 'en', 80, ceviren); return { ...r, cagri }; };
+    const a = await dene('Ateş düşürme', 'Tıbbi'), b = await dene('Kurt varsa ne yapmalıyım', 'Yangın ve güvenlik'),
+      c = await dene('Ateş yükselirse ne yapmalıyım?', 'Yangın ve güvenlik'), d = await dene('Saat 3:00 ilacı alayım mı', 'Tıbbi'),
+      e = await dene('Nöbet ne kadar sürer', 'Tıbbi'), f = await dene('Ateş düşürme', '');
+    const KC = [
+      ['konulu çeviri, tek çağrı', `${a.metin}|${a.konuDustu || ''}|${a.cagri}`, 'Fever reduction||1'],
+      ['karışma: konusuz çeviriye düşer', `${b.metin}|${b.konuDustu}`, 'What should I do if I encounter a wolf?|karisti'],
+      ['konu kelimesi soruda da var: konulu kalır', `${c.metin}|${c.konuDustu || ''}|${c.cagri}`, 'What should I do if the fire gets out of control?||2'],
+      ['soruda iki nokta: konusuz', `${d.metin}|${d.konuDustu}|${d.cagri}`, 'Should I take the medicine at 3:00|ayrilmadi|1'],
+      ['önek düştü: konusuz', `${e.metin}|${e.konuDustu}`, 'How long does the shift last?|ayrilmadi'],
+      ['konu yok: bugünkü yol', `${f.metin}|${f.konu}|${f.cagri}`, 'Fire suppression||1'],
+    ];
+    for (const [ad, r, bek] of KC) if (r === bek) kd++; else console.log(`  YANLIŞ (soru konusu): ${ad} → ${r}`);
+    console.log(`— soru konusu dişi: ${kd}/${K.length + KC.length} —`);
+  })().catch((e) => console.log(`— soru konusu dişi: 0/1 (${e.message}) —`));
 }

@@ -71,6 +71,13 @@
   .kaynakCeviri { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--vurgu); }
   .kaynakCeviri .ceviriNot { font-size: 13px; color: var(--soluk); margin-top: 4px; }
   .kucukDugme { font-size: 14px; padding: 4px 10px; }
+  /* 15.11 (§150) sorunun konusu: isteğe bağlı düğmeler, seçili olan dolu */
+  .konuSatir { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 14px; color: var(--soluk); }
+  .konuSatir[hidden] { display: none; }
+  #konuDugmeleri { display: contents; }
+  .konuSatir button { font-size: 14px; padding: 4px 12px; background: transparent; color: var(--vurgu); border: 1px solid var(--cizgi); border-radius: 999px; }
+  .konuSatir button[aria-pressed="true"] { background: var(--vurgu); color: #fff; border-color: var(--vurgu); }
+  .konuNot { margin: 4px 2px 0; font-size: 13px; color: var(--soluk); }
   .yanlisYer { margin-top: 14px; }
   .okuYer { margin-top: 8px; }
   .yanlisYer textarea { width: 100%; box-sizing: border-box; }
@@ -103,6 +110,7 @@
   .yigin { display: grid; gap: 10px; margin-top: 10px; }
   .yigin label { display: grid; gap: 4px; font-size: 15px; color: var(--soluk); }
   .yigin button { justify-self: start; }
+  .yigin label.kopruSecim { display: flex; }   /* onay kutusu yazısının yanında (defter kurtarma kodu) */
   footer { color: var(--soluk); font-size: 14px; margin-top: 26px; }
   .diller.ek button .tik { display: inline; margin-inline-start: 6px; color: var(--tamam); font-size: 16px; }
   .diller.ek button.var { border-color: var(--tamam); }
@@ -118,9 +126,30 @@
   .acil summary { cursor: pointer; font-weight: 600; color: var(--dur); }
   .acil h3 { margin: 12px 0 4px; font-size: 15px; color: var(--soluk); }
   .acilMetin { white-space: pre-wrap; margin-top: 8px; font-size: 18px; }
+  .acilSabit { margin: 0 0 6px; font-weight: 600; font-size: 16px; }
   ul.acilNo { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 2px 18px; font-size: 15px; }
   ul.acilNo b { font-size: 17px; }
   .acil p { margin: 8px 0 0; }
+  /* §135 şıklar */
+  ol.secenekler { padding-inline-start: 1.4em; margin: 10px 0; }
+  ol.secenekler li { margin: 6px 0; }
+  button.secenek { text-align: start; width: 100%; white-space: normal; line-height: 1.4; }
+  form.secenekYaz { margin-top: 12px; }
+  .yolSatir { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 4px 0 12px; }
+  .yolSecim { font-weight: 600; }
+  /* §145 defter */
+  .defterArac { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .kurtarmaKod { font: 600 22px/1.5 ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.06em; user-select: all; overflow-wrap: anywhere; }
+  .defterArac input { flex: 1 1 14em; }
+  details.defterGrup { margin: 4px 0 4px 0.6em; padding-inline-start: 0.6em; border-inline-start: 2px solid var(--cizgi, #8884); }
+  details.defterGrup > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+  ul.defterListe { list-style: none; margin: 4px 0; padding: 0; }
+  ul.defterListe li { margin: 3px 0; }
+  ul.defterListe button { text-align: start; white-space: normal; }
+  .defterYolEt { font-size: 13px; opacity: 0.75; margin-inline-start: 6px; }
+  .defterKayit { border: 1px solid var(--cizgi, #8884); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+  .defterKayit .metin { white-space: pre-wrap; margin: 8px 0; }
+  .defterKaydetYer { margin-top: 8px; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -154,6 +183,10 @@
       <button id="sor" type="submit" disabled data-m="sor"></button>
     </form>
     <label class="kopruSecim" id="kopruSatir" hidden><input type="checkbox" id="kopruAc"> <span data-m="kopruSecim"></span> <span id="kopruDurum"></span></label>
+    <!-- 15.11 (§150) sorunun konusu (Ercan: "kullanıcı sorusu hangi konu ile ilgili başlık atsın"): isteğe bağlı, yalnız o soru
+         için; soru başka dile çevrilirken çevirmene ipucu olur. Köprü açıkken görünür — çeviri yoksa konunun etkisi yok. -->
+    <div class="konuSatir" id="konuSatir" role="group" aria-labelledby="konuEtiket" hidden><span id="konuEtiket" data-m="konuEtiket"></span><span id="konuDugmeleri"></span></div>
+    <p class="konuNot" id="konuNot" aria-live="polite" hidden></p>
     <p class="durum" id="durum" role="status" aria-live="polite"><span class="dm"></span><span class="nokta" aria-hidden="true"><i></i><i></i><i></i></span><span class="sure"></span></p>
     <!-- ilk kurulum (08.11, Özet §66): modeller yoksa ana ekranda yol gösterir -->
     <p id="kurulumNotu" hidden><button type="button" id="kurulumBag" data-m="kurulumAc"></button></p>
@@ -168,6 +201,8 @@
       <p class="bolumSatir" id="bolumSatir" dir="auto" hidden></p>
       <!-- 10.11 (§105): soru başka dildeki kitaplarda arandıysa nasıl arandığı (geri çeviri) — okuyan kaymayı görsün -->
       <p class="soruSatir" id="soruSatir" dir="auto" hidden></p>
+      <!-- §143 seçim yolu: seçilen bölüm, bir adım geri, öbür bölümler -->
+      <div class="yolSatir" id="yolSatir" hidden></div>
       <div class="cevap" id="cevap"></div>
       <!-- 10.11 (Ercan: "cevap geldi ama sesli butonu göremedim"): cevabı bilgisayarın kendi sesiyle okur -->
       <div class="okuYer" id="cevapOkuYer" hidden><button type="button" class="kucukDugme" id="cevapOku" data-m="konusmaOku"></button></div>
@@ -181,11 +216,31 @@
         </form>
         <p class="durum" id="yanlisDurum" hidden></p>
       </div>
+      <!-- §145: bu cevabı deftere kaydet (adı, grubu, başka diller) -->
+      <div class="defterKaydetYer"><button type="button" class="kucukDugme" id="defterKaydet" data-m="defterKaydet" hidden></button>
+        <form id="defterKaydetForm" class="yigin" hidden></form></div>
     </section>
 
     <section class="kart" id="kaynakKart" hidden>
       <h2 data-m="kaynakBaslik"></h2>
       <ol class="kaynak" id="kaynaklar"></ol>
+    </section>
+    <!-- §145 Heybe defteri (Ercan 14.11: "Heybe hafızası"): kayıtlı cevaplar ve kendi notları, kendi grupları; modelsiz.
+         Cevabın ve kaynakların altında: soran aşağı kaydırmadan cevabını görsün (14.11 canlı deneme) -->
+    <section class="kart defter" id="defterKart" hidden>
+      <details id="defterAc">
+        <summary><span data-m="defterBaslik"></span> <span class="aciklama" id="defterSayi"></span></summary>
+        <div id="defterKilit" class="yigin" hidden></div>
+        <div id="defterIc">
+        <div class="defterArac"><input id="defterAra" type="search" autocomplete="off" dir="auto"> <select id="defterKapsam"></select></div>
+        <div id="defterSonuc"></div>
+        <div class="defterKayit" id="defterKayit" hidden></div>
+        <p class="defterAlt"><button type="button" class="kucukDugme" id="defterYeniGrup" data-m="defterYeniGrup"></button>
+          <button type="button" class="kucukDugme" id="defterYeniNot" data-m="defterYeniNot"></button>
+          <button type="button" class="kucukDugme" id="defterKilitle" data-m="defterKilitleDugme"></button> <span class="durum" id="defterDurum"></span></p>
+        <form id="defterForm" class="yigin" hidden></form>
+        </div>
+      </details>
     </section>
 
     <div class="alt-bag">
@@ -225,6 +280,7 @@
     <section class="kart" id="modelKart" hidden>
       <h2 data-m="kurulumBaslik"></h2>
       <p class="aciklama" id="kurulumAciklama"></p>
+      <p class="not" data-m="kurulumKaynak"></p>
       <ul class="liste" id="modelListesi"></ul>
       <label class="kopruSecim"><input type="checkbox" id="kurulumKabul" aria-labelledby="kurulumKosul"> <span id="kurulumKosul"></span></label>
       <p><button type="button" id="kurulumIndir"></button> <span class="durum" id="kurulumDurum" role="status" aria-live="polite"></span></p>
@@ -320,6 +376,7 @@
 
 <!-- Acil kart (Ö14): tek kart, açık ekrana taşınır (dil ekranı · ana ekran). Modeller açılmadan görünür. -->
 <section class="kart acil" id="acilKart">
+  <p class="acilSabit" id="acilSabit" dir="auto"></p>
   <details id="acilAc" open>
     <summary><span id="acilBaslik"></span></summary>
     <div class="acilMetin" id="acilMetin" dir="auto" hidden></div>
@@ -392,6 +449,7 @@
       acilisUzun: 'Açılış uzun sürüyor. Bellek yavaş olabilir; Heybe penceresindeki iletilere bak.',
       kurulumBaslik: 'İlk kurulum: Heybe\'nin modelleri',
       kurulumAciklama: (b) => `Heybe'nin arayan, düşünen ve çeviren parçaları (üç model, ${b}) bu pakette gelmez. İnternet varken bir kez indirilir; sonra Heybe internetsiz çalışır. İndirme kesilirse kaldığı yerden sürer.`,
+      kurulumKaynak: "Bilmen gereken bir şey: Heybe'nin cevabı kitaplığı kadar doğrudur. Kaynak ne kadar güvenilir ve doğruysa cevap da o kadar doğru ve yardımcı olur. Kitapları seçerken aşağıdaki kitaplık kılavuzuna bak.",   // §155
       kurulumAnlam: 'Arama modeli (EmbeddingGemma)',
       kurulumSohbet: 'Dil modeli (Gemma 3 4B)',
       kurulumCevirmen: 'Çevirmen (TranslateGemma)',
@@ -436,6 +494,9 @@
       acilVazgec: 'Vazgeç',
       acilKaydedildi: 'Kart kaydedildi.',
       acilNumaralar: 'Acil numaralar',
+      // §153 (Ercan 15.11: "eğer ulaşabiliyorsanız profesyonel yardım talep edin"; "Bu aslında tüm durumlar için geçerli sadece tıbbı olanlar değil"):
+      // kartın her zaman görünen satırı — ilk cümle koşulsuz, koşul ikincide (panikte "ulaşabiliyorsan" ile başlamasın)
+      acilSabit: (no) => `Tehlikedeysen hemen ${no} numarasını ara. Ulaşamıyorsan yakındakilerden yardım iste; Heybe'nin bilgisi yardım gelene kadar içindir.`,
       ambulans: 'ambulans',
       polis: 'polis',
       acilNoNot: 'Bölgenin acil numarası burada yoksa acil kartına yaz.',
@@ -449,6 +510,21 @@
       kipDur: 'Çeviri, kaynağın "düşünülebilir" dediği bir şeyi zorunlu gibi yazmış. Güvenlik için göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.',
       aktarmaDur: 'Cevap, kaynağının yasakladığı bir şeyi öneriyor gibi görünüyor. Güvenlik için göstermiyorum. Lütfen aşağıdaki kaynakları oku.',
       dusenDur: (a) => `Çeviride önemli bir kelime kaybolmuş görünüyor (${a}). Güvenlik için çeviriyi göstermiyorum. Lütfen özgün cevabı ve kaynakları oku.`,
+      // §133 (14.11) acil belirti kartı — anahtar arkadas.js ACIL_BELIRTI[].kod
+      acilBelirtiDur: (b, no) => `Sorduğun durumda acil olabilecek bir belirti var: ${b}. Bu yüzden cevap yazmıyorum. Beklemeden hemen ${no} numarasını ara; hattaki görevli ne yapacağını adım adım söyler.`,
+      acilGenelDur: (no) => `Anlattığın durum acil olabilir. Bu yüzden cevap yazmıyorum. Beklemeden hemen ${no} numarasını ara; hattaki görevli ne yapacağını adım adım söyler.`,
+      acilBelirtiKaynak: 'Ulaşamıyorsan yakındakilerden yardım iste. Yardım gelene kadar okuyabileceğin bölümler aşağıda. Başka ülkelerin acil numaraları sayfanın üstündeki kartta.',
+      acilBelirtiAdlari: {
+        nefes: 'nefes almada güçlük', bilinc: 'bilinç değişikliği (uyandırılamama, kafa karışıklığı, aşırı uyku hâli)', gogus: 'göğüs ağrısı ya da baskısı',
+        inme: 'inme belirtisi (yüzde kayma, kolda ya da bacakta ani güçsüzlük, konuşma bozukluğu)', nobet: 'nöbet',
+        kanama: 'durmayan kanama ya da iç kanama belirtisi', alerji: 'ağır alerji belirtisi (dudak, dil ya da boğazda şişlik, yutkunamama)',
+        zehir: 'zehirlenme ihtimali', karin: 'şiddetli karın ağrısı', basagrisi: 'ani ve çok şiddetli baş ağrısı ya da ani görme kaybı',
+        ates: 'tehlike işaretli ateş (döküntü, ense sertliği, yeni doğanda ateş)', sok: 'şok belirtisi (soğuk ter, solukluk, zayıf nabız)',
+        yanik: 'ağır yanık', elektrik: 'elektrik çarpması', sicak: 'sıcak çarpması belirtisi', soguk: 'hipotermi belirtisi',
+        kafa: 'baş darbesinden sonra tehlike işareti', kirik: 'ağır kırık ya da omurga yaralanması belirtisi',
+        bogulma: 'hava yolu tıkanması ya da suda boğulma', gebelik: 'gebelikte tehlike işareti',
+        kopma: 'uzuv kopması (parmak, el, kol, bacak, kulak)',   // §153
+      },
       eylemDur: (adlar) => `Bu cevapta, sorduğun durumda tehlikeli olabilecek bir öneri var: ${adlar}. Güvenlik için göstermiyorum. Aşağıdaki kaynaklarda da aynı öneri geçebilir, dikkatle oku. Acil bir durumdaysan yardım çağır.`,
       eylemAdlari: {   // Ö25 eylem bekçisi (07.11); anahtar arkadas.js EYLEM[].kod
         turnike: 'turnike ya da sıkı bağ (yalnız durmayan ağır kanamada ya da kopmada)',
@@ -465,10 +541,21 @@
         burun: 'burun kanamasında başı geriye yatırmak',
         aspirin: 'çocuğa aspirin vermek',
         bilincsiz: 'bilinci kapalı ya da inme geçiren birine ağızdan bir şey vermek',
+        // 14.11 (§129) yakın durum kuralları
+        pihti: 'uzun hareketsizlikten sonra şişen bacağa masaj ya da ısı (pıhtı olabilir: aynı gün doktora)',
+        glokom: 'ani ve şiddetli göz ağrısını kompresle geçiştirmek ya da sabahı beklemek (hemen acile)',
+        dis: 'diş çekiminin ilk gününde ağzı çalkalamak, tükürmek ya da pipet kullanmak (gazlı bezi ısırın)',
+        sicakkapi: 'yangında kolu sıcak kapıyı açmak ya da dumanlı merdivenden kaçmak (kapıyı kapalı tutun, altını tıkayın, 112)',
+        // 15.11 akşam (§153) güvenlik turu
+        turnikeGevset: 'takılan turnikeyi ara ara gevşetmek (sağlık görevlisi gelene kadar gevşetilmez)',
+        yilanPanzehir: 'yılan ısırığında panzehiri ya da hastaneyi gereksiz göstermek (her yılan ısırığında sağlık kuruluşuna gidilir)',
+        yanginYukari: 'yangında yokuş yukarı, sırta ya da tepeye kaçmak (yangın yokuş yukarı hızlanır)',
       },
       // 07.11: kitaplık kılavuzu (§34), kitap listem + güncelleme (Ö11), kitap sağlığı (Ö17), dosya dili (Ö16)
       kilavuzBaslik: 'Kitaplık kılavuzu — kitap nasıl eklenir?',
       kilavuz: {
+        // §155 (Ercan 15.11: "kütüphane bilgisi ve oarada yazılanlar çok önemli bunu kurulum esnada kullanıcıya bilgilendirir. Kaynak ne kadar güvenilir ve doğru ise cevap o kadar daha doğru ve yardımcı olabilecek şekilde olacaktır")
+        guven: 'Kaynak ne kadar güvenilir ve doğruysa cevap da o kadar doğru ve yardımcı olur. Heybe cevabı yalnız kitaplığındaki kaynaklardan yazar; kaynağı düzeltemez. Resmî kurumların ve ilk yardım kuruluşlarının güncel kılavuzlarını seç. Ansiklopedi maddeleri, eski kitaplar ve herkesin yazabildiği forumlar eskimiş ya da yanlış bilgi taşıyabilir.',
         secim: 'Kitap seçmek: Heybe her dildeki kitapla çalışır, gerekince çevirir. Bir kitabı tek dilde indirmen yeter; en zengin içerik hangi dildeyse onu seç (tıpta çoğu zaman İngilizce). Bölgene özel bilgi kendi dilinde kalsın.',
         indir: 'İndirmek: internet varken aşağıdaki "İnternetten kitap indir" bölümünde dili seç, ara ve "İndir"e bas. İnen her kitap imzasıyla denetlenir, bozuksa silinir. İndirme kesilirse kaldığı yerden sürer.',
         kopya: 'Elle eklemek: bir .zim kitabını başka yerden aldıysan belleğin "kutuphane" klasörüne kopyala. Heybe on saniye içinde görür.',
@@ -517,6 +604,7 @@
       disKaynak: 'Kiwix dışı',
       imzasiz: 'imzasız',
       disKaynakEtiket: 'Kiwix dışı kaynak',
+      kaynakTuru: { forum: 'forum — herkes yazabilir, kişisel deneyim', viki: 'viki — gönüllüler yazar' },   // §157
       kaynakSayiUyari: (x) => `Dikkat: çeviride özgün metinde olmayan bir sayı var (${x}). Sayılar için özgün metne bak.`,
       bitti: (sn) => `Bitti (${sn} sn).`,
       hata: 'Bir şey ters gitti: ',
@@ -553,6 +641,55 @@
       okuma: 'Kitaplarda aranıyor…',
       okumaNot: 'Okuma kipi: yapay zekâ henüz açık değil, cevap yazılmadı. Kitaplardaki en ilgili bölümler aşağıda; kaynağın kendi sözleri.',
       okumaHata: 'Yapay zekâ cevap veremedi; okuma kipine geçildi. Kitaplardaki en ilgili bölümler aşağıda; kaynağın kendi sözleri.',
+      // §135 şıklar
+      secenekSor: 'Bulduğum bölümler birbirine yakın ama farklı durumları anlatıyor. Hangisi senin durumuna daha yakın? Her bölümün yanında onu öbürlerinden ayıran kelimeler var. Cevabı yalnız seçtiğin bölümden yazacağım.',
+      secenekHepsi: 'Hepsini göster',
+      secenekHepsiNot: 'Bulunan bölümlerin hepsi aşağıda, kendi sözleriyle. Cevap yazılmadı.',
+      secimSatiri: (b) => `Bu bölüm senin seçtiğin duruma göre gösteriliyor: ${b}`,
+      geriDugme: '← Bir adım geri',
+      oburBolum: 'Öbür bölümler:',
+      farkliMi: 'Durumun farklı mı? Öbür bölümlere bak',
+      // §145 Heybe defteri
+      defterBaslik: '📒 Defterim', defterAraYer: 'Defterde ara (ör. ateş)', defterTumu: 'Bütün defter',
+      defterBos: 'Defterin boş. Bir cevabın altındaki "Deftere kaydet" ile ya da kendi notunla başlayabilirsin. Grupları sen kurarsın: Tıbbi, Barınak, Giyim, bir kişinin adı…',
+      defterKilitBaslik: '🔒 Defterin parolayla kilitlenir',
+      defterKilitAciklama: 'Notların bu bellekte şifreli durur; belleği bulan okuyamaz. Parola yalnız senin aklında durur, bellekte saklanmaz. Kurtarıcının bilmesi gerekenleri (alerji, kan grubu, ilaçlar) acil kartına yaz: o şifresiz kalır.',
+      defterKilitTasi: 'Defterin şu an şifresiz duruyor. Parola belirle: defter kilitlenip öyle saklanacak.',
+      defterParola: 'Parola', defterParolaTekrar: 'Parola (tekrar)', defterYeniParola: 'Yeni parola',
+      defterParolaKisa: (n) => `Parola en az ${n} harf olmalı.`, defterParolaUymuyor: 'İki parola aynı değil.', defterKilitKurDugme: 'Kilitle ve aç',
+      defterKodBaslik: 'Kurtarma kodun',
+      defterKodAciklama: 'Parolanı unutursan defterini yalnız bu kod açar. Kâğıda yaz ya da yazdır; evde güvenli bir yerde ya da bir aile büyüğünde sakla. Kod bellekte saklanmaz ve bir daha gösterilmez.',
+      defterKodYazdir: '🖨 Yazdır', defterKodYazdim: 'Kodu kâğıda yazdım', defterDevam: 'Devam',
+      defterKilitli: 'Defterin kilitli. Açmak için parolanı yaz.', defterAcDugme: 'Aç', defterParolaYanlis: 'Parola yanlış.',
+      defterUnuttum: 'Parolamı unuttum', defterKod: 'Kurtarma kodu', defterKodYanlis: 'Kurtarma kodu yanlış.', defterKurtarDugme: 'Kodla aç, yeni parolayı kaydet', defterGeri: 'Geri',
+      defterKayip: 'Parolamı da kodumu da kaybettim',
+      defterKayipAciklama: 'Yeni ve boş bir defter açılır. Eski defter silinmez: açılmadan, ayrı bir dosya olarak bellekte kalır. Kodu sonra bulursan geri getirilebilir.',
+      defterKayipOnay: 'Yeni defter aç', defterKilitleDugme: '🔒 Kilitle', defterOnceAc: 'Önce defterini aç: aşağıda parolanı yaz.',
+      defterKilitleniyor: 'Kilitleniyor…', defterAciliyor: 'Açılıyor…', defterKriptoYok: 'Bu tarayıcı şifrelemeyi desteklemiyor; defter açılamaz.', defterKilitliHata: 'defter kilitli',
+      // 15.11 (§150) sorunun konusu — önek olarak çevirmene giden adlar (§149'da ölçülen Türkçe adlar birebir)
+      konuEtiket: 'Konu (isteğe bağlı):', konuTibbi: 'Tıbbi', konuYangin: 'Yangın ve güvenlik', konuHarita: 'Harita ve yol', konuBarinak: 'Barınak',
+      konuYiyecek: 'Yiyecek ve su', konuGiyim: 'Giyim', konuArac: 'Araç ve gereç',
+      konuNot: (k) => `Soru başka dildeki kitaplar için çevrilirken «${k}» anlamında okunur. Yalnız bu soru için.`,
+      konuKullanildi: (k) => `(konu: ${k})`,
+      konuKaristi: 'Seçtiğin konu çeviriye soruda olmayan bir şey kattığı için soru konusuz arandı.',
+      konuKullanilmadi: 'Konu bu soruda kullanılamadı; soru konusuz arandı.',
+      defterYeniGrup: '+ Yeni grup', defterYeniNot: '+ Yeni not', defterKaydet: '📒 Deftere kaydet', defterAd: 'Adı', defterGrup: 'Grubu',
+      defterGruplanmamis: 'Grupsuz', defterYeniGrupAd: 'ya da yeni grup aç (seçtiğin grubun içinde)', defterNotMetin: 'Notun',
+      defterDiller: 'Başka dillerde de saklansın: çevirmen şimdi çevirir, sonra çevirmen olmadan da görünür',
+      defterKaydetDugme: 'Kaydet', defterVazgec: 'Vazgeç', defterKaydedildi: 'Deftere yazıldı.', defterSilindi: 'Silindi.', defterHata: 'Deftere yazılamadı: ',
+      defterCeviriyor: (d) => `${d} diline çeviriyorum…`,
+      defterCevapEtiket: (t, s) => `Senin kaydettiğin cevap · ${t} · Heybe ${s}. Kitapların ya da durumun değiştiyse "Yeniden sor".`,
+      defterNotEtiket: (t) => `Kendi notun · ${t} · kitaptan değil, Heybe doğruluğunu bilemez.`,
+      defterAcil: (no) => `Bu kayıt acil bir durumu anlatıyor olabilir. Şu an böyle bir durumdaysan beklemeden ${no} numarasını ara.`,
+      defterNotUyari: (a) => `Bu notta tehlikeli olabilecek bir öneri var: ${a}. Uygulamadan önce bir daha düşün.`,
+      defterCeviriNot: (d) => `Makine çevirisi (özgün dili: ${d}). Anlam kaymış olabilir.`,
+      defterSoru: 'Sorduğun', defterCevapsiz: 'Bu kayıtta cevap metni yok; aşağıdaki kaynaklara bak.', defterKaynaklar: 'Kaynaklar (kaydettiğin andaki hâli)',
+      defterYenidenSor: 'Yeniden sor', defterTasi: 'Taşı:', defterSil: 'Sil', defterSilEmin: 'Emin misin? Silmek için bir kez daha bas', defterKapat: 'Kapat',
+      defterGrupAdlandir: 'Adını değiştir', defterGrupSil: 'Grubu sil', defterGrupDolu: 'Grup boş değil. Önce içindekileri taşı ya da sil.',
+      defterUstGrup: 'Hangi grubun içinde', defterUstYok: 'En üstte', defterSonucYok: 'Defterde bununla ilgili bir şey yok.',
+      secenekHicbiri: 'Hiçbiri değilse durumunu birkaç sözle yaz (kim, ne oldu, ne zaman başladı); yeniden arayayım.',
+      secenekYaz: 'Durumunu kendi sözlerinle yaz…',
+      secenekGonder: 'Gönder',
       okumaYok: 'Kitaplarda bununla ilgili bir bölüm bulunamadı.',
       okumaKelimeNot: 'Okuma kipi: yapay zekâ açık değil, cevap yazılmadı. Kitaplarda kelimeyle arandı; en üstteki bölüm her zaman en doğrusu olmayabilir, birkaçına bak.',
       senin: 'Senin dosyan',
@@ -594,6 +731,10 @@
       yanlisBaslik: 'Yanlış diye işaretlediğin cevaplar',
       yanlisAciklama: 'Bu kayıtlar yalnız bu bellekte durur, hiçbir yere kendiliğinden gitmez. Heybe\'yi geliştirenlere ulaştırmak istersen dosyayı indirip onlara verebilirsin. Yeni sürümde bu sorular yeniden sorulur ve düzelip düzelmediği ölçülür.',
       yanlisYok: 'Henüz yanlış diye işaretlediğin cevap yok.',
+      // §158 (K7): kayıt sorunu ve cevabı taşır — kişisel bilgi, Defterim'in parolasıyla şifreli
+      yanlisKilitli: 'Bu kayıt sorunu ve cevabı taşır; kişisel bilgi sayılır ve Defterim\'in parolasıyla şifreli saklanır. Önce Defterim\'i aç ya da bir parola belirle, sonra yeniden kaydet. Yazdığın not burada bekler.',
+      yanlisDefterAc: 'Defterimi aç',
+      yanlisSifreli: '🔒 şifreli kayıt — görmek için Defterim\'i aç',
       yanlisIndir: 'Dosyayı indir',
       yanlisSilSor: (soru) => `"${soru}" kaydı silinsin mi? Bu geri alınamaz.`,
       yanlisSonuc: { cevap: 'cevap verdi', durdu: 'durdurdu', bilgiYok: 'bilgi yok dedi' },
@@ -624,6 +765,7 @@
       acilisUzun: 'Starting is taking long. The USB drive may be slow; check the messages in the Heybe window.',
       kurulumBaslik: 'First setup: Heybe\'s models',
       kurulumAciklama: (b) => `The parts of Heybe that search, think and translate (three models, ${b}) do not come in this package. They are downloaded once while you have internet; after that Heybe works offline. If the download is cut, it continues where it stopped.`,
+      kurulumKaynak: "One thing to know: Heybe's answers are only as accurate as its library. The more reliable and accurate the source, the more accurate and helpful the answer. When you choose books, read the library guide below.",
       kurulumAnlam: 'Search model (EmbeddingGemma)',
       kurulumSohbet: 'Language model (Gemma 3 4B)',
       kurulumCevirmen: 'Translator (TranslateGemma)',
@@ -667,6 +809,7 @@
       acilVazgec: 'Cancel',
       acilKaydedildi: 'Card saved.',
       acilNumaralar: 'Emergency phone numbers',
+      acilSabit: (no) => `If you are in danger, call ${no} now. If you cannot get through, ask people nearby for help; what Heybe tells you is only for the time until help arrives.`,
       ambulans: 'ambulance',
       polis: 'police',
       acilNoNot: 'If your area\'s emergency number is not listed here, write it on your emergency card.',
@@ -679,6 +822,21 @@
       kipDur: 'The translation turned something the source says "may be considered" into a must. For safety I am not showing it. Please read the original answer and the sources.',
       aktarmaDur: 'The answer seems to recommend something its source forbids. For safety I am not showing it. Please read the sources below.',
       dusenDur: (a) => `An important word seems to have been lost in translation (${a}). For safety I am not showing the translation. Please read the original answer and the sources.`,
+      // §133 (14.11) emergency sign card — keys: arkadas.js ACIL_BELIRTI[].kod
+      acilBelirtiDur: (b, no) => `What you describe may be an emergency sign: ${b}. So I am not writing an answer. Call ${no} now, without waiting; the call-taker will tell you what to do, step by step.`,
+      acilGenelDur: (no) => `What you describe may be an emergency. So I am not writing an answer. Call ${no} now, without waiting; the call-taker will tell you what to do, step by step.`,
+      acilBelirtiKaynak: 'If you cannot get through, ask people nearby for help. Passages you can read until help arrives are below. Emergency numbers of other countries are on the card at the top of the page.',
+      acilBelirtiAdlari: {
+        nefes: 'difficulty breathing', bilinc: 'a change in consciousness (cannot be woken, confusion, unusual drowsiness)', gogus: 'chest pain or pressure',
+        inme: 'signs of stroke (face drooping, sudden weakness of an arm or leg, speech problems)', nobet: 'a seizure',
+        kanama: 'bleeding that does not stop, or signs of internal bleeding', alerji: 'signs of a severe allergic reaction (swelling of the lips, tongue or throat, trouble swallowing)',
+        zehir: 'possible poisoning', karin: 'severe abdominal pain', basagrisi: 'a sudden, very severe headache or sudden loss of vision',
+        ates: 'fever with danger signs (rash, stiff neck, fever in a newborn)', sok: 'signs of shock (cold sweat, pale skin, weak pulse)',
+        yanik: 'a serious burn', elektrik: 'an electric shock', sicak: 'signs of heatstroke', soguk: 'signs of hypothermia',
+        kafa: 'a danger sign after a blow to the head', kirik: 'a serious fracture or signs of a spinal injury',
+        bogulma: 'a blocked airway or drowning', gebelik: 'a danger sign in pregnancy',
+        kopma: 'a body part cut off or torn off (finger, hand, arm, leg, ear)',
+      },
       eylemDur: (adlar) => `This answer contains advice that may be dangerous in the situation you asked about: ${adlar}. For safety I am not showing it. The sources below may give the same advice, so read them carefully. If this is an emergency, call for help.`,
       eylemAdlari: {
         turnike: 'a tourniquet or tight band (only for severe bleeding that will not stop, or an amputation)',
@@ -695,9 +853,17 @@
         burun: 'tilting the head back for a nosebleed',
         aspirin: 'giving aspirin to a child',
         bilincsiz: 'giving anything by mouth to an unconscious person or someone who may have had a stroke',
+        pihti: 'massaging or heating a swollen leg after long immobility (it may be a blood clot: see a doctor the same day)',
+        glokom: 'treating a sudden, very painful eye with compresses or waiting until morning (go to emergency now)',
+        dis: 'rinsing, spitting or using a straw on the day of a tooth extraction (bite on gauze instead)',
+        sicakkapi: 'opening a door with a hot handle in a fire or escaping down smoky stairs (keep it shut, block the gap, call for help)',
+        turnikeGevset: 'loosening a tourniquet from time to time once it is on (it stays tight until medical help takes over)',
+        yilanPanzehir: 'saying that antivenom or a hospital is not needed after a snake bite (every snake bite needs medical care)',
+        yanginYukari: 'escaping a fire uphill, onto a ridge or a hilltop (fire moves faster uphill)',
       },
       kilavuzBaslik: 'Library guide: how to add books',
       kilavuz: {
+        guven: 'The more reliable and accurate the source, the more accurate and helpful the answer. Heybe writes its answers only from the sources in its library; it cannot correct a source. Choose up-to-date guides from official bodies and first-aid organisations. Encyclopaedia articles, old books and forums that anyone can write in may carry outdated or wrong information.',
         secim: 'Choosing books: Heybe works with books in any language and translates when needed. Downloading a book in one language is enough; pick the language with the richest content (for medicine, often English). Keep information about your own area in your own language.',
         indir: 'Downloading: when you are online, go to "Download books from the internet" below, choose a language, search and press "Download". Every book is checked against its signature when it arrives; a damaged one is deleted. An interrupted download continues where it stopped.',
         kopya: 'Adding by hand: if you got a .zim book from somewhere else, copy it into the "kutuphane" folder on the stick. Heybe sees it within ten seconds.',
@@ -745,6 +911,7 @@
       disKaynak: 'not from Kiwix',
       imzasiz: 'unsigned',
       disKaynakEtiket: 'source not from Kiwix',
+      kaynakTuru: { forum: 'forum — anyone can post; personal experience', viki: 'wiki — written by volunteers' },
       kaynakSayiUyari: (x) => `Careful: the translation contains a number that is not in the original (${x}). For numbers, read the original text.`,
       bitti: (sn) => `Done (${sn} s).`,
       hata: 'Something went wrong: ',
@@ -779,6 +946,54 @@
       okuma: 'Searching the books…',
       okumaNot: 'Reading mode: the AI is not running yet, so no answer was written. The most relevant passages from the books are below, in the source\'s own words.',
       okumaHata: 'The AI could not answer, so Heybe switched to reading mode. The most relevant passages from the books are below, in the source\'s own words.',
+      // §135 options
+      secenekSor: 'The passages I found are close to each other but describe different situations. Which one is closest to yours? Next to each one are the words that set it apart from the others. I will write the answer only from the one you choose.',
+      secenekHepsi: 'Show all of them',
+      secenekHepsiNot: 'All the passages found are below, in their own words. No answer was written.',
+      secimSatiri: (b) => `This passage is shown for the situation you chose: ${b}`,
+      geriDugme: '← One step back',
+      oburBolum: 'Other passages:',
+      farkliMi: 'Is your situation different? Look at the other passages',
+      // §145 Heybe notebook
+      defterBaslik: '📒 My notebook', defterAraYer: 'Search the notebook (e.g. fever)', defterTumu: 'Whole notebook',
+      defterBos: 'Your notebook is empty. Start with "Save to notebook" under an answer, or with a note of your own. You make the groups: Medical, Shelter, Clothing, a person\'s name…',
+      defterKilitBaslik: '🔒 Your notebook is locked with a password',
+      defterKilitAciklama: 'Your notes are stored encrypted on this stick; whoever finds the stick cannot read them. The password stays only in your mind; it is not stored on the stick. Write what a rescuer must know (allergies, blood group, medicines) on the emergency card: it stays unencrypted.',
+      defterKilitTasi: 'Your notebook is currently stored unencrypted. Set a password: the notebook will be locked and stored that way.',
+      defterParola: 'Password', defterParolaTekrar: 'Password (again)', defterYeniParola: 'New password',
+      defterParolaKisa: (n) => `The password must be at least ${n} characters long.`, defterParolaUymuyor: 'The two passwords are not the same.', defterKilitKurDugme: 'Lock and open',
+      defterKodBaslik: 'Your recovery code',
+      defterKodAciklama: 'If you forget your password, only this code opens your notebook. Write it on paper or print it; keep it somewhere safe at home or with an older family member. The code is not stored on the stick and will not be shown again.',
+      defterKodYazdir: '🖨 Print', defterKodYazdim: 'I wrote the code on paper', defterDevam: 'Continue',
+      defterKilitli: 'Your notebook is locked. Type your password to open it.', defterAcDugme: 'Open', defterParolaYanlis: 'Wrong password.',
+      defterUnuttum: 'I forgot my password', defterKod: 'Recovery code', defterKodYanlis: 'Wrong recovery code.', defterKurtarDugme: 'Open with the code, save the new password', defterGeri: 'Back',
+      defterKayip: 'I lost both my password and my code',
+      defterKayipAciklama: 'A new, empty notebook is opened. The old notebook is not deleted: it stays on the stick as a separate file, unopened. If you find the code later, it can be brought back.',
+      defterKayipOnay: 'Open a new notebook', defterKilitleDugme: '🔒 Lock', defterOnceAc: 'Open your notebook first: type your password below.',
+      defterKilitleniyor: 'Locking…', defterAciliyor: 'Opening…', defterKriptoYok: 'This browser does not support encryption; the notebook cannot be opened.', defterKilitliHata: 'the notebook is locked',
+      konuEtiket: 'Topic (optional):', konuTibbi: 'Medical', konuYangin: 'Fire and safety', konuHarita: 'Map and route', konuBarinak: 'Shelter',
+      konuYiyecek: 'Food and water', konuGiyim: 'Clothing', konuArac: 'Tools and equipment',
+      konuNot: (k) => `When the question is translated for books in other languages, it is read in the sense of “${k}”. Only for this question.`,
+      konuKullanildi: (k) => `(topic: ${k})`,
+      konuKaristi: 'The topic you chose added something to the translation that is not in your question, so the question was searched without the topic.',
+      konuKullanilmadi: 'The topic could not be used for this question; it was searched without the topic.',
+      defterYeniGrup: '+ New group', defterYeniNot: '+ New note', defterKaydet: '📒 Save to notebook', defterAd: 'Name', defterGrup: 'Group',
+      defterGruplanmamis: 'No group', defterYeniGrupAd: 'or open a new group (inside the one you chose)', defterNotMetin: 'Your note',
+      defterDiller: 'Also keep it in other languages: the translator translates now, later it shows without the translator',
+      defterKaydetDugme: 'Save', defterVazgec: 'Cancel', defterKaydedildi: 'Written to the notebook.', defterSilindi: 'Deleted.', defterHata: 'Could not write to the notebook: ',
+      defterCeviriyor: (d) => `Translating into ${d}…`,
+      defterCevapEtiket: (t, s) => `An answer you saved · ${t} · Heybe ${s}. If your books or your situation changed, use "Ask again".`,
+      defterNotEtiket: (t) => `Your own note · ${t} · not from a book, Heybe cannot know whether it is right.`,
+      defterAcil: (no) => `This entry may describe an emergency. If you are in such a situation now, call ${no} without waiting.`,
+      defterNotUyari: (a) => `This note contains advice that may be dangerous: ${a}. Think again before you follow it.`,
+      defterCeviriNot: (d) => `Machine translation (original language: ${d}). The meaning may have shifted.`,
+      defterSoru: 'You asked', defterCevapsiz: 'This entry has no answer text; see the sources below.', defterKaynaklar: 'Sources (as they were when you saved)',
+      defterYenidenSor: 'Ask again', defterTasi: 'Move:', defterSil: 'Delete', defterSilEmin: 'Sure? Press once more to delete', defterKapat: 'Close',
+      defterGrupAdlandir: 'Rename', defterGrupSil: 'Delete group', defterGrupDolu: 'The group is not empty. Move or delete what is inside first.',
+      defterUstGrup: 'Inside which group', defterUstYok: 'At the top', defterSonucYok: 'Nothing about this in the notebook.',
+      secenekHicbiri: 'If none of them fits, describe your situation in a few words (who, what happened, when it started) and I will search again.',
+      secenekYaz: 'Describe your situation in your own words…',
+      secenekGonder: 'Send',
       okumaYok: 'No passage about this was found in the books.',
       okumaKelimeNot: 'Reading mode: the AI is not running, so no answer was written. The books were searched by words; the top passage is not always the best one, so look at several.',
       senin: 'Your file',
@@ -820,6 +1035,9 @@
       yanlisBaslik: 'Answers you marked as wrong',
       yanlisAciklama: 'These records stay only on this stick and never leave it on their own. If you want to pass them on to the people who develop Heybe, download the file and give it to them. In the next version these questions are asked again to check whether they were fixed.',
       yanlisYok: 'You have not marked any answer as wrong yet.',
+      yanlisKilitli: 'This record contains your question and the answer, so it counts as personal information and is stored encrypted with your notebook password. Open My notebook first, or set a password, then save again. Your note will wait here.',
+      yanlisDefterAc: 'Open my notebook',
+      yanlisSifreli: '🔒 encrypted record — open My notebook to see it',
       yanlisIndir: 'Download the file',
       yanlisSilSor: (soru) => `Delete the record "${soru}"? This cannot be undone.`,
       yanlisSonuc: { cevap: 'answered', durdu: 'stopped', bilgiYok: 'said no information' },
@@ -850,6 +1068,7 @@
       acilisUzun: 'Spouštění trvá dlouho. Disk může být pomalý; podívejte se na zprávy v okně Heybe.',
       kurulumBaslik: 'První instalace: modely Heybe',
       kurulumAciklama: (b) => `Části Heybe, které vyhledávají, přemýšlejí a překládají (tři modely, ${b}), nejsou v tomto balíčku. Stáhnou se jednou, když máte internet; potom Heybe funguje bez internetu. Když se stahování přeruší, pokračuje tam, kde skončilo.`,
+      kurulumKaynak: "Jedna důležitá věc: odpovědi Heybe jsou jen tak přesné jako její knihovna. Čím spolehlivější a přesnější je zdroj, tím přesnější a užitečnější je odpověď. Při výběru knih si přečtěte průvodce knihovnou níže.",
       kurulumAnlam: 'Vyhledávací model (EmbeddingGemma)',
       kurulumSohbet: 'Jazykový model (Gemma 3 4B)',
       kurulumCevirmen: 'Překladač (TranslateGemma)',
@@ -893,6 +1112,7 @@
       acilVazgec: 'Zrušit',
       acilKaydedildi: 'Karta uložena.',
       acilNumaralar: 'Tísňová čísla',
+      acilSabit: (no) => `Jste-li v nebezpečí, volejte hned ${no}. Pokud se nedovoláte, požádejte o pomoc lidi kolem; to, co vám Heybe řekne, je jen na dobu, než dorazí pomoc.`,
       ambulans: 'záchranná služba',
       polis: 'policie',
       acilNoNot: 'Pokud tu tísňové číslo vaší oblasti není, napište si ho na nouzovou kartu.',
@@ -905,6 +1125,21 @@
       kipDur: 'Překlad změnil něco, co zdroj uvádí jako „lze zvážit“, na povinnost. Z bezpečnostních důvodů odpověď nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.',
       aktarmaDur: 'Odpověď zřejmě doporučuje něco, co její zdroj zakazuje. Z bezpečnostních důvodů ji nezobrazuji. Přečtěte si prosím zdroje níže.',
       dusenDur: (a) => `Zdá se, že se při překladu ztratilo důležité slovo (${a}). Z bezpečnostních důvodů překlad nezobrazuji. Přečtěte si prosím původní odpověď a zdroje.`,
+      // §133 (14.11) karta varovných příznaků — klíče: arkadas.js ACIL_BELIRTI[].kod
+      acilBelirtiDur: (b, no) => `To, co popisujete, může být příznak naléhavého stavu: ${b}. Proto odpověď nepíšu. Volejte hned ${no}, nečekejte; operátor vám krok za krokem řekne, co dělat.`,
+      acilGenelDur: (no) => `To, co popisujete, může být naléhavý stav. Proto odpověď nepíšu. Volejte hned ${no}, nečekejte; operátor vám krok za krokem řekne, co dělat.`,
+      acilBelirtiKaynak: 'Pokud se nedovoláte, požádejte o pomoc lidi kolem. Úryvky, které si můžete přečíst, než dorazí pomoc, jsou níže. Tísňová čísla dalších zemí jsou na kartě nahoře na stránce.',
+      acilBelirtiAdlari: {
+        nefes: 'potíže s dýcháním', bilinc: 'změna vědomí (nelze probudit, zmatenost, neobvyklá ospalost)', gogus: 'bolest nebo tlak na hrudi',
+        inme: 'příznaky mrtvice (pokleslý koutek úst, náhlá slabost ruky nebo nohy, potíže s řečí)', nobet: 'záchvat křečí',
+        kanama: 'krvácení, které nepřestává, nebo známky vnitřního krvácení', alerji: 'příznaky těžké alergické reakce (otok rtů, jazyka nebo hrdla, potíže s polykáním)',
+        zehir: 'možná otrava', karin: 'silná bolest břicha', basagrisi: 'náhlá velmi silná bolest hlavy nebo náhlá ztráta zraku',
+        ates: 'horečka s varovnými příznaky (vyrážka, ztuhlá šíje, horečka u novorozence)', sok: 'příznaky šoku (studený pot, bledost, slabý tep)',
+        yanik: 'vážná popálenina', elektrik: 'úraz elektrickým proudem', sicak: 'příznaky úpalu', soguk: 'příznaky podchlazení',
+        kafa: 'varovný příznak po úderu do hlavy', kirik: 'vážná zlomenina nebo příznaky poranění páteře',
+        bogulma: 'ucpané dýchací cesty nebo tonutí', gebelik: 'varovný příznak v těhotenství',
+        kopma: 'utržená nebo useknutá část těla (prst, ruka, noha, ucho)',
+      },
       eylemDur: (adlar) => `Tato odpověď obsahuje radu, která může být ve vaší situaci nebezpečná: ${adlar}. Z bezpečnostních důvodů ji neukazuji. Stejná rada se může objevit i ve zdrojích níže, čtěte je proto pozorně. Pokud jde o naléhavý případ, zavolejte pomoc.`,
       eylemAdlari: {
         turnike: 'škrtidlo nebo pevné zaškrcení (jen při silném krvácení, které nelze zastavit, nebo při amputaci)',
@@ -921,9 +1156,17 @@
         burun: 'záklon hlavy při krvácení z nosu',
         aspirin: 'aspirin pro dítě',
         bilincsiz: 'podávání čehokoli ústy člověku v bezvědomí nebo po možné mozkové příhodě',
+        pihti: 'masírovat nebo zahřívat oteklou nohu po dlouhém nehybném ležení (může jít o sraženinu: týž den k lékaři)',
+        glokom: 'řešit náhlou silnou bolest oka obklady nebo čekat do rána (ihned na pohotovost)',
+        dis: 'v den vytržení zubu vyplachovat ústa, plivat nebo pít brčkem (místo toho skousnout gázu)',
+        sicakkapi: 'při požáru otevřít dveře s horkou klikou nebo utíkat po zakouřeném schodišti (dveře nechte zavřené, utěsněte škvíru, volejte pomoc)',
+        turnikeGevset: 'povolovat přiložené škrtidlo v intervalech (zůstává utažené, dokud péči nepřevezme zdravotník)',
+        yilanPanzehir: 'tvrdit, že po uštknutí hadem není potřeba protijed ani nemocnice (každé uštknutí potřebuje lékařskou péči)',
+        yanginYukari: 'utíkat před požárem do kopce, na hřeben nebo vrchol (oheň se do kopce šíří rychleji)',
       },
       kilavuzBaslik: 'Průvodce knihovnou: jak přidat knihy',
       kilavuz: {
+        guven: 'Čím spolehlivější a přesnější je zdroj, tím přesnější a užitečnější je odpověď. Heybe píše odpovědi jen ze zdrojů ve své knihovně; zdroj opravit nedokáže. Vybírejte aktuální příručky úředních institucí a organizací první pomoci. Články z encyklopedií, staré knihy a fóra, kam může psát kdokoli, mohou obsahovat zastaralé nebo chybné informace.',
         secim: 'Výběr knih: Heybe pracuje s knihami v jakémkoli jazyce a v případě potřeby překládá. Stačí stáhnout knihu v jednom jazyce; zvolte jazyk s nejbohatším obsahem (u medicíny často angličtinu). Informace o vašem okolí nechte ve vašem jazyce.',
         indir: 'Stahování: když jste online, přejděte níže do části „Stáhnout knihy z internetu“, zvolte jazyk, vyhledejte a stiskněte „Stáhnout“. Každá kniha se po stažení ověří podpisem; poškozená se smaže. Přerušené stahování pokračuje tam, kde skončilo.',
         kopya: 'Ruční přidání: pokud máte knihu .zim odjinud, zkopírujte ji do složky „kutuphane“ na disku. Heybe ji uvidí do deseti sekund.',
@@ -971,6 +1214,7 @@
       disKaynak: 'mimo Kiwix',
       imzasiz: 'bez podpisu',
       disKaynakEtiket: 'zdroj mimo Kiwix',
+      kaynakTuru: { forum: 'fórum — psát může kdokoli; osobní zkušenost', viki: 'wiki — píší dobrovolníci' },
       kaynakSayiUyari: (x) => `Pozor: v překladu je číslo, které v původním textu není (${x}). U čísel čtěte původní text.`,
       bitti: (sn) => `Hotovo (${sn} s).`,
       hata: 'Něco se pokazilo: ',
@@ -1005,6 +1249,54 @@
       okuma: 'Hledám v knihách…',
       okumaNot: 'Režim čtení: umělá inteligence ještě neběží, odpověď nebyla napsána. Nejdůležitější úryvky z knih jsou níže, slovy samotného zdroje.',
       okumaHata: 'Umělá inteligence nemohla odpovědět, Heybe přešel do režimu čtení. Nejdůležitější úryvky z knih jsou níže, slovy samotného zdroje.',
+      // §135 možnosti
+      secenekSor: 'Úryvky, které jsem našel, jsou si blízké, ale popisují různé situace. Která je nejblíže té vaší? U každé jsou slova, která ji odlišují od ostatních. Odpověď napíšu jen z té, kterou vyberete.',
+      secenekHepsi: 'Ukázat všechny',
+      secenekHepsiNot: 'Všechny nalezené úryvky jsou níže, jejich vlastními slovy. Odpověď nebyla napsána.',
+      secimSatiri: (b) => `Tento úryvek se zobrazuje podle situace, kterou jste vybrali: ${b}`,
+      geriDugme: '← O krok zpět',
+      oburBolum: 'Další úryvky:',
+      farkliMi: 'Je vaše situace jiná? Podívejte se na další úryvky',
+      // §145 Heybe zápisník
+      defterBaslik: '📒 Můj zápisník', defterAraYer: 'Hledat v zápisníku (např. horečka)', defterTumu: 'Celý zápisník',
+      defterBos: 'Zápisník je prázdný. Začněte tlačítkem „Uložit do zápisníku“ pod odpovědí nebo vlastní poznámkou. Skupiny si vytváříte sami: Zdraví, Přístřeší, Oblečení, jméno člověka…',
+      defterKilitBaslik: '🔒 Váš zápisník je zamčený heslem',
+      defterKilitAciklama: 'Vaše poznámky jsou na tomto disku uložené zašifrovaně; kdo disk najde, nepřečte je. Heslo znáte jen vy, na disku se neukládá. Co musí vědět záchranář (alergie, krevní skupina, léky), napište na nouzovou kartu: ta zůstává nezašifrovaná.',
+      defterKilitTasi: 'Váš zápisník je teď uložený nezašifrovaně. Nastavte heslo: zápisník se zamkne a bude se tak ukládat.',
+      defterParola: 'Heslo', defterParolaTekrar: 'Heslo (znovu)', defterYeniParola: 'Nové heslo',
+      defterParolaKisa: (n) => `Heslo musí mít alespoň ${n} znaků.`, defterParolaUymuyor: 'Hesla se neshodují.', defterKilitKurDugme: 'Zamknout a otevřít',
+      defterKodBaslik: 'Váš obnovovací kód',
+      defterKodAciklama: 'Když heslo zapomenete, zápisník otevře jen tento kód. Napište si ho na papír nebo ho vytiskněte; uložte ho doma na bezpečném místě nebo u staršího člena rodiny. Kód se na disku neukládá a znovu se nezobrazí.',
+      defterKodYazdir: '🖨 Vytisknout', defterKodYazdim: 'Kód mám napsaný na papíře', defterDevam: 'Pokračovat',
+      defterKilitli: 'Váš zápisník je zamčený. Pro otevření napište heslo.', defterAcDugme: 'Otevřít', defterParolaYanlis: 'Nesprávné heslo.',
+      defterUnuttum: 'Zapomněl(a) jsem heslo', defterKod: 'Obnovovací kód', defterKodYanlis: 'Nesprávný obnovovací kód.', defterKurtarDugme: 'Otevřít kódem a uložit nové heslo', defterGeri: 'Zpět',
+      defterKayip: 'Ztratil(a) jsem heslo i kód',
+      defterKayipAciklama: 'Otevře se nový, prázdný zápisník. Starý zápisník se nesmaže: zůstane na disku jako samostatný soubor, neotevřený. Pokud kód později najdete, lze ho vrátit.',
+      defterKayipOnay: 'Otevřít nový zápisník', defterKilitleDugme: '🔒 Zamknout', defterOnceAc: 'Nejdřív otevřete zápisník: níže napište heslo.',
+      defterKilitleniyor: 'Zamykám…', defterAciliyor: 'Otevírám…', defterKriptoYok: 'Tento prohlížeč nepodporuje šifrování; zápisník nelze otevřít.', defterKilitliHata: 'zápisník je zamčený',
+      konuEtiket: 'Téma (nepovinné):', konuTibbi: 'Zdravotní', konuYangin: 'Požár a bezpečnost', konuHarita: 'Mapa a cesta', konuBarinak: 'Přístřeší',
+      konuYiyecek: 'Jídlo a voda', konuGiyim: 'Oblečení', konuArac: 'Nářadí a vybavení',
+      konuNot: (k) => `Při překladu dotazu pro knihy v jiných jazycích se čte ve smyslu „${k}“. Platí jen pro tento dotaz.`,
+      konuKullanildi: (k) => `(téma: ${k})`,
+      konuKaristi: 'Zvolené téma přidalo do překladu něco, co ve vašem dotazu není, proto se hledalo bez tématu.',
+      konuKullanilmadi: 'Téma se pro tento dotaz nedalo použít; hledalo se bez tématu.',
+      defterYeniGrup: '+ Nová skupina', defterYeniNot: '+ Nová poznámka', defterKaydet: '📒 Uložit do zápisníku', defterAd: 'Název', defterGrup: 'Skupina',
+      defterGruplanmamis: 'Bez skupiny', defterYeniGrupAd: 'nebo založte novou skupinu (uvnitř zvolené)', defterNotMetin: 'Vaše poznámka',
+      defterDiller: 'Uložit i v dalších jazycích: překladač přeloží teď, později se to zobrazí i bez překladače',
+      defterKaydetDugme: 'Uložit', defterVazgec: 'Zrušit', defterKaydedildi: 'Zapsáno do zápisníku.', defterSilindi: 'Smazáno.', defterHata: 'Do zápisníku se nepodařilo zapsat: ',
+      defterCeviriyor: (d) => `Překládám do jazyka ${d}…`,
+      defterCevapEtiket: (t, s) => `Odpověď, kterou jste uložili · ${t} · Heybe ${s}. Pokud se změnily vaše knihy nebo situace, použijte „Zeptat se znovu“.`,
+      defterNotEtiket: (t) => `Vaše vlastní poznámka · ${t} · není z knihy, Heybe nemůže vědět, zda je správná.`,
+      defterAcil: (no) => `Tento záznam může popisovat naléhavou situaci. Pokud v ní teď jste, bez čekání volejte ${no}.`,
+      defterNotUyari: (a) => `Tato poznámka obsahuje radu, která může být nebezpečná: ${a}. Než ji použijete, rozmyslete si to.`,
+      defterCeviriNot: (d) => `Strojový překlad (původní jazyk: ${d}). Význam se mohl posunout.`,
+      defterSoru: 'Zeptali jste se', defterCevapsiz: 'Tento záznam nemá text odpovědi; podívejte se na zdroje níže.', defterKaynaklar: 'Zdroje (jak vypadaly při uložení)',
+      defterYenidenSor: 'Zeptat se znovu', defterTasi: 'Přesunout:', defterSil: 'Smazat', defterSilEmin: 'Opravdu? Pro smazání stiskněte ještě jednou', defterKapat: 'Zavřít',
+      defterGrupAdlandir: 'Přejmenovat', defterGrupSil: 'Smazat skupinu', defterGrupDolu: 'Skupina není prázdná. Nejdřív přesuňte nebo smažte, co je uvnitř.',
+      defterUstGrup: 'Uvnitř které skupiny', defterUstYok: 'Nahoře', defterSonucYok: 'V zápisníku o tom nic není.',
+      secenekHicbiri: 'Pokud žádná nesedí, popište svou situaci několika slovy (kdo, co se stalo, kdy to začalo) a já budu hledat znovu.',
+      secenekYaz: 'Popište svou situaci vlastními slovy…',
+      secenekGonder: 'Odeslat',
       okumaYok: 'V knihách se o tom nenašel žádný úryvek.',
       okumaKelimeNot: 'Režim čtení: umělá inteligence neběží, odpověď nebyla napsána. V knihách se hledalo podle slov; horní úryvek nemusí být vždy nejlepší, podívejte se na několik.',
       senin: 'Váš soubor',
@@ -1046,6 +1338,9 @@
       yanlisBaslik: 'Odpovědi, které jste označili jako špatné',
       yanlisAciklama: 'Tyto záznamy zůstávají jen na tomto disku a samy se nikam neodesílají. Pokud je chcete předat lidem, kteří Heybe vyvíjejí, stáhněte soubor a dejte jim ho. V další verzi se tyto otázky položí znovu a ověří se, zda byly opraveny.',
       yanlisYok: 'Zatím jste žádnou odpověď neoznačili jako špatnou.',
+      yanlisKilitli: 'Tento záznam obsahuje vaši otázku a odpověď, proto se počítá jako osobní údaj a ukládá se zašifrovaný heslem vašeho zápisníku. Nejprve otevřete Můj zápisník nebo nastavte heslo, pak uložte znovu. Vaše poznámka tu počká.',
+      yanlisDefterAc: 'Otevřít můj zápisník',
+      yanlisSifreli: '🔒 zašifrovaný záznam — zobrazíte ho po otevření Mého zápisníku',
       yanlisIndir: 'Stáhnout soubor',
       yanlisSilSor: (soru) => `Smazat záznam „${soru}“? Tuto akci nelze vrátit.`,
       yanlisSonuc: { cevap: 'odpověděl', durdu: 'zastavil', bilgiYok: 'řekl, že informaci nemá' },
@@ -1298,6 +1593,7 @@
     const m = METIN[dil];
     document.querySelectorAll('[data-m]').forEach((o) => { o.textContent = m[o.dataset.m]; });
     $('soru').placeholder = m.ornek;
+    try { defterDilDegisti(); } catch (e) { /* §145 defter henüz kurulmadı (ilk açılış) */ }
     $('katalogAra').placeholder = m.araAlan;
     $('dosyaDil').value = dil;
     $('katalogDil').value = KIWIX_DIL[dil] || H.UC[dil] || 'eng';
@@ -1305,6 +1601,7 @@
     durumYaz(durumAnahtari, durumEk);
     kopruDurumYaz(kopruAnahtari);
     kopruHazirla();
+    konuCiz();
     dilNotuGuncelle();
     kipOneriGoster();
     ekranGoster('anaEkran');
@@ -1410,6 +1707,11 @@
   function bolgeAdi(kod, ui) {
     try { return new Intl.DisplayNames([ui], { type: 'region' }).of(kod); } catch (e) { return kod; }
   }
+  // tarayıcının bölgesi (ör. nb-NO → NO) listede öne alınır — acil kartı ve acil belirti kartı (§133) aynı sırayı kullanır
+  function acilSira() {
+    const bolgeler = (navigator.languages || []).map((t) => (String(t).split('-')[1] || '').toUpperCase());
+    return [...ACIL_NO].sort((a, b) => (a.b.some((x) => bolgeler.includes(x)) ? 0 : 1) - (b.b.some((x) => bolgeler.includes(x)) ? 0 : 1));
+  }
   function acilYazilari() {
     const ui = dil || ekranDili(), m = METIN[ui];
     $('acilKart').lang = ui; $('acilKart').dir = SAGDAN.has(ui) ? 'rtl' : 'ltr';
@@ -1419,9 +1721,8 @@
     $('acilVazgec').textContent = m.acilVazgec;
     $('acilNumaraBaslik').textContent = m.acilNumaralar;
     $('acilNoNot').textContent = m.acilNoNot;
-    // tarayıcının bölgesi (ör. nb-NO → NO) listede öne alınır
-    const bolgeler = (navigator.languages || []).map((t) => (String(t).split('-')[1] || '').toUpperCase());
-    const sira = [...ACIL_NO].sort((a, b) => (a.b.some((x) => bolgeler.includes(x)) ? 0 : 1) - (b.b.some((x) => bolgeler.includes(x)) ? 0 : 1));
+    const sira = acilSira();
+    $('acilSabit').textContent = (m.acilSabit || METIN.en.acilSabit)(sira[0].n[0][0]);   // §153: sorudan bağımsız, hep görünür
     $('acilNumaralar').innerHTML = sira.map((s) => `<li>${yazi(s.b.map((x) => bolgeAdi(x, ui)).join(', '))}: ` +
       s.n.map(([no, tur]) => `<b>${no}</b>${tur ? ` <span role="img" title="${yazi(m[tur])}" aria-label="${yazi(m[tur])}">${ISARET[tur]}</span>` : ''}`).join(' · ') + '</li>').join('');
     // düzenleme yalnız ana ekranda (dil seçilmeden kimin kartı yazdığı belli değil)
@@ -1491,12 +1792,40 @@
     // ilk kez: bellekte başka dilde kitap ya da dosya varsa işaretli; sonra kullanıcının son seçimi
     $('kopruAc').checked = kopruIstek === null ? diger.length > 0 : kopruIstek === '1';
     if ($('kopruAc').checked) kopruAc(); else { H.AYAR.cevirmen = ''; kopruDurumYaz(durum); }
+    konuSatiriGuncelle();
   }
   $('kopruAc').addEventListener('change', () => {
     kopruIstek = $('kopruAc').checked ? '1' : '0';
     try { localStorage.setItem('heybe.kopru', kopruIstek); } catch (e) { /* gizli pencere */ }
     if ($('kopruAc').checked) kopruAc(); else { H.AYAR.cevirmen = ''; kopruDurumYaz(''); }
+    konuSatiriGuncelle();
   });
+
+  // ---- 15.11 (Özet §150) sorunun konusu: kullanıcı isterse seçer, yalnız o soru için (cevap gelince kalkar — önceki sorudan
+  //      seçili kalan konu yeni soruya karışmasın: §149'da "Kurt varsa" + Yangın → "yangın var, biri mahsur"). Şık ve
+  //      "hiçbiri" yolu aynı sorunun devamıdır, konusu aynı kalır. Konu yalnız çeviriye gider (arkadas.js konuluCevir).
+  const KONULAR = ['konuTibbi', 'konuYangin', 'konuHarita', 'konuBarinak', 'konuYiyecek', 'konuGiyim', 'konuArac'];
+  let seciliKonu = '', soruKonu = '';
+  const konuAdi = (k) => ((METIN[dil] || METIN.en)[k] || METIN.en[k]);
+  function konuCiz() {
+    const yer = $('konuDugmeleri');
+    yer.textContent = '';
+    for (const k of KONULAR) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = konuAdi(k); b.setAttribute('aria-pressed', String(seciliKonu === k));
+      b.disabled = soruyor;
+      b.addEventListener('click', () => { seciliKonu = seciliKonu === k ? '' : k; konuCiz(); });
+      yer.appendChild(b);
+    }
+    $('konuNot').hidden = !seciliKonu;
+    $('konuNot').textContent = seciliKonu ? (METIN[dil] || METIN.en).konuNot(konuAdi(seciliKonu)) : '';
+  }
+  function konuSatiriGuncelle() {
+    const acik = !$('kopruSatir').hidden && $('kopruAc').checked && !okumaSecili;
+    $('konuSatir').hidden = !acik;
+    if (!acik) seciliKonu = '';
+    konuCiz();
+  }
 
   function kaynakCeviriDugmesi(p) {
     // başka dildeki kaynak paragrafı istek üzerine kullanıcının diline çevrilir; sayı denetçisi çeviriyi özgüne karşı sınar
@@ -1683,6 +2012,8 @@
   fetch(`${API}/cevirmen`, { cache: 'no-store' }).then((r) => r.json()).then((j) => { $('konusmaBag').hidden = !j || j.durum === 'yok'; }).catch(() => {});
 
   let disKaynaklar = {};   // Kiwix dışı kitaplar (yardımcının durum bilgisinden)
+  // §157: kaynağın türü (forum · viki) — cevabın kaynaklarında, bellekteki kitaplarda ve katalogda aynı etiket
+  const turAdi = (ad) => { const t = H.kaynakTuru(ad); return t ? ((METIN[dil].kaynakTuru || {})[t] || METIN.en.kaynakTuru[t]) : ''; };
   function kaynaklariGoster(parcalar, adlar) {
     const ol = $('kaynaklar');
     ol.innerHTML = '';
@@ -1695,7 +2026,8 @@
       const kd = p.dil && p.dil !== dil ? (H.KISA[p.dil] || p.dil) : '';
       const dilIs = kd ? ` lang="${yazi(kd)}"` : '';
       const kitapAdi = (benim ? METIN[dil].senin : (adlar[p.kitap] || p.kitap)) +
-        (!benim && disKaynaklar[`${p.kitap}.zim`] ? ' · ' + METIN[dil].disKaynakEtiket : '');   // Ercan 07.11: güven etiketi
+        (!benim && disKaynaklar[`${p.kitap}.zim`] ? ' · ' + METIN[dil].disKaynakEtiket : '') +   // Ercan 07.11: güven etiketi
+        (!benim && turAdi(p.kitap) ? ' · ' + turAdi(p.kitap) : '');   // §157 kaynağın türü
       const etiket = (kd && !benim ? `<span${dilIs}>${yazi(kitapAdi)}</span>` : yazi(kitapAdi)) +
         (kd ? ' · ' + yazi(METIN[dil].ceviri(dilAdiKisa(p.dil, dil))) : '');   // dil köprüsü
       let ek = '';
@@ -1754,21 +2086,26 @@
     let geri = '';
     try { geri = String(await H.cevir(g.soru, g.dil, dil, 160)).split(/\r?\n/).map((x) => x.trim()).filter(Boolean)[0] || ''; } catch (e) { return; }
     if (!geri || no !== soruNo) return;
-    el.textContent = METIN[dil].soruArandi(dilAdiKisa(g.dil, dil), geri);
+    const m = METIN[dil];
+    // §150: konu kullanıldıysa adı, karışma kapısından döndüyse ya da ayrılamadıysa neden konusuz arandığı
+    const konu = !g.konu ? '' : g.konuDustu === 'karisti' ? ' ' + m.konuKaristi : g.konuDustu ? ' ' + m.konuKullanilmadi : ' ' + m.konuKullanildi(g.konu);
+    el.textContent = m.soruArandi(dilAdiKisa(g.dil, dil), geri) + konu;
     el.hidden = false;
   }
 
-  $('form').addEventListener('submit', async (o) => {
-    o.preventDefault();
-    const soru = $('soru').value.trim();
-    if (!soru) return;
+  $('form').addEventListener('submit', (o) => { o.preventDefault(); const soru = $('soru').value.trim(); if (soru) cevapla(soru); });
+  // §135 (Ercan 14.11: "doktor gibi sor"): soru şıklarla ilerleyebilir — ek.secilen: kullanıcının seçtiği bölüm (cevap yalnız
+  // ondan) · ek.sorulmaz: kullanıcı "hiçbiri" deyip durumunu yazdı (yeniden aranır, acil kartına yine bakılır, şık sorulmaz)
+  async function cevapla(soru, ek = null) {
     // ilk soruda kart tek satıra iner (kullanıcı elle açıp kapamadıysa): cevaba yer açılır. Modeller hazır olunca
     // inmez — hızlı bilgisayarda kart birkaç saniyede kaybolurdu (06.11 sınavı).
     if (!acilElle) $('acilAc').open = false;
     soruyor = true;
+    if (!ek) soruKonu = seciliKonu;   // §150: yeni soru seçili konuyu alır; şık / "hiçbiri" aynı sorunun konusuyla sürer
+    konuCiz();
     $('soru').disabled = true; $('sor').disabled = true;
     $('cevapKart').hidden = true; $('kaynakKart').hidden = true; $('bolumSatir').hidden = true;
-    $('soruSatir').hidden = true; soruNo++;
+    $('soruSatir').hidden = true; $('yolSatir').hidden = true; soruNo++;
     haritaOneriGoster(soru);
     $('cevapOkuYer').hidden = true; try { speechSynthesis.cancel(); } catch (e) { /* ses yok */ }
     sonCevap = null; yanlisSifirla();
@@ -1776,7 +2113,7 @@
       // 10.11 okuma kipi (8c, §101): sohbet modeli hazır değilse (açılıyor, kurulmamış, bu makinede açılamadı) cevap yazılmaz,
       // kitaplardaki en ilgili bölümler gösterilir. Anlam modeli açıksa sıralamayı o yapar (ölçü: §101).
       const okuyarak = async () => {
-        try { return await H.oku(soru, (adim) => durumYaz(adim), dil, { anlam: acilis.anlam }); } catch (e) {
+        try { return await H.oku(soru, (adim) => durumYaz(adim), dil, { anlam: acilis.anlam, ...(ek && ek.secilen ? { secilen: ek.secilen } : {}) }); } catch (e) {
           // anlam modeli de cevap vermiyorsa kelimeyle sıralanır (hiç model yok); kütüphane hatası olduğu gibi gösterilir
           if (!acilis.anlam || (acilis.anlam = await hazirMi(H.AYAR.gomme))) throw e;
           return H.oku(soru, (adim) => durumYaz(adim), dil, { anlam: false });
@@ -1786,7 +2123,12 @@
       if (acilis.sohbet && acilis.anlam && !okumaSecili) {
         try {
           // dil köprüsü: önce kendi dilinde; bilgi yoksa bellekteki öbür dillerde (çevirmen hazırsa)
-          r = await H.sor(soru, (adim) => durumYaz(adim), dil, H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek' } : {});
+          const kopru = H.AYAR.cevirmen ? { yedekDiller: 'hepsi', cevap: 'cevirerek' } : {};
+          const konu = soruKonu && H.AYAR.cevirmen ? { konu: konuAdi(soruKonu) } : {};   // §150
+          const secenek = !ek ? { ...kopru, ...konu } : ek.secilen
+            ? { cevap: 'cevirerek', secilen: ek.secilen, ...konu, ...(ek.diller && !(ek.diller.length === 1 && ek.diller[0] === dil) ? { kaynakDilleri: ek.diller } : {}) }
+            : { ...kopru, ...konu, sorulmaz: true };
+          r = await H.sor(soru, (adim) => durumYaz(adim), dil, secenek);
         } catch (e) {
           // model cevap vermiyorsa (kapandı, bellek yetmedi) okuma kipine düşülür; kütüphane hatası olduğu gibi gösterilir
           acilis.sohbet = await hazirMi(H.AYAR.sohbet); acilis.anlam = await hazirMi(H.AYAR.gomme);
@@ -1794,6 +2136,20 @@
           r = { ...await okuyarak(), modelHatasi: true };
         }
       } else r = await okuyarak();
+      await goster(soru, r, ek);
+      durumYaz('bitti', r.toplam_sn);
+    } catch (e) {
+      durumYaz('hata', e.message);
+    } finally {
+      soruyor = false;
+      $('soru').disabled = false; $('sor').disabled = false;
+      seciliKonu = '';   // §150: konu yalnız bu soru içindi
+      konuCiz();
+    }
+  }
+
+  // §143: gösterme ayrı işlev — "bir adım geri" aramayı yeniden yapmadan önceki sonucu yeniden çizer
+  async function goster(soru, r, ek = null) {
       const adlar = {};
       try { for (const k of await H.kitaplik()) adlar[k.ad] = k.baslik; } catch (e) { /* adlar olmadan da gösterilir */ }
       try { disKaynaklar = (await (await fetch(`${API}/durum`, { cache: 'no-store' })).json()).disKaynak || {}; } catch (e) { /* eski yardımcı */ }
@@ -1805,7 +2161,18 @@
         $('ozgunMetin').textContent = r.ozgun.cevap;
         $('ozgunKutu').hidden = false;
       }
-      if (r.okuma) {
+      if (r.secenekler) {
+        secenekGoster(soru, r);   // §135: Heybe tahmin etmez, sorar
+      } else if (r.acil) {
+        // §133 acil belirti kartı: soruda şu anda acil bir belirti var — cevap yazılmadı; önce acil numara, sonra kaynaklar
+        const m = METIN[dil];
+        const ad = (k) => ((m.acilBelirtiAdlari || {})[k] || METIN.en.acilBelirtiAdlari[k] || k);
+        // 'hakem': kalıp bulmadı, aciliyet hakemi "acil" dedi — belirti adı yok, genel cümle
+        const adlar = r.acil.belirti.filter((k) => k !== 'hakem'), no = acilSira()[0].n[0][0];
+        $('cevap').innerHTML = `<span class="dur">${yazi(adlar.length ? m.acilBelirtiDur(adlar.map(ad).join('; '), no) : m.acilGenelDur(no))}</span>` +
+          `<br><br>${yazi(r.bilgiYok ? m.okumaYok : m.acilBelirtiKaynak)}`;
+        $('acilAc').open = true;   // acil kartı (bölgelerin numaraları) açılır
+      } else if (r.okuma) {
         // okuma kipi: cevap yok; neden yok olduğu ve bölümlerin aşağıda olduğu söylenir
         const m = METIN[dil];
         // anlam modeli de yoksa (kelimeyle sıralandı, ölçü §101: alıntıların ~üçte biri ilk 6'da) okuyana birkaçına bakması söylenir
@@ -1846,16 +2213,431 @@
       // ekranda ne yazıyorsa o okunur (durma cümleleri ve "bilmiyorum" dahil); [1, 3] gibi kaynak numaraları okunmaz
       $('cevapOkuYer').hidden = !sesliOkuKur($('cevapOku'), $('cevap').innerText.replace(/\s*\[[\d,،，、\s]+\]/g, '').trim(), dil);
       sonCevap = { soru, dil, r };   // "bu cevap yanlış" bu cevabı kaydeder (Ö18)
-      $('yanlisAc').hidden = !!r.okuma;   // okuma kipinde cevap yazılmadı: işaretlenecek cevap yok
+      $('defterKaydet').hidden = !defterVar || !!(r.secenekler || r.acil || r.durdur || r.bilgiYok); $('defterKaydetForm').hidden = true;   // §145 (kart, durdu, kaynaksız: kaydedilecek cevap yok)
+      yolGoster(soru, r, ek);   // §143 seçim yolu ve öbür bölümler
+      $('yanlisAc').hidden = !!r.okuma || !!r.secenekler;   // okuma kipinde ya da şık sorulurken cevap yazılmadı: işaretlenecek cevap yok
       if (!r.okuma) soruGoster(r);   // beklenmez: cevap ekranda, satır çeviri gelince çıkar
-      durumYaz('bitti', r.toplam_sn);
-    } catch (e) {
-      durumYaz('hata', e.message);
-    } finally {
-      soruyor = false;
-      $('soru').disabled = false; $('sor').disabled = false;
+  }
+
+  // §135 şıklar: bulunan bölümler (adı ve ilk cümlesi, kullanıcının dilinde); altta "hiçbiri" — kendi sözleriyle yazar
+  // (Ercan 14.11: "isterse altta o soruya kendi yanıt yazabilsin kaynaklarda olmayan farklı bir durum da söz konusu olabilir")
+  // §143 (Ercan 14.11: "yanlış tercih yapan kullanıcı … bir adım geriye kolayca gelip … diğer seçeneği kolayca değerlendirip
+  // oradan devam etmeli"): şık = bölüm adı + onu ayıran kelimeler; "hepsini göster" (Ercan iki şıkkı birden seçti: "hem sebep
+  // olanı merak ettim hem önlemini"); "hiçbiri" → kendi sözleriyle. Seçilince yol (seçim + geri + öbür bölümler) üstte kalır.
+  function secenekListesi(soru, r, ek, secenekler) {
+    const m = METIN[dil], ol = document.createElement('ol'); ol.className = 'secenekler';
+    for (const s of secenekler) {
+      const li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'secenek'; b.dir = 'auto'; b.textContent = s.etiket;
+      b.addEventListener('click', () => cevapla(soru, { secilen: { kitap: s.kitap, ad: s.ad, dil: s.dil }, diller: r.diller, baslik: s.baslik,
+        yol: { r, ek, secenekler } }));
+      li.appendChild(b); ol.appendChild(li);
     }
+    return ol;
+  }
+  function secenekGoster(soru, r, ek = null, secenekler = r.secenekler) {
+    const m = METIN[dil], kutu = $('cevap');
+    kutu.textContent = '';
+    const p = document.createElement('p'); p.textContent = m.secenekSor; kutu.appendChild(p);
+    kutu.appendChild(secenekListesi(soru, r, ek, secenekler));
+    const hepsi = document.createElement('button'); hepsi.type = 'button'; hepsi.className = 'kucukDugme'; hepsi.textContent = m.secenekHepsi;
+    hepsi.addEventListener('click', () => { kutu.textContent = m.secenekHepsiNot; kaynakKartAc(); });
+    kutu.appendChild(hepsi);
+    const f = document.createElement('form'); f.className = 'yigin secenekYaz';
+    const l = document.createElement('p'); l.className = 'aciklama'; l.textContent = m.secenekHicbiri;
+    const t = document.createElement('textarea'); t.rows = 2; t.dir = 'auto'; t.maxLength = 1000; t.placeholder = m.secenekYaz;
+    const g = document.createElement('button'); g.type = 'submit'; g.textContent = m.secenekGonder;
+    f.append(l, t, g);
+    f.addEventListener('submit', (o) => { o.preventDefault(); const yazi = t.value.trim(); if (yazi) cevapla(`${soru}\n${yazi}`, { sorulmaz: true }); });
+    kutu.appendChild(f);
+  }
+  function kaynakKartAc() { $('kaynakKart').hidden = false; try { $('kaynakKart').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* eski tarayıcı */ } }
+  // yol satırı: seçimden geldiyse "Bu bölüm senin seçtiğin duruma göre…" + bir adım geri + öbür bölümler;
+  // seçim sorulmadan cevap/okuma geldiyse ve başka aday bölüm varsa "Durumun farklı mı?" (etiketler gerekince çevrilir)
+  function yolGoster(soru, r, ek) {
+    const m = METIN[dil], yer = $('yolSatir');
+    yer.textContent = ''; yer.hidden = true;
+    if (r.acil) return;   // acil kartı yoldan bağımsız en üstte
+    if (ek && ek.yol) {
+      const geri = document.createElement('button'); geri.type = 'button'; geri.className = 'kucukDugme'; geri.textContent = m.geriDugme;
+      geri.addEventListener('click', () => { soruNo++; goster(soru, ek.yol.r, ek.yol.ek).then(() => { if (!ek.yol.r.secenekler) secenekGoster(soru, ek.yol.r, ek.yol.ek, ek.yol.secenekler); }); });
+      const sec = document.createElement('span'); sec.className = 'yolSecim'; sec.textContent = m.secimSatiri(ek.baslik || ek.secilen.ad);
+      yer.append(geri, sec);
+      const obur = ek.yol.secenekler.filter((s) => !(s.kitap === ek.secilen.kitap && s.ad === ek.secilen.ad));
+      if (obur.length) {
+        const e = document.createElement('span'); e.className = 'aciklama'; e.textContent = m.oburBolum; yer.appendChild(e);
+        for (const s of obur) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'kucukDugme'; b.dir = 'auto'; b.textContent = s.baslik;
+          b.title = s.etiket;
+          b.addEventListener('click', () => cevapla(soru, { secilen: { kitap: s.kitap, ad: s.ad, dil: s.dil }, diller: ek.yol.r.diller, baslik: s.baslik, yol: ek.yol }));
+          yer.appendChild(b);
+        }
+      }
+      yer.hidden = false;
+      return;
+    }
+    if (!r.secenekler && (r.adaylar || []).length >= 2) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'kucukDugme'; b.textContent = m.farkliMi;
+      b.addEventListener('click', async () => {
+        b.disabled = true;
+        let secenekler = [];
+        try { secenekler = await H.secenekEtiketle(r.adaylar, dil); } catch (e) { b.disabled = false; return; }
+        secenekGoster(soru, r, ek, secenekler);
+        yer.hidden = true;
+      });
+      yer.appendChild(b); yer.hidden = false;
+    }
+  }
+
+  // ---- §145 Heybe defteri (Ercan 14.11: "Heybe hafızası olsa harika olur"; "accerdon menü gibi gruplar … Tıbbi gruba girdim
+  //      içerisinde Ercan girdim ve arama çubuğunda ateş yazdım"): kayıtlı cevaplar ve kendi notları, iç içe gruplar. Saklama
+  //      yardımcıda (/api/defter → heybe/benim/defter.json), arama motorda (H.defterAra) — modelsiz, TV kutusunda da.
+  //      Güvenlik: kayıt "senin kaydettiğin · tarih · sürüm" diye görünür (aşırı güven, §143); açılınca sorusu acil kalıplarından
+  //      geçer; kişisel not eylem bekçisinin kurallarıyla okunur ve uyarılır (silinmez — not kullanıcının, K18).
+  let defter = { surum: 1, gruplar: [], kayitlar: [] }, defterVar = false, heybeSurum = '';
+  // K7 defter kilidi (15.11.2026, Özet §146–§148; LM: "K7 kararı doğrudan ihlal edilmiştir"): defter bellekte yalnız şifreli
+  // (yardımcı şifresizi yazmaz). Parola yalnız kullanıcının aklında; açık defter yalnız bu sayfanın belleğinde — sayfa kapanınca
+  // ya da "Kilitle" ile unutulur. Kurtarma kodu bir kez gösterilir, kâğıda yazılır. Kurtarıcı için acil kartı şifresiz kalır.
+  // kilitKip: '' açık · 'kur' parola belirlenecek (yeni defter ya da 0.34.0'dan şifresiz) · 'kod' kurtarma kodu gösteriliyor ·
+  //           'ac' kilitli · 'unuttum' kodla açma · 'kayip' ikisi de kayıp → yeni defter · 'yok' tarayıcıda şifreleme yok · 'bozuk'
+  let defterZarf = null, defterAnahtar = null, kilitKip = '', gosterilenKod = null, defterBozuk = '';
+  const bosDefter = () => ({ surum: 1, gruplar: [], kayitlar: [] });
+  fetch('/heybe/surum.json').then((y) => y.json()).then((s) => { heybeSurum = s.surum; }).catch(() => {});
+  async function defterOku() {
+    try {
+      const y = await fetch(`${API}/defter`, { cache: 'no-store' });
+      if (y.status === 404) return;   // eski yardımcı program: defter yok
+      const d = await y.json();
+      defterVar = true;
+      if (!y.ok) { defterBozuk = d.hata || String(y.status); kilitKip = 'bozuk'; defter = bosDefter(); defterAnahtar = null; }
+      else if (!H.kriptoVar()) { kilitKip = 'yok'; defter = bosDefter(); }
+      else if (H.defterZarfi(d)) {
+        defterZarf = d;
+        if (defterAnahtar) { try { defter = await H.defterCoz(d, defterAnahtar); } catch (e) { defterAnahtar = null; } }
+        if (!defterAnahtar) { defter = bosDefter(); if (!['unuttum', 'kayip'].includes(kilitKip)) kilitKip = 'ac'; }
+      } else { defterZarf = null; defterAnahtar = null; defter = d; kilitKip = 'kur'; }
+    } catch (e) { setTimeout(defterOku, 3000); return; }
+    defterCiz();
+  }
+  // yazma: içerik veri anahtarıyla şifrelenir; kilitliyken yazılmaz (şifresiz yazım yok — yardımcı da reddeder)
+  async function defterYaz() {
+    if (!defterAnahtar || !defterZarf) throw new Error(METIN[dil].defterKilitliHata);
+    const zarf = await H.defterKilitle(defter, defterZarf, defterAnahtar);
+    await api('defter', zarf);
+    defterZarf = zarf;
+  }
+  function kodYazdir(kod) {
+    const m = METIN[dil], w = window.open('', '_blank');
+    if (!w) { window.print(); return; }
+    const d = w.document, oge = (e, y, stil = '') => { const x = d.createElement(e); x.textContent = y; x.style.cssText = stil; return x; };
+    d.title = `Heybe — ${m.defterKodBaslik}`;
+    d.body.append(oge('h1', `Heybe — ${m.defterKodBaslik}`), oge('p', kod, 'font: 600 28px monospace; letter-spacing: 2px'), oge('p', m.defterKodAciklama));
+    w.print();
+  }
+  function kilitCiz() {
+    const m = METIN[dil], durum = ogeYap('p', { className: 'durum', id: 'defterKilitDurum' });
+    const alan = (yazi, girdi) => ogeYap('label', {}, [ogeYap('span', { textContent: yazi }), girdi]);
+    const parola = (yeni) => ogeYap('input', { type: 'password', autocomplete: yeni ? 'new-password' : 'current-password', required: true });
+    const hataYaz = (yazi) => { durum.textContent = yazi; durum.className = 'durum kotu'; };
+    const bekle = (yazi) => { durum.textContent = yazi; durum.className = 'durum'; };
+    const ikiParola = (p1, p2) => {   // uzunluk ve eşlik → temiz parola ya da null
+      const a = H.parolaTemiz(p1.value), b = H.parolaTemiz(p2.value);
+      if (a.length < H.PAROLA_EN_KISA) { hataYaz(m.defterParolaKisa(H.PAROLA_EN_KISA)); return null; }
+      if (a !== b) { hataYaz(m.defterParolaUymuyor); return null; }
+      return a;
+    };
+    const form = (cocuklar, dugmeYazi, is) => {   // ikinci basış beklemede yok sayılır
+      const f = ogeYap('form', { className: 'yigin' }), gonder = ogeYap('button', { type: 'submit', textContent: dugmeYazi });
+      f.append(...cocuklar, ogeYap('div', {}, [gonder]));
+      f.onsubmit = async (o) => {
+        o.preventDefault();
+        if (gonder.disabled) return;
+        gonder.disabled = true;
+        try { await is(); } catch (e) { hataYaz(m.defterHata + e.message); } finally { gonder.disabled = false; }
+      };
+      return f;
+    };
+    const parca = [];
+    if (kilitKip === 'yok') parca.push(ogeYap('p', { className: 'dur', textContent: m.defterKriptoYok }));
+    else if (kilitKip === 'bozuk') parca.push(ogeYap('p', { className: 'dur', textContent: m.defterHata + defterBozuk }));
+    else if (kilitKip === 'kur' || kilitKip === 'kayip') {
+      const p1 = parola(true), p2 = parola(true), kenara = kilitKip === 'kayip';
+      parca.push(ogeYap('p', {}, [ogeYap('strong', { textContent: m.defterKilitBaslik })]), ogeYap('p', { className: 'aciklama', textContent: m.defterKilitAciklama }));
+      if (!kenara && (defter.kayitlar.length || defter.gruplar.length)) parca.push(ogeYap('p', { className: 'dur', textContent: m.defterKilitTasi }));
+      if (kenara) parca.push(ogeYap('p', { className: 'dur', textContent: m.defterKayipAciklama }));
+      parca.push(form([alan(m.defterParola, p1), alan(m.defterParolaTekrar, p2)], kenara ? m.defterKayipOnay : m.defterKilitKurDugme, async () => {
+        const p = ikiParola(p1, p2);
+        if (!p) return;
+        bekle(m.defterKilitleniyor);
+        const icerik = kenara ? bosDefter() : defter;
+        const { zarf, kod, anahtar } = await H.defterKilitKur(icerik, p);
+        // 0.34.0'ın şifresiz defteri burada şifreliyle değişir (yardımcı şifresiz önceki sürümü siler); kayıpta eskisi kenara konur
+        await api(kenara ? 'defter?kenara=1' : 'defter', zarf);
+        defter = icerik; defterZarf = zarf; defterAnahtar = anahtar; gosterilenKod = kod; kilitKip = 'kod';
+        defterCiz();
+      }));
+      if (kenara) parca.push(ogeYap('p', {}, [dugmeYap(m.defterGeri, () => { kilitKip = 'unuttum'; defterCiz(); })]));
+    } else if (kilitKip === 'kod') {
+      const onay = ogeYap('input', { type: 'checkbox' }), devam = dugmeYap(m.defterDevam, () => { gosterilenKod = null; kilitKip = ''; defterCiz(); });
+      devam.disabled = true;
+      onay.addEventListener('change', () => { devam.disabled = !onay.checked; });
+      parca.push(ogeYap('p', {}, [ogeYap('strong', { textContent: m.defterKodBaslik })]), ogeYap('p', { className: 'kurtarmaKod', textContent: gosterilenKod, dir: 'ltr' }),
+        ogeYap('p', { className: 'aciklama', textContent: m.defterKodAciklama }), ogeYap('p', {}, [dugmeYap(m.defterKodYazdir, () => kodYazdir(gosterilenKod))]),
+        ogeYap('label', { className: 'kopruSecim' }, [onay, ' ', ogeYap('span', { textContent: m.defterKodYazdim })]), ogeYap('p', {}, [devam]));
+    } else if (kilitKip === 'ac') {
+      const p = parola(false);
+      parca.push(ogeYap('p', { textContent: m.defterKilitli }), form([alan(m.defterParola, p)], m.defterAcDugme, async () => {
+        bekle(m.defterAciliyor);
+        let a;
+        try { a = await H.defterKilitAc(defterZarf, p.value); } catch (e) { p.value = ''; hataYaz(m.defterParolaYanlis); return; }
+        defter = a.defter; defterAnahtar = a.anahtar; kilitKip = ''; defterCiz();
+      }), ogeYap('p', {}, [dugmeYap(m.defterUnuttum, () => { kilitKip = 'unuttum'; defterCiz(); })]));
+    } else if (kilitKip === 'unuttum') {
+      const kod = ogeYap('input', { type: 'text', required: true, autocomplete: 'off', spellcheck: false, dir: 'ltr' }), p1 = parola(true), p2 = parola(true);
+      parca.push(form([alan(m.defterKod, kod), alan(m.defterYeniParola, p1), alan(m.defterParolaTekrar, p2)], m.defterKurtarDugme, async () => {
+        if (!H.kurtarmaTemiz(kod.value)) { hataYaz(m.defterKodYanlis); return; }
+        const p = ikiParola(p1, p2);
+        if (!p) return;
+        bekle(m.defterAciliyor);
+        let y;
+        try { y = await H.defterParolaYenile(defterZarf, kod.value, p); } catch (e) { hataYaz(m.defterKodYanlis); return; }
+        await api('defter', y.zarf);
+        defter = y.defter; defterZarf = y.zarf; defterAnahtar = y.anahtar; kilitKip = ''; defterCiz();
+      }), ogeYap('p', {}, [dugmeYap(m.defterGeri, () => { kilitKip = 'ac'; defterCiz(); }), ' ', dugmeYap(m.defterKayip, () => { kilitKip = 'kayip'; defterCiz(); })]));
+    }
+    parca.push(durum);
+    $('defterKilit').replaceChildren(...parca);
+  }
+  const grupYolu = (id) => H.defterYol(defter, id).join(' › ');
+  const ogeYap = (etiket, ozellik = {}, cocuk = []) => { const e = document.createElement(etiket); Object.assign(e, ozellik); e.append(...cocuk); return e; };
+  function dugmeYap(yazi, is, sinif = 'kucukDugme') { const b = ogeYap('button', { type: 'button', className: sinif, textContent: yazi }); b.addEventListener('click', is); return b; }
+  function kayitAdi(k) { return ((k.ceviriler || {})[dil] || {}).ad || k.ad; }
+  function grupSecimi(secili = '', bosYazi = null) {
+    const m = METIN[dil], s = ogeYap('select');
+    s.appendChild(ogeYap('option', { value: '', textContent: bosYazi || m.defterGruplanmamis }));
+    for (const g of [...defter.gruplar].sort((a, b) => grupYolu(a.id).localeCompare(grupYolu(b.id), dil))) {
+      s.appendChild(ogeYap('option', { value: g.id, textContent: grupYolu(g.id), selected: g.id === secili }));
+    }
+    return s;
+  }
+  function kayitDugmesi(k, yolGoster = false) {
+    const li = ogeYap('li'), b = dugmeYap(`${k.tur === 'not' ? '✎ ' : ''}${kayitAdi(k)}`, () => kayitGoster(k.id), 'secenek');
+    b.dir = 'auto';
+    li.appendChild(b);
+    if (yolGoster && k.grup) li.appendChild(ogeYap('span', { className: 'defterYolEt', textContent: grupYolu(k.grup) }));
+    return li;
+  }
+  function defterDal(ustId) {
+    const parca = document.createDocumentFragment(), m = METIN[dil];
+    for (const g of defter.gruplar.filter((x) => (x.ust || '') === (ustId || ''))) {
+      const sayi = H.defterAra(defter, '', g.id, dil).length;
+      const d = ogeYap('details', { className: 'defterGrup' });
+      d.dataset.id = g.id;
+      d.appendChild(ogeYap('summary', { textContent: `${g.ad} (${sayi})`, dir: 'auto' }));
+      const ul = ogeYap('ul', { className: 'defterListe' });
+      for (const k of defter.kayitlar.filter((x) => x.grup === g.id)) ul.appendChild(kayitDugmesi(k));
+      d.appendChild(ul);
+      d.appendChild(defterDal(g.id));
+      d.appendChild(ogeYap('p', {}, [dugmeYap(m.defterGrupAdlandir, () => grupAdlandirFormu(g.id)), ' ', dugmeYap(m.defterGrupSil, () => grupSil(g.id))]));
+      parca.appendChild(d);
+    }
+    if (!ustId) {
+      const grupsuz = defter.kayitlar.filter((x) => !x.grup);
+      if (grupsuz.length) {
+        const ul = ogeYap('ul', { className: 'defterListe' });
+        for (const k of grupsuz) ul.appendChild(kayitDugmesi(k));
+        parca.appendChild(ul);
+      }
+    }
+    return parca;
+  }
+  function defterCiz() {
+    if (!METIN[dil]) return;
+    const m = METIN[dil];
+    $('defterKart').hidden = !defterVar;
+    if (!defterVar) return;
+    $('defterKilit').hidden = !kilitKip; $('defterIc').hidden = !!kilitKip;
+    $('defterSayi').textContent = kilitKip ? '🔒' : `(${defter.kayitlar.length})`;
+    if (kilitKip) { kilitCiz(); return; }
+    $('defterAra').placeholder = m.defterAraYer;
+    const kapsam = $('defterKapsam'), secili = kapsam.value;
+    kapsam.replaceChildren(...grupSecimi(secili, m.defterTumu).children);
+    kapsam.value = defter.gruplar.some((g) => g.id === secili) ? secili : '';
+    const yer = $('defterSonuc'), sorgu = $('defterAra').value.trim();
+    // açık grupları koru (yeniden çizimde kapanmasın)
+    const acik = new Set([...yer.querySelectorAll('details.defterGrup[open]')].map((d) => d.dataset.id));
+    yer.textContent = '';
+    if (sorgu || kapsam.value) {
+      const bulunan = H.defterAra(defter, sorgu, kapsam.value || null, dil);
+      if (!bulunan.length) { yer.appendChild(ogeYap('p', { className: 'aciklama', textContent: m.defterSonucYok })); return; }
+      const ul = ogeYap('ul', { className: 'defterListe' });
+      for (const k of bulunan) ul.appendChild(kayitDugmesi(k, true));
+      yer.appendChild(ul);
+      return;
+    }
+    if (!defter.kayitlar.length && !defter.gruplar.length) { yer.appendChild(ogeYap('p', { className: 'aciklama', textContent: m.defterBos })); return; }
+    yer.appendChild(defterDal(''));
+    yer.querySelectorAll('details.defterGrup').forEach((d) => { if (acik.has(d.dataset.id)) d.open = true; });
+  }
+  $('defterAra').addEventListener('input', () => defterCiz());
+  $('defterKapsam').addEventListener('change', () => defterCiz());
+  function defterDurumYaz(yazi, iyi = true) { $('defterDurum').textContent = yazi; $('defterDurum').className = `durum ${iyi ? 'hazir' : 'kotu'}`; }
+  async function defterKaydetVeCiz(basari) {
+    try { await defterYaz(); defterDurumYaz(basari); } catch (e) { defterDurumYaz(METIN[dil].defterHata + e.message, false); await defterOku(); }
+    defterCiz();
+  }
+  // başka dillerde saklama (Ercan 14.11: "ileride çeviri çalışmayan bir cihazda diğer dillerde de gösterilmeli"): yalnız
+  // çevirmen açıkken sorulur; çeviri kayıtla birlikte saklanır, sonra çevirmensiz de görünür. Ad bağlamıyla çevrilir (H.defterCevir).
+  function dilSecimi() {
+    if (!H.AYAR.cevirmen) return null;
+    const s = ogeYap('select', { multiple: true, size: 5 });
+    for (const d of Object.keys(METIN).filter((x) => x !== dil).sort((a, b) => dilAdiKisa(a, dil).localeCompare(dilAdiKisa(b, dil), dil))) {
+      s.appendChild(ogeYap('option', { value: d, textContent: dilAdiKisa(d, dil) }));
+    }
+    return { oge: ogeYap('label', {}, [ogeYap('span', { textContent: METIN[dil].defterDiller }), s]), secilen: () => [...s.selectedOptions].map((o) => o.value) };
+  }
+  async function cevirileriEkle(k, diller) {
+    const secilen = diller ? diller.secilen() : [];
+    if (!secilen.length) return;
+    k.ceviriler = {};
+    for (const d of secilen) {
+      defterDurumYaz(METIN[dil].defterCeviriyor(dilAdiKisa(d, dil)));
+      try { k.ceviriler[d] = await H.defterCevir(k, d); } catch (e) { /* o dil atlanır */ }
+    }
+  }
+  // grup seçimi + "yeni grup adı" (seçilen grubun içinde açılır) → grup kimliği
+  function grupAlanlari(secili = '') {
+    const m = METIN[dil], s = grupSecimi(secili), yeni = ogeYap('input', { type: 'text', maxLength: 80, placeholder: m.defterYeniGrupAd, dir: 'auto' });
+    const al = () => {
+      const ad = yeni.value.trim();
+      if (!ad) return s.value;
+      const g = { id: H.defterKimlik(), ad, ...(s.value ? { ust: s.value } : {}) };
+      defter.gruplar.push(g);
+      return g.id;
+    };
+    return { oge: ogeYap('div', { className: 'yigin' }, [ogeYap('label', {}, [ogeYap('span', { textContent: m.defterGrup }), s]), yeni]), al };
+  }
+  function formKur(form, cocuklar, kaydet) {
+    const m = METIN[dil];
+    form.replaceChildren(...cocuklar, ogeYap('div', {}, [ogeYap('button', { type: 'submit', textContent: m.defterKaydetDugme }), ' ',
+      dugmeYap(m.defterVazgec, () => { form.hidden = true; })]));
+    // önce kapanır, sonra yazılır: yazma sürerken açılan yeni form, eski kaydın bitişiyle kapanmasın (14.11 canlı denemede görüldü)
+    form.onsubmit = async (o) => { o.preventDefault(); form.onsubmit = (x) => x.preventDefault(); form.hidden = true; await kaydet(); };
+    form.hidden = false;
+  }
+  $('defterYeniGrup').addEventListener('click', () => {
+    const m = METIN[dil], ad = ogeYap('input', { type: 'text', maxLength: 80, required: true, dir: 'auto' }), ust = grupSecimi('', m.defterUstYok);
+    formKur($('defterForm'), [ogeYap('label', {}, [ogeYap('span', { textContent: m.defterAd }), ad]), ogeYap('label', {}, [ogeYap('span', { textContent: m.defterUstGrup }), ust])], async () => {
+      defter.gruplar.push({ id: H.defterKimlik(), ad: ad.value.trim(), ...(ust.value ? { ust: ust.value } : {}) });
+      await defterKaydetVeCiz(m.defterKaydedildi);
+    });
+    ad.focus();
   });
+  $('defterYeniNot').addEventListener('click', () => {
+    const m = METIN[dil], ad = ogeYap('input', { type: 'text', maxLength: 120, required: true, dir: 'auto' });
+    const metin = ogeYap('textarea', { rows: 4, maxLength: 8000, required: true, dir: 'auto' }), grup = grupAlanlari($('defterKapsam').value), diller = dilSecimi();
+    formKur($('defterForm'), [ogeYap('label', {}, [ogeYap('span', { textContent: m.defterAd }), ad]), ogeYap('label', {}, [ogeYap('span', { textContent: m.defterNotMetin }), metin]), grup.oge, ...(diller ? [diller.oge] : [])], async () => {
+      const k = { id: H.defterKimlik(), grup: grup.al(), ad: ad.value.trim(), tur: 'not', metin: metin.value.trim(), dil, tarih: new Date().toISOString(), surum: heybeSurum };
+      await cevirileriEkle(k, diller);
+      defter.kayitlar.push(k);
+      await defterKaydetVeCiz(m.defterKaydedildi);
+      kayitGoster(k.id);
+    });
+    ad.focus();
+  });
+  // cevabı deftere kaydet: ad (varsayılan soru), grup, başka diller (çevirmen varken çevrilip saklanır)
+  $('defterKaydet').addEventListener('click', () => {
+    if (!sonCevap) return;
+    if (kilitKip) {   // K7: kilitli defter yazılmaz — önce açılır
+      $('defterAc').open = true; defterCiz();
+      const d = $('defterKilitDurum');
+      if (d) { d.textContent = METIN[dil].defterOnceAc; d.className = 'durum kotu'; }
+      $('defterKilit').scrollIntoView({ block: 'center' });
+      const g = $('defterKilit').querySelector('input'); if (g) g.focus();
+      return;
+    }
+    const m = METIN[dil], { soru, r } = sonCevap;
+    const ad = ogeYap('input', { type: 'text', maxLength: 120, required: true, value: soru.split('\n')[0].slice(0, 120), dir: 'auto' });
+    const grup = grupAlanlari($('defterKapsam').value);
+    const diller = dilSecimi();
+    const alanlar = [ogeYap('label', {}, [ogeYap('span', { textContent: m.defterAd }), ad]), grup.oge];
+    if (diller) alanlar.push(diller.oge);
+    formKur($('defterKaydetForm'), alanlar, async () => {
+      const cevap = r.okuma || r.acil || r.durdur ? '' : String(r.cevap || '');
+      const k = { id: H.defterKimlik(), grup: grup.al(), ad: ad.value.trim(), tur: 'cevap', soru, cevap, dil, tarih: new Date().toISOString(), surum: heybeSurum,
+        kaynaklar: (r.parcalar || []).slice(0, 6).map((p) => ({ makale: p.makale, bolum: p.bolum || '', kitap: p.kitap || '', dil: p.dil || dil, metin: String(p.metin || '').slice(0, 900) })) };
+      await cevirileriEkle(k, diller);
+      defter.kayitlar.push(k);
+      await defterKaydetVeCiz(m.defterKaydedildi);
+      $('defterAc').open = true;
+    });
+    ad.focus();
+  });
+  // dil değişince: liste yeni dilde çizilir, açık kayıt yeni dilde yeniden gösterilir, yarım kalan formlar kapanır (eski dilde kalmasın)
+  let acikKayit = null;
+  function defterDilDegisti() {
+    defterCiz();
+    $('defterForm').hidden = true; $('defterKaydetForm').hidden = true;
+    if (acikKayit && !$('defterKayit').hidden) kayitGoster(acikKayit, false);
+  }
+  function kayitGoster(id, kaydir = true) {
+    const k = defter.kayitlar.find((x) => x.id === id), yer = $('defterKayit'), m = METIN[dil];
+    acikKayit = k ? id : null;
+    if (!k) { yer.hidden = true; return; }
+    const c = (k.ceviriler || {})[dil] || {};
+    const tarih = (() => { try { return new Date(k.tarih).toLocaleDateString(dil); } catch (e) { return k.tarih || ''; } })();
+    const parca = [ogeYap('h3', { textContent: kayitAdi(k), dir: 'auto' }),
+      ogeYap('p', { className: 'aciklama', textContent: k.tur === 'not' ? m.defterNotEtiket(tarih) : m.defterCevapEtiket(tarih, k.surum || '?') })];
+    if (c.ad || c.cevap || c.metin) parca.push(ogeYap('p', { className: 'aciklama', textContent: m.defterCeviriNot(dilAdiKisa(k.dil || 'tr', dil)) }));
+    // açılınca acil kalıpları (modelsiz): sorusu (ya da notu) şu anda acil bir durumu anlatıyorsa önce acil numara
+    const kd = k.dil === 'en' ? 'en' : k.dil === 'tr' ? 'tr' : null;
+    if (kd && H.acilBelirti(k.soru || k.metin || '', kd).length) parca.push(ogeYap('p', {}, [ogeYap('span', { className: 'dur', textContent: m.defterAcil(acilSira()[0].n[0][0]) })]));
+    if (k.tur === 'not' && kd) {
+      const uyari = H.notDenetle(k.metin || '', kd);
+      if (uyari.length) parca.push(ogeYap('p', {}, [ogeYap('span', { className: 'dur', textContent: m.defterNotUyari(uyari.map((x) => (m.eylemAdlari || {})[x] || METIN.en.eylemAdlari[x]).join('; ')) })]));
+    }
+    if (k.soru && k.soru !== k.ad) parca.push(ogeYap('p', { className: 'aciklama', textContent: `${m.defterSoru}: ${c.soru || k.soru}`, dir: 'auto' }));
+    const govde = k.tur === 'not' ? (c.metin || k.metin) : (c.cevap || k.cevap);
+    parca.push(ogeYap('div', { className: 'metin', textContent: govde || m.defterCevapsiz, dir: 'auto' }));
+    if ((k.kaynaklar || []).length) {
+      const ol = ogeYap('ol', { className: 'kaynak' });
+      for (const p of k.kaynaklar) ol.appendChild(ogeYap('li', {}, [ogeYap('strong', { textContent: p.makale + (p.bolum ? ' — ' + p.bolum : '') }), ogeYap('div', { textContent: p.metin, dir: 'auto' })]));
+      parca.push(ogeYap('details', {}, [ogeYap('summary', { textContent: m.defterKaynaklar }), ol]));
+    }
+    const tasi = grupSecimi(k.grup || '');
+    tasi.addEventListener('change', async () => { k.grup = tasi.value; await defterKaydetVeCiz(m.defterKaydedildi); kayitGoster(k.id); });
+    let silEmin = false;
+    const sil = dugmeYap(m.defterSil, async () => {
+      if (!silEmin) { silEmin = true; sil.textContent = m.defterSilEmin; return; }
+      defter.kayitlar = defter.kayitlar.filter((x) => x.id !== k.id); yer.hidden = true;
+      await defterKaydetVeCiz(m.defterSilindi);
+    });
+    const alt = [dugmeYap(m.defterKapat, () => { yer.hidden = true; acikKayit = null; }), ' '];
+    if (k.soru) alt.push(dugmeYap(m.defterYenidenSor, () => { $('soru').value = k.soru.split('\n')[0]; try { $('soru').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* eski tarayıcı */ } cevapla(k.soru); }), ' ');
+    alt.push(ogeYap('label', {}, [ogeYap('span', { textContent: m.defterTasi + ' ' }), tasi]), ' ', sil);
+    parca.push(ogeYap('p', {}, alt));
+    yer.replaceChildren(...parca);
+    yer.hidden = false;
+    if (kaydir) try { yer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) { /* eski tarayıcı */ }
+  }
+  function grupAdlandirFormu(id) {
+    const g = defter.gruplar.find((x) => x.id === id), m = METIN[dil];
+    if (!g) return;
+    const ad = ogeYap('input', { type: 'text', maxLength: 80, required: true, value: g.ad, dir: 'auto' });
+    formKur($('defterForm'), [ogeYap('label', {}, [ogeYap('span', { textContent: m.defterAd }), ad])], async () => { g.ad = ad.value.trim(); await defterKaydetVeCiz(m.defterKaydedildi); });
+    ad.focus();
+  }
+  $('defterKilitle').addEventListener('click', () => {   // açık defter ve anahtar sayfanın belleğinden atılır
+    defterAnahtar = null; defter = bosDefter(); kilitKip = 'ac'; acikKayit = null;
+    $('defterKayit').hidden = true; $('defterForm').hidden = true; $('defterKaydetForm').hidden = true;
+    defterCiz();
+  });
+  async function grupSil(id) {
+    const m = METIN[dil];
+    if (defter.kayitlar.some((k) => k.grup === id) || defter.gruplar.some((g) => g.ust === id)) { defterDurumYaz(m.defterGrupDolu, false); return; }
+    defter.gruplar = defter.gruplar.filter((g) => g.id !== id);
+    await defterKaydetVeCiz(m.defterSilindi);
+  }
 
   // ---- kitaplık ekranı ----
 
@@ -1905,7 +2687,8 @@
       const ad = k.dosya.replace(/\.zim$/i, '');
       const dis = (disk.disKaynak || {})[k.dosya];
       const disRozet = dis ? `<span class="rozet uyari">${yazi(m.disKaynak + (dis.imzali ? '' : ', ' + m.imzasiz))}</span>` : '';
-      const li = satir(yazi(k.baslik) + disRozet, `${yazi(dilAdi(k.dil))} · ${boyutYaz(k.boyut)} · ${yazi(k.dosya)} · <span class="saglik">${yazi(m.saglik.bakiliyor)}</span>`, [
+      const turRozet = turAdi(ad) ? `<span class="rozet${H.kaynakTuru(ad) === 'forum' ? ' uyari' : ''}">${yazi(turAdi(ad))}</span>` : '';   // §157
+      const li = satir(yazi(k.baslik) + disRozet + turRozet, `${yazi(dilAdi(k.dil))} · ${boyutYaz(k.boyut)} · ${yazi(k.dosya)} · <span class="saglik">${yazi(m.saglik.bakiliyor)}</span>`, [
         bag(m.ac, `/kiwix/viewer#${encodeURIComponent(ad)}`),
         dugme(m.kaldir, async () => {
           if (!confirm(m.kaldirSor(k.baslik))) return;
@@ -2022,7 +2805,8 @@
   // ---- kılavuz (§34): metinler METIN'den, her dilde ----
   function kilavuzYaz() {
     const k = METIN[dil].kilavuz;
-    $('kilavuzMetin').innerHTML = ['secim', 'indir', 'kopya', 'dosya', 'liste', 'guncelleme', 'kaldir', 'yer', 'fat', 'saglik', 'sorumluluk']
+    // §155: kaynağın güveni en başta ve kalın (Ercan: "Kaynak ne kadar güvenilir ve doğru ise cevap o kadar daha doğru")
+    $('kilavuzMetin').innerHTML = `<p><b>${yazi(k.guven || METIN.en.kilavuz.guven)}</b></p>` + ['secim', 'indir', 'kopya', 'dosya', 'liste', 'guncelleme', 'kaldir', 'yer', 'fat', 'saglik', 'sorumluluk']
       .map((x) => `<p>${yazi(k[x])}</p>`).join('');
   }
 
@@ -2069,9 +2853,20 @@
       parcalar: (r.parcalar || []).map((p) => ({ kaynak: p.kaynak, kitap: p.kitap, makale: p.makale, bolum: p.bolum,
         yol: p.yol, dil: p.dil, metin: String(p.metin || '').slice(0, 1500) })),
     };
+    // §158 (K7): kayıt yalnız şifreli gider — defter kilitliyse ya da kurulmadıysa önce Defterim (not formda bekler)
+    if (!defterAnahtar) {
+      const d = $('yanlisDurum');
+      d.innerHTML = `${yazi(m.yanlisKilitli)} `; d.className = 'durum'; d.hidden = false;
+      if (defterVar) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'kucukDugme'; b.textContent = m.yanlisDefterAc;
+        b.addEventListener('click', () => { $('defterAc').open = true; $('defterKart').scrollIntoView({ block: 'start' }); });
+        d.appendChild(b);
+      }
+      return;
+    }
     $('yanlisKaydet').disabled = true;
     try {
-      await api('yanlis', { kayit });
+      await api('yanlis', { kayit: await H.yanlisSifrele({ ...kayit, tarih: new Date().toISOString() }, defterAnahtar) });
       $('yanlisForm').hidden = true;
       $('yanlisDurum').textContent = m.yanlisKaydedildi; $('yanlisDurum').className = 'durum hazir';
       sonCevap = null;   // aynı cevap iki kez kaydolmaz
@@ -2082,16 +2877,42 @@
     }
   });
 
+  // §158 (K7): eski (0.38.0'a kadar) şifresiz kayıtlar defter açıkken şifrelenip yerine konur; asıl tarih şifreli içinde kalır
+  let yanlisTasiniyor = false;
+  async function yanlisTasi() {
+    if (!defterAnahtar || yanlisTasiniyor) return false;
+    yanlisTasiniyor = true;
+    let tasindi = false;
+    try {
+      const ham = await (await fetch(`${API}/yanlis?indir=1`, { cache: 'no-store' })).text();
+      for (const satirMetni of ham.split('\n')) {
+        let k; try { k = JSON.parse(satirMetni); } catch (e) { continue; }
+        if (!k || k.sifreli || !k.soru || !k.kimlik) continue;
+        const { kimlik, surum, yardimci, ...icerik } = k;
+        await api('yanlis', { kayit: await H.yanlisSifrele({ ...icerik, eskiSurum: surum || '' }, defterAnahtar) });
+        await api('yanlis', { sil: kimlik });
+        tasindi = true;
+      }
+    } catch (e) { /* bir dahaki açılışta yeniden denenir */ }
+    yanlisTasiniyor = false;
+    return tasindi;
+  }
   async function yanlisYenile() {
     const m = METIN[dil], ul = $('yanlisListesi');
     let kayitlar = [];
     try { kayitlar = (await (await fetch(`${API}/yanlis`, { cache: 'no-store' })).json()).kayitlar || []; } catch (e) { /* eski yardımcı */ }
+    if (defterAnahtar && kayitlar.some((k) => !k.sifreliOzet && k.soru) && await yanlisTasi()) return yanlisYenile();
     ul.innerHTML = '';
     for (const k of kayitlar.slice().reverse()) {   // en yenisi başta
-      const tarih = k.tarih ? new Date(k.tarih).toLocaleString(dil) : '';
-      const alt = [m.yanlisSonuc[k.sonuc] || '', k.not ? `“${k.not}”` : '', tarih].filter(Boolean).map(yazi).join(' · ');
-      ul.appendChild(satir(yazi(k.soru), alt, [dugme(m.sil, async () => {
-        if (!confirm(m.yanlisSilSor(k.soru))) return;
+      let soru = k.soru || '', not = k.not || '', ilkTarih = '';
+      if (k.sifreliOzet) {
+        soru = m.yanlisSifreli; not = '';
+        if (defterAnahtar) { try { ({ soru, not, tarih: ilkTarih = '' } = await H.yanlisCoz(k.sifreliOzet, defterAnahtar)); } catch (e) { /* başka anahtarla yazılmış */ } }
+      }
+      const tarih = (ilkTarih || k.tarih) ? new Date(ilkTarih || k.tarih).toLocaleString(dil) : '';   // taşınan eski kaydın asıl tarihi
+      const alt = [m.yanlisSonuc[k.sonuc] || '', not ? `“${not}”` : '', tarih].filter(Boolean).map(yazi).join(' · ');
+      ul.appendChild(satir(yazi(soru), alt, [dugme(m.sil, async () => {
+        if (!confirm(m.yanlisSilSor(soru))) return;
         try { await api('yanlis', { sil: k.kimlik }); } catch (e) { alert(m.hata + e.message); }
         yanlisYenile();
       })]));
@@ -2099,6 +2920,25 @@
     if (!ul.children.length) ul.innerHTML = `<li class="bos">${yazi(m.yanlisYok)}</li>`;
     $('yanlisIndirSatir').hidden = !kayitlar.length;
   }
+  // indirme: defter açıksa kayıtlar çözülerek iner (kullanıcı geliştirene verebilsin); kilitliyse şifreli hâli
+  $('yanlisIndir').addEventListener('click', async (o) => {
+    if (!defterAnahtar) return;
+    o.preventDefault();
+    try {
+      const ham = await (await fetch(`${API}/yanlis?indir=1`, { cache: 'no-store' })).text();
+      const cikti = [];
+      for (const satirMetni of ham.split('\n')) {
+        let k; try { k = JSON.parse(satirMetni); } catch (e) { continue; }
+        if (k && k.sifreli) { try { const { sifreli, sifreliOzet, ...dis } = k; k = { ...dis, ...(await H.yanlisCoz(sifreli, defterAnahtar)) }; } catch (e) { /* çözülemeyen şifreli kalır */ } }
+        cikti.push(JSON.stringify(k));
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([cikti.join('\n') + '\n'], { type: 'application/x-ndjson' }));
+      a.download = `heybe_yanlis_cevaplar_${new Date().toISOString().slice(0, 10)}.jsonl`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    } catch (e) { alert(METIN[dil].hata + e.message); }
+  });
 
   // ---- ilk kurulum: modeller (08.11, Özet §66) ----
   // Yardımcı program eksik modelleri sırayla indirir, sağlamasını denetler ve inen anlam ve sohbet modelini kendisi açar.
@@ -2242,6 +3082,7 @@
       let ust = yazi(k.baslik);
       if (k.sira < 999) ust += `<span class="rozet">${yazi(m.onerilen)}</span>`;   // 500: her dilde genel öneri
       if (var_) ust += `<span class="rozet">${yazi(m.bellekteVar)}</span>`;
+      if (turAdi(k.seri)) ust += `<span class="rozet${H.kaynakTuru(k.seri) === 'forum' ? ' uyari' : ''}">${yazi(turAdi(k.seri))}</span>`;   // §157
       const alt = [m.cesit[k.cesit] || k.cesit, boyutYaz(k.boyut), k.ozet].filter(Boolean).map(yazi).join(' · ') +
         (buyuk ? `<br><span class="dur">${yazi(m.cokBuyuk)}</span>` : '') +
         (k.aranamaz ? `<br><span class="saglik kotu">${yazi(m.saglik.aranamiyor)}</span>` : '');
@@ -2443,6 +3284,7 @@
     }
   });
   acilKartOku();
+  defterOku();   // §145
   bekle();
 })();
 </script>

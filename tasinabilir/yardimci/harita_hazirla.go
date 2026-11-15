@@ -22,7 +22,8 @@ import (
 )
 
 const (
-	rotaSihir     = "HEYBEROTA2\n" // 13.11: 2. sürüm dönüş yasaklarını da taşır
+	rotaSihir     = "HEYBEROTA3\n" // 14.11: 3. sürüm ara noktaları farkla (değişken uzunluk) yazar — dosya ~%24 küçük
+	rotaSihir2    = "HEYBEROTA2\n" // 13.11: 2. sürüm dönüş yasaklarını da taşır; okunmaya devam eder
 	rotaSihirEski = "HEYBEROTA1\n" // yasaksız eski dosyalar okunmaya devam eder
 	bitYaya       = 1
 	bitAracIleri  = 2
@@ -861,6 +862,65 @@ func yerYaz(yol string, yerler []yerKaydi) error {
 // rotaYaz: başlık JSON + diziler (küçük-sonlu). Ara noktalar en sonda: sorguda yalnız rota parçaları okunur.
 // 13.11 (2. sürüm): sayılara dönüş yasağı sayısı (R) eklenir; yasaklar ara noktalardan hemen önce (kavşak, gelen parça,
 // giden parça, tür: 0 "no_", 1 "only_").
+// 14.11 (3. sürüm, Planlama 8i "`.rota` küçültme"): ara noktalar dosyanın yarısıydı (Türkiye 227/470 MB, nokta başına 8
+// bayt). Artık her parçanın noktaları, parçanın başlangıç köşesinden başlayarak bir öncekinden FARKLA, işaretli değişken
+// uzunlukta (zigzag varint) yazılır; sayılara bu bloğun bayt boyu (B) eklenir. Okuyucu belleğe yine tam dizi açar —
+// yükleme sonrası her şey 2. sürümle birebir aynıdır (test: rota_surum_test.go).
+// geoKodla: ara noktalar → fark bloğu. Parça s'nin noktaları gOff[s]..gOff[s+1]; ilk fark köşe sA[s]'ye göre.
+func geoKodla(gOff, sA []uint32, vLat, vLon, gLat, gLon []int32) []byte {
+	out := make([]byte, 0, len(gLat)*3)
+	for s := 0; s+1 < len(gOff); s++ {
+		pLat, pLon := vLat[sA[s]], vLon[sA[s]]
+		for i := gOff[s]; i < gOff[s+1]; i++ {
+			out = binary.AppendVarint(out, int64(gLat[i])-int64(pLat))
+			out = binary.AppendVarint(out, int64(gLon[i])-int64(pLon))
+			pLat, pLon = gLat[i], gLon[i]
+		}
+	}
+	return out
+}
+
+// geoCoz: fark bloğu → ara noktalar; blok tam tükenmeli, her parça başlangıç köşesi geçerli olmalı
+func geoCoz(geo []byte, gOff, sA []uint32, vLat, vLon []int32) (gLat, gLon []int32, err error) {
+	S := len(sA)
+	if len(gOff) != S+1 {
+		return nil, nil, errors.New("rota: ara nokta dizini bozuk")
+	}
+	G := gOff[S]
+	gLat, gLon = make([]int32, G), make([]int32, G)
+	pos := 0
+	oku := func() (int64, bool) {
+		v, n := binary.Varint(geo[pos:])
+		if n <= 0 {
+			return 0, false
+		}
+		pos += n
+		return v, true
+	}
+	for s := 0; s < S; s++ {
+		if int(sA[s]) >= len(vLat) || gOff[s] > gOff[s+1] {
+			return nil, nil, errors.New("rota: ara nokta parçası bozuk")
+		}
+		pLat, pLon := int64(vLat[sA[s]]), int64(vLon[sA[s]])
+		for i := gOff[s]; i < gOff[s+1]; i++ {
+			dLat, ok1 := oku()
+			dLon, ok2 := oku()
+			if !ok1 || !ok2 {
+				return nil, nil, errors.New("rota: ara nokta bloğu eksik")
+			}
+			pLat, pLon = pLat+dLat, pLon+dLon
+			if pLat < math.MinInt32 || pLat > math.MaxInt32 || pLon < math.MinInt32 || pLon > math.MaxInt32 {
+				return nil, nil, errors.New("rota: ara nokta taşıyor")
+			}
+			gLat[i], gLon[i] = int32(pLat), int32(pLon)
+		}
+	}
+	if pos != len(geo) {
+		return nil, nil, errors.New("rota: ara nokta bloğu fazladan bayt taşıyor")
+	}
+	return gLat, gLon, nil
+}
+
 func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int64, hucreBas, derece, komsu, sA, sB []uint32, sUz []float32, sBayrak, sHiz, sSinif []uint8, sAd []uint32, adlar []string, gOff, kVia, kGelen, kGiden []uint32, kTur []uint8, gLat, gLon []int32) error {
 	f, err := os.Create(yol + ".part")
 	if err != nil {
@@ -872,9 +932,10 @@ func rotaYaz(yol string, ozet *hazirlikOzet, vLat, vLon []int32, hucreler []int6
 	binary.Write(w, binary.LittleEndian, uint32(len(bj)))
 	w.Write(bj)
 	adBlob := strings.Join(adlar, "\x00")
-	sayilar := []uint64{uint64(len(vLat)), uint64(len(hucreler)), uint64(len(komsu)), uint64(len(sA)), uint64(len(adBlob)), uint64(len(gLat)), uint64(len(kVia))}
+	geo := geoKodla(gOff, sA, vLat, vLon, gLat, gLon)
+	sayilar := []uint64{uint64(len(vLat)), uint64(len(hucreler)), uint64(len(komsu)), uint64(len(sA)), uint64(len(adBlob)), uint64(len(gLat)), uint64(len(kVia)), uint64(len(geo))}
 	binary.Write(w, binary.LittleEndian, sayilar)
-	for _, d := range []any{vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, []byte(adBlob), gOff, kVia, kGelen, kGiden, kTur, gLat, gLon} {
+	for _, d := range []any{vLat, vLon, hucreler, hucreBas, derece, komsu, sA, sB, sUz, sBayrak, sHiz, sSinif, sAd, []byte(adBlob), gOff, kVia, kGelen, kGiden, kTur, geo} {
 		if err := binary.Write(w, binary.LittleEndian, d); err != nil {
 			f.Close()
 			return err
