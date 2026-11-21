@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.16 (15.11.2026, yanlış cevap kaydı yalnız şifreli yazılır — K7)"
+const surum = "1.17 (17.11.2026, kütüphane düşerse yeniden açılır — §191)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string
@@ -130,6 +130,7 @@ func main() {
 	if *programDir != "" {
 		kiwixManage = filepath.Join(*programDir, ad)
 	}
+	kiwixServe, kiwixPortu = kiwixServeYolu(*programDir), *kiwixPort // §191 kütüphane onarımı
 	izinliHost = map[string]bool{
 		fmt.Sprintf("127.0.0.1:%d", port): true,
 		fmt.Sprintf("localhost:%d", port): true,
@@ -170,11 +171,12 @@ func main() {
 	mux.HandleFunc("/api/kaldir", apiKaldir)
 	mux.HandleFunc("/api/yukle", apiYukle)
 	mux.HandleFunc("/api/benim-sil", apiBenimSil)
-	mux.HandleFunc("/api/cevirmen", apiCevirmen)      // çevirmen gerekince açılır (06.11)
-	mux.HandleFunc("/api/acil-kart", apiAcilKart)     // açılışta görünen acil kart (Ö14, 06.11)
-	mux.HandleFunc("/api/defter", apiDefter)          // §145 Heybe defteri: kayıtlı cevaplar ve notlar, gruplar
-	mux.HandleFunc("/api/liste", apiListe)            // kullanıcının kitap listesi (Ö11, 07.11)
-	mux.HandleFunc("/api/liste-durum", apiListeDurum) // listedekiler bellekte mi, yeni sürüm var mı (internet gerekir)
+	mux.HandleFunc("/api/cevirmen", apiCevirmen)            // çevirmen gerekince açılır (06.11)
+	mux.HandleFunc("/api/kutuphane-onar", apiKutuphaneOnar) // §191: kütüphane düştüyse yeniden açar
+	mux.HandleFunc("/api/acil-kart", apiAcilKart)           // açılışta görünen acil kart (Ö14, 06.11)
+	mux.HandleFunc("/api/defter", apiDefter)                // §145 Heybe defteri: kayıtlı cevaplar ve notlar, gruplar
+	mux.HandleFunc("/api/liste", apiListe)                  // kullanıcının kitap listesi (Ö11, 07.11)
+	mux.HandleFunc("/api/liste-durum", apiListeDurum)       // listedekiler bellekte mi, yeni sürüm var mı (internet gerekir)
 	mux.HandleFunc("/api/liste-uygula", apiListeUygula)
 	mux.HandleFunc("/api/baglanti", apiBaglanti)            // Kiwix dışı .zim / .meta4 bağlantısından kitap (Ercan 07.11)
 	mux.HandleFunc("/api/baglanti-dosya", apiBaglantiDosya) // bağlantıdan PDF, metin, resim: sayfanın dosya formuna gelir

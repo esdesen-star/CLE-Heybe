@@ -42,6 +42,8 @@ echo "— bekçilerin dişleri (kayıtlı cevaplarla) —"
 node olcum/kopru/dis_denetim.cjs >"$G/denetim" 2>&1
 iste "olumsuzluk dişi" "$G/denetim" "olumsuzluk dişi: ([0-9]+) bozma, \1 yakalandı"
 iste "bağlam dişi" "$G/denetim" "doğru ([0-9]+)/\1"
+iste "özel ad dişi (§235)" "$G/denetim" "özel ad dişi: ([0-9]+)/\1"
+iste "bölüm şıkkı dişi (§237)" "$G/denetim" "bölüm şıkkı dişi: ([0-9]+)/\1"
 iste "paragraf okuyucu dişi" "$G/denetim" "paragraf okuyucu dişi: ([0-9]+)/\1"
 iste "bilgi yok dişi" "$G/denetim" "bilgi yok dişi: ([0-9]+)/\1"
 iste "eylem dişi" "$G/denetim" "eylem dişi: ([0-9]+)/\1"

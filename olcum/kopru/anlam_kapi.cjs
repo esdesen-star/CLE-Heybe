@@ -66,6 +66,17 @@ const CEVIRI_ICIN_SAYFA = {
   // Türkçesinde "kaynağının önerdiği şeyi öneriyor" (ters); "icing a snake bite" 20 dilde pasta kreması/sinek ısırığı;
   // "a baby's head far back" Dancada "öne"
   aktarmaDur: 'The answer seems to recommend something that its source says must not be done. For safety I am not showing it. Please read the sources below.',
+  // §201 acil kartının sorusu: "şu anda" ve "tehlike" düşmemeli; evet ve hayır düğmeleri yer değiştirmemeli
+  acilSoru: 'Is someone in danger right now?',
+  acilEvet: 'Yes, someone is in danger right now',
+  acilHayir: 'No, I only want information',
+  // §191 kütüphane arızası: "bilgi yok" ile karışmamalı — olumsuzluk düşerse kullanıcı "kaynakta yok" sanır
+  kutuphaneAriza: '⚠ Something went wrong while reaching the library. This result may be incomplete; it does NOT mean “my sources do not contain this”. Heybe tried to restart the library but could not. Please close Heybe and open it again.',
+  // §189 kaynaktan uyarı kutusu (cevabın üstünde)
+  uyariBaslik: 'Caution — warnings from the sources (the books)',
+  uyariNot: 'Warnings about the subject of your question found in the books, quoted in the books’ own words. Read them before the answer.',
+  // §180: "kaynakta yok" tersine dönerse ("kaynaklarımda var") cevap gizlenmiş ama sebebi yanlış söylenmiş olur
+  dayanakDur: 'Part of the answer cannot be found in my sources; it may have been added without a source. For safety I am not showing it. Please read the sources below.',
   kipDur: 'The translation turned something that the source only says "may be considered" into something that must be done. For safety I am not showing it. Please read the original answer and the sources.',
   // ilk açıklama ("cutting a snake bite wound") Almanca/İspanyolca/Romencede "yarayı temizlemek" oldu — temizlik tehlikeli
   // değil, uyarı yanıltırdı; üç cümle altı dilde denendi, en sağlamı bu (Slovakçada üçü de "yarayı çıkarmak")
@@ -139,6 +150,12 @@ const KAPI_SAYFA = {
     ikinci: 'If a source is reliable and accurate, the answer will be more accurate and helpful. Heybe writes answers only from the sources in its library and cannot fix a wrong source. Choose current guides from official agencies and first-aid organisations. Encyclopaedia articles, old books and open forums can contain outdated or wrong information.' },
   kurulumKaynak: { ister: ['güven', 'itimat', 'sağlam', 'doğru'], ister2: ['cevap', 'yanıt'], ister3: ['kitaplı', 'kütüphane', 'kaynak'], yasak: [],
     ikinci: 'Important: Heybe can only be as accurate as its library. If a source is reliable and accurate, the answer will be more accurate and helpful. Read the library guide below when you choose books.' },
+  // §163 hiçbiri + en yakın: "hiçbiri", "en yakın" ve "karar senin" düşmemeli
+  secenekHicbiriDugme: { ister: ['hiçbir', 'hiç biri', 'hiçbiri', 'hiçbirisi', 'hiç kimse'], ister2: ['durum', 'hal'], yasak: [], ikinci: 'None of these options describes my situation' },
+  // ilk koşu: 31 dil döndü — geri çeviri "en uygun", "değerlendir", "size kalmış" diyordu (anlam doğru); "kendi kelimelerimle" (Heybe'nin sözleri) ters anlam, yasak
+  secenekEnYakin: { ister: ['en yakın', 'yakın', 'benzer', 'en uygun', 'en ilgili'], ister2: ['karar', 'seç', 'değerlendir', 'size kalmış', 'takdir'], ister3: ['kitab', 'orijinal', 'kaynak metin', 'alıntı', 'kendi sözleriyle'], yasak: ['kendi kelimelerimle', 'kendi sözlerimle', 'kendi ifadelerimle'],
+    ikinci: 'You said none of these fits your situation. Still, below are the closest chapters I found, quoted in the book\'s own words; it is your decision whether they are useful.' },
+  secenekBolumAc: { ister: ['aç', 'göster', 'oku'], ister2: ['bölüm', 'kısım', 'tamam', 'tümü', 'tüm'], yasak: [], ikinci: 'Open the full chapter' },
   // §158 (K7) yanlış cevap kaydı: "şifreli" ve "parola" düşmemeli; düğme "aç"
   yanlisKilitli: { ister: ['şifre', 'kilit'], ister2: ['parola', 'şifre'], ister3: ['kişisel', 'özel', 'mahrem'], yasak: [],
     ikinci: 'This record holds your question and the answer. That is personal information, so it is kept encrypted with your notebook password. First open My notebook or create a password, then save again. Your note stays here.' },
@@ -157,6 +174,19 @@ const KAPI_SAYFA = {
     ikinci: 'saying that a person bitten by a snake does not need antivenom or a hospital (every snake bite needs medical care)' },
   'eylemAdlari.yanginYukari': { ister: ['yangın', 'ateş', 'alev'], ister2: ['yokuş', 'yukarı', 'tepe', 'sırt', 'zirve', 'yamaç', 'yüksek'], yasak: [],
     ikinci: 'running away from a fire uphill, onto a ridge or to the top of a hill (fire spreads faster uphill)' },
+  // §201: acil kartının sorusu ve düğmeleri
+  acilSoru: { ister: ['tehlike'], ister2: ['şu an', 'şimdi', 'şu sıra', 'hâlihazırda', 'halihazırda', 'şu dakika'], yasak: [], ikinci: 'Right now, is anyone in danger?' },
+  acilEvet: { ister: ['evet'], ister2: ['tehlike'], yasak: ['hayır'], ikinci: 'Yes, there is danger right now' },
+  acilHayir: { ister: ['hayır'], ister2: ['bilgi'], yasak: ['evet', 'tehlike var'], ikinci: 'No, I just want information' },
+  // §191: arıza olduğu, kütüphane, ve "bilgi yok demek değil" olumsuzluğu düşmemeli
+  kutuphaneAriza: { ister: ['arıza', 'hata', 'sorun', 'problem', 'aksaklık', 'yanlış git'], ister2: ['kütüphane'], ister3: ['değil', 'gelmez', 'gelmiyor', 'demek olmaz'], yasak: [],
+    ikinci: '⚠ There is a fault: Heybe cannot reach its library right now. This is NOT the same as “my sources do not contain this”. Please close Heybe and open it again.' },
+  uyariBaslik: { ister: ['dikkat', 'uyarı', 'ikaz', 'tehlike'], ister2: ['kaynak', 'kitap'], yasak: [], ikinci: 'Warning from the sources' },
+  uyariNot: { ister: ['uyarı', 'dikkat', 'ikaz'], ister2: ['kitap', 'kaynak'], ister3: ['önce', 'evvel'], yasak: ['kendi sözlerim', 'kendi kelimelerim', 'kendi ifadelerim', 'sonra oku', 'sonra okuyun'],
+    ikinci: 'These are warnings from the books about your question, in the books’ own words. Read them first, before the answer.' },
+  dayanakDur: { ister: ['kaynak'], ister2: ['geçmiyor', 'geçmemekte', 'bulunmuyor', 'bulunmamakta', 'bulunam', 'yer almıyor', 'yer almamakta', 'mevcut değil', 'yok', 'görünmüyor', 'eklenmiş', 'dayanmıyor', 'desteklenmiyor'],
+    ister3: ['göstermiyorum', 'göstermeyeceğim', 'gösteremem', 'göstermem', 'sunmuyorum', 'sunmayacağım', 'paylaşmıyorum', 'gizl'], yasak: [],
+    ikinci: 'This answer was stopped: part of it is not in my sources. For safety I am not showing it. Please read the sources below.' },
   aktarmaDur: { ister: ['yasak', 'aykırı', 'yapılmama', 'yapmama', 'izin verm', 'önermed', 'önermiy', 'önerilmey', 'tavsiye etmed', 'tavsiye etmiy', 'tavsiye edilmey', 'reddet', 'desteklem', 'kabul etmed', 'kabul etmiy', 'karşı çık', 'engelle', 'uygulanmama', 'uygulamama', 'ters düş', 'çeliş', 'izin verilm', 'uyardığı', 'kaçınılma', 'mümkün olmad'], yasak: [], ikinci: 'This answer was stopped: it recommends something that its source forbids. Please read the sources below.' },
 };
 module.exports = { KAPI, KAPI_SAYFA, kapiGecer, enGerekir, CEVIRI_ICIN_HARITA, CEVIRI_ICIN_SAYFA };

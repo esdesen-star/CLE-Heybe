@@ -25,6 +25,15 @@ Answer NO for worries that can be checked by a doctor later, for normal or expec
 Reply with exactly one word: YES or NO.
 
 MESSAGE: ${q}`,
+  // d (§200, 18.11): beş temsilî sette hakem 406 acil olmayan sorunun 70'inde kart açtı (küçük yanık, burkulma, genel bilgi).
+  // Kızılay/IFRC "acil yardımı hemen çağır" ölçütleri tek tek sayılır; afette o anki tehlike (yangın dumanı, enkaz, sel, gaz/CO)
+  // de sayılır; küçük sorunlar örneklenir.
+  d: (q) => `You are triaging a message sent to an offline first-aid helper. Most messages are NOT emergencies.
+Answer YES only if the message says that RIGHT NOW a person has one of these: not breathing or not breathing normally; unconscious, collapsed, or very hard to wake or confused; chest pain; signs of a stroke; heavy bleeding that does not stop; a seizure; a severe allergic reaction; signs of poisoning or overdose; a suspected neck or spine injury (neck pain with numbness or weakness after a fall or crash); a large or deep burn, or a burn on a small child; a venomous snake bite or a sting with fast swelling; heat stroke, severe hypothermia or drowning; or the person is trapped or in immediate danger from fire, smoke, rising flood water, a collapsed building, gas or carbon monoxide.
+Answer NO for questions that ask for information, advice or preparation, for "what should I do if ..." questions, for past events that are over, and for minor or common problems such as a small burn or scald, a sprain, a small cut, a nosebleed, a mild fever, a minor bite, a tooth problem, or a rash.
+Reply with exactly one word: YES or NO.
+
+MESSAGE: ${q}`,
 };
 // URUN=1: ürünün kendi hakemi (arkadas.js acilHakem — kural tek yerde); yoksa buradaki istem kalıpları (KALIP=a|b)
 H.AYAR.sohbet = SOHBET;

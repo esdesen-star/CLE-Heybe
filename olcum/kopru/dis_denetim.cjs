@@ -366,6 +366,7 @@ const ACIL_ORNEK = [
   ['nefes', 'tr', 'Annemin nefesi çok daraldı, konuşamıyor.'],
   ['nefes', 'en', 'My son is struggling to breathe and his lips look blue.'],
   ['bilinc', 'tr', 'Dedemi uyandıramıyoruz, sesleniyoruz tepki vermiyor.'],
+  ['bilinc', 'tr', 'Komşumuz merdivenden düştü, bilinci yok ama nefes alıyor, ne yapmalıyım?'],   // §203: "bilinci yok"
   ['bilinc', 'tr', 'Teyzem bu sabahtan beri saçmalıyor, kimseyi tanımıyor.'],
   ['bilinc', 'en', 'Grandma is confused and very drowsy since lunch.'],
   ['gogus', 'tr', 'Eşimin göğsünde baskı var, sol koluna vuran bir ağrı başladı.'],
@@ -608,6 +609,141 @@ console.log(`— şık dişi: ${sDogru}/${SIK_ORNEK.length + 1} —`);
     for (const [ad, tamam] of KILIT_ORNEK) { if (tamam) dDogru++; else console.log(`  YANLIŞ defter kilidi: ${ad}`); }
     console.log(`— defter dişi: ${dDogru}/${DEFTER_ORNEK.length + CEVIRI_ORNEK.length + KILIT_ORNEK.length} —`);
   })().catch((e) => console.log(`— defter dişi: 0/1 (${e.message}) —`));
+}
+
+// §163 (Ercan 15.11): "hiçbiri" seçilince en yakın bölüm kitabın kendi sözleriyle gösterilir — şık ilk paragrafı ve yolu taşımalı
+(async () => {
+  const s = await H.secenekEtiketle([{ ad: 'Yanık', kitap: 'k', dil: 'tr', puan: 0.6, yol: 'A/Yanık', ilk: 'Yanık, ısı ya da kimyasalla oluşan doku hasarıdır.', kelimeler: ['ısı', 'doku'] }], 'tr');
+  const ok = s.length === 1 && s[0].ilk.startsWith('Yanık, ısı') && s[0].yol === 'A/Yanık';
+  if (!ok) console.log(`  YANLIŞ: şık ilk paragrafı ya da yolu taşımıyor ${JSON.stringify(s)}`);
+  console.log(`— en yakın bölüm dişi: ${ok ? 1 : 0}/1 —`);
+})().catch((e) => console.log(`— en yakın bölüm dişi: 0/1 (${e.message}) —`));
+
+// §172 dil körü arama (§178'den beri varsayılan açık); tek havuzun ilk bölümünün dili seçilir — kendi dilindeki
+// bölüm dil alanı taşımaz, yabancı bölüm taşır (sabit örnekler)
+{
+  const DK = [
+    ['varsayılan açık (§178)', H.AYAR.dilKoru === true],
+    ['ilk bölüm İngilizce → en', H.enIyiDil([{ dil: 'en' }, {}], 'tr') === 'en'],
+    ['ilk bölüm kendi dilinde → tr', H.enIyiDil([{}, { dil: 'en' }], 'tr') === 'tr'],
+    ['havuz boş → kendi dili', H.enIyiDil([], 'tr') === 'tr' && H.enIyiDil(undefined, 'cs') === 'cs'],
+  ];
+  let dk = 0;
+  for (const [ad, tamam] of DK) { if (tamam) dk++; else console.log(`  YANLIŞ (dil körü): ${ad}`); }
+  console.log(`— dil körü dişi: ${dk}/${DK.length} —`);
+}
+
+// §185 DENEY çeşitli arama: varsayılan kapalı; açıkken bir maddeden en çok 2 paragraf (sabit örnek). Kitap başına aramanın
+// modelsiz dişi yok (kütüphane ister) — canlı ölçüyle sınandı (olcum/kopru/havuz_olc.cjs)
+{
+  const P = (ad, i) => [0.9 - i / 100, { ad, bolum: '', metin: `${ad} paragraf ${i} metni burada uzunca yazılır`, kitap: 'k', kaynak: 'kiwix' }];
+  const puanli = [P('A', 1), P('A', 2), P('A', 3), P('B', 4), P('A', 5)];
+  const once = H.AYAR.cesitliArama;
+  const kapali = H.parcaSec(puanli).filter((x) => x.makale === 'A').length;
+  H.AYAR.cesitliArama = { ...once, acik: true };
+  const acik = H.parcaSec(puanli).filter((x) => x.makale === 'A').length;
+  H.AYAR.cesitliArama = once;
+  // tekrarsız 6 kelime: "outage" ilk 5'in dışında kalır, "power outage" yalnız yan yana ikiliden gelebilir
+  const KEL = ['generator', 'power', 'home', 'during', 'storm', 'power', 'outage'];
+  const eski = H.aramaSorgulari(KEL), yeni = H.aramaSorgulari(KEL, false, true);
+  const CA = [['deney varsayılan kapalı', once.acik === false], ['kapalıyken maddeden 3', kapali === 3], ['açıkken maddeden 2', acik === 2],
+    ['eski sorgular: ilk 5 kelimenin ikilileri, "power outage" yok', !eski.includes('power outage') && eski.includes('generator home')],
+    ['açıkken yan yana ikili: "power outage" var', yeni.includes('power outage')],
+    ['açıkken tekrar yok: "power power" ve tekrar eden sorgu yok', !yeni.includes('power power') && new Set(yeni).size === yeni.length],
+    ['açıkken hepsi-birlikte sorgusunda kelime bir kez', yeni[0] === 'generator power home during storm outage'],
+    // §186 dil başına sıralama: en iyi ilk puanlı dil önde, iki dil dönüşümlü, kısa liste bitince öbürü sürer, boş liste atlanır
+    ['dil harmanı: en iyi dil önde, dönüşümlü', H.dilHarmanla([[[0.66, 'a1'], [0.58, 'a2']], [[0.7, 'b1'], [0.5, 'b2'], [0.4, 'b3']], []]).map((x) => x[1]).join(',') === 'b1,a1,b2,a2,b3']];
+  let ca = 0;
+  for (const [ad, tamam] of CA) { if (tamam) ca++; else console.log(`  YANLIŞ (çeşitli arama): ${ad}`); }
+  console.log(`— çeşitli arama dişi: ${ca}/${CA.length} —`);
+}
+
+// §188 DENEY kaynaktan uyarı: varsayılan kapalı; nesne başlıktan, sorudaki ekli biçimle eşleşir; uyarı kalıbı (sabit örnekler)
+{
+  const D = H.dilBilgi('tr'), E = H.dilBilgi('en');
+  const UY = [
+    ['deney varsayılan kapalı', H.AYAR.uyariKanali.acik === false],
+    ['nesne: başlıktaki "Jeneratör" sorudaki "jeneratörü" ile', H.uyariNesneleri('Jeneratörü elektrik kesintisinde evin içinde çalıştırabilir miyim?', ['Elektrik Kesintileri', 'Jeneratör', 'Güç Kaynağı'], D).includes('jeneratör')],
+    ['nesne: başlıkta sık geçen önde', H.uyariNesneleri('What should I do if the shepherd dogs approach me?', ['Dog behavior', 'Herding dog', 'Dog aggression'], E)[0] === 'dog'],
+    ['nesne: sık geçen sonradan gelse de önde', H.uyariNesneleri('Can I run the generator at home?', ['Home backup', 'Portable generator', 'Generator safety'], E)[0] === 'generator'],
+    ['nesne: soruda olmayan başlık kelimesi alınmaz', !H.uyariNesneleri('Gözüme toz kaçtı', ['Göz', 'Kornea'], D).includes('kornea')],
+    // §190 uyarı cümlesi = kişiye olumsuz emir/yasak ya da kişiye zarar, güvence değil (sabit örnekler; her dal ayrı)
+    ['uyarı cümlesi: "ölümsüzlük" ölüm değil', !H.uyariCumlesi('İsis’in oğluna sevgi ve ölümsüzlük verdiğine inanılmıştır.', 'tr')],
+    ['uyarı cümlesi: güvence ("riskini azaltır") uyarı değil', !H.uyariCumlesi('Emzirme ani bebek ölümü riskini azaltır.', 'tr')],
+    ['uyarı cümlesi: güvence (decreases the risk … death) uyarı değil', !H.uyariCumlesi('Breastfeeding decreases the risk of sudden infant death syndrome.', 'en')],
+    ['uyarı cümlesi: emir güvenceyi geçer', H.uyariCumlesi('Riski azaltmak için jeneratörü asla kapalı alanda çalıştırmayın.', 'tr')],
+    ['uyarı cümlesi: cihazın zarar görmesi uyarı değil', !H.uyariCumlesi('Cihazlar statik deşarj tarafından zarar görebilir.', 'tr')],
+    ['uyarı cümlesi: kişiye zarar vermek uyarı', H.uyariCumlesi('Bu mantar karaciğere zarar verebilir.', 'tr')],
+    ['uyarı cümlesi: "yasaklayan yasa" uyarı değil', !H.uyariCumlesi('Bazı ülkeler elektrikli ısıtmayı yasaklayan yasalar çıkarmıştır.', 'tr')],
+    ['uyarı cümlesi: yasak olduğu yer uyarı', H.uyariCumlesi('Kamp ateşlerinin yasak olduğu yerlerde ocak kullanın.', 'tr')],
+    ['uyarı cümlesi: olumsuz emir (-mayın, -memelidir)', H.uyariCumlesi('Jeneratörü kapalı alanda çalıştırmayın.', 'tr') && H.uyariCumlesi('Bilinmeyen mantarlar yenmemelidir.', 'tr')],
+    ['uyarı cümlesi: "mayın" emir değil', !H.uyariCumlesi('Mayın tarlasına girmek için izin gerekir.', 'tr')],
+    ['uyarı cümlesi: "those who do not" emir değil', !H.uyariCumlesi('Mothers who breastfeed in public continue longer than those who do not.', 'en')],
+    ['uyarı cümlesi: cümle başında "Never" emir', H.uyariCumlesi('Never run a generator inside a home or garage.', 'en')],
+    ['uyarı cümlesi: zehirlenme sözü (karbonmonoksit cümlesi)', H.uyariCumlesi('Poisonings occur more often in the winter, particularly from the use of portable generators during power outages.', 'en')],
+  ];
+  let uy = 0;
+  for (const [ad, tamam] of UY) { if (tamam) uy++; else console.log(`  YANLIŞ (uyarı kanalı): ${ad}`); }
+  console.log(`— uyarı kanalı dişi: ${uy}/${UY.length} —`);
+}
+
+// §190 uyarı kanalının aramaları sınırlı eşzamanlı: sıra korunur (sonradan biten önce bitse de), aynı anda en çok n iş
+(async () => {
+  let ayni = 0, enCok = 0;
+  const is = (deger, ms) => async () => { ayni++; enCok = Math.max(enCok, ayni); await new Promise((r) => setTimeout(r, ms)); ayni--; return deger; };
+  const sonuc = await H.sinirliHepsi([is('a', 40), is('b', 30), is('c', 20), is('d', 10), is('e', 5), is('f', 1)], 3);
+  const ES = [
+    ['sıra korunur', sonuc.join('') === 'abcdef'],
+    ['aynı anda en çok 3', enCok === 3],
+    ['boş liste', (await H.sinirliHepsi([], 4)).length === 0],
+    ['uyarı kanalının aramaları sırayla (kiwix eşzamanlı aramada düşüyor, §190)', H.AYAR.uyariKanali.aramaEs === 1],
+  ];
+  let es = 0;
+  for (const [ad, tamam] of ES) { if (tamam) es++; else console.log(`  YANLIŞ (eşzamanlı): ${ad}`); }
+  console.log(`— eşzamanlı arama dişi: ${es}/${ES.length} —`);
+})();
+
+// §189 DENEY hükümsüz cevap kuralı: kapalıyken talimat aynen; açıkken Türkçe/İngilizce kural, öbür dillerde İngilizcesi
+{
+  const once = H.AYAR.hukumsuz;
+  const kapali = H.hukumsuz('T', 'tr');
+  H.AYAR.hukumsuz = true;
+  const tr = H.hukumsuz('T', 'tr'), en = H.hukumsuz('T', 'en'), de = H.hukumsuz('T', 'de');
+  H.AYAR.hukumsuz = once;
+  const HK = [['deney varsayılan kapalı', once === false], ['kapalıyken talimat aynen', kapali === 'T'],
+    ['açıkken Türkçe kural', /^T\n6\. .*"Evet" ya da "Hayır" diye hüküm verme/.test(tr)], ['açıkken İngilizce kural', /^T\n6\. .*do not answer "Yes" or "No"/.test(en)],
+    ['başka dilde İngilizcesi', de === en]];
+  let hk = 0;
+  for (const [ad, tamam] of HK) { if (tamam) hk++; else console.log(`  YANLIŞ (hükümsüz): ${ad}`); }
+  console.log(`— hükümsüz cevap dişi: ${hk}/${HK.length} —`);
+}
+
+// §180 dayanak: atıflı satır, atıf verdiği bölümün hiçbir cümlesinde karşılık bulmuyorsa durur (sabit örnekler; TB007 ve TB054'ün kendisi)
+// §181: üründe kapalı (esik 0); diş denetimi deney değeriyle açıp sınar, sonra geri koyar
+{
+  const URUN_DAYANAK = H.AYAR.dayanak;
+  const urunKapali = URUN_DAYANAK.esik === 0;
+  H.AYAR.dayanak = { ...URUN_DAYANAK, esik: 0.4 };
+  const VM = [{ metin: 'Tier 2 Seviyesi: Enerji ve soğutma sistemlerinde kısmen yedeklik içerir. Jeneratör kullanarak 24 saat lik bir enerji kesintisine dayanabilmektedir.' }];
+  const KOPEK = [{ metin: 'Çoban köpekleri, sürülerin "idaresinde" kullanılan köpekler. Çoban köpekleri zeki ve hareketli köpeklerdir.' }];
+  const YANIK = [{ metin: 'Yanan bölge hemen en az on dakika boyunca soğuk suya tutulmalıdır.' }];
+  const EN = [{ metin: 'Do not rub frostbitten skin. Rewarm the affected area in warm water only if there is no risk of refreezing.', dil: 'en' }];
+  const DY = [
+    ['üründe kapalı (§181)', urunKapali],
+    ['jeneratör: veri merkezi bölümüne "evin içinde" → dur', H.dayanakDenetle('Evet, jeneratörü elektrik kesintisinde evin içinde çalıştırabilirsiniz [1].', VM, 'tr').length === 1],
+    ['köpek: kaynakta olmayan göz teması → dur', H.dayanakDenetle('* Sakin kalın ve köpeklerle göz teması kurun [1].\n* Yavaşça geri çekilin [1].', KOPEK, 'tr').length === 2],
+    ['kaynağın sözü → geçer', H.dayanakDenetle('Yanan bölge en az on dakika soğuk suya tutulmalıdır [1].', YANIK, 'tr').length === 0],
+    ['İngilizce özgün, kaynağın sözü → geçer', H.dayanakDenetle('Do not rub frostbitten skin [1]. Rewarm the area in warm water only if there is no risk of refreezing [1].', EN, 'en').length === 0],
+    ['kelimeler iki cümleye dağılmış: bölümün bütününde var, tek cümlede yok → dur', H.dayanakDenetle('Jeneratörü evin içinde kapalı alanda çalıştırabilirsiniz [1].', [{ metin: 'Jeneratör dışarıda çalıştırılır. Evin içinde sobayı yakmayın.' }], 'tr').length === 1],
+    ['aynı satırda sadık cümle uydurmayı örtmez (Ercan’ın sıra testi)', H.dayanakDenetle('Evet, evinizde elektrik kesintisinde jeneratörü çalıştırabilirsiniz [1]. Jeneratörler, harekete dayalı gücü harici bir devrede kullanılmak üzere elektrik gücüne dönüştüren cihazlardır [1].', [{ metin: 'Elektrik üretiminde jeneratör, harekete dayalı gücü (potansiyel ve kinetik enerji) veya yakıta dayalı gücü (kimyasal enerji) harici bir devrede kullanılmak üzere elektrik gücüne dönüştüren bir cihazdır.' }], 'tr').length === 1],
+    ['kaynağın söylediği hüküm geçer', H.dayanakDenetle('Evet, heyelan olacağını önceden gösteren işaretler vardır [1].', [{ metin: 'Heyelan olacağını önceden gösteren işaretler vardır: duvarlarda çatlaklar, eğilen ağaçlar.' }], 'tr').length === 0],
+    ['atıfsız satıra bakılmaz', H.dayanakDenetle('Evet, jeneratörü evin içinde çalıştırabilirsiniz.', VM, 'tr').length === 0],
+    ['satır numarası atıfsız satırları da sayar', JSON.stringify(H.dayanakDenetle('Sakin olun.\nEvet, jeneratörü elektrik kesintisinde evin içinde çalıştırabilirsiniz [1].', VM, 'tr')) === JSON.stringify(['dayanak: 2. satır kaynakta yok'])],
+  ];
+  let dy = 0;
+  for (const [ad, tamam] of DY) { if (tamam) dy++; else console.log(`  YANLIŞ (dayanak): ${ad}`); }
+  console.log(`— dayanak dişi: ${dy}/${DY.length} —`);
+  H.AYAR.dayanak = URUN_DAYANAK;
 }
 
 // §158 (K7): "bu cevap yanlış" kaydı Defterim'in anahtarıyla şifrelenir — açık metin zarfa sızmaz, özet ve tam kayıt çözülür,
@@ -889,7 +1025,8 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
   for (const [ad, r, b] of UYARI_ORNEK) if (r === b) kDogru++; else console.log(`  YANLIŞ (uyarı): ${ad} → ${r}`);
   const toplam = KISI_ORNEK.length + BASLIK_ORNEK.length + SIRA_ORNEK.length + UYARI_ORNEK.length;
   // kardeş makale (sahte kütüphane): çocuk CPR'ı gelmiş yetişkin sorusuna yetişkin kardeşi eklenir, karışıkta eklenmez
-  (async () => {
+  // (§191: fetch'i değiştiren dişler sırayla koşar — bitişi kaydedilir, kütüphane arızası dişi bunu bekler)
+  globalThis.__kardesDisi = (async () => {
     const gercek = globalThis.fetch, kutuphane = H.AYAR.kutuphane;
     H.AYAR.kutuphane = 'http://sahte';
     const yanit = (govde) => ({ ok: true, status: 200, json: async () => govde, text: async () => govde });
@@ -1097,3 +1234,381 @@ console.log(`— konuşma dişi: ${kzDogru}/${KONUSMA_ORNEK.length} —`);
     console.log(`— soru konusu dişi: ${kd}/${K.length + KC.length} —`);
   })().catch((e) => console.log(`— soru konusu dişi: 0/1 (${e.message}) —`));
 }
+
+// §191 kütüphane arızası "bilgi yok" gibi görünmesin: sahte kütüphane (fetch yerine), her durum sabit senaryoyla
+globalThis.__kutuphaneDisi = (async () => {
+  await globalThis.__kardesDisi;   // fetch'i o da değiştiriyor: aynı anda koşmasın
+  const asilFetch = globalThis.fetch, A = H.AYAR, eski = { k: A.kutuphane, o: A.onarim, b: A.onarimBekle, a: A.onarimAralik };
+  Object.assign(A, { kutuphane: 'http://kutuphane.test', onarim: 'http://yardimci.test/onar', onarimBekle: 60, onarimAralik: 5 });
+  let s = {}, post = 0;
+  // s.durum: 'ayakta' | 'tek500' (ilk arama 500, sonra düzelir) | 'dusuk' (onarım gelince açılır) | 'olu' | 'yok404'
+  globalThis.fetch = async (url, sec) => {
+    // yardımcının güvenlik kapısı taklit edilir (main.go guvenlik): POST X-Heybe başlığı olmadan 403
+    if (String(url).startsWith('http://yardimci.test') && !(sec && sec.headers && sec.headers['X-Heybe'] === '1')) return new Response('izin yok', { status: 403 });
+    if (String(url).startsWith('http://yardimci.test')) { post++; if (s.durum === 'dusuk') s.acik = true; return new Response(JSON.stringify({ durum: s.yanit || 'aciliyor' }), { status: 200 }); }
+    const katalog = String(url).includes('/catalog/');
+    if (s.durum === 'ayakta' || (s.durum === 'dusuk' && s.acik)) return new Response(katalog ? '<feed></feed>' : '<rss></rss>', { status: 200 });
+    if (s.durum === 'tek500') { if (katalog) return new Response('<feed></feed>', { status: 200 }); if (!s.oldu) { s.oldu = true; return new Response('x', { status: 500 }); } return new Response('<rss></rss>', { status: 200 }); }
+    if (s.durum === 'yok404') return new Response('yok', { status: 404 });
+    throw new TypeError('fetch failed');
+  };
+  const U = 'http://kutuphane.test/search?pattern=x';
+  const dene = async (durum, is) => { s = { durum }; post = 0; return is(); };
+  const sarili = (fn) => H.kutuphaneIzle(fn);
+  const guvenli = async (p) => { try { await p; return 'tamam'; } catch (e) { return 'hata'; } };
+  const KA = [];
+  try {
+    await dene('tek500', async () => {
+      const r = await sarili(async () => guvenli(H.kutuphaneGetir(U)))();
+      KA.push(['tek seferlik 500: yeniden denenir, onarım istenmez', r === 'tamam' && post === 0 && H.kutuphaneDurum.kurtarildi === 1 && !H.kutuphaneDurum.dustu]);
+    });
+    await dene('dusuk', async () => {
+      const r = await sarili(async () => ({ g: await guvenli(H.kutuphaneGetir(U)) }))();
+      KA.push(['düşük kütüphane: onarım istenir, açılınca kurtarılır, arıza eklenmez', r.g === 'tamam' && post === 1 && H.kutuphaneDurum.onarim === 1 && !r.kutuphaneArizasi]);
+    });
+    await dene('olu', async () => {
+      const t0 = Date.now();
+      const r = await sarili(async () => { const a = await guvenli(H.kutuphaneGetir(U)); const b = await guvenli(H.kutuphaneGetir(U)); return { a, b, bilgiYok: true }; })();
+      KA.push(['onarılamaz: düştü, sonraki istek beklemeden düşer, onarım bir kez', r.a === 'hata' && r.b === 'hata' && post === 1]);
+      KA.push(['onarılamaz: en dıştaki sonuca kutuphaneArizasi eklenir', Boolean(r.kutuphaneArizasi) && r.kutuphaneArizasi.onarim === 1]);
+      KA.push(['beklemeden düşmek: ikinci istek onarım süresini beklemez', Date.now() - t0 < 60 * 2 + 200]);
+      const yeni = await sarili(async () => ({ g: await guvenli(H.kutuphaneGetir(U)) }))();
+      KA.push(['yeni soru (en dıştaki çağrı) yeniden dener', yeni.g === 'hata' && post === 2]);
+    });
+    await dene('olu', async () => {
+      const ic = sarili(async () => { await guvenli(H.kutuphaneGetir(U)); return { bilgiYok: true }; });
+      const r = await sarili(async () => { const x = await ic(); return { ...x, icteEklendi: Boolean(x.kutuphaneArizasi) }; })();
+      KA.push(['iç çağrı eklemez, yalnız en dıştaki ekler', r.icteEklendi === false && Boolean(r.kutuphaneArizasi)]);
+      const at = await sarili(async () => { await guvenli(H.kutuphaneGetir(U)); throw new Error('model'); })();
+      KA.push(['düştükten sonra fırlayan hata: boş sonuç + arıza (çökmez)', at.bilgiYok === true && Boolean(at.kutuphaneArizasi)]);
+    });
+    await dene('yok404', async () => {
+      const r = await sarili(async () => ({ g: await guvenli(H.kutuphaneGetir(U)) }))();
+      KA.push(['404 arıza değil: onarım yok, arıza eklenmez', r.g === 'hata' && post === 0 && H.kutuphaneDurum.hata === 0 && !r.kutuphaneArizasi]);
+    });
+    await dene('olu', async () => {
+      s.yanit = 'acilamadi'; A.onarimBekle = 3000;
+      const t0 = Date.now();
+      const r = await sarili(async () => ({ g: await guvenli(H.kutuphaneGetir(U)) }))();
+      KA.push(['yardımcı açamadıysa beklemeden arızayı bildirir', r.g === 'hata' && post === 1 && Boolean(r.kutuphaneArizasi) && Date.now() - t0 < 1000]);
+      A.onarimBekle = 60;
+    });
+    A.onarim = null;
+    await dene('olu', async () => {
+      const r = await sarili(async () => ({ g: await guvenli(H.kutuphaneGetir(U)) }))();
+      KA.push(['onarım adresi yoksa (ölçü betikleri) istenmez, arıza yine eklenir', r.g === 'hata' && post === 0 && Boolean(r.kutuphaneArizasi)]);
+    });
+    A.onarim = 'http://yardimci.test/onar';
+    await dene('olu', async () => {
+      const r = await sarili(async () => ({ m: await H.metinAra('x', 3, [{ ad: 'k' }]), bilgiYok: true }))();
+      const r2 = await sarili(async () => ({ k: await H.kitaplik(), bilgiYok: true }))();
+      const r3 = await sarili(async () => ({ g: await guvenli(H.makale('A', 'k')), bilgiYok: true }))();
+      KA.push(['arama, kitaplık ve madde okuma kapıdan geçer', Boolean(r.kutuphaneArizasi) && Boolean(r2.kutuphaneArizasi) && Boolean(r3.kutuphaneArizasi)]);
+    });
+    await dene('olu', async () => {
+      // ürünün girişleri: sor ve oku en dıştaki çağrı olarak izlenir (modeller de yok: sahte fetch her şeye hata verir)
+      const r = await H.sor('Jeneratör evde çalışır mı?', () => {}, 'tr', {}).catch((e) => ({ hata: e.message }));
+      const o = await H.oku('Jeneratör evde çalışır mı?', () => {}, 'tr', { anlam: false }).catch((e) => ({ hata: e.message }));
+      KA.push(['sor ve oku kütüphane düşünce arızayı bildirir', Boolean(r.kutuphaneArizasi) && Boolean(o.kutuphaneArizasi)]);
+    });
+  } finally {
+    globalThis.fetch = asilFetch;
+    Object.assign(A, { kutuphane: eski.k, onarim: eski.o, onarimBekle: eski.b, onarimAralik: eski.a });
+  }
+  let ka = 0;
+  for (const [ad, tamam] of KA) { if (tamam) ka++; else console.log(`  YANLIŞ (kütüphane arızası): ${ad}`); }
+  console.log(`— kütüphane arızası dişi: ${ka}/${KA.length} —`);
+})();
+
+// §194 DENEY ana dal ağırlığı: varsayılan kapalı; nesne + durum aynı paragrafta → öne; yalnız nesne ya da yalnız durum
+// ağırlık almaz; nesne tek; her paragraf kendi dilindeki soruyla; hiçbir paragraf elenmez (sabit örnekler)
+{
+  const p = (ad, metin, dil) => ({ ad, metin, dil, kitap: 'k' });
+  const gr = [{ dil: 'tr', soru: 'Jeneratörü elektrik kesintisinde evin içinde çalıştırabilir miyim?', basliklar: ['Jeneratör', 'Elektrik kesintisi'] },
+    { dil: 'en', soru: 'Can I run the generator inside the house during a power outage?', basliklar: ['Generator', 'Power outage', 'Carbon monoxide poisoning'] }];
+  const liste = [
+    [0.60, p('Generator', 'A generator is a machine.', 'en')],
+    [0.59, p('Emergency', 'During a power outage keep the fridge closed.', 'en')],
+    [0.58, p('Carbon monoxide poisoning', 'Poisonings occur more often in the winter, particularly from the use of portable generators during power outages.', 'en')],
+    [0.57, p('Generator', 'Portable generators supply power.', 'en')],
+    [0.56, p('Jeneratör', 'Jeneratör mekanik enerjiyi elektriğe çevirir.', 'tr')],
+  ];
+  const puan = (r, ad, metin) => (r.find(([, x]) => x.ad === ad && x.metin.startsWith(metin)) || [0])[0];
+  const kapali = H.anaDalSirala(liste, gr[0].soru, gr[0].basliklar, 'tr', gr);
+  const eski = H.AYAR.anaDal.acik;
+  H.AYAR.anaDal.acik = true;
+  const r = H.anaDalSirala(liste, gr[0].soru, gr[0].basliklar, 'tr', gr);
+  const yalnizTr = H.anaDalSirala(liste, gr[0].soru, gr[0].basliklar, 'tr', [gr[0]]);
+  H.AYAR.anaDal.acik = eski;
+  const AD = [
+    ['deney varsayılan kapalı', H.AYAR.anaDal.acik === false],
+    ['kapalıyken sıra aynen', kapali === liste],
+    ['nesne + durum birlikte: karbonmonoksit paragrafı öne çıkar', r[0][1].ad === 'Carbon monoxide poisoning' || puan(r, 'Carbon monoxide poisoning', 'Poison') > 0.6],
+    ['yalnız nesne (durum yok) ağırlık almaz', puan(r, 'Generator', 'A generator') === 0.60],
+    ['yalnız durum (nesne yok) ağırlık almaz — nesne tek, "power outage" nesne değil', puan(r, 'Emergency', 'During') === 0.59],
+    ['fazla durum kelimesi biraz daha', puan(r, 'Carbon monoxide poisoning', 'Poison') - 0.58 > puan(r, 'Generator', 'Portable') - 0.57],
+    ['paragraf kendi dilindeki soruyla: Türkçe paragraf Türkçe soruyla', puan(r, 'Jeneratör', 'Jeneratör') > 0.57],
+    ['dilin sorusu yoksa ağırlık yok', puan(yalnizTr, 'Carbon monoxide poisoning', 'Poison') === 0.58],
+    ['hiçbir paragraf elenmez', r.length === liste.length],
+  ];
+  let ad = 0;
+  for (const [a, tamam] of AD) { if (tamam) ad++; else console.log(`  YANLIŞ (ana dal): ${a}`); }
+  console.log(`— ana dal dişi: ${ad}/${AD.length} —`);
+}
+
+// §196 DENEY adil sınır: varsayılan kapalı; aramaların sonuçları dönüşümlü (önce her listenin 1.'si), tekrar bir kez, sınır (sabit örnekler)
+{
+  const y = (k, p) => ({ kitap: k, yol: p });
+  const ad = (l) => l.map((x) => x.kitap + x.yol).join(' ');
+  const AS = [
+    ['deney varsayılan kapalı', H.AYAR.adilSinir.acik === false],
+    ['dönüşümlü: sonraki aramanın 1.\'si öncekinin 2.\'sinden önce', ad(H.sirayaDiz([[y('a', 1), y('a', 2)], [y('b', 1)]], 9)) === 'a1 b1 a2'],
+    ['aynı madde bir kez', ad(H.sirayaDiz([[y('a', 1)], [y('a', 1), y('c', 1)]], 9)) === 'a1 c1'],
+    ['sınır uygulanır', H.sirayaDiz([[y('a', 1), y('a', 2), y('a', 3)], [y('b', 1), y('b', 2)]], 3).length === 3],
+    ['sınırda sondaki aramanın 1.\'si kalır', ad(H.sirayaDiz([[y('a', 1), y('a', 2), y('a', 3)], [y('b', 1)], [y('c', 1)]], 3)) === 'a1 b1 c1'],
+    ['boş listeler sorun değil', H.sirayaDiz([[], [y('a', 1)], []], 5).length === 1],
+  ];
+  let as = 0;
+  for (const [a, tamam] of AS) { if (tamam) as++; else console.log(`  YANLIŞ (adil sınır): ${a}`); }
+  console.log(`— adil sınır dişi: ${as}/${AS.length} —`);
+}
+
+// §197 DENEY kitap başına arama: varsayılan kapalı; her kitaba eşit pay — çok listesi olan kitap öbürünün payını yemez; pay aşılmaz
+{
+  const y = (k, p) => ({ kitap: k, yol: String(p) });
+  const ad = (l) => l.map((x) => x.kitap + x.yol).join(' ');
+  const forum = [[y('f', 1), y('f', 2)], [y('f', 3), y('f', 4)], [y('f', 5)], [y('f', 6)]];
+  const KB = [
+    ['deney varsayılan kapalı', H.AYAR.kitapBasina.acik === false],
+    ['çok listesi olan kitap öbürünün payını yemez', ad(H.kitapPayli([forum, [[y('t', 1), y('t', 2)]]], 2)).includes('t1') && ad(H.kitapPayli([forum, [[y('t', 1), y('t', 2)]]], 2)).includes('t2')],
+    ['kitap payı aşılmaz (boş kalan pay öbür kitaba gitmez)', H.kitapPayli([forum, [[y('t', 1)]]], 2).length === 3],
+    ['kitaplar dönüşümlü', ad(H.kitapPayli([forum, [[y('t', 1), y('t', 2)]]], 2)) === 'f1 t1 f3 t2'],
+  ];
+  let kb = 0;
+  for (const [a, tamam] of KB) { if (tamam) kb++; else console.log(`  YANLIŞ (kitap başına): ${a}`); }
+  console.log(`— kitap başına arama dişi: ${kb}/${KB.length} —`);
+}
+
+// §198 DENEY dil başına sıralama tek başına: varsayılan kapalı (harmanlamanın kendisi §186 dişlerinde: "dil harmanı")
+{
+  const DS = [['deney varsayılan kapalı', H.AYAR.dilSirala && H.AYAR.dilSirala.acik === false]];
+  let ds = 0;
+  for (const [a, tamam] of DS) { if (tamam) ds++; else console.log(`  YANLIŞ (dil sırala): ${a}`); }
+  console.log(`— dil başına sıralama dişi: ${ds}/${DS.length} —`);
+}
+
+// §201 acil kartının sorusu: hakem "evet" derse kart açılır; kullanıcı "Hayır, bilgi istiyorum" deyince (acilBakildi) karta bakılmaz
+(async () => {
+  await globalThis.__kutuphaneDisi;   // fetch'i değiştiren dişler sırayla
+  const asil = globalThis.fetch, A = H.AYAR;
+  const eski = { s: A.sohbet, k: A.kutuphane, g: A.gomme, c: A.cevirmen, h: A.acilHakem, kart: A.acilKart };
+  Object.assign(A, { sohbet: 'http://sohbet.test', kutuphane: 'http://kutuphane.test', gomme: 'http://gomme.test', cevirmen: '', acilHakem: true, acilKart: true });
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('sohbet.test')) return new Response(JSON.stringify({ content: 'YES', choices: [{ message: { content: 'YES' } }] }), { status: 200 });
+    throw new TypeError('fetch failed');
+  };
+  const AC = [];
+  try {
+    const soru = 'Elime kaynar çay döküldü, kızardı ve çok yanıyor. Ne yapmalıyım?';
+    const kalip = H.acilBelirti(soru, 'tr');
+    const r1 = await H.sor(soru, () => {}, 'tr', {}).catch((e) => ({ hata: e.message }));
+    const r2 = await H.sor(soru, () => {}, 'tr', { acilBakildi: true }).catch((e) => ({ hata: e.message }));
+    AC.push(['kartın sorusu varsayılan kapalı (§203, Ercan karar verene kadar)', H.AYAR.acilSoru === false]);
+    AC.push(['örnek soruda kalıp yok (kartı yalnız hakem açar)', kalip.length === 0]);
+    AC.push(['hakem "evet" derse kart açılır', Boolean(r1.acil) && r1.acil.belirti.length === 1 && r1.acil.belirti[0] === 'hakem']);
+    AC.push(['"Hayır, bilgi istiyorum" yolunda karta bakılmaz', !r2.acil]);
+  } finally {
+    globalThis.fetch = asil;
+    Object.assign(A, { sohbet: eski.s, kutuphane: eski.k, gomme: eski.g, cevirmen: eski.c, acilHakem: eski.h, acilKart: eski.kart });
+  }
+  let ac = 0;
+  for (const [a, tamam] of AC) { if (tamam) ac++; else console.log(`  YANLIŞ (acil sorusu): ${a}`); }
+  console.log(`— acil kartı sorusu dişi: ${ac}/${AC.length} —`);
+})();
+
+// §207 cevaptaki acil numarası (Ercan 19.11: "Heybe direk bulunduğunuz yerel acili arayın dese en kısa yoldan çözmüş oluruz"):
+// sabit örnekler — çoğu kayıtlı gerçek cevaplardan (19.11 taraması: 2.870 cevapta 41 değişiklik, hepsi okundu); "değişmez"ler
+// taramada yakalanan yanlışlar (kalp masajında "100 ila 120 arasında", nabız, volt)
+{
+  const NO = [
+    ['tr', "*   Eğer cep telefonunuzda sinyal varsa, 911'i arayın ve konumunuzu ve belirtilen semptomları bildirin [2].", "*   Eğer cep telefonunuzda sinyal varsa, bulunduğunuz yerin acil numarasını arayın ve konumunuzu ve belirtilen semptomları bildirin [2]."],
+    ['tr', "Hemen 112'yi arayın.", 'Hemen bulunduğunuz yerin acil numarasını arayın.'],
+    ['tr', "112'ye haber verin.", 'Bulunduğunuz yerin acil numarasına haber verin.'],
+    ['tr', "Hemen 112 Acil Servis'i arayın [2].", 'Hemen bulunduğunuz yerin acil numarasını arayın [2].'],
+    ['tr', '*   Gerekirse 112 Acil Servisi arayın.', '*   Gerekirse bulunduğunuz yerin acil numarasını arayın.'],
+    ['tr', 'Tıbbi yardım istenir (112) [1].', 'Tıbbi yardım istenir [1].'],
+    ['tr', '112 Acil Çağrı Merkezine bilgi verin.', 'Bulunduğunuz yerin acil numarasına bilgi verin.'],
+    ['tr', "911 ya da 112'yi arayın.", 'Bulunduğunuz yerin acil numarasını arayın.'],
+    ['tr', 'Hemen adrenalin kalemini kullanın ve [112] numarasını arayarak acil tıbbi yardım isteyin.', 'Hemen adrenalin kalemini kullanın ve bulunduğunuz yerin acil numarasını arayarak acil tıbbi yardım isteyin.'],
+    ['tr', '*   Yardım isteyin – 911 [5].', '*   Yardım isteyin – bulunduğunuz yerin acil numarası [5].'],
+    ['tr', '*   Göğüs kompresyonları, dakikada 100 ila 120 arasında bir hızda yapılmalıdır [1, 3].', null],
+    ['tr', 'Depremde 112 kişi yaralandı.', null],
+    ['tr', "Bunların 112'si kurtarıldı.", null],
+    ['tr', "Nabız 110'un üzerindeyse dinlenin.", null],
+    ['tr', '110 voltluk bir cihaz önerilir.', null],
+    ['tr', 'Sistolik tansiyon 110 ile 155 arasında olabilir.', null],   // "arasında" arama fiili değil
+    ['tr', '10 000 kişi tahliye edildi.', null],
+    ['tr', 'Kalp hızı (110) yüksekse dinlenin.', null],
+    ['en', '*   If the burn is larger than two inches or from a fire, electrical wire, or chemicals, seek medical attention or call 911 [6].', '*   If the burn is larger than two inches or from a fire, electrical wire, or chemicals, seek medical attention or call your local emergency number [6].'],
+    ['en', 'Dial 999 or 112.', 'Dial your local emergency number.'],
+    ['en', 'Tell the 911 operator where you are.', 'Tell the emergency operator where you are.'],
+    ['en', 'Call emergency services (911) right away.', 'Call emergency services right away.'],
+    ['en', '911 can help you.', 'Your local emergency number can help you.'],
+    ['en', 'Make a 911 call.', 'Make an emergency call.'],
+    ['en', '112 people were hurt.', null],
+    ['en', 'Give compressions at 100 to 120 per minute.', null],
+    ['en', 'Heart rate (120) is high.', null],
+    ['cs', 'Zavolejte 155.', 'Zavolejte místní tísňové číslo.'],
+    ['cs', 'Volejte 155 nebo 112.', 'Volejte místní tísňové číslo.'],
+    ['cs', 'Bylo zraněno 112 lidí.', null],
+    ['de', '*   Rufen Sie professionelle medizinische Hilfe (112) [1, 2] an.', '*   Rufen Sie professionelle medizinische Hilfe [1, 2] an.'],
+    ['de', 'Es gibt 112 Betten.', null],
+  ];
+  const DN = [];
+  for (const [d, m, beklenen] of NO) {
+    const r = H.acilNumaraYerel(m, d);
+    DN.push([`${d}: ${m.slice(0, 60)}`, beklenen === null ? r.n === 0 && r.metin === m : r.metin === beklenen && r.n > 0]);
+  }
+  const tek = H.acilNumaraYerel(NO[0][1], 'tr').metin;
+  DN.push(['ikinci kez uygulamak bir şey değiştirmez', H.acilNumaraYerel(tek, 'tr').n === 0]);
+  const s = H.acilNumaraSonuc({ dil: 'tr', cevap: "Hemen 112'yi arayın.", ozgun: { dil: 'en', cevap: 'Call 911.' } });
+  DN.push(['sonuçta cevap da özgün cevap da değişir, sayı kayda geçer', s.cevap === 'Hemen bulunduğunuz yerin acil numarasını arayın.' && s.ozgun.cevap === 'Call your local emergency number.' && s.acilNumara === 2]);
+  const bos = { dil: 'tr', cevap: 'Bilgi yok.' };
+  DN.push(['numarasız sonuç aynen döner', H.acilNumaraSonuc(bos) === bos]);
+  // ürünün girişleri: sor ve oku sarılı; çevrilerek yazılan cevapta numara çeviriden önce değişir
+  const kod = require('fs').readFileSync(require.resolve(process.env.HEYBE_ARKADAS || '../../tasinabilir/usb_kok/heybe/arkadas.js'), 'utf8');
+  DN.push(['sor ve oku numara kuralından geçer', kod.includes('const sor = kutuphaneIzle(acilNumaraIzle(sorAsil)), oku = kutuphaneIzle(acilNumaraIzle(okuAsil));')]);
+  DN.push(['çevrilerek yazılan cevapta numara çeviriden önce değişir', kod.includes('const yerel = acilNumaraYerel(ya.metin, kd);') && kod.includes('const ozgun = yerel.metin;')]);
+  let dn = 0;
+  for (const [a, tamam] of DN) { if (tamam) dn++; else console.log(`  YANLIŞ (acil numarası): ${a}`); }
+  console.log(`— acil numarası dişi: ${dn}/${DN.length} —`);
+}
+
+// §207 çok dilli havuz (Ercan 18.11: "her dilde olan kaynakları … havuzda toplamasını sağlamak. Tehlikeli cevap sonra elinir"):
+// başka dildeki bölüm çevrilir, sayı / olumsuzluk / kip kayan ya da boş çeviri düşer; kendi dilindeki aynen; sıra korunur.
+// Sabit örnekler, sahte çevirmen (her bozulan dal kendi örneğiyle).
+globalThis.__cokDilliDisi = (async () => {
+  const CD = [];
+  CD.push(['çok dilli havuz varsayılan kapalı (ölçülmeden açılmaz)', H.AYAR.cokDilli === false]);
+  const P = [
+    { kitap: 'wikipedia_tr', makale: 'Yangın', metin: 'Yangında asansör kullanılmaz.' },
+    { kitap: 'ready', makale: 'Home Fires', dil: 'en', metin: 'Do not open a hot door. Stay low under the smoke.' },
+    { kitap: 'ready', makale: 'Gas', dil: 'en', metin: 'Do not use light switches.' },
+    { kitap: 'mdwiki', makale: 'Burns', dil: 'en', metin: 'Cool the burn for 20 minutes.' },
+    { kitap: 'outdoors', makale: 'Snake', dil: 'en', metin: 'You may apply a bandage.' },
+    { kitap: 'outdoors', makale: 'Bos', dil: 'en', metin: 'Stay calm.' },
+  ];
+  const CEV = {
+    'Do not open a hot door. Stay low under the smoke.': 'Sıcak bir kapıyı açmayın. Dumanın altında alçakta kalın.',
+    'Do not use light switches.': 'Işık düğmelerini kullanın.',   // olumsuzluk düştü
+    'Cool the burn for 20 minutes.': 'Yanığı 10 dakika soğutun.',   // sayı değişti
+    'You may apply a bandage.': 'Mutlaka bandaj uygulayın.',       // seçimlik → zorunlu
+    'Stay calm.': '',                                              // boş çeviri
+  };
+  try {
+    const h = await H.havuzCevir(P, 'tr', async (m) => (m in CEV ? CEV[m] : m));
+    const ad = (x) => x.makale;
+    const dus = (m) => h.dusen.find((x) => x.makale === m);
+    CD.push(['kendi dilindeki bölüm aynen kalır', h.parcalar[0] === P[0]]);
+    CD.push(['geçen çeviri kullanılır, kaynağın dili ve özgün metni taşınır', h.parcalar[1] && h.parcalar[1].metin === CEV[P[1].metin] && h.parcalar[1].ceviri && h.parcalar[1].ceviri.dil === 'en' && h.parcalar[1].ceviri.ozgun === P[1].metin]);
+    CD.push(['çevrilen bölüm artık yabancı sayılmaz (dil alanı yok)', h.parcalar[1] && !('dil' in h.parcalar[1])]);
+    CD.push(['modele yalnız geçenler gider, sıra korunur', h.parcalar.map(ad).join(',') === 'Yangın,Home Fires']);
+    CD.push(['olumsuzluğu düşen çeviri düşer', Boolean(dus('Gas')) && dus('Gas').sorun.length > 0]);
+    CD.push(['sayısı değişen çeviri düşer', Boolean(dus('Burns')) && dus('Burns').sorun.length > 0]);
+    CD.push(['kipi zorunluya dönen çeviri düşer', Boolean(dus('Snake')) && dus('Snake').sorun.length > 0]);
+    CD.push(['boş çeviri düşer', Boolean(dus('Bos')) && dus('Bos').sorun.includes('çeviri boş')]);
+    const atan = await H.havuzCevir([P[1]], 'tr', async () => { throw new Error('çevirmen yok'); });
+    CD.push(['çevirmen hata verirse bölüm düşer (çökmez)', atan.parcalar.length === 0 && atan.dusen.length === 1]);
+  } catch (e) { CD.push([`havuz çevirisi çöktü: ${e.message}`, false]); }
+  const kod = require('fs').readFileSync(require.resolve(process.env.HEYBE_ARKADAS || '../../tasinabilir/usb_kok/heybe/arkadas.js'), 'utf8');
+  CD.push(['açıkken bütün diller tek aramada (ikinci arama yok)', kod.includes('return { ...await sor(soru, bildir, dil, { ...geri, kaynakDilleri: [dil, ...liste] }), cokDilli: true };')]);
+  CD.push(['açıkken karışık havuz çevrilip yazılır', kod.includes('const h = await havuzCevir(parcalar, dil);') && kod.includes('      parcalar = h.parcalar;\n')]);
+  let cd = 0;
+  for (const [a, tamam] of CD) { if (tamam) cd++; else console.log(`  YANLIŞ (çok dilli havuz): ${a}`); }
+  console.log(`— çok dilli havuz dişi: ${cd}/${CD.length} —`);
+})();
+
+// §211 kaynağın güveni (Ercan 19.11: "Evet, dene"): havuzda en iyi puana `fark` kadar yakın forum dışı paragraf varsa
+// forum paragrafları çıkar; yoksa liste aynen. Sabit örnekler, her dal kendi örneğiyle.
+(() => {
+  const FG = [];
+  const P = (ad, kitap, kaynak = 'kiwix') => ({ ad, kitap, kaynak, metin: ad, bolum: '' });
+  const forum = P('Snake on trail', 'outdoors.stackexchange.com_en_all_2026-10');
+  const forum2 = P('Snake bite', 'outdoors.stackexchange.com_en_all_2026-10');
+  const reddit = P('Burn', 'reddit_firstaid_2026-01');
+  const viki = P('Snakebite', 'wikipedia_en_medicine_maxi_2026-10');
+  const viki2 = P('Yılan ısırığı', 'wikipedia_tr_top_nopic_2026-10');
+  const resmi = P('Home Fires', 'ready.gov_en_all_2026-10');
+  const benim = P('forum notlarım', '', 'benim');
+  const ad = (l) => l.map(([, p]) => p.ad).join(',');
+  const F = (l) => H.forumGeriAl(l, 0.10);
+  FG.push(['forum geri alma varsayılan kapalı (ölçülmeden açılmaz)', H.AYAR.forumGeri && H.AYAR.forumGeri.acik === false && H.AYAR.forumGeri.fark === 0.10]);
+  FG.push(['yakın viki varsa forum çıkar', ad(F([[0.66, forum], [0.60, viki]])) === 'Snakebite']);
+  FG.push(['resmî kılavuz da forum dışı sayılır', ad(F([[0.66, forum], [0.62, resmi]])) === 'Home Fires']);
+  FG.push(['uzak viki forumu çıkarmaz (fark dışı)', ad(F([[0.66, forum], [0.50, viki]])) === 'Snake on trail,Snakebite']);
+  FG.push(['yalnız forum varsa forum kalır', ad(F([[0.66, forum], [0.62, forum2]])) === 'Snake on trail,Snake bite']);
+  FG.push(['adı forum olan kitap da forum (reddit)', ad(F([[0.66, reddit], [0.60, viki]])) === 'Snakebite']);
+  FG.push(['kullanıcının dosyası forum sayılmaz, kalır', ad(F([[0.66, forum], [0.60, benim]])) === 'forum notlarım' && ad(F([[0.66, benim]])) === 'forum notlarım']);
+  FG.push(['forum dışı bütün paragraflar sırasıyla kalır', ad(F([[0.70, viki], [0.66, forum], [0.60, viki2], [0.40, forum2]])) === 'Snakebite,Yılan ısırığı']);
+  FG.push(['en iyi puan listenin başında olmasa da bulunur', ad(F([[0.55, viki], [0.70, forum]])) === 'Snakebite,Snake on trail']);
+  FG.push(['forumsuz liste aynen döner', F([[0.6, viki], [0.5, viki2]]).length === 2 && F([]).length === 0]);
+  const kod = require('fs').readFileSync(require.resolve(process.env.HEYBE_ARKADAS || '../../tasinabilir/usb_kok/heybe/arkadas.js'), 'utf8');
+  FG.push(['kural kullanıcının seçtiği bölümden sonra (seçilene dokunmaz)', kod.includes("      sec.adaylar = [];\n      return sec;\n    }\n    let forumDusen = 0;\n    if (AYAR.forumGeri && AYAR.forumGeri.acik) {   // §211\n      const kalan = forumGeriAl(puanli);")]);
+  FG.push(['kural şık adaylarından önce (forum şıklara da gitmez)', kod.indexOf('const kalan = forumGeriAl(puanli);') < kod.indexOf('const adayMakaleler = adayBolumler(puanli, ham, dil);') && kod.indexOf('const kalan = forumGeriAl(puanli);') > 0]);
+  let fg = 0;
+  for (const [a, tamam] of FG) { if (tamam) fg++; else console.log(`  YANLIŞ (forum geri alma): ${a}`); }
+  console.log(`— forum geri alma dişi: ${fg}/${FG.length} —`);
+})();
+
+// ---- §235 (20.11.2026): özel ad dişi — cümle başı kelimesi ad sayılmasın (AYAR.cumleBasiAtla) + konu bekçisi toleransı.
+//      Sabit örnekler (her dal kendi örneğiyle). Konu toleransı varsayılan yok; cümle başı 21.11'den beri açık (§236). ----
+{
+  const OA = [];
+  const eski = H.AYAR.cumleBasiAtla;
+  // 21.11 (§236): ölçüldü (laboratuvar + görülmemiş TI), varsayılan AÇIK. ~~varsayılan kapalı~~
+  OA.push(['cümle başı anahtarı varsayılan açık (§236 ölçüldü)', H.AYAR.cumleBasiAtla === true]);
+  OA.push(['konu toleransı varsayılan yok (eski davranış)', !(H.AYAR.konuBekci || {}).tolerans]);
+  const ad = (s) => JSON.stringify(H.ozelAdlar(s));
+  H.AYAR.cumleBasiAtla = false;
+  OA.push(['kapalıyken eski davranış: "What now?" ad sayılır', ad("Boiling water on wife's forearm. What now?") === '["wha"]']);
+  H.AYAR.cumleBasiAtla = true;
+  OA.push(['açıkken ikinci cümlenin ilk kelimesi ad değil (en)', ad("Boiling water on wife's forearm, red, blistering. What now?") === '[]']);
+  OA.push(['açıkken ikinci cümlenin ilk kelimesi ad değil (tr)', ad('Eşimin ön koluna kaynar su döküldü. Şimdi?') === '[]' && ad('Düştüm, kolum kırılmış olabilir. Hastaneye gidene kadar ne yapayım?') === '[]']);
+  OA.push(['cümle içindeki gerçek ad kalır', ad('Hiking in Arizona and a snake bit him. Two fang marks.') === '["ari"]' && ad('We are in Lisbon. Is the tap water safe?') === '["lis"]']);
+  OA.push(['cümle başında kesmeli ad kalır', ad("Düştüm. Prag'da hastaneye nasıl giderim?") === '["pra"]' && ad("Antakya'da deprem oldu. Ne yapmalıyım?") === '["ant"]']);
+  OA.push(['ilk kelime eskisi gibi atlanır', ad('Building shaking, 3rd floor, sturdy table here.') === '[]']);
+  H.AYAR.cumleBasiAtla = eski;
+  OA.push(['konuUymaz dizi kabul eder (tolerans)', H.konuUymaz([{ makale: 'Earthquake', sayi: 2 }], ['Outdoor Survival', 'Earthquake']) === false && H.konuUymaz([{ makale: 'Earthquake', sayi: 2 }], 'Outdoor Survival') === true]);
+  let oa = 0;
+  for (const [a, tamam] of OA) { if (tamam) oa++; else console.log(`  YANLIŞ (özel ad): ${a}`); }
+  console.log(`— özel ad dişi: ${oa}/${OA.length} —`);
+}
+
+// ---- §237 (21.11.2026): bölüm şıkkı dişi (AYAR.bolumSik; Ercan'ın fikri §233) — sabit örnekler, her dal kendi örneğiyle ----
+(async () => {
+  const BS = [];
+  BS.push(['bölüm şıkkı varsayılan kapalı (ölçülmeden açılmaz)', H.AYAR.bolumSik === false]);
+  const P = (ad, bolum, metin) => ({ ad, bolum, metin, kitap: 'k_en', kaynak: 'kiwix', dil: 'en', yol: ad });
+  const ham = [P('Cold injuries', 'Hypothermia', 'Shivering, wet clothes: remove them, wrap in blankets, give warm drinks; shivering stops late.'),
+    P('Cold injuries', 'Frostbite', 'White waxy fingers: rewarm in warm water, never rub the fingers, protect blisters on toes.'),
+    P('Heat illness', 'Heat stroke', 'Hot dry skin and confusion: cool the body fast with water and ice, call for help.')];
+  const puanli = ham.map((p, i) => [0.9 - i * 0.01, p]);
+  const eski = H.AYAR.bolumSik;
+  H.AYAR.bolumSik = false;
+  const a0 = H.adayBolumler(puanli, ham, 'en');
+  BS.push(['kapalıyken madde düzeyi: aynı maddenin iki bölümü tek şık', a0.length === 2 && a0[0].bolum === undefined && a0[0].ad === 'Cold injuries']);
+  H.AYAR.bolumSik = true;
+  const a1 = H.adayBolumler(puanli, ham, 'en');
+  BS.push(['açıkken bölüm düzeyi: üç şık, bölüm adıyla', a1.length === 3 && a1.map((a) => a.bolum).join(',') === 'Hypothermia,Frostbite,Heat stroke']);
+  BS.push(['ayırt eden kelime bölümün kendi metninden (donmada "fingers", üşümede "shivering"; çaprazı yok)', a1[1].kelimeler.includes('fingers') && !a1[0].kelimeler.includes('fingers') && a1[0].kelimeler.includes('shivering') && !a1[1].kelimeler.includes('shivering')]);
+  const e1 = await H.secenekEtiketle(a1, 'en');
+  BS.push(['şık etiketi bölümü taşır, seçilen şık bölümü taşır', e1[1].etiket.startsWith('Cold injuries — Frostbite') && e1[1].bolum === 'Frostbite']);
+  H.AYAR.bolumSik = eski;
+  const e0 = await H.secenekEtiketle(a0, 'en');
+  BS.push(['kapalıyken etiket eskisi gibi (bölümsüz)', e0[0].etiket.startsWith('Cold injuries') && !e0[0].etiket.startsWith('Cold injuries —  ') && e0[0].bolum === undefined]);
+  BS.push(['seçilen süzgeci: bölüm verilmezse bütün madde', H.secilenUyar(ham[1], { kitap: 'k_en', ad: 'Cold injuries' }) && H.secilenUyar(ham[0], { kitap: 'k_en', ad: 'Cold injuries' })]);
+  BS.push(['seçilen süzgeci: bölüm verilirse yalnız o bölüm', H.secilenUyar(ham[1], { kitap: 'k_en', ad: 'Cold injuries', bolum: 'Frostbite' }) && !H.secilenUyar(ham[0], { kitap: 'k_en', ad: 'Cold injuries', bolum: 'Frostbite' })]);
+  let bs = 0;
+  for (const [a, tamam] of BS) { if (tamam) bs++; else console.log(`  YANLIŞ (bölüm şıkkı): ${a}`); }
+  console.log(`— bölüm şıkkı dişi: ${bs}/${BS.length} —`);
+})();

@@ -106,6 +106,7 @@ func kapanistaCevirmeniKapat() {
 		<-s
 		cevirmenKapat()
 		modelSurecleriniKapat() // ilk kurulumda açılan modeller (model.go)
+		kutuphaneKapat()        // §191: yeniden açılan kütüphane
 		os.Exit(0)
 	}()
 }

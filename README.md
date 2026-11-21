@@ -12,7 +12,16 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.39.0).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.45.0).
+
+## What's new in 0.40–0.45
+
+- **"None of these" shows the nearest chapter too** *(0.40)*. Under the choices, "None is my situation" also opens the closest chapter, so you can still read what may help.
+- **One pool for all languages** *(0.41)*. Books are searched together, whatever their language; the answer is written from the best chapter and translated. On an unseen set of 100 everyday questions, dangerous answers that passed went from 8 to 6.
+- **A library failure is not "no information"** *(0.42)*. If the library server crashes, Heybe restarts it and carries on. If it cannot, it says the result may be incomplete instead of "not in my sources".
+- **No foreign emergency number inside answers** *(0.44)*. A source that says "call 911" becomes "call your local emergency number"; the number for your region is on the line above every answer.
+- **Fewer good answers stopped by mistake** *(0.45)*. A guard that checks numbers against place names no longer takes the first word of a sentence for a place name. In a single-book lab, correct answers that reached the user rose from 9 to 14 of 30 (English) and from 3 to 7 (Turkish).
+- **Emergency card** *(0.43)*: the Turkish word pattern now also recognises "bilinci yok" (unconscious).
 
 ## What's new in 0.31–0.39
 
@@ -28,7 +37,7 @@ Free of charge. **CLE — Can · LM · Ercan.**
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.39.0.zip` (about 330 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.45.0.zip` (about 330 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
@@ -118,6 +127,8 @@ The sets differ, so rows compare only roughly. Exam questions and graded notes w
 
 **0.32–0.39 were measured differently.** Emergency card: in three unseen sets, dangerous answers that passed went from 11 to 0 (false alarm on 10 of 48). Answer level: 110 questions written on purpose around two-meaning words, on a real library layout (Turkish Wikipedia, an English medicine wiki, Wikivoyage, Outdoors Stack Exchange), graded by a blind grader. Answers that reached the user: 17 correct, 14 wrong or mixed, **4 dangerous**. All four came from the sources themselves — an old Wikipedia tourniquet sentence, forum advice on snake bites and wildfires — and all four are stopped since 0.37. This was a deliberately hard set; it is not a general success rate.
 
+**0.40–0.45, end to end.** Three new unseen sets of 100 everyday questions (separate authors who never saw the code or the library; four-book library; blind grader). Correct answers that reached the user: 13, 8 and 5. Dangerous answers that passed: 2, 4 and 6. Real emergencies whose emergency card did not open: 0, 0 and 1 (of 18). Most other questions end with a stopped answer and its sources, or with a choice. In two further unseen emergency sets the card opened for 127 of 128 real emergencies. A small model reading general-purpose sources is the limit here; this is why Heybe remains a test release.
+
 ## Roadmap — for developers
 
 Where the measurements say work is needed:
@@ -169,7 +180,16 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.39.0).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.45.0).
+
+## 0.40–0.45'te yeni
+
+- **"Hiçbiri" seçilince en yakın bölüm de açılır** *(0.40)*. Şıkların altındaki "Hiçbiri benim durumum değil" en yakın bölümü de gösterir; işine yarayabilecek olanı yine okuyabilirsin.
+- **Bütün diller tek havuzda** *(0.41)*. Kitaplar dil ayırmadan birlikte aranır; cevap en iyi bölümden yazılır ve çevrilir. Görülmemiş 100 gündelik soruda durdurulmadan geçen tehlikeli cevap 8'den 6'ya indi.
+- **Kütüphane arızası "bilgi yok" demek değildir** *(0.42)*. Kütüphane sunucusu düşerse Heybe onu yeniden açıp devam eder. Açamazsa "kaynaklarımda yok" yerine sonucun eksik olabileceğini söyler.
+- **Cevabın içinde yabancı acil numarası kalmaz** *(0.44)*. Kaynak "911'i arayın" derse cevap "bulunduğunuz yerin acil numarasını arayın" der; bölgenin numarası her cevabın üstündeki satırda.
+- **Doğru cevap daha az yanlışlıkla durur** *(0.45)*. Sayıları yer adlarıyla karşılaştıran bekçi artık cümlenin ilk kelimesini yer adı sanmıyor. Tek kitaplı laboratuvarda kullanıcıya ulaşan doğru cevap 30'da 9'dan 14'e (İngilizce), 3'ten 7'ye (Türkçe) çıktı.
+- **Acil kartı** *(0.43)*: Türkçe kalıp "bilinci yok"u da tanıyor.
 
 ## 0.31–0.39'da yeni
 
@@ -185,7 +205,7 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.39.0.zip` dosyasını (yaklaşık 330 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.45.0.zip` dosyasını (yaklaşık 330 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
@@ -274,6 +294,8 @@ Her sürümde, o sürümün sınavında Heybe'nin **durdurmadan verdiği** yanl�
 Setler birbirinden farklı olduğu için satırlar yaklaşık karşılaştırılır. Sınav soruları ve gerekçeli notlar `olcum/banka/` içinde. F, G, H, I ve J setleri IFRC *International first aid, resuscitation, and education guidelines 2020*'den (IFRC Global First Aid Reference Centre) kısa alıntılar içerir; kaynak belirtilerek ticari olmayan kopyaya izin verilir. Bu alıntılar deponun Apache 2.0 lisansına girmez.
 
 **0.32–0.39 başka biçimde ölçüldü.** Acil kartı: üç görülmemiş sette durdurulmadan geçen tehlikeli cevap 11'den 0'a indi (48'de 10 boş alarm). Cevap düzeyi: bilerek iki anlamlı kelimeler etrafında yazılmış 110 soru, gerçek bir kitaplık düzeninde (Türkçe Vikipedi, İngilizce tıp vikisi, Wikivoyage, Outdoors Stack Exchange), kör bir hakemle notlandı. Kullanıcıya ulaşan cevaplar: 17 doğru, 14 yanlış ya da karışık, **4 tehlikeli**. Dördü de kaynağın kendisinden geliyordu — Vikipedi'deki eski bir turnike cümlesi, yılan ısırığı ve orman yangını üzerine forum tavsiyeleri — ve 0.37'den beri dördü de duruyor. Bu bilerek zor bir setti; genel bir başarı oranı değildir.
+
+**0.40–0.45, uçtan uca.** Üç yeni görülmemiş set, her biri 100 gündelik soru (kodu ve kütüphaneyi görmeyen ayrı yazarlar; dört kitaplı kütüphane; kör hakem). Kullanıcıya ulaşan doğru cevap: 13, 8 ve 5. Durdurulmadan geçen tehlikeli cevap: 2, 4 ve 6. Acil kartının açılmadığı gerçek acil: 0, 0 ve 1 (18'de). Öbür soruların çoğu durdurulmuş cevap ve kaynaklarıyla ya da şıkla biter. İki ayrı görülmemiş acil setinde kart 128 gerçek acilin 127'sinde açıldı. Sınırı genel amaçlı kaynakları okuyan küçük bir model koyuyor; Heybe'nin hâlâ deneme sürümü olmasının sebebi bu.
 
 ## Yol haritası — geliştiriciler için
 
