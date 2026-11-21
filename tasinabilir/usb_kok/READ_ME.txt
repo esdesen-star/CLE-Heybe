@@ -26,7 +26,7 @@ STARTING
   (Not tested on Linux yet — if you try it, please tell us how it went.)
 - FIRST SETUP: if you downloaded Heybe from GitHub, the models are not in the
   package. The page tells you: "Library & settings" → "First setup" → accept
-  the Gemma terms → "Download the models" (about 5 GB, internet needed once).
+  the Gemma terms → "Download the models" (about 7.5 GB, internet needed once).
   If the download is cut, click again: it continues where it stopped.
 - Heybe opens in your browser. First pick your language: all 49 languages
   are listed equally. A ✓ next to a language means the stick has books or

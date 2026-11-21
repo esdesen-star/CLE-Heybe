@@ -29,7 +29,7 @@ AÇMAK
   Soruları cevaplayan Heybe belleğin hızına göre 1–2 dakikada açılır.
 - İLK KURULUM: Heybe'yi GitHub'dan indirdiysen modeller pakette gelmez.
   Sayfa söyler: "Kitaplık ve ayarlar" → "İlk kurulum" → Gemma koşullarını
-  kabul et → "Modelleri indir" (yaklaşık 5 GB, internet bir kez gerekir).
+  kabul et → "Modelleri indir" (yaklaşık 7,5 GB, internet bir kez gerekir).
   İndirme kesilirse yeniden bas, kaldığı yerden sürer. Bitince Heybe
   kendiliğinden açılır.
   Çevirmen yalnız gerekince, "Başka dillerdeki kaynaklara da bak"

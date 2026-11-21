@@ -3,7 +3,8 @@ CLE Heybe — lisanslar · licences · licence
 
 TÜRKÇE
 Bu bellekteki parçalar kendi lisanslarıyla gelir:
-- Gemma 3 4B, EmbeddingGemma 300M ve TranslateGemma 4B (Google): Gemma Kullanım Koşulları.
+- Gemma 4 E4B (Google; sohbet modeli, 0.46'dan beri): Apache 2.0.
+- EmbeddingGemma 300M, TranslateGemma 4B ve eski kurulumlarda Gemma 3 4B (Google): Gemma Kullanım Koşulları.
   Kullanım kısıtları her kullanıcı için geçerlidir. Bkz. NOTICE.txt,
   Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
 - llamafile 0.10.6 (Mozilla): Apache 2.0; içindeki llama.cpp: MIT.
@@ -38,7 +39,8 @@ SORUMLULUK
 
 ENGLISH
 The parts on this stick come with their own licences:
-- Gemma 3 4B, EmbeddingGemma 300M and TranslateGemma 4B (Google): Gemma Terms of Use.
+- Gemma 4 E4B (Google; the chat model since 0.46): Apache 2.0.
+- EmbeddingGemma 300M, TranslateGemma 4B and, on older installs, Gemma 3 4B (Google): Gemma Terms of Use.
   The use restrictions apply to every user. See NOTICE.txt,
   Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
 - llamafile 0.10.6 (Mozilla): Apache 2.0; the included llama.cpp: MIT.
@@ -73,7 +75,8 @@ RESPONSIBILITY
 
 ČESKY
 Části na tomto disku mají vlastní licence:
-- Gemma 3 4B, EmbeddingGemma 300M a TranslateGemma 4B (Google): Gemma Terms of Use.
+- Gemma 4 E4B (Google; model pro rozhovor od verze 0.46): Apache 2.0.
+- EmbeddingGemma 300M, TranslateGemma 4B a ve starších instalacích Gemma 3 4B (Google): Gemma Terms of Use.
   Omezení použití platí pro každého uživatele. Viz NOTICE.txt,
   Gemma_Terms_of_Use.txt, Gemma_Prohibited_Use_Policy.txt.
 - llamafile 0.10.6 (Mozilla): Apache 2.0; obsažený llama.cpp: MIT.

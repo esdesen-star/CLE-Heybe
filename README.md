@@ -12,7 +12,13 @@ Heybe is a multilingual translator: it reads whichever language has the richest 
 
 Free of charge. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.45.0).
+> ⚠️ Heybe is not medical advice. In an emergency, call your local emergency number. This is a test release (0.46.0).
+
+## What's new in 0.46
+
+- **A newer chat model: Gemma 4 E4B** (Google, Apache 2.0). Same library, same guards — only the model changed. On two unseen sets of 100 everyday questions (separate authors, blind grader): correct answers that reached the user 21 → 30, dangerous answers that passed 7 → 2, real emergencies whose card did not open 0 → 0. As the emergency judge it raised false alarms far less often (72 → 32 of 406 non-emergency questions) and recognised Turkish words the old model did not know ("zakkum" — oleander, "harç" — mortar). Four smaller models (Gemma 4 E2B, Qwen3.5 2B, Phi-4-mini, Ministral 3 3B) were tested too; none was safe enough.
+- **The cost:** about 1.5 GB more memory, about 30% slower on a computer without a graphics card, and a 4.6 GB file (exFAT stick).
+- **Older installs keep working.** If Gemma 4 E4B is not there, Heybe opens the older Gemma 3 4B and offers the new model in First setup. On a FAT32 stick, which cannot hold files over 4 GB, it stays on Gemma 3 without asking.
 
 ## What's new in 0.40–0.45
 
@@ -37,18 +43,18 @@ Free of charge. **CLE — Can · LM · Ercan.**
 
 No programming needed. You need internet once, for the first setup; after that Heybe works offline.
 
-1. **Download** `CLE-Heybe-0.45.0.zip` (about 330 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
+1. **Download** `CLE-Heybe-0.46.0.zip` (about 330 MB) from the [latest release](https://github.com/esdesen-star/CLE-Heybe/releases/latest).
    - *Windows:* before unzipping, right-click the zip → **Properties** → tick **Unblock** → OK.
 2. **Unzip it.** You get a folder named `CLE-Heybe`. Copy that folder to a USB stick (16 GB or more is comfortable; exFAT format) — or simply keep it on your computer.
 3. **Start Heybe** from inside the folder:
    - **Mac:** double-click `Heybe_Mac.command`. The first time, macOS blocks it: open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. (Older macOS: right-click the file → Open.)
    - **Windows 10/11:** double-click `Heybe_Windows.bat`. If Windows warns you: **More info → Run anyway**.
    - **Linux** (x86_64, or 64-bit ARM such as Raspberry Pi 4/5): open a terminal in the folder and type `sh Heybe_Linux.sh`.
-4. A page opens in your browser. The first time it says the models are not installed: open **Library & settings → First setup**, read and accept the Gemma terms, and click **Download the models** (about 5 GB). If the download is cut, click again — it continues where it stopped. When it finishes, Heybe starts by itself.
+4. A page opens in your browser. The first time it says the models are not installed: open **Library & settings → First setup**, read and accept the Gemma terms, and click **Download the models** (about 7.5 GB). If the download is cut, click again — it continues where it stopped. When it finishes, Heybe starts by itself.
 5. On the same page, add books: a ready-made list (for example *First aid and survival*, about 1.2 GB) or your own PDF and text files.
 6. Done. From now on Heybe works without internet. To close it, press Enter (Mac, Linux) or any key (Windows) in its window.
 
-**Space and memory:** core 0.5 GB + models 5 GB + your books. About 8 GB of RAM is recommended (estimate, not measured yet). Windows, Intel Mac and Linux are **not tested yet** — please tell us how it went in an issue.
+**Space and memory:** core 0.5 GB + models about 7.5 GB + your books. The chat model alone uses about 4–5 GB of memory (measured); 16 GB of RAM is comfortable, 8 GB is tight — on a computer with little memory, choose reading mode. The 4.6 GB chat model needs an exFAT (not FAT32) stick; on a FAT32 stick Heybe keeps the older Gemma 3 4B. Windows: one tester ran it successfully. Intel Mac and Linux are **not tested yet** — please tell us how it went in an issue.
 
 ## Runs on
 
@@ -96,7 +102,7 @@ Two people, two languages, one screen — for a rescuer and an injured traveller
 - **Choose an area, or add map files.** Zoom the map to a town, name it and download only that area: Heybe takes the road data of the region whose border contains it and prepares just the area (a Norwegian town from the whole Norway file with 32 MB of memory). Map files from another Heybe or an organisation (`.pmtiles`, `.rota`, `.yer`, `.osm.pbf`) can be added from disk; every map can be removed.
 - **The organisation's own points.** Civil protection, municipalities and aid organisations can add their lists of assembly points, drinking water, shelters… as **Excel, CSV, KML or GeoJSON**, from a file or a link. Every point shows the name of its list. Why: in our test the assembly points of Hatay — the province hit hardest by the 2023 earthquake — were missing from OpenStreetMap, and "nearest assembly point" pointed 181 km away. Now Heybe says "not found within reach" instead, and anyone can mark their own point (for example the assembly area they learned from the authorities).
 
-**Components:** a small helper program written in Go (`tasinabilir/yardimci/`) · the [Kiwix](https://kiwix.org) book server · three models run with [llamafile](https://github.com/Mozilla-Ocho/llamafile) (chat: Gemma 3 4B · semantic search: EmbeddingGemma · translation: TranslateGemma) · a page and a "companion" that run in the browser (`tasinabilir/usb_kok/heybe/`) · the map page with [MapLibre GL JS](https://maplibre.org), PMTiles and Protomaps basemaps, bundled (`heybe/harita.html`, `heybe/harita_kit/`).
+**Components:** a small helper program written in Go (`tasinabilir/yardimci/`) · the [Kiwix](https://kiwix.org) book server · three models run with [llamafile](https://github.com/Mozilla-Ocho/llamafile) (chat: Gemma 4 E4B, older installs Gemma 3 4B · semantic search: EmbeddingGemma · translation: TranslateGemma) · a page and a "companion" that run in the browser (`tasinabilir/usb_kok/heybe/`) · the map page with [MapLibre GL JS](https://maplibre.org), PMTiles and Protomaps basemaps, bundled (`heybe/harita.html`, `heybe/harita_kit/`).
 
 ## Model-free test suite
 
@@ -180,7 +186,13 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Ücretsizdir. **CLE — Can · LM · Ercan.**
 
-> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.45.0).
+> ⚠️ Heybe tıbbi tavsiye yerine geçmez. Acil durumda bulunduğun yerin acil numarasını ara. Heybe bir deneme sürümüdür (0.46.0).
+
+## 0.46'da yeni
+
+- **Daha yeni sohbet modeli: Gemma 4 E4B** (Google, Apache 2.0). Kütüphane ve bekçiler aynı; yalnız model değişti. İki görülmemiş sette, 100'er gündelik soru (ayrı yazarlar, kör hakem): kullanıcıya ulaşan doğru cevap 21 → 30, durdurulmadan geçen tehlikeli cevap 7 → 2, kartı açılmayan gerçek acil 0 → 0. Acil hakemi olarak gereksiz uyarıyı çok azalttı (acil olmayan 406 soruda 72 → 32) ve eski modelin bilmediği Türkçe kelimeleri tanıdı ("zakkum", "harç"). Dört küçük model (Gemma 4 E2B, Qwen3.5 2B, Phi-4-mini, Ministral 3 3B) da denendi; hiçbiri yeterince güvenli çıkmadı.
+- **Bedeli:** yaklaşık 1,5 GB daha fazla bellek, ekran kartı olmayan bilgisayarda yüzde otuz kadar yavaş, 4,6 GB'lık dosya (exFAT bellek).
+- **Eski kurulumlar çalışmayı sürdürür.** Gemma 4 E4B yoksa Heybe eski Gemma 3 4B'yi açar ve İlk kurulum'da yeni modeli önerir. 4 GB'tan büyük dosya almayan FAT32 bellekte sormadan Gemma 3 ile kalır.
 
 ## 0.40–0.45'te yeni
 
@@ -205,18 +217,18 @@ Heybe çok dilli bir tercümandır: kitap hangi dilde en zengin ve ücretsizse o
 
 Programcılık gerekmez. İnternet yalnız ilk kurulumda bir kez gerekir; sonra Heybe internetsiz çalışır.
 
-1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.45.0.zip` dosyasını (yaklaşık 330 MB).
+1. **İndir:** [son sürümden](https://github.com/esdesen-star/CLE-Heybe/releases/latest) `CLE-Heybe-0.46.0.zip` dosyasını (yaklaşık 330 MB).
    - *Windows:* açmadan önce zip dosyasına sağ tıkla → **Özellikler** → **Engellemeyi kaldır**'ı işaretle → Tamam.
 2. **Aç:** `CLE-Heybe` adlı bir klasör çıkar. Bu klasörü bir USB belleğe kopyala (16 GB ve üstü rahat eder; exFAT biçimi) — ya da bilgisayarında bırak.
 3. **Heybe'yi başlat** (klasörün içinden):
    - **Mac:** `Heybe_Mac.command` dosyasına çift tıkla. İlk seferde macOS engeller: **Sistem Ayarları → Gizlilik ve Güvenlik**'i aç, aşağı in ve **Yine de Aç**'a bas. (Eski macOS: dosyaya sağ tıkla → Aç.)
    - **Windows 10/11:** `Heybe_Windows.bat` dosyasına çift tıkla. Windows uyarırsa: **Ek bilgi → Yine de çalıştır**.
    - **Linux** (x86_64 ya da Raspberry Pi 4/5 gibi 64 bit ARM): klasörde bir terminal aç ve `sh Heybe_Linux.sh` yaz.
-4. Tarayıcıda bir sayfa açılır. İlk seferde modellerin kurulmadığını söyler: **Kitaplık ve ayarlar → İlk kurulum**'u aç, Gemma koşullarını okuyup kabul et ve **Modelleri indir**'e bas (yaklaşık 5 GB). İndirme kesilirse yeniden bas — kaldığı yerden sürer. Bitince Heybe kendiliğinden açılır.
+4. Tarayıcıda bir sayfa açılır. İlk seferde modellerin kurulmadığını söyler: **Kitaplık ve ayarlar → İlk kurulum**'u aç, Gemma koşullarını okuyup kabul et ve **Modelleri indir**'e bas (yaklaşık 7,5 GB). İndirme kesilirse yeniden bas — kaldığı yerden sürer. Bitince Heybe kendiliğinden açılır.
 5. Aynı sayfada kitap ekle: hazır bir liste (örneğin *İlk yardım ve hayatta kalma*, yaklaşık 1,2 GB) ya da kendi PDF ve metin dosyaların.
 6. Bitti. Bundan sonra Heybe internetsiz çalışır. Kapatmak için penceresinde Enter'a (Mac, Linux) ya da bir tuşa (Windows) bas.
 
-**Yer ve bellek:** çekirdek 0,5 GB + modeller 5 GB + kitapların. Yaklaşık 8 GB RAM önerilir (tahmin, henüz ölçülmedi). Windows, Intel Mac ve Linux **henüz denenmedi** — nasıl gittiğini bir iş kartına yaz.
+**Yer ve bellek:** çekirdek 0,5 GB + modeller yaklaşık 7,5 GB + kitapların. Sohbet modeli tek başına yaklaşık 4–5 GB bellek kullanır (ölçüldü); 16 GB RAM rahat eder, 8 GB sıkışık — belleği az bilgisayarda okuma kipini seç. 4,6 GB'lık sohbet modeli exFAT (FAT32 değil) bellek ister; FAT32 bellekte Heybe eski Gemma 3 4B ile çalışır. Windows: bir denemeci başarıyla çalıştırdı. Intel Mac ve Linux **henüz denenmedi** — nasıl gittiğini bir iş kartına yaz.
 
 ## Çalıştığı sistemler
 
@@ -264,7 +276,7 @@ Denediysen sonucu bir iş kartına yaz — en çok buna ihtiyacımız var. Andro
 - **Alan seç ya da harita dosyası ekle.** Haritayı bir kasabaya yaklaştır, ad ver, yalnız o alanı indir: Heybe yol verisini o alanı sınırları içinde tutan bölgeden alır ve yalnız alanı hazırlar (bütün Norveç dosyasından bir Norveç kasabası 32 MB bellekle). Başka bir Heybe'den ya da bir kurumdan gelen harita dosyaları (`.pmtiles`, `.rota`, `.yer`, `.osm.pbf`) diskten eklenebilir; her harita kaldırılabilir.
 - **Kurumun kendi noktaları.** AFAD, belediyeler ve yardım kuruluşları toplanma alanı, içme suyu, barınak listelerini **Excel, CSV, KML ya da GeoJSON** olarak, dosyadan ya da bağlantıdan ekleyebilir. Her nokta listesinin adıyla görünür. Neden: denememizde 2023 depreminin en çok vurduğu Hatay'ın toplanma alanları OpenStreetMap'te yoktu ve "en yakın toplanma alanı" 181 km öteyi gösterdi. Artık Heybe "yürünebilir uzaklıkta bulunamadı" der; herkes kendi noktasını da işaretleyebilir (örneğin yetkililerden öğrendiği toplanma alanını).
 
-**Bileşenler:** Go ile yazılmış küçük bir yardımcı program (`tasinabilir/yardimci/`) · [Kiwix](https://kiwix.org) kitap sunucusu · [llamafile](https://github.com/Mozilla-Ocho/llamafile) ile üç model (sohbet: Gemma 3 4B · anlam araması: EmbeddingGemma · çeviri: TranslateGemma) · tarayıcıda çalışan sayfa ve "arkadaş" (`tasinabilir/usb_kok/heybe/`) · harita sayfası: [MapLibre GL JS](https://maplibre.org), PMTiles ve Protomaps temel haritası, pakette (`heybe/harita.html`, `heybe/harita_kit/`).
+**Bileşenler:** Go ile yazılmış küçük bir yardımcı program (`tasinabilir/yardimci/`) · [Kiwix](https://kiwix.org) kitap sunucusu · [llamafile](https://github.com/Mozilla-Ocho/llamafile) ile üç model (sohbet: Gemma 4 E4B, eski kurulumlarda Gemma 3 4B · anlam araması: EmbeddingGemma · çeviri: TranslateGemma) · tarayıcıda çalışan sayfa ve "arkadaş" (`tasinabilir/usb_kok/heybe/`) · harita sayfası: [MapLibre GL JS](https://maplibre.org), PMTiles ve Protomaps temel haritası, pakette (`heybe/harita.html`, `heybe/harita_kit/`).
 
 ## Modelsiz sınav
 

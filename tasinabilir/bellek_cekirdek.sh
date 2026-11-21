@@ -5,13 +5,19 @@
 # Kullanım: sh tasinabilir/bellek_cekirdek.sh [kitap.zim ...]
 T=$(cd "$(dirname "$0")" && pwd)   # 07.11: yol betiğin yerinden
 H=/Volumes/HEYBE
-SOHBET=${SOHBET_MODELI:-$T/indirilen/sohbet/gemma3-4b.gguf}   # Gemma 3 4B (Q4_K_M gguf)
+SOHBET=${SOHBET_MODELI:-$T/indirilen/sohbet/gemma-4-E4B-it-Q4_0.gguf}   # §245: Gemma 4 E4B (Q4_0 gguf); eski: gemma3-4b.gguf
 ANLAM=$T/indirilen/gomme/embeddinggemma-300M-Q8_0.gguf
 CEVIRMEN=$T/indirilen/ceviri/translategemma-4b-it.Q4_K_M.gguf
 export COPYFILE_DISABLE=1
 [ -d "$H" ] || { echo "HEYBE takılı değil"; exit 2; }
 diskutil info "$H" | grep -q "Device Location:.*External" || { echo "HEYBE dış bellek değil, durdum"; exit 3; }
 pgrep -f "$H/program" >/dev/null && { echo "bellekten çalışan Heybe var; önce kapat"; exit 4; }
+# 21.11 (Özet §245): sohbet modeli Gemma 4 E4B (4,59 GB). FAT32 bellek 4 GB'tan büyük dosya almaz → orada Gemma 3 4B
+# (Heybe dosyaya göre seçer: önce gemma-4-E4B-it-Q4_0.gguf, yoksa gemma3-4b.gguf).
+SOHBET_AD=$(basename "$SOHBET")
+if diskutil info "$H" 2>/dev/null | grep -q "FAT32" && [ "$(stat -L -f %z "$SOHBET")" -ge 4294967296 ]; then
+  echo "  FAT32 bellek: sohbet modeli Gemma 3 4B (Gemma 4 E4B 4 GB'tan büyük)"; SOHBET=$T/indirilen/sohbet/gemma3-4b.gguf; SOHBET_AD=gemma3-4b.gguf
+fi
 
 kopya() { # kaynak hedef — yazma hızını ölçer; aynı dosya zaten varsa atlar
   if [ -f "$2" ] && [ "$(stat -L -f %z "$1")" = "$(stat -L -f %z "$2")" ] && cmp -s "$1" "$2"; then echo "  $(basename "$2"): zaten aynı"; return; fi
@@ -35,7 +41,7 @@ done || exit 5
 sync && echo "  başlatıcılar, sayfa, programlar, beni oku, lisanslar güncel"
 kopya "$T/indirilen/llamafile-0.10.6" "$H/program/llamafile.exe"
 kopya "$ANLAM" "$H/model/embeddinggemma-300M-Q8_0.gguf"
-kopya "$SOHBET" "$H/model/gemma3-4b.gguf"
+kopya "$SOHBET" "$H/model/$SOHBET_AD"
 kopya "$CEVIRMEN" "$H/model/translategemma-4b.gguf"
 for z in "$@"; do kopya "$z" "$H/kutuphane/$(basename "$z")"; done
 dot_clean -m "$H" 2>/dev/null; find "$H" -name '._*' -delete 2>/dev/null
@@ -47,7 +53,7 @@ diskutil unmount "$H" >/dev/null && sleep 2 && diskutil mount "$DEV" >/dev/null;
 dogrula() { # kaynak hedef
   [ "$(shasum -a 256 "$1" | cut -c1-64)" = "$(shasum -a 256 "$2" | cut -c1-64)" ] && echo "  $(basename "$2"): sağlama TAMAM" || echo "  $(basename "$2"): sağlama UYUŞMUYOR"
 }
-dogrula "$SOHBET" "$H/model/gemma3-4b.gguf"
+dogrula "$SOHBET" "$H/model/$SOHBET_AD"
 dogrula "$ANLAM" "$H/model/embeddinggemma-300M-Q8_0.gguf"
 dogrula "$CEVIRMEN" "$H/model/translategemma-4b.gguf"
 for z in "$@"; do dogrula "$z" "$H/kutuphane/$(basename "$z")"; done

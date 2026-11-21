@@ -43,7 +43,7 @@ func apiKip(w http.ResponseWriter, r *http.Request) {
 		}
 		if istek.Kip == "tam" && modelAcilsin {
 			for _, m := range modeller {
-				if m.Ne == "sohbet" && modelVar(m) {
+				if _, var_ := acilacakSohbet(m); m.Ne == "sohbet" && var_ { // §245: yeni yoksa eski Gemma 3
 					if err := modelSunucusuAc(m); err != nil {
 						log.Printf("sohbet modeli açılamadı: %v", err)
 					}

@@ -58,7 +58,10 @@ xdg-open "http://127.0.0.1:8888/" >/dev/null 2>&1 || echo "Tarayıcıda şu adre
 
 # İlk kurulum (08.11, Özet §66): GitHub paketi modelsiz gelir. Model yoksa açılmaz; sayfa "Kitaplık ve ayarlar"da
 # indirmeyi önerir, yardımcı program inen modelleri kendisi açar.
-if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$KOK/model/gemma3-4b.gguf" ]; then
+# 21.11 (Özet §245): sohbet modeli Gemma 4 E4B; yoksa eski Gemma 3 4B (yardımcı program da aynı sırayla seçer).
+SOHBET_M="$KOK/model/gemma-4-E4B-it-Q4_0.gguf"
+[ -f "$SOHBET_M" ] || SOHBET_M="$KOK/model/gemma3-4b.gguf"
+if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$SOHBET_M" ]; then
   sh "$LLAMA" --server --host 127.0.0.1 --port 8081 --no-webui -m "$KOK/model/embeddinggemma-300M-Q8_0.gguf" \
     --embedding -c 8192 -b 2048 -ub 2048 >"$G/heybe_anlam.log" 2>&1 &
   ANLAM=$!
@@ -68,7 +71,7 @@ if [ -f "$KOK/model/embeddinggemma-300M-Q8_0.gguf" ] && [ -f "$KOK/model/gemma3-
   if [ "$(oku http://127.0.0.1:8888/api/kip)" = "okuma" ]; then
     echo "Okuma kipi seçili: büyük yapay zekâ açılmadı. Değiştirmek için: Kitaplık ve ayarlar → Okuma kipi."
   else
-    sh "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$KOK/model/gemma3-4b.gguf" \
+    sh "$LLAMA" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "$SOHBET_M" \
       -c 8192 >"$G/heybe_sohbet.log" 2>&1 &
     SOHBET=$!
     hazir_bekle http://127.0.0.1:8080 "$SOHBET" sohbet

@@ -99,6 +99,8 @@ const BOZMALAR = [
   ['acil: belirtinin istisnası kör', "        if (b.haric && b.haric[dil].test(butun)) continue;", ''],
   ['acil: merak ve öğrenme sorusu bilgi sayılmıyor', 'tr: /merak (ed|et)\\p{L}*|(okumak|öğrenmek|bilmek) istiyorum|(sınav|ödev)\\p{L}* için|sınava çalış\\p{L}*|(sebebi|nedeni) ne(dir)?(?!\\p{L})|belirti', 'tr: /belirti'],
   ['acil: "yaralı yok" kör', "if (dil === 'tr' && /(?<!\\p{L})(yaralı|yaralanan)", "if (false && /(?<!\\p{L})(yaralı|yaralanan)"],
+  ['§245 sohbet kalıbı: Gemma 3 dosyası tanınmıyor', "? 'gemma3' : 'sablon');", "? 'sablon' : 'sablon');"],
+  ['§245 sohbet kalıbı: elle verilen kalıp yok sayılıyor', "if (AYAR.kalip !== 'oto') return AYAR.kalip;", "if (AYAR.kalip === 'yok') return AYAR.kalip;"],
   ['acil: harfsiz soru katlanmıyor', 'return acilBelirtiT(harfKatla(kucuk(String(soru || \'\'))), dil, katlaDerin(acilTablo()));', 'return acilBelirtiT(soru, dil, acilTablo());'],
   ['eylem: harfsiz soru katlanmıyor', "const harfsiz = dil === 'tr' && !TR_HARF.test(String(soru || ''))", 'const harfsiz = false'],
   ['eylem: amaç yan cümlesi olumsuz sayılıyor', '|\\p{L}+m[ae](mak|mek|ması|mesi)\\s+için', ''],

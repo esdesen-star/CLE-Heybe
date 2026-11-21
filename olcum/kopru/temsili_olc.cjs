@@ -40,6 +40,7 @@ H.AYAR.forumGeri = { ...H.AYAR.forumGeri, acik: process.env.FORUMGERI === '1' };
 if (process.env.MAKALELER) { const m = JSON.parse(fs.readFileSync(process.env.MAKALELER, 'utf8')); H.AYAR.makaleler = async (kitap) => m[kitap] || m[String(kitap).replace(/_20\d\d-\d\d$/, '')] || null; }
 // §235: CUMLEBASI=1 → özel adlarda cümle başı kelimesi atlanır (bağlam bekçisinin "başka yer için" hatası; AYAR.cumleBasiAtla)
 if (process.env.CUMLEBASI === '1') H.AYAR.cumleBasiAtla = true;
+if (process.env.KALIP) H.AYAR.kalip = process.env.KALIP;   // §242: 'sablon' → başka sohbet modeli kendi şablonuyla (SOHBET_MODELI ile başlatılan sunucu)
 // §180: dayanak denetimi eski ölçülerde yoktu → varsayılan kapalı. DAYANAK_OLC=1: denetim durdurmaz, bulgusu kayda yazılır
 // (kapalı yol = kayıt; açık yol = bulgusu olan cevap durmuş sayılır — temsili_hakem.py DAYANAK_UYGULA=1).
 const DAYANAK_OLC = process.env.DAYANAK_OLC === '1';

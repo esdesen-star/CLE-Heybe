@@ -45,7 +45,7 @@ import (
 	"unicode/utf8"
 )
 
-const surum = "1.17 (17.11.2026, kütüphane düşerse yeniden açılır — §191)"
+const surum = "1.18 (21.11.2026, sohbet modeli Gemma 4 E4B; yoksa eski Gemma 3 4B — §245)"
 
 var (
 	kok, kutuphaneDir, kutuphaneXML, benimDir, kiwixManage string

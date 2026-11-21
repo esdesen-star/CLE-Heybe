@@ -35,7 +35,10 @@ start "" "http://127.0.0.1:8888/"
 rem Ilk kurulum (08.11, Ozet 66): GitHub paketi modelsiz gelir. Model yoksa acilmaz; sayfa "Kitaplik ve ayarlar"da
 rem indirmeyi onerir, yardimci program inen modelleri kendisi acar.
 if not exist "%KOK%model\embeddinggemma-300M-Q8_0.gguf" goto modelsiz
-if not exist "%KOK%model\gemma3-4b.gguf" goto modelsiz
+rem 21.11 (Ozet 245): sohbet modeli Gemma 4 E4B; yoksa eski Gemma 3 4B (yardimci program da ayni sirayla secer)
+set "SOHBET_M=%KOK%model\gemma-4-E4B-it-Q4_0.gguf"
+if not exist "%SOHBET_M%" set "SOHBET_M=%KOK%model\gemma3-4b.gguf"
+if not exist "%SOHBET_M%" goto modelsiz
 start "Heybe Anlam" /min "%LLAMA%" --server --host 127.0.0.1 --port 8081 --no-webui -m "%KOK%model\embeddinggemma-300M-Q8_0.gguf" --embedding -c 8192 -b 2048 -ub 2048
 set SAY=0
 :anlam
@@ -49,7 +52,7 @@ echo Anlam modeli hazir.
 
 rem Okuma kipi (10.11, Ozet 106): kullanici sectiyse buyuk sohbet modeli acilmaz - bellek ve pil kalir
 curl -s http://127.0.0.1:8888/api/kip | find "okuma" >nul && goto okuma_kipi
-start "Heybe Sohbet" /min "%LLAMA%" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "%KOK%model\gemma3-4b.gguf" -c 8192
+start "Heybe Sohbet" /min "%LLAMA%" --server --host 127.0.0.1 --port 8080 --no-webui -np 1 -m "%SOHBET_M%" -c 8192
 echo Sohbet modeli aciliyor; sayfa hazir olunca kendisi haber verir.
 goto modeller_tamam
 :okuma_kipi

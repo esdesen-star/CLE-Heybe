@@ -4,6 +4,8 @@
 # belleğe kopyalanmaz: yardımcı program ilk açılışta klasördeki .zim'lerden kendisi kurar.
 T=$(cd "$(dirname "$0")" && pwd)
 ZIM=${ZIM:-$T/../olcum/kaynak/wikipedia_tr_all_nopic_2026-09.zim}
+# §245 (21.11): bu ilk hazırlama ve hız betiği Gemma 3 4B'nin sağlamasıyla yazıldı ve öyle kaldı (FAT32 belleklerde de o
+# kullanılır). Gemma 4 E4B'li güncel çekirdek için: bellek_cekirdek.sh.
 MODEL=${SOHBET_MODELI:-$T/indirilen/sohbet/gemma3-4b.gguf}   # Gemma 3 4B (Q4_K_M gguf)
 H=/Volumes/HEYBE
 export COPYFILE_DISABLE=1

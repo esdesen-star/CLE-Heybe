@@ -24,7 +24,7 @@
     benim: '',   // kullanıcının dosyaları (yardımcı programın /benim adresi); boşsa yok
     cevirmen: '',   // dil köprüsünde soruyu çeviren TranslateGemma sunucusu; boşsa sohbet modeli çevirir (06.11)
     ikinciGoz: true,   // Ö22 (07.11): cevap sorulan duruma mı ait — sohbet modeli hakem; false ise sorulmaz
-    kalip: 'gemma3',   // sohbet modelinin konuşma kalıbı: 'gemma3' (ölçülmüş yol) · 'sablon' (kardeş modeller, modelin kendi şablonu — §58)
+    kalip: 'oto',   // sohbet modelinin konuşma kalıbı: 'oto' (§245: modele sorulur — kalipNe) · 'gemma3' (Gemma 3 4B'nin ölçülmüş yolu) · 'sablon' (modelin kendi şablonu)
     // Ö26 (07.11, §47): kendi dilindeki en iyi paragrafın anlam puanı bunun altındaysa model yazmaz, "bilgi yok" (köprü açıksa
     // öbür dillerin kitaplarına bakılır). Yalnız ölçülen dil: görülmüş 112 Türkçe cevapta 0,45 altı doğru 0, kötü 4.
     zayifHavuz: { tr: 0.45 },
@@ -688,7 +688,24 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
   }
 
   // Kardeş modeller (08.11, Özet §58 — Ercan: "Heybe iki kardeşi olur"): Gemma 3 dışındaki sohbet modeli kendi kalıbıyla
-  // konuşur; sunucu modelin içindeki şablonu kullanır. Varsayılan 'gemma3' bugünkü ölçülmüş yoldur, birebir aynı kalır.
+  // konuşur; sunucu modelin içindeki şablonu kullanır.
+  // ~~Varsayılan 'gemma3' bugünkü ölçülmüş yoldur.~~ 21.11 (§245, Ercan: "geçelim"): sohbet modeli Gemma 4 E4B (görülmemiş
+  // TJ + TK, 200 soru: ulaşan doğru 21 → 30, tehlikeli 7 → 2; acil hakeminde boş alarm 72 → 32/406 — §242–§244). Eski
+  // kurulumlarda ve 4 GB'tan büyük dosya almayan FAT32 bellekte Gemma 3 4B kalabilir (yardımcı ve başlatıcılar dosyaya göre
+  // seçer). Kalıp modelin kendisine sorulur: sunucunun /props'undaki dosya gemma3-4b.gguf ise Gemma 3'ün ölçülmüş kalıbı,
+  // değilse modelin kendi şablonu. Elle verilen AYAR.kalip ('gemma3' | 'sablon') olduğu gibi kullanılır.
+  const kalipOnbellek = new Map();
+  const kalipDosyadan = (yol) => (/(^|[\\/])gemma3-4b\.gguf$/i.test(String(yol || '')) ? 'gemma3' : 'sablon');
+  async function kalipNe() {
+    if (AYAR.kalip !== 'oto') return AYAR.kalip;
+    const adres = AYAR.sohbet;
+    if (kalipOnbellek.has(adres)) return kalipOnbellek.get(adres);
+    let p;
+    try { p = await (await getir(`${adres}/props`, { cache: 'no-store' })).json(); } catch (e) { return 'sablon'; }   // sunucu henüz yok: bellekte tutulmaz
+    const k = kalipDosyadan(p && p.model_path);
+    kalipOnbellek.set(adres, k);
+    return k;
+  }
   async function sablonla(mesajlar, uzunluk) {
     const y = await (await getir(`${AYAR.sohbet}/v1/chat/completions`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -713,7 +730,7 @@ Napiš jen názvy, každý na samostatný řádek. Nic nevysvětluj.`;
   }
 
   async function sohbet(sistem, mesaj, uzunluk = 350) {
-    if (AYAR.kalip === 'sablon') return sablonla([{ role: 'system', content: sistem }, { role: 'user', content: mesaj }], uzunluk);
+    if ((await kalipNe()) === 'sablon') return sablonla([{ role: 'system', content: sistem }, { role: 'user', content: mesaj }], uzunluk);
     const yanit = await (await getir(`${AYAR.sohbet}/completion`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: gemmaIstemi(sistem, mesaj), n_predict: uzunluk, temperature: 0, seed: 1,
@@ -794,7 +811,7 @@ ANSWER: ${a}`;
     if (!AYAR.ikinciGoz) return [];
     const temiz = kes(String(cevap || '').split(/\s+/).join(' ').trim().replace(/\[[\d,\s]+\]/g, ''), 1200);
     try {
-      const icerik = AYAR.kalip === 'sablon' ? await sablonla([{ role: 'user', content: IKINCI_GOZ(soru, temiz) }], 4)
+      const icerik = (await kalipNe()) === 'sablon' ? await sablonla([{ role: 'user', content: IKINCI_GOZ(soru, temiz) }], 4)
         : String((await (await getir(`${AYAR.sohbet}/completion`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: `<start_of_turn>user\n${IKINCI_GOZ(soru, temiz)}<end_of_turn>\n<start_of_turn>model\n`,
@@ -1239,7 +1256,7 @@ MESSAGE: ${q}`;
   async function acilHakem(soru) {
     if (!AYAR.acilHakem || !AYAR.sohbet) return false;
     try {
-      const icerik = AYAR.kalip === 'sablon' ? await sablonla([{ role: 'user', content: ACIL_HAKEM(soru) }], 4)
+      const icerik = (await kalipNe()) === 'sablon' ? await sablonla([{ role: 'user', content: ACIL_HAKEM(soru) }], 4)
         : String((await (await getir(`${AYAR.sohbet}/completion`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: `<start_of_turn>user\n${ACIL_HAKEM(soru)}<end_of_turn>\n<start_of_turn>model\n`,
@@ -3227,7 +3244,7 @@ MESSAGE: ${q}`;
   const Heybe = { AYAR, DIL, sor, havuzCevir, acilNumaraYerel, acilNumaraSonuc, kutuphaneGetir, kutuphaneDurum, kutuphaneIzle, metinAra, enIyiDil, aramaSorgulari, dilHarmanla, uyariAra, uyariNesneleri, anaDalSirala, sirayaDiz, kitapPayli, uyariCumlesi, sinirliHepsi, hukumsuz, kaynakTuru, KAYNAK_TURU, forumGeriAl, yanlisSifrele, yanlisCoz, oku, okumaKaynak, kelimeSirala, kaynakBul, adaylar, kitaplik, makale, paragraflar, denetle, olcuyle, OLCU,
     basliklariAyikla, kaynakMetni, cevir, konuluCevir, soruKonuAyir, soruKonuSizdi, soruKonuKelime, translateGemmaIstemi, olcuAl, dilBilgi, KISA, UC, DIL_ADI, mevcutDiller, bellektekiDiller,
     olumsuzlukKarsilastir, olumsuzlukDenetle, baglamDenetle, ozelAdlar, kisiler, cevapSatirlari, OLUMSUZ_SAY, konuKelimeleri,
-    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, dayanakDenetle, dayanakKokleri, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle, konuDenetle, konuUymaz, acilBelirti, ACIL_BELIRTI, acilHakem, acilBak, secenekGerekli, secenekEtiketle, ayirtKelimeler, adayBolumler, secilenUyar, defterKimlik, defterAltGruplar, defterYol, defterAra, notDenetle, defterCevir,
+    gidisDonus, yonKarsilastir, yokAyikla, ikinciGoz, IKINCI_GOZ, eylemDenetle, EYLEM, kes, yaziDenetle, BETIK, kipDenetle, KIP, aktarmaDenetle, dayanakDenetle, dayanakKokleri, kaynakBirimleri, AKTARMA_ESIK, dusenKelime, atifBolumleri, konusmaDenetle, soruKisisi, baslikKisisi, kisiUymaz, kisiSirala, kardesMakaleler, parcaSec, yolSorusu, ortamDenetle, konuDenetle, konuUymaz, acilBelirti, ACIL_BELIRTI, acilHakem, acilBak, kalipNe, kalipDosyadan, secenekGerekli, secenekEtiketle, ayirtKelimeler, adayBolumler, secilenUyar, defterKimlik, defterAltGruplar, defterYol, defterAra, notDenetle, defterCevir,
     kriptoVar, kurtarmaTemiz, kurtarmaKoduUret, parolaTemiz, defterZarfi, defterKilitKur, defterKilitAc, defterKilitle, defterParolaYenile, defterCoz, KILIT_TEKRAR, PAROLA_EN_KISA };
   if (typeof module !== 'undefined' && module.exports) module.exports = Heybe;
   kok.Heybe = Heybe;

@@ -25,7 +25,7 @@ SPUŠTĚNÍ
   (Na Linuxu zatím nevyzkoušeno.)
 - PRVNÍ INSTALACE: pokud jste Heybe stáhli z GitHubu, modely v balíčku nejsou.
   Stránka vám řekne: „Knihovna a nastavení“ → „První instalace“ → souhlas
-  s podmínkami Gemma → „Stáhnout modely“ (asi 5 GB, internet jen jednou).
+  s podmínkami Gemma → „Stáhnout modely“ (asi 7,5 GB, internet jen jednou).
   Když se stahování přeruší, klikněte znovu: pokračuje tam, kde skončilo.
   Při varování: "Další informace" → "Přesto spustit".
 - V prohlížeči se otevře Heybe. Nejdřív vyberte jazyk: všech 49 jazyků je

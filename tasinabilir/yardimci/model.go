@@ -40,10 +40,12 @@ var (
 		{"embeddinggemma-300M-Q8_0.gguf", "anlam",
 			"https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf",
 			333590944, "b5ce9d77a3fc4b3b39ccb5643c36777911cc4eb46a66962eadfa3f5f60490d63"},
-		// Gemma 3 4B: ölçtüğümüz dosya Ollama'nın kendi deposundaki (Hugging Face'teki Q4_K_M'ler bayt bayt farklı)
-		{"gemma3-4b.gguf", "sohbet",
-			"https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:f06e91e18fc74295d0c781bf91622508c75655e2c18ed869d52447ffe1e667e1",
-			2499012288, "f06e91e18fc74295d0c781bf91622508c75655e2c18ed869d52447ffe1e667e1"},
+		// 21.11 (§245): sohbet modeli Gemma 4 E4B (Apache 2.0, ggml-org'un resmî GGUF'u) — görülmemiş iki sette (200 soru)
+		// ulaşan doğru 21 → 30, tehlikeli 7 → 2 (§242–§244). Eski Gemma 3 4B dosyası olan kurulum onunla çalışmayı sürdürür
+		// (eskiSohbet); kurulum kutusu yeni modeli indirmeyi önerir. 4 GB'tan büyük dosya almayan bellekte eski yeter sayılır.
+		{"gemma-4-E4B-it-Q4_0.gguf", "sohbet",
+			"https://huggingface.co/ggml-org/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf",
+			4590807392, "a555b900214b477d8880e7832e0b8925e139b0159640036b09fe472b6f2097f2"},
 		{"translategemma-4b.gguf", "cevirmen",
 			"https://huggingface.co/mradermacher/translategemma-4b-it-GGUF/resolve/main/translategemma-4b-it.Q4_K_M.gguf",
 			2489909760, "81200d03e843d2ec1ece6eeafe7d13cb6e5211e1fcd336ade55790b683a08330"},
@@ -53,12 +55,45 @@ var (
 	modelSurecleri = map[string]*exec.Cmd{} // ne → süreç (aynı model iki kez açılmasın)
 )
 
+// eskiSohbet: 0.45'e kadarki sohbet modeli (Gemma 3 4B, Ollama'nın deposundaki dosya). Yeni model yoksa açılan budur;
+// başlatıcılar da aynı sırayla seçer (önce yeni dosya, yoksa bu).
+var eskiSohbet = modelKaydi{"gemma3-4b.gguf", "sohbet",
+	"https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:f06e91e18fc74295d0c781bf91622508c75655e2c18ed869d52447ffe1e667e1",
+	2499012288, "f06e91e18fc74295d0c781bf91622508c75655e2c18ed869d52447ffe1e667e1"}
+
 func modelYolu(m modelKaydi) string { return filepath.Join(kok, "model", m.Dosya) }
 
 // boyut tutuyorsa var sayılır (sağlama inerken denetlendi; her açılışta 5 GB okumak yavaş bellekte dakikalar alır)
-func modelVar(m modelKaydi) bool {
+func dosyaTam(m modelKaydi) bool {
 	b, err := os.Stat(modelYolu(m))
 	return err == nil && b.Size() == m.Boyut
+}
+
+// buyukDosyaAlamaz: model klasörünün bulunduğu bellek 4 GB'tan büyük dosya almıyor (FAT32)
+func buyukDosyaAlamaz() bool {
+	d, err := diskDurumu(filepath.Join(kok, "model"))
+	return err == nil && !d.buyukDosya
+}
+
+// modelVar: dosya yerinde mi. Sohbet modelinde yeni dosya yoksa ama eski Gemma 3 varsa ve bellek yeni dosyayı hiç
+// alamıyorsa (FAT32) model var sayılır — kullanıcıya inemeyecek bir indirme önerilmez. Almıyorsa yeni model eksik görünür
+// (kurulum kutusu indirmeyi önerir), eski model bu arada çalışmayı sürdürür.
+func modelVar(m modelKaydi) bool {
+	if dosyaTam(m) {
+		return true
+	}
+	return m.Ne == "sohbet" && dosyaTam(eskiSohbet) && buyukDosyaAlamaz()
+}
+
+// acilacakSohbet: yeni dosya tamsa o, değilse eski Gemma 3 (varsa)
+func acilacakSohbet(m modelKaydi) (modelKaydi, bool) {
+	if dosyaTam(m) {
+		return m, true
+	}
+	if dosyaTam(eskiSohbet) {
+		return eskiSohbet, true
+	}
+	return m, false
 }
 
 func eksikModeller() []modelKaydi {
@@ -255,6 +290,12 @@ func modelSunucusuAc(m modelKaydi) error {
 		return nil // açılıyor
 	}
 	modelKilit.Unlock()
+	if m.Ne == "sohbet" {
+		var ok bool
+		if m, ok = acilacakSohbet(m); !ok {
+			return errors.New("sohbet modeli yok")
+		}
+	}
 	llama := filepath.Join(kok, "program", "llamafile.exe")
 	arg := append([]string{"--server", "--host", "127.0.0.1", "--port", fmt.Sprint(port), "--no-webui", "-m", modelYolu(m)}, ek...)
 	var cmd *exec.Cmd

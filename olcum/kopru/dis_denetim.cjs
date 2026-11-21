@@ -1612,3 +1612,30 @@ globalThis.__cokDilliDisi = (async () => {
   for (const [a, tamam] of BS) { if (tamam) bs++; else console.log(`  YANLIŞ (bölüm şıkkı): ${a}`); }
   console.log(`— bölüm şıkkı dişi: ${bs}/${BS.length} —`);
 })();
+
+// §245 (21.11, Ercan: "geçelim"): sohbet modeli Gemma 4 E4B; eski kurulumda Gemma 3 4B. Kalıp çalışan modelin dosya adından
+// (sunucunun /props'u): yalnız gemma3-4b.gguf Gemma 3'ün ölçülmüş kalıbı, gerisi modelin kendi şablonu. Başlatıcılar önce yeni
+// dosyaya, yoksa eskisine bakar (yardımcı programdaki aynı seçim Go sınavında: TestSohbetModeliSecimi).
+(async () => {
+  const KD = [];
+  KD.push(['varsayılan kalıp modele sorulur', H.AYAR.kalip === 'oto']);
+  KD.push(['Gemma 3 dosyası → ölçülmüş kalıp', H.kalipDosyadan('/Volumes/HEYBE/model/gemma3-4b.gguf') === 'gemma3']);
+  KD.push(['Windows yolu da tanınır', H.kalipDosyadan('E:\\Heybe\\model\\gemma3-4b.gguf') === 'gemma3']);
+  KD.push(['Gemma 4 dosyası → modelin şablonu', H.kalipDosyadan('/Volumes/HEYBE/model/gemma-4-E4B-it-Q4_0.gguf') === 'sablon']);
+  KD.push(['bilinmeyen ya da boş → modelin şablonu', H.kalipDosyadan('') === 'sablon' && H.kalipDosyadan(undefined) === 'sablon']);
+  KD.push(['ad içinde geçen benzer dosya Gemma 3 sayılmaz', H.kalipDosyadan('/m/eski-gemma3-4b.gguf.bak') === 'sablon']);
+  const eskiKalip = H.AYAR.kalip;
+  H.AYAR.kalip = 'gemma3'; KD.push(['elle verilen kalıp olduğu gibi (gemma3)', (await H.kalipNe()) === 'gemma3']);
+  H.AYAR.kalip = 'sablon'; KD.push(['elle verilen kalıp olduğu gibi (sablon)', (await H.kalipNe()) === 'sablon']);
+  H.AYAR.kalip = eskiKalip;
+  const yol = require('path'), fs = require('fs'), U = yol.join(__dirname, '..', '..', 'tasinabilir', 'usb_kok');
+  for (const [ad, ust] of [['Heybe_Mac.command', 'sh'], ['Heybe_Linux.sh', 'sh'], ['Heybe_Windows.bat', 'bat']]) {
+    const m = fs.readFileSync(yol.join(U, ad), 'utf8');
+    const yeni = m.indexOf('gemma-4-E4B-it-Q4_0.gguf'), eskiD = m.indexOf('gemma3-4b.gguf');
+    const dogrudan = ust === 'sh' ? /-m "\$KOK\/model\/gemma/.test(m) : /-m "%KOK%model\\gemma/.test(m);
+    KD.push([`${ad}: önce Gemma 4, yoksa Gemma 3; sohbet sunucusu seçilen dosyayla`, yeni > 0 && eskiD > yeni && /SOHBET_M/.test(m) && !dogrudan]);
+  }
+  let kd = 0;
+  for (const [a, tamam] of KD) { if (tamam) kd++; else console.log(`  YANLIŞ (sohbet kalıbı): ${a}`); }
+  console.log(`— sohbet modeli ve kalıbı dişi: ${kd}/${KD.length} —`);
+})();

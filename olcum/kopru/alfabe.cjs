@@ -53,7 +53,7 @@ function yabanciKelimeler(metin, ana = anaBetik(metin)) {
 
 // korunan adlar (07.11): kullanıcının bellekte arayacağı klasör/dosya adları çeviride harfi harfine kalmalı —
 // 21 dilde "kutuphane" klasörü çevrilmişti ("Bibliothek"), kullanıcı o klasörü bulamazdı.
-const KORUNAN = ['kutuphane', 'LISANSLAR', '.zim', 'FAT32'];
+const KORUNAN = ['kutuphane', 'LISANSLAR', '.zim', 'FAT32', 'Gemma 4 E4B'];   // §245: model adı çevrilmez (önce "জিমেমা ৩" gibi yazıya çevrilmişti)
 const eksikAdlar = (ceviri, kaynak) => KORUNAN.filter((ad) => kaynak.includes(ad) && !ceviri.includes(ad));
 
 module.exports = { anaBetik, dilBetigi, yabanciKelimeler, TEKNIK, KORUNAN, eksikAdlar };
